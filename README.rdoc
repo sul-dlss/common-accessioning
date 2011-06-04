@@ -1,0 +1,22 @@
+= DOR Google Scanned Books Workflow Robots
+
+==An overview of the workflow
+You can see the steps of the workflow in <tt>config/workflows/googleScannedBookWF</tt>
+
+You can see the dependencies and settings for each step in <tt>config/workflows/googleScannedBookWF/process-config.yaml</tt>
+
+==Execution
+
+<tt>cd robots/google_scanned_book; ../run_robot.ksh $ROBOT_NAME<tt>
+
+For example:
+<tt>cd robots/google_scanned_book; ../run_robot.ksh google_download<tt>
+
+or, to process a single druid:
+<tt>cd robots/google_scanned_book; ../run_robot.ksh process_content -d druid:123xyz<tt>
+
+or, to process a file of druids:
+<tt>cd robots/google_scanned_book; ../run_robot.ksh register_object -f /path/to/file.xml<tt>
+
+==Running tests
+A simple "rake" should do everything you need

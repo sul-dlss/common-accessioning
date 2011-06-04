@@ -1,0 +1,9 @@
+.bundle
+.yardoc
+doc/
+docs/
+*~
+coverage/
+coverage.data
+.idea
+*.tar.gz

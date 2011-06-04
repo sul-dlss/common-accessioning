@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<contentMetadata type="googleScannedBook" objectId="druid:dj698tg3022">
+  <resource type="page" sequence="1" id="page1">
+    <attr name="googlePageTag">FRONT_COVER UNTYPICAL_PAGE FRONT_COVER_IMAGE_CORRECTION IMPLICIT_PAGE_NUMBER FRONT_COVER IMAGE_ON_PAGE</attr>
+    <file preserve="yes" mimetype="image/jp2" format="JPEG2000" size="58431" shelve="no" id="00000001.jp2" deliver="no">
+      <imageData width="1325" height="2117"/>
+      <checksum type="SHA-1">73f34336c2fc345a102532bc2e97ff6af595fe47</checksum>
+      <checksum type="MD5">f00b91086d37b6954c3489ea9cf7ca74</checksum>
+    </file>
+    <file preserve="yes" mimetype="text/html" format="HTML" size="1196" dataType="hocr" shelve="yes" id="00000001.html" deliver="no">
+      <checksum type="SHA-1">d5570fdd0f1732d0e341248434a96faecb2fc6d4</checksum>
+      <checksum type="MD5">b3b1fe8ce4edae2b3e039f27eb1b89ff</checksum>
+    </file>
+  </resource>
+  <resource type="page" sequence="2" id="page2">
+    <attr name="googlePageTag">IMAGE_ON_PAGE IMPLICIT_PAGE_NUMBER</attr>
+    <file preserve="yes" mimetype="image/jp2" format="JPEG2000" size="79750" shelve="no" id="00000002.jp2" deliver="no">
+      <imageData width="1325" height="2117"/>
+      <checksum type="SHA-1">76932e170473ad8746ea3181db782358bfc5ebaa</checksum>
+      <checksum type="MD5">6add570a9f28a1508cf747990d110980</checksum>
+    </file>
+    <file preserve="yes" mimetype="text/html" format="HTML" size="871" dataType="hocr" shelve="yes" id="00000002.html" deliver="no">
+      <checksum type="SHA-1">8c53a4187da4b0f19d0781907f15f6c387490696</checksum>
+      <checksum type="MD5">2f4dd3a078ec1909358e7cac75a78b3b</checksum>
+    </file>
+  </resource>
+  <resource type="page" sequence="3" id="page3">
+    <attr name="googlePageTag">IMPLICIT_PAGE_NUMBER</attr>
+    <file preserve="yes" mimetype="image/jp2" format="JPEG2000" size="21020" shelve="no" id="00000003.jp2" deliver="no">
+      <imageData width="1325" height="2117"/>
+      <checksum type="SHA-1">ead92bb66617d5c3afefe6ac7eebe9c4844ada00</checksum>
+      <checksum type="MD5">c3557b83db90582e5a31af98893f23a7</checksum>
+    </file>
+    <file preserve="yes" mimetype="text/html" format="HTML" size="863" dataType="hocr" shelve="yes" id="00000003.html" deliver="no">
+      <checksum type="SHA-1">0285911fd44bd1ced8af0c75320ef5696fa635c6</checksum>
+      <checksum type="MD5">8efb324af588d48030a9c1371ac84639</checksum>
+    </file>
+  </resource>
+  <resource type="page" sequence="4" id="page4">
+    <attr name="googlePageTag">IMPLICIT_PAGE_NUMBER</attr>
+    <file preserve="yes" mimetype="image/jp2" format="JPEG2000" size="6541" shelve="no" id="00000004.jp2" deliver="no">
+      <imageData width="1325" height="2117"/>
+      <checksum type="SHA-1">d86b73fb57475fe580da9225537a574502c0dd68</checksum>
+      <checksum type="MD5">d0af2fb0c228a15c9425e6051aff481f</checksum>
+    </file>
+    <file preserve="yes" mimetype="text/html" format="HTML" size="876" dataType="hocr" shelve="yes" id="00000004.html" deliver="no">
+      <checksum type="SHA-1">bf9f2e1c919e9a2b22d3d33713a33ac9ecd4fa56</checksum>
+      <checksum type="MD5">07c59338243142544adba8f1e711ffe4</checksum>
+    </file>
+  </resource>
+  <resource type="page" sequence="5" id="page5">
+    <attr name="pageLabel">i</attr>
+    <attr name="googlePageTag">TITLE CHAPTER_START UNTYPICAL_PAGE IMPLICIT_PAGE_NUMBER</attr>
+    <file preserve="yes" mimetype="image/jp2" format="JPEG2000" size="28822" shelve="no" id="00000005.jp2" deliver="no">
+      <imageData width="1373" height="2115"/>
+      <checksum type="SHA-1">c2845a84a492934037e7006a2b8415a7026407c2</checksum>
+      <checksum type="MD5">74061dfd0f422dedb89c6667855b38a4</checksum>
+    </file>
+    <file preserve="yes" mimetype="text/html" format="HTML" size="5758" dataType="hocr" shelve="yes" id="00000005.html" deliver="no">
+      <checksum type="SHA-1">073689a860919041b2b34c2f6696644fdbe0d55c</checksum>
+      <checksum type="MD5">f7ed78f08b5964e8985fd48c06233d05</checksum>
+    </file>
+  </resource>
+  <resource type="page" sequence="6" id="page6">
+    <attr name="pageLabel">ii</attr>
+    <attr name="googlePageTag">UNTYPICAL_PAGE IMPLICIT_PAGE_NUMBER</attr>
+    <file preserve="yes" mimetype="image/jp2" format="JPEG2000" size="19105" shelve="no" id="00000006.jp2" deliver="no">
+      <imageData width="1373" height="2115"/>
+      <checksum type="SHA-1">ec36ad8cb7cf499f7b48c3859be4e015308a5f04</checksum>
+      <checksum type="MD5">4cf4ddc551f608bbbebe0ba067f54e30</checksum>
+    </file>
+    <file preserve="yes" mimetype="text/html" format="HTML" size="4453" dataType="hocr" shelve="yes" id="00000006.html" deliver="no">
+      <checksum type="SHA-1">4ef3c4c7faac949785ce35094962a108d9902aa2</checksum>
+      <checksum type="MD5">b3a84dae8ec584d4f7cb4dbc649d59c0</checksum>
+    </file>
+  </resource>
+  <resource type="page" sequence="7" id="page7">
+    <attr name="pageLabel">iii</attr>
+    <attr name="googlePageTag">TABLE_OF_CONTENTS UNTYPICAL_PAGE IMPLICIT_PAGE_NUMBER</attr>
+    <file preserve="yes" mimetype="image/jp2" format="JPEG2000" size="51015" shelve="no" id="00000007.jp2" deliver="no">
+      <imageData width="1325" height="2117"/>
+      <checksum type="SHA-1">1262c9e708909fea047e7202c009b45bb1c0b25b</checksum>
+      <checksum type="MD5">9af1b65e86b52bcb3eaecf04f13ce42d</checksum>
+    </file>
+    <file preserve="yes" mimetype="text/html" format="HTML" size="12209" dataType="hocr" shelve="yes" id="00000007.html" deliver="no">
+      <checksum type="SHA-1">8fd097517b6a34e99f34f1bb1d916a19d7500f72</checksum>
+      <checksum type="MD5">32607dea559a8a2d59a70c9bb9132490</checksum>
+    </file>
+  </resource>
+  <resource type="page" sequence="8" id="page8">
+    <attr name="pageLabel">iv</attr>
+    <attr name="googlePageTag">TABLE_OF_CONTENTS UNTYPICAL_PAGE</attr>
+    <file preserve="yes" mimetype="image/jp2" format="JPEG2000" size="72203" shelve="no" id="00000008.jp2" deliver="no">
+      <imageData width="1373" height="2115"/>
+      <checksum type="SHA-1">7dbae076ee53966b7c9c4cbfe87dc414afab4ce9</checksum>
+      <checksum type="MD5">07ba05293409f69c59b224fc53c39141</checksum>
+    </file>
+    <file preserve="yes" mimetype="text/html" format="HTML" size="18012" dataType="hocr" shelve="yes" id="00000008.html" deliver="no">
+      <checksum type="SHA-1">f48ea50a3ad64ac2c03e5dcbb591aeb3c956e86e</checksum>
+      <checksum type="MD5">e6cc9b5240690c99190f8723537a890a</checksum>
+    </file>
+  </resource>
+  <resource type="page" sequence="9" id="page9">
+    <attr name="pageLabel">v</attr>
+    <attr name="googlePageTag">TABLE_OF_CONTENTS UNTYPICAL_PAGE IMPLICIT_PAGE_NUMBER</attr>
+    <file preserve="yes" mimetype="image/jp2" format="JPEG2000" size="67866" shelve="no" id="00000009.jp2" deliver="no">
+      <imageData width="1325" height="2117"/>
+      <checksum type="SHA-1">9cdaa64ca211983fe8d2fba0346b5b99a40491de</checksum>
+      <checksum type="MD5">c7e9073cdb2969481080cd4c98e9f4d8</checksum>
+    </file>
+    <file preserve="yes" mimetype="text/html" format="HTML" size="18148" dataType="hocr" shelve="yes" id="00000009.html" deliver="no">
+      <checksum type="SHA-1">17695a3e5380d0bb70636d406757534b039e06ab</checksum>
+      <checksum type="MD5">b4835fb02115f6def1856e01d4c10280</checksum>
+    </file>
+  </resource>
+  <resource type="page" sequence="10" id="page10">
+    <attr name="pageLabel">vi</attr>
+    <attr name="googlePageTag">TABLE_OF_CONTENTS UNTYPICAL_PAGE IMPLICIT_PAGE_NUMBER</attr>
+    <file preserve="yes" mimetype="image/jp2" format="JPEG2000" size="53449" shelve="no" id="00000010.jp2" deliver="no">
+      <imageData width="1373" height="2115"/>
+      <checksum type="SHA-1">b78cf4b9974383389a34f51c9cf14a6a59dcae18</checksum>
+      <checksum type="MD5">614dce2eeacc8fe7a02e7d82d287a93a</checksum>
+    </file>
+    <file preserve="yes" mimetype="text/html" format="HTML" size="11716" dataType="hocr" shelve="yes" id="00000010.html" deliver="no">
+      <checksum type="SHA-1">a706f713dcf1e4cbfd01562bc571432dac6af81a</checksum>
+      <checksum type="MD5">5adff8a68342124b06332c9ee10337e3</checksum>
+    </file>
+  </resource>
+  <resource type="METS" id="googleMETS">
+    <file preserve="yes" mimetype="application/xml" format="TEXT" size="685180" shelve="no" id="googleMETS.xml" deliver="no">
+      <checksum type="SHA-1">e3629fbe0c6d333e609f1cea014f749aad38b130</checksum>
+      <checksum type="MD5">28599c9b85cb3512027394b199a3dea9</checksum>
+    </file>
+  </resource>
+  <resource type="metadata" id="technicalMetadata">
+    <file preserve="yes" mimetype="application/xml" format="TEXT" size="2858901" shelve="no" id="technicalMetadata.xml" deliver="no">
+      <checksum type="SHA-1">607980421dd4af2a208418821b7b711473c1f1a8</checksum>
+      <checksum type="MD5">d0cfe6b8de9afd6105b3fe239a033198</checksum>
+    </file>
+  </resource>
+</contentMetadata>

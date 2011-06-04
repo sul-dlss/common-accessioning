@@ -1,0 +1,7 @@
+shelve:
+    prerequisite:  process-content
+    batch_limit: 1
+    error_limit: 5
+
+repository: dor
+
