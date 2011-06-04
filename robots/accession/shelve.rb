@@ -17,6 +17,6 @@ end
 
 if __FILE__ == $0
   r = Accession::Shelve.new('accessionWF', 'shelve')
-  sdr_ingest_transfer.start
+  r.start
 end
 
