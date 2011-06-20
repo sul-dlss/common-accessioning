@@ -1,7 +1,7 @@
 source :rubygems
 source "http://sulair-rails-dev.stanford.edu"
 
-gem "dor-services", :path => '/Users/wmene/Dev/git/lyberteam/dor-services-gem'
+gem "dor-services"
 gem "lyber-core"
 
 group :test do
