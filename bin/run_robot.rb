@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # Will run one robot as specified 
 # Should be run from the root of the robot project
 # Assumes there's a ROBOT_ROOT/.rvmrc file that will load the correct ruby version and gemset, if necessary
@@ -12,7 +13,7 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
 
-robot_name = ARGV.pop
+robot_name = ARGV.pop.split(/-/).collect { |w| w.capitalize }.join('')
 workflow = ARGV.pop
 module_name = workflow.split('WF').first.capitalize
 

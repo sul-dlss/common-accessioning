@@ -3,9 +3,9 @@ GEM
   remote: http://sulair-rails-dev.stanford.edu/
   specs:
     abstract (1.0.0)
-    actionpack (3.0.7)
-      activemodel (= 3.0.7)
-      activesupport (= 3.0.7)
+    actionpack (3.0.9)
+      activemodel (= 3.0.9)
+      activesupport (= 3.0.9)
       builder (~> 2.1.2)
       erubis (~> 2.6.6)
       i18n (~> 0.5.0)
@@ -13,7 +13,7 @@ GEM
       rack-mount (~> 0.6.14)
       rack-test (~> 0.5.7)
       tzinfo (~> 0.3.23)
-    active-fedora (2.2.3)
+    active-fedora (2.3.0)
       activeresource
       equivalent-xml
       facets
@@ -25,16 +25,16 @@ GEM
       solr-ruby (>= 0.0.6)
       solrizer (> 1.0.0)
       xml-simple (>= 1.0.12)
-    activemodel (3.0.7)
-      activesupport (= 3.0.7)
+    activemodel (3.0.9)
+      activesupport (= 3.0.9)
       builder (~> 2.1.2)
       i18n (~> 0.5.0)
-    activeresource (3.0.7)
-      activemodel (= 3.0.7)
-      activesupport (= 3.0.7)
-    activesupport (3.0.7)
-    bagit (0.1.0)
-      semver (~> 0.1.0)
+    activeresource (3.0.9)
+      activemodel (= 3.0.9)
+      activesupport (= 3.0.9)
+    activesupport (3.0.9)
+    bagit (0.2.0)
+      validatable (~> 1.6)
     builder (2.1.2)
     columnize (0.3.2)
     daemons (1.1.4)
@@ -59,7 +59,7 @@ GEM
     i18n (0.5.0)
     json (1.5.3)
     linecache (0.43)
-    lyber-core (1.0.0)
+    lyber-core (1.1.0)
       actionpack
       active-fedora (>= 1.2.6)
       bagit (>= 0.1.0)
@@ -93,22 +93,17 @@ GEM
       ruby-debug-base (~> 0.10.4.0)
     ruby-debug-base (0.10.4)
       linecache (>= 0.3)
-    semver (0.1.0)
     solr-ruby (0.0.8)
-    solrizer (1.0.4)
+    solrizer (1.1.0)
       daemons
       mediashelf-loggable
-      mediashelf-loggable
-      nokogiri
-      nokogiri
       nokogiri
       om (>= 1.0.0)
-      om
       stomp
       xml-simple
     stomp (1.1.9)
     systemu (2.2.0)
-    tzinfo (0.3.27)
+    tzinfo (0.3.28)
     validatable (1.6.7)
     xml-simple (1.1.0)
 
