@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 # Will run one robot as specified 
 # Should be run from the root of the robot project
 # Assumes there's a ROBOT_ROOT/.rvmrc file that will load the correct ruby version and gemset, if necessary
