@@ -1,9 +1,9 @@
 = DOR Google Scanned Books Workflow Robots
 
 ==An overview of the workflow
-You can see the steps of the workflow in <tt>config/workflows/googleScannedBookWF</tt>
+You can see the steps of the workflow in <tt>config/workflows/accessionWF</tt>
 
-You can see the dependencies and settings for each step in <tt>config/workflows/googleScannedBookWF/process-config.yaml</tt>
+You can see the dependencies and settings for each step in <tt>config/workflows/accessionWF/process-config.yaml</tt>
 
 ==Execution
 
