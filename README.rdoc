@@ -7,16 +7,16 @@ You can see the dependencies and settings for each step in <tt>config/workflows/
 
 ==Execution
 
-<tt>cd robots/google_scanned_book; ../run_robot.ksh $ROBOT_NAME<tt>
+Should be run from the root of the robot project
+Assumes there's a ROBOT_ROOT/.rvmrc file that will load the correct ruby version and gemset, if necessary
+robot_root$ ruby ./bin/run_robot accessionWF publish
 
-For example:
-<tt>cd robots/google_scanned_book; ../run_robot.ksh google_download<tt>
+With Options
+Options must be placed BEFORE workflow and robot name
+robot_root$ ruby ./bin/run_robot --druid druid:12345 accessionWF publish
 
-or, to process a single druid:
-<tt>cd robots/google_scanned_book; ../run_robot.ksh process_content -d druid:123xyz<tt>
-
-or, to process a file of druids:
-<tt>cd robots/google_scanned_book; ../run_robot.ksh register_object -f /path/to/file.xml<tt>
+From cron
+* * * * bash --login -c 'cd /path/to/robot_root && ruby./bin/run_robot.rb accessionWF publish' > /home/deploy/crondebug.log 2>&1
 
 ==Running tests
 A simple "rake" should do everything you need
