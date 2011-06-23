@@ -5,16 +5,17 @@
 module Accession
   
   class AbstractMetadata < LyberCore::Robots::Robot
-    @@process_name = nil
-    @@datastream = nil
+    def self.params
+      { :process_name => nil, :datastream => nil }
+    end
     
     def initialize
-      super('accessionWF', @@process_name)
+      super('accessionWF', self.class.params[:process_name])
     end
 
     def process_item(work_item)
-      obj = Dor::Item.find(work_item.druid)
-      obj.build_datastream(@@datastream)
+      obj = Dor::Item.load_instance(work_item.druid)
+      obj.build_datastream(self.class.params[:datastream])
     end 
   end
 end

@@ -17,8 +17,8 @@ robot_name = ARGV.pop.split(/-/).collect { |w| w.capitalize }.join('')
 workflow = ARGV.pop
 module_name = workflow.split('WF').first.capitalize
 
-puts "Trying to load #{module_name}::#{robot_name.capitalize}"
-robot_klass = Module.const_get(module_name).const_get(robot_name.capitalize)
+puts "Trying to load #{module_name}::#{robot_name}"
+robot_klass = Module.const_get(module_name).const_get(robot_name)
 
 robot = robot_klass.new
 robot.start

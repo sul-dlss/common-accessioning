@@ -3,7 +3,8 @@
 module Accession
   
   class ContentMetadata < AbstractMetadata
-    @@process_name = 'content-metadata'
-    @@datastream = 'contentMetadata'
+    def self.params
+      { :process_name => 'content-metadata', :datastream => 'contentMetadata' }
+    end
   end
 end

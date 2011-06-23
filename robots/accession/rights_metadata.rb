@@ -3,7 +3,8 @@
 module Accession
   
   class RightsMetadata < AbstractMetadata
-    @@process_name = 'rights-metadata'
-    @@datastream = 'rightsMetadata'
+    def self.params
+      { :process_name => 'rights-metadata', :datastream => 'rightsMetadata' }
+    end
   end
 end

@@ -10,7 +10,7 @@ module Accession
     end
 
     def process_item(work_item)
-      obj = Dor::Base.find(work_item.druid)
+      obj = Dor::Base.load_instance(work_item.druid)
       obj.publish_metadata
     end 
   end
