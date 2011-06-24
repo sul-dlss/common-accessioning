@@ -10,7 +10,7 @@ module LyberCore
         @logger = opts[:logger] || Logger.new($stdout)
         @logger.level = opts[:log_level] || Logger::ERROR
         @working_dir = opts[:working_dir] || ENV['ROBOT_ROOT'] || Dir.pwd
-        @pid_dir = opts[:pid_dir] || File.join(@working_dir, '../pid')
+        @pid_dir = opts[:pid_dir] || File.join(@working_dir, 'pid')
         @pid_dir = File.expand_path(pid_dir)
         @logger.debug "Initializing application group."
         @logger.debug "Writing pids to #{@pid_dir}"
