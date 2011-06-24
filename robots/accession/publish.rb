@@ -6,11 +6,11 @@ module Accession
   class Publish < LyberCore::Robots::Robot
     
     def initialize(opts = {})
-      super('accessionWF', 'shelve', opts)
+      super('accessionWF', 'publish', opts)
     end
 
     def process_item(work_item)
-      obj = Dor::Base.load_instance(work_item.druid)
+      obj = Dor::Item.load_instance(work_item.druid)
       obj.publish_metadata
     end 
   end
