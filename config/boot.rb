@@ -9,7 +9,7 @@ require 'logger'
 environment = ENV['ROBOT_ENVIRONMENT'] ||= 'development'
 ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/..")
 ROBOT_LOG = Logger.new(File.join(ROBOT_ROOT, "log/#{environment}.log"))
-ROBOT_LOG.level = Logger::SEV_LABEL.index(ENV['ROBOT_LOG_LEVEL']) || Logger::WARN
+ROBOT_LOG.level = Logger::SEV_LABEL.index(ENV['ROBOT_LOG_LEVEL']) || Logger::INFO
 
 # Override Solrizer's logger before it gets a chance to load and pollute
 # STDERR.

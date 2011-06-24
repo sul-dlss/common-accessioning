@@ -4,14 +4,19 @@ require 'logger'
 module LyberCore
   module Robots
     class ServiceController < Daemons::ApplicationGroup
-      attr_reader :logger, :pid_dir
-
+      attr_reader :logger
+      
       def initialize(opts = {})
-        @logger = opts[:logger] || Logger.new($stdout)
-        @logger.level = opts[:log_level] || Logger::WARN
+        if opts[:logger]
+          @logger = opts[:logger]
+        else
+          @logger = Logger.new($stdout)
+          @logger.level = opts[:log_level] || Logger::WARN
+        end
+        @sleep_time = opts[:sleep_time] || (15*60)
         @working_dir = opts[:working_dir] || ENV['ROBOT_ROOT'] || Dir.pwd
         @pid_dir = opts[:pid_dir] || File.join(@working_dir, 'pid')
-        @pid_dir = File.expand_path(pid_dir)
+        @pid_dir = File.expand_path(@pid_dir)
         @argv = opts[:argv].dup
         @logger.debug "Initializing application group."
         @logger.debug "Writing pids to #{@pid_dir}"
@@ -38,16 +43,17 @@ module LyberCore
                   loop { 
                     case robot.start 
                     when LyberCore::Robots::SLEEP
-                      sleep(15*60)
+                      $stderr.puts "SLEEP condition reached in #{process_name}. Sleeping for #{@sleep_time} seconds."
+                      sleep(@sleep_time)
                     when LyberCore::Robots::HALT
-                      @logger.warn("HALT condition reached in #{process_name}. Shutting down.")
+                      $stderr.puts "HALT condition reached in #{process_name}. Shutting down."
                       break
                     end
                   }
-                  @logger.info("Shutting down.")
+                  $stderr.puts "Shutting down."
                 end
               }
-              new_app = self.new_application({:mode => :proc, :proc => robot_proc, :dir_mode => :normal})
+              new_app = self.new_application({:mode => :proc, :proc => robot_proc, :dir_mode => :normal, :log_output => true, :log_dir => @pid_dir})
               new_app.start
               new_app
             end
