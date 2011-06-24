@@ -8,68 +8,82 @@ module LyberCore
 
       def initialize(opts = {})
         @logger = opts[:logger] || Logger.new($stdout)
-        @logger.level = opts[:log_level] || Logger::ERROR
+        @logger.level = opts[:log_level] || Logger::WARN
         @working_dir = opts[:working_dir] || ENV['ROBOT_ROOT'] || Dir.pwd
         @pid_dir = opts[:pid_dir] || File.join(@working_dir, 'pid')
         @pid_dir = File.expand_path(pid_dir)
+        @argv = opts[:argv].dup
         @logger.debug "Initializing application group."
         @logger.debug "Writing pids to #{@pid_dir}"
         super('robot_service_controller', :dir_mode => :normal, :dir => @pid_dir, :multiple => true, :backtrace => true)
       end
 
+      def qname(workflow, robot_name)
+        [workflow,robot_name].join(':')
+      end
+      
       def start(workflow, robot_name)
         result = false
         app = find_app(workflow, robot_name).first
+        process_name = qname(workflow,robot_name)
         if app.nil? or (app.running? == false)
-          @logger.info "Starting #{workflow}:#{robot_name}..."
-          with_app_name("#{workflow}:#{robot_name}") do
+          @logger.info "Starting #{process_name}..."
+          with_app_name("#{process_name}") do
             app, message = capture_stdout do
               module_name = workflow.split('WF').first.capitalize
               robot_klass = Module.const_get(module_name).const_get(robot_name.split(/-/).collect { |w| w.capitalize }.join(''))
-              robot = robot_klass.new
               robot_proc = lambda {
                 Dir.chdir(@working_dir) do
+                  robot = robot_klass.new(:argv => @argv.dup)
                   loop { 
-                    robot.start 
+                    case robot.start 
+                    when LyberCore::Robots::SLEEP
+                      sleep(15*60)
+                    when LyberCore::Robots::HALT
+                      @logger.warn("HALT condition reached in #{process_name}. Shutting down.")
+                      break
+                    end
                   }
+                  @logger.info("Shutting down.")
                 end
               }
-              new_app = self.new_application({:mode => :proc, :proc => robot_proc, :dir_mode => :normal, :log_dir => @pid_dir, :log_output => true})
+              new_app = self.new_application({:mode => :proc, :proc => robot_proc, :dir_mode => :normal})
               new_app.start
               new_app
             end
           end
           
           if app.running?
-            @logger.info "#{workflow}:#{robot_name} [#{app.pid.pid}] started."
+            @logger.info "#{process_name} [#{app.pid.pid}] started."
             result = true
           else
-            @logger.error "Unable to start #{workflow}:#{robot_name}"
+            @logger.error "Unable to start #{process_name}"
           end
         else app.running?
-          @logger.warn "Robot #{workflow}:#{robot_name} [#{app.pid.pid}] is already running"
+          @logger.warn "Robot #{process_name} [#{app.pid.pid}] is already running"
         end
         return result
       end
 
       def stop(workflow, robot_name)
         apps = find_app(workflow, robot_name)
+        process_name = qname(workflow,robot_name)
         result = false
         if apps.empty?
-          @logger.info "Robot #{workflow}:#{robot_name} not found"
+          @logger.info "Robot #{process_name} not found"
         else
           apps.each do |app|
             if app.running?
-              @logger.info "Shutting down #{workflow}:#{robot_name} [#{app.pid.pid}]..."
+              @logger.info "Shutting down #{process_name} [#{app.pid.pid}]..."
               result, message = capture_stdout { app.stop }
               if app.running?
-                @logger.error "Unable to stop #{workflow}:#{robot_name} [#{app.pid.pid}]."
+                @logger.error "Unable to stop #{process_name} [#{app.pid.pid}]."
               else
-                @logger.info "#{workflow}:#{robot_name} [#{app.pid.pid}] shut down."
+                @logger.info "#{process_name} [#{app.pid.pid}] shut down."
                 result = true
               end
             else
-              @logger.warn "Robot #{workflow}:#{robot_name} [#{app.pid.pid}] is not running but pidfile exists"
+              @logger.warn "Robot #{process_name} [#{app.pid.pid}] is not running but pidfile exists"
               app.zap!
             end
           end
@@ -86,15 +100,16 @@ module LyberCore
   
       def status_message(workflow, robot_name)
         app_status = status(workflow, robot_name)
+        process_name = qname(workflow,robot_name)
         if app_status.empty?
-          ["Robot #{workflow}:#{robot_name} not found"]
+          ["Robot #{process_name} not found"]
         else
           app_status.collect do |s|
             case s[:status]
             when :running
-              "Robot #{workflow}:#{robot_name} [#{s[:pid]}] is running"
+              "Robot #{process_name} [#{s[:pid]}] is running"
             when :stopped
-              "Robot #{workflow}:#{robot_name} [#{s[:pid]}] is not running but pidfile exists"
+              "Robot #{process_name} [#{s[:pid]}] is not running but pidfile exists"
             end
           end
         end
@@ -124,7 +139,7 @@ module LyberCore
       end
   
       def find_app(workflow, robot_name)
-        with_app_name("#{workflow}:#{robot_name}") {
+        with_app_name(qname(workflow,robot_name)) {
           self.find_applications_by_pidfiles(@pid_dir)
         }
       end

@@ -13,12 +13,19 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
 
-robot_name = ARGV.pop.split(/-/).collect { |w| w.capitalize }.join('')
-workflow = ARGV.pop
-module_name = workflow.split('WF').first.capitalize
+action = ARGV.shift
+robots = []
+while ARGV.first =~ /:/
+  robots << ARGV.shift.split(/:/)
+end
+controller = LyberCore::Robots::ServiceController.new(:log_level => Logger::INFO, 
+  :working_dir => File.expand_path(File.join(File.dirname(__FILE__), "..")), :argv => ARGV)
 
-puts "Trying to load #{module_name}::#{robot_name}"
-robot_klass = Module.const_get(module_name).const_get(robot_name)
-
-robot = robot_klass.new
-robot.start
+case action
+when 'start'
+  robots.each { |robot| controller.start(*robot) }
+when 'stop'
+  robots.each { |robot| controller.stop(*robot) }
+when 'status'
+  robots.each { |robot| puts controller.status_message(*robot) }
+end
