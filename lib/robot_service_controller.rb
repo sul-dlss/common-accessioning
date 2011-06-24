@@ -14,7 +14,7 @@ module LyberCore
         @pid_dir = File.expand_path(pid_dir)
         @logger.debug "Initializing application group."
         @logger.debug "Writing pids to #{@pid_dir}"
-        super('robot_service_controller', :dir_mode => :normal, :dir => @pid_dir, :multiple => true)
+        super('robot_service_controller', :dir_mode => :normal, :dir => @pid_dir, :multiple => true, :backtrace => true)
       end
 
       def start(workflow, robot_name)
@@ -29,10 +29,12 @@ module LyberCore
               robot = robot_klass.new
               robot_proc = lambda {
                 Dir.chdir(@working_dir) do
-                  loop { sleep(15*60) unless robot.start }
+                  loop { 
+                    robot.start 
+                  }
                 end
               }
-              new_app = self.new_application({:mode => :proc, :proc => robot_proc})
+              new_app = self.new_application({:mode => :proc, :proc => robot_proc, :dir_mode => :normal, :log_dir => @pid_dir, :log_output => true})
               new_app.start
               new_app
             end
@@ -98,7 +100,7 @@ module LyberCore
         end
       end
   
-      private
+#      private
       def with_app_name(name)
         old_name, @app_name = @app_name, name
         begin
@@ -122,7 +124,9 @@ module LyberCore
       end
   
       def find_app(workflow, robot_name)
-        self.find_applications_by_app_name("#{workflow}:#{robot_name}")
+        with_app_name("#{workflow}:#{robot_name}") {
+          self.find_applications_by_pidfiles(@pid_dir)
+        }
       end
   
     end
