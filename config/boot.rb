@@ -3,17 +3,24 @@ $:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "robots"))
 
 require 'rubygems'
 require "bundler/setup"
-require 'dor-services'
-require 'lyber_core'
+require 'logger'
 
 # Load the environment file based on Environment.  Default to development
-if(ENV.include?('ROBOT_ENVIRONMENT'))
-  environment = ENV['ROBOT_ENVIRONMENT']
-else
-  environment = ENV['ROBOT_ENVIRONMENT']= 'development'
+environment = ENV['ROBOT_ENVIRONMENT'] ||= 'development'
+ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/..")
+ROBOT_LOG = Logger.new(File.join(ROBOT_ROOT, "log/#{environment}.log"))
+ROBOT_LOG.level = Logger::SEV_LABEL.index(ENV['ROBOT_LOG_LEVEL']) || Logger::WARN
+
+# Override Solrizer's logger before it gets a chance to load and pollute
+# STDERR.
+begin
+  require 'solrizer'
+  Solrizer.logger = ROBOT_LOG
+rescue LoadError, NameError, NoMethodError
 end
 
-ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/..")
+require 'dor-services'
+require 'lyber_core'
 
 # TODO Maybe move auto-require to just run_robot and spec_helper?
 Dir["#{ROBOT_ROOT}/lib/**/*.rb"].each { |f| require f }
