@@ -7,3 +7,4 @@ coverage/
 coverage.data
 .idea
 *.tar.gz
+pid
