@@ -5,8 +5,8 @@ module Accession
   
   class Publish < LyberCore::Robots::Robot
     
-    def initialize()
-      super('accessionWF', 'shelve')
+    def initialize(opts = {})
+      super('accessionWF', 'shelve', opts)
     end
 
     def process_item(work_item)

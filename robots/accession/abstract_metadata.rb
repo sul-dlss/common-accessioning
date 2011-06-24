@@ -9,8 +9,8 @@ module Accession
       { :process_name => nil, :datastream => nil }
     end
     
-    def initialize
-      super('accessionWF', self.class.params[:process_name])
+    def initialize(opts = {})
+      super('accessionWF', self.class.params[:process_name], opts)
     end
 
     def process_item(work_item)
