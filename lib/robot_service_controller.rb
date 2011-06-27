@@ -29,8 +29,9 @@ module LyberCore
       
       def start(workflow, robot_name)
         result = false
+        app = find_app(workflow, robot_name).first
         process_name = qname(workflow,robot_name)
-        if can_start?(workflow, robot_name)
+        if app.nil? or (app.running? == false)
           @logger.info "Starting #{process_name}..."
           with_app_name("#{process_name}") do
             app, message = capture_stdout do
@@ -126,11 +127,6 @@ module LyberCore
       end
   
 #      private
-      def can_start?(workflow, robot_name)
-        app = find_app(workflow, robot_name).first
-        app.nil? or (app.running? == false)
-      end
-
       def with_app_name(name)
         old_name, @app_name = @app_name, name
         begin
