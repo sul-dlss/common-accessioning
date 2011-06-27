@@ -17,7 +17,7 @@ module LyberCore
         @working_dir = opts[:working_dir] || ENV['ROBOT_ROOT'] || Dir.pwd
         @pid_dir = opts[:pid_dir] || File.join(@working_dir, 'pid')
         @pid_dir = File.expand_path(@pid_dir)
-        @argv = opts[:argv].dup
+        @argv = (opts[:argv] || []).dup
         @logger.debug "Initializing application group."
         @logger.debug "Writing pids to #{@pid_dir}"
         super('robot_service_controller', :dir_mode => :normal, :dir => @pid_dir, :multiple => true, :backtrace => true)
@@ -29,9 +29,8 @@ module LyberCore
       
       def start(workflow, robot_name)
         result = false
-        app = find_app(workflow, robot_name).first
         process_name = qname(workflow,robot_name)
-        if app.nil? or (app.running? == false)
+        if can_start?(workflow, robot_name)
           @logger.info "Starting #{process_name}..."
           with_app_name("#{process_name}") do
             app, message = capture_stdout do
@@ -127,6 +126,11 @@ module LyberCore
       end
   
 #      private
+      def can_start?(workflow, robot_name)
+        app = find_app(workflow, robot_name).first
+        app.nil? or (app.running? == false)
+      end
+
       def with_app_name(name)
         old_name, @app_name = @app_name, name
         begin
