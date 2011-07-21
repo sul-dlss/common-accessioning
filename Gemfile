@@ -2,7 +2,7 @@ source :rubygems
 source "http://sulair-rails-dev.stanford.edu"
 
 gem "dor-services", ">=1.1.3"
-gem "lyber-core"
+gem "lyber-core", ">= 1.2"
 gem "daemons"
 
 group :test do
