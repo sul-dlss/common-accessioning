@@ -1,7 +1,7 @@
 source :rubygems
 source "http://sulair-rails-dev.stanford.edu"
 
-gem "dor-services", ">=1.1.3"
+gem "dor-services", ">=1.6.4"
 gem "lyber-core", ">= 1.2"
 gem "daemons"
 
