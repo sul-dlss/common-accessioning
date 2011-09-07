@@ -26,5 +26,17 @@ shelve:
     batch_limit: 1
     error_limit: 5
 
+sdr-ingest-transfer:
+    prerequisite: publish
+    batch_limit: 1
+    error_limit: 5
+
+cleanup:
+    prerequisite:
+      - sdr:sdrIngestWF:complete-deposit
+      - dor:accessionWF:shelve
+    batch_limit: 1
+    error_limit: 5
+
 repository: dor
 
