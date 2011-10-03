@@ -27,13 +27,21 @@ while ARGV.first =~ /:/
   end
 end
 
-controller = LyberCore::Robots::ServiceController.new(:logger => logger, :working_dir => ROBOT_ROOT, :argv => ARGV.dup)
+if action == 'run'
+  robots.each do |robot|
+    robot_klass = "#{robot[0].sub(/WF$/,'')}/#{robot[1].gsub(/-/,'_')}".classify.constantize
+    instance = robot_klass.new(:argv => ARGV)
+    robot.start
+  end
+else
+  controller = LyberCore::Robots::ServiceController.new(:logger => logger, :working_dir => ROBOT_ROOT, :argv => ARGV.dup)
 
-case action
-when 'start'
-  robots.each { |robot| controller.start(*robot) }
-when 'stop'
-  robots.each { |robot| controller.stop(*robot) }
-when 'status'
-  robots.each { |robot| puts controller.status_message(*robot) }
+  case action
+  when 'start'
+    robots.each { |robot| controller.start(*robot) }
+  when 'stop'
+    robots.each { |robot| controller.stop(*robot) }
+  when 'status'
+    robots.each { |robot| puts controller.status_message(*robot) }
+  end
 end
