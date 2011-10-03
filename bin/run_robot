@@ -31,7 +31,7 @@ if action == 'run'
   robots.each do |robot|
     robot_klass = "#{robot[0].sub(/WF$/,'')}/#{robot[1].gsub(/-/,'_')}".classify.constantize
     instance = robot_klass.new(:argv => ARGV)
-    robot.start
+    instance.start
   end
 else
   controller = LyberCore::Robots::ServiceController.new(:logger => logger, :working_dir => ROBOT_ROOT, :argv => ARGV.dup)
