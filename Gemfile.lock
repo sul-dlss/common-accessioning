@@ -13,7 +13,7 @@ GEM
       rack-mount (~> 0.6.14)
       rack-test (~> 0.5.7)
       tzinfo (~> 0.3.23)
-    active-fedora (3.0.4)
+    active-fedora (3.0.7)
       activeresource (~> 3.0.0)
       activesupport (~> 3.0.0)
       equivalent-xml
@@ -22,7 +22,7 @@ GEM
       mime-types (>= 1.16)
       multipart-post (= 1.1.2)
       nokogiri
-      om (>= 1.0)
+      om (>= 1.4.3)
       solr-ruby (>= 0.0.6)
       solrizer (> 1.0.0)
       xml-simple (>= 1.0.12)
@@ -39,7 +39,7 @@ GEM
     builder (2.1.2)
     columnize (0.3.4)
     daemons (1.1.4)
-    dor-services (2.1.0)
+    dor-services (2.2.2)
       active-fedora (>= 1.2.6)
       json
       lyber-utils
@@ -52,7 +52,7 @@ GEM
       systemu
       uuidtools
       validatable
-    equivalent-xml (0.2.7)
+    equivalent-xml (0.2.8)
       nokogiri (>= 1.4.3)
     erubis (2.6.6)
       abstract (>= 1.0.0)
@@ -75,17 +75,17 @@ GEM
       stomp
       systemu (>= 1.2.0)
       validatable
-    lyber-utils (0.1.1)
+    lyber-utils (0.1.2)
       bagit (>= 0.1.0)
       nokogiri (>= 1.4.3.1)
       systemu (>= 1.2.0)
       validatable
     mediashelf-loggable (0.4.7)
-    mime-types (1.16)
+    mime-types (1.17.1)
     mod-cons (0.2.0)
     multipart-post (1.1.2)
     nokogiri (1.4.3.1)
-    om (1.4.2)
+    om (1.4.3)
       mediashelf-loggable
       nokogiri (>= 1.4.2)
     rack (1.2.3)
@@ -118,14 +118,14 @@ GEM
     tzinfo (0.3.29)
     uuidtools (2.1.2)
     validatable (1.6.7)
-    xml-simple (1.1.0)
+    xml-simple (1.1.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   daemons
-  dor-services (>= 2.1.0)
+  dor-services (>= 2.2.2)
   jhove-service
   lyber-core (>= 1.2)
   rake
