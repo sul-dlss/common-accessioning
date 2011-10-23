@@ -9,7 +9,7 @@ module Accession
 
     def process_item(work_item)
       obj = Dor::Item.load_instance(work_item.druid)
-      obj.sdr_ingest_transfer(work_item.identity_metadata.agreementId)
+      obj.sdr_ingest_transfer(obj.identity_metadata.agreementId)
     end
 
 

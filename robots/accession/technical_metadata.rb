@@ -1,14 +1,10 @@
+# Initialize technicalMetadata
 
 module Accession
-
-  class TechnicalMetadata < LyberCore::Robots::Robot
-
-    def initialize(opts = {})
-      super('accessionWF', 'technical-metadata', opts)
+  
+  class TechnicalMetadata < AbstractMetadata
+    def self.params
+      { :process_name => 'technical-metadata', :datastream => 'technicalMetadata', :force => true }
     end
-
   end
-
 end
-
-

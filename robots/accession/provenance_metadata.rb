@@ -9,7 +9,7 @@ module Accession
 
     def process_item(work_item)
       obj = Dor::Item.load_instance(work_item.druid)
-      obj.build_provenanceMetadata_datastream('accessionWF','Common Accessioning')
+      obj.build_provenanceMetadata_datastream('accessionWF','DOR Common Accessioning completed')
     end
 
   end
