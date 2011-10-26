@@ -5,6 +5,7 @@ gem "dor-services", ">=2.2.2"
 gem "lyber-core", ">= 1.2"
 gem "daemons"
 gem "jhove-service"
+gem "pony"
 
 group :test do
 	gem "rake"
