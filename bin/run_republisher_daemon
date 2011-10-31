@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+# 
+# Will run an instance of the PublicXmlUpdater as the 'accessionWF:republiser'
+# 
+# Starting and stopping the daemon can be done using this script.
+# Assuming you invoke the command from the root of common-accessioning
+# 
+# start)
+# $ ROBOT_ENVIRONMENT=development bin/run_republisher_daemon start
+# 
+# stop)
+# $ ROBOT_ENVIRONMENT=development bin/run_republisher_daemon stop
+#
+# status)
+# $ ROBOT_ENVIRONMENT=development bin/run_republisher_daemon status
+
+require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
+require 'daemons'
+
+pid_dir = File.expand_path File.join(ROBOT_ROOT, 'pid')
+Daemons.run_proc('accessionWF:republisher',
+                 :dir_mode => :normal,
+                 :dir => pid_dir 
+) do
+  Accession::PublicXmlUpdater.start_daemon
+end
