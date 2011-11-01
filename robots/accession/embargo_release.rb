@@ -5,7 +5,7 @@
 #
 # Should run once a day from cron
 # Example cron entry
-# 15 2 * * * bash --login -c 'cd /home/lyberadmin/common-accessioning && ROBOT_ENVIRONMENT=lyberservices-dev ./robots/accession/embargo_release.rb' > /home/deploy/crondebug.log 2>&1
+# 16 2 * * * bash --login -c 'cd /home/lyberadmin/common-accessioning && ROBOT_ENVIRONMENT=test ruby ./robots/accession/embargo_release.rb' > /home/lyberadmin/common-accessioning/log/crondebug.log 2>&1
 
 require File.expand_path(File.dirname(__FILE__) + '/../../config/boot')
 require 'dor/embargo'
