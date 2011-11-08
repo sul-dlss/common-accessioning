@@ -13,14 +13,16 @@ require 'dor/embargo'
 class EmbargoedItem < Dor::Item
   include Dor::Embargo
   
-  has_metadata :name => "embargoMetadata", :type => EmbargoMetadataDS
-  has_metadata :name => "events", :type => EventsDS
+  has_metadata :name => "embargoMetadata", :type => EmbargoMetadataDS, :label => 'Embargo Metadata'
+  has_metadata :name => "events", :type => EventsDS, :label => 'Event History'
 end
 
 LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, "log", "embargo_release.log"))
 
 # Find objects to process
-solr = Dor::SearchService.gsearch("q" => "embargo_status_field:'embargoed' AND embargo_release_date:[* TO NOW]")
+solr = Dor::SearchService.gsearch("q" => "embargo_status_field:'embargoed' AND embargo_release_date:[* TO NOW]", 
+                                  "rows" => "5000", 
+                                  "fl" => "id")
 
 #r["response"]["docs"][0]["id"]
 num_found = solr["response"]["numFound"]
