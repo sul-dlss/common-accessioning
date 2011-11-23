@@ -83,13 +83,10 @@ module Accession
     # Republish the object only if the message dealt with the correct datastream and the item has already been released
     def process_message
       return unless correct_datastream?
-      druid = @msg.at_xpath("//xmlns:entry/xmlns:category[@scheme='fedora-types:pid']")['term']
       
-      begin
-        return unless Dor::WorkflowService.get_lifecycle('dor', druid, 'released')
-      rescue RestClient::ResourceNotFound => e
-	      return # Ignore 404's for now.  The service doesn't differentiate between resource empty versus not found
-      end
+      druid = @msg.at_xpath("//xmlns:entry/xmlns:category[@scheme='fedora-types:pid']")['term']
+      return unless Dor::WorkflowService.get_lifecycle('dor', druid, 'released')
+
       LyberCore::Log.info("Updating metadata for: #{druid}")
       
       item = Dor::Item.load_instance(druid)
