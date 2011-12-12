@@ -29,7 +29,10 @@ end
 
 if action == 'run'
   robots.each do |robot|
-    robot_klass = "#{robot[0].sub(/WF$/,'')}/#{robot[1].gsub(/-/,'_')}".classify.constantize
+    (workflow,robot_name) = robot
+    raw_module_name = workflow.split('WF').first
+    module_name = raw_module_name[0].chr.upcase << raw_module_name.slice(1, raw_module_name.size - 1)
+    robot_klass = Module.const_get(module_name).const_get(robot_name.split(/-/).collect { |w| w.capitalize }.join(''))
     instance = robot_klass.new(:argv => ARGV)
     instance.start
   end
