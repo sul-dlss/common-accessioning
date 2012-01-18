@@ -13,12 +13,12 @@ rights-metadata:
     batch_limit: 1000
     error_limit: 10
 
-publish:
+release:
     prerequisite: 
       - content-metadata
       - descriptive-metadata
       - rights-metadata
-    batch_limit: 100
+    batch_limit: 1000
     error_limit: 10
       
 shelve:
