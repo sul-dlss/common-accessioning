@@ -20,14 +20,14 @@ release:
       - rights-metadata
     batch_limit: 1000
     error_limit: 10
-      
+
 shelve:
-    prerequisite: publish
+    prerequisite: release
     batch_limit: 1
     error_limit: 5
 
 technical-metadata:
-    prerequisite: publish
+    prerequisite: release
     batch_limit: 1
     error_limit: 5
 

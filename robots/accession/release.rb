@@ -10,8 +10,11 @@ module Accession
     end
 
     def process_item(work_item)
-      # We're simply satisfying a prerequisite, not doing any actual work
-      return true
+      start_time = Time.new
+      obj = Dor::Item.load_instance(work_item.druid)
+      obj.publish_metadata
+      elapsed = Time.new - start_time
+      Dor::WorkflowService.update_workflow_status('dor',work_item.druid,'postAccessionWF','publish','completed',elapsed,'published')
     end 
   end
 end
