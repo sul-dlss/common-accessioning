@@ -3,10 +3,10 @@
 
 module Accession
   
-  class Release < LyberCore::Robots::Robot
+  class Publish < LyberCore::Robots::Robot
     
     def initialize(opts = {})
-      super('accessionWF', 'release', opts)
+      super('accessionWF', 'publish', opts)
     end
 
     def process_item(work_item)
