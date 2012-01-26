@@ -52,6 +52,7 @@ module Accession
 
     def receive_messages
       raw_message = @conn.receive
+      @druid = nil
       @msg = Nokogiri::XML(raw_message.body)
       process_message
       @conn.ack raw_message.headers["message-id"]
@@ -64,7 +65,15 @@ module Accession
       body << "Message from DOR/FEDORA:\n" << @msg.to_xml unless @msg.nil?
       body << "\n\nExeption:\n" << e.inspect << "\n" << e.backtrace.join("\n")
       LyberCore::Log.fatal("!!!!!!!!!!!\n" << body << "!!!!!!!!!!!\n")
-      LyberCore::Log.fatal("Sending alert")
+      if(@druid.nil?)
+        LyberCore::Log.fatal("No druid. Sending alert")
+        no_druid_email_alert(body)
+      else
+        Dor::WorkflowService.update_workflow_error_status('dor', @druid, 'postAccessionWF', 'publish', e.inspect, e.backtrace.join("\n"))
+      end
+    end
+    
+    def no_druid_email_alert(body)
       Pony.mail(:to => "wmene@stanford.edu, lmcrae@stanford.edu",
                 :from => "public-xml-updater@stanford.edu",
                 :subject => "[#{ENV['ROBOT_ENVIRONMENT']}] Failed to re-publish metadadta",
@@ -82,15 +91,18 @@ module Accession
     
     # Republish the object only if the message dealt with the correct datastream and the item has already been released
     def process_message
+      start_time = Time.new
       return unless correct_datastream?
       
-      druid = @msg.at_xpath("//xmlns:entry/xmlns:category[@scheme='fedora-types:pid']")['term']
-      return unless Dor::WorkflowService.get_lifecycle('dor', druid, 'released')
+      @druid = @msg.at_xpath("//xmlns:entry/xmlns:category[@scheme='fedora-types:pid']")['term']
+      return unless Dor::WorkflowService.get_lifecycle('dor', @druid, 'released')
 
-      LyberCore::Log.info("Updating metadata for: #{druid}")
+      LyberCore::Log.info("Updating metadata for: #{@druid}")
       
-      item = Dor::Item.load_instance(druid)
+      item = Dor::Item.load_instance(@druid)
       item.publish_metadata
+      elapsed = Time.new - start_time
+      Dor::WorkflowService.update_workflow_status('dor', @druid, 'postAccessionWF', 'publish', 'completed', elapsed, 'published')
     end
     
     def correct_datastream?

@@ -45,9 +45,10 @@ describe Accession::PublicXmlUpdater do
   end
   
   describe "#process_message?" do
-    it "checks if the object has reached the lifecycle milestone of 'released' and then publishes the metadata" do
+    it "checks if the object has reached the lifecycle milestone of 'released', publishes the metadata, and sets postAccessionWF::publish to completed" do
       @bot.msg = Nokogiri::XML(@real_msg)
       Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', 'druid:td053mv5518', 'released').and_return(Time.now)
+      Dor::WorkflowService.should_receive(:update_workflow_status).with('dor', 'druid:td053mv5518','postAccessionWF','publish','completed', kind_of(Numeric), 'published')
 
       mock_item = mock('item')
       Dor::Item.should_receive(:load_instance).and_return(mock_item)
