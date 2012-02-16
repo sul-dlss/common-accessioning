@@ -6,6 +6,8 @@ gem "lyber-core", ">= 1.2"
 gem "daemons"
 gem "jhove-service"
 gem "pony"
+gem "capistrano"
+gem "net-ssh-kerberos"
 
 group :test do
 	gem "rake"
