@@ -6,8 +6,7 @@ gem "lyber-core", ">= 1.2"
 gem "daemons"
 gem "jhove-service"
 gem "pony"
-gem "capistrano"
-gem "net-ssh-kerberos"
+gem "whenever"
 
 group :test do
 	gem "rake"
@@ -20,5 +19,6 @@ group :development do
     instance_eval(File.read(mygems))
   end
 	gem "ruby-debug"
+	gem "lyberteam-devel"
 end
 

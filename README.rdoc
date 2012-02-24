@@ -26,3 +26,6 @@ From cron
 
 ==Running tests
 A simple "rake" should do everything you need
+
+==Deployment
+See Capfile for deployment instructions

@@ -52,6 +52,10 @@ module Accession
 
     def receive_messages
       raw_message = @conn.receive
+      if(raw_message.nil?)
+        LyberCore::Log.warn("!!! Received nil message")
+        return
+      end
       @druid = nil
       @msg = Nokogiri::XML(raw_message.body)
       process_message
