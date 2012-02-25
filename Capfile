@@ -53,7 +53,7 @@ after "dlss:stop_robots", "dlss:stop_republisher"
 after "dlss:start_robots", "dlss:start_republisher"
 namespace :dlss do
   task :start_republisher do
-    run "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_republisher_daemon status"
+    run "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_republisher_daemon start"
   end
   
   task :stop_republisher do
