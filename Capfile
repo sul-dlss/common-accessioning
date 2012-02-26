@@ -17,7 +17,7 @@
 #   You can then manually start the robots on your own
 #      $ cap dev deploy:start
 load 'deploy' if respond_to?(:namespace) # cap2 differentiator
-require 'dlss/capistrano'
+require 'dlss/capistrano/robots'
 
 set :application, "common-accessioning"
 
