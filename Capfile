@@ -20,6 +20,7 @@ load 'deploy' if respond_to?(:namespace) # cap2 differentiator
 require 'dlss/capistrano/robots'
 
 set :application, "common-accessioning"
+set :rvm_ruby_string, "1.8.7@#{application}"
 
 task :dev do
   role :app, "sul-lyberservices-dev.stanford.edu"
