@@ -27,9 +27,9 @@ druid = ''
 count = 0
 solr["response"]["docs"].each do |doc|
   begin
-    druid = doc["id"]
+    druid = doc["id"].first
     LyberCore::Log.info("Releasing embargo for #{druid}")
-    ei = Dor::Item.load_instance(druid)
+    ei = Dor::Item.find(druid)
     ei.release_embargo("application:accessionWF:embargo-release")
     ei.save
     Dor::WorkflowService.update_workflow_status 'dor', druid, 'accessionWF', 'embargo-release', 'completed'
