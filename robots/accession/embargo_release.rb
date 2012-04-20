@@ -8,10 +8,10 @@
 # 16 2 * * * bash --login -c 'cd /home/lyberadmin/common-accessioning && ROBOT_ENVIRONMENT=test ruby ./robots/accession/embargo_release.rb' > /home/lyberadmin/common-accessioning/log/crondebug.log 2>&1
 
 require File.expand_path(File.dirname(__FILE__) + '/../../config/boot')
-require 'dor/embargo'
+require 'dor/models/embargoable'
 
 class EmbargoedItem < Dor::Item
-  include Dor::Embargo
+  include Dor::Embargoable
   
   has_metadata :name => "embargoMetadata", :type => EmbargoMetadataDS, :label => 'Embargo Metadata'
   has_metadata :name => "events", :type => EventsDS, :label => 'Event History'
