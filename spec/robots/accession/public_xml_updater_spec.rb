@@ -33,7 +33,7 @@ describe Accession::PublicXmlUpdater do
   end
   
   it "intializes with @host from Dor::Config" do
-    @bot.host.should == 'dor-test.stanford.edu'
+    @bot.host.should == 'dor-dev.stanford.edu'
   end
   
   describe "#correct_datastream?" do
