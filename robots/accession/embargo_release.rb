@@ -8,14 +8,6 @@
 # 16 2 * * * bash --login -c 'cd /home/lyberadmin/common-accessioning && ROBOT_ENVIRONMENT=test ruby ./robots/accession/embargo_release.rb' > /home/lyberadmin/common-accessioning/log/crondebug.log 2>&1
 
 require File.expand_path(File.dirname(__FILE__) + '/../../config/boot')
-require 'dor/models/embargoable'
-
-class EmbargoedItem < Dor::Item
-  include Dor::Embargoable
-  
-  has_metadata :name => "embargoMetadata", :type => EmbargoMetadataDS, :label => 'Embargo Metadata'
-  has_metadata :name => "events", :type => EventsDS, :label => 'Event History'
-end
 
 LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, "log", "embargo_release.log"))
 
@@ -37,7 +29,7 @@ solr["response"]["docs"].each do |doc|
   begin
     druid = doc["id"]
     LyberCore::Log.info("Releasing embargo for #{druid}")
-    ei = EmbargoedItem.load_instance(druid)
+    ei = Dor::Item.load_instance(druid)
     ei.release_embargo("application:accessionWF:embargo-release")
     ei.save
     Dor::WorkflowService.update_workflow_status 'dor', druid, 'accessionWF', 'embargo-release', 'completed'
