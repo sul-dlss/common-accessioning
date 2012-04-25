@@ -40,7 +40,7 @@ end
 
 set :user, "lyberadmin" 
 set :repository,  "/afs/ir/dev/dlss/git/lyberteam/common-accessioning.git"
-set :local_repository, "ssh://wmene@corn.stanford.edu#{repository}"
+set :local_repository, "ssh://corn.stanford.edu#{repository}"
 set :deploy_to, "/home/#{user}/#{application}"
 
 set :shared_config_certs_dir, true
@@ -61,3 +61,6 @@ namespace :dlss do
     run "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_republisher_daemon stop" if released
   end
 end
+
+# announce the release to the release board
+after "dlss:start_republisher", "dlss:log_release"
