@@ -35,3 +35,8 @@ Spec::Rake::SpecTask.new(:spec) do |spec|
   spec.libs << 'lib' << 'spec'
   spec.spec_files = FileList['spec/**/*_spec.rb']
 end
+
+desc 'Get application version'
+task :app_version do
+  puts File.read(File.expand_path('../VERSION',__FILE__)).chomp
+end
