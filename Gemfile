@@ -7,9 +7,9 @@ gem "daemons"
 gem "jhove-service"
 gem "pony"
 gem "whenever"
+gem "rake"
 
 group :test do
-	gem "rake"
 	gem "rcov"
 	gem "rspec", "< 2.0"
 end
