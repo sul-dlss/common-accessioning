@@ -73,7 +73,7 @@ module Accession
         LyberCore::Log.fatal("No druid. Sending alert")
         no_druid_email_alert(body)
       else
-        Dor::WorkflowService.update_workflow_error_status('dor', @druid, 'postAccessionWF', 'publish', e.inspect, e.backtrace.join("\n"))
+        Dor::WorkflowService.update_workflow_error_status('dor', @druid, 'disseminationWF', 'publish', e.inspect, e.backtrace.join("\n"))
       end
     end
     
@@ -106,7 +106,7 @@ module Accession
       item = Dor::Item.load_instance(@druid)
       item.publish_metadata
       elapsed = Time.new - start_time
-      Dor::WorkflowService.update_workflow_status('dor', @druid, 'postAccessionWF', 'publish', 'completed', elapsed, 'published')
+      Dor::WorkflowService.update_workflow_status('dor', @druid, 'disseminationWF', 'publish', 'completed', elapsed, 'published')
     end
     
     def correct_datastream?
