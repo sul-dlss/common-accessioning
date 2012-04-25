@@ -1,7 +1,7 @@
 source :rubygems
 source "http://sulair-rails-dev.stanford.edu"
 
-gem "dor-services", "~> 3.0"
+gem "dor-services", "~> 3.5"
 gem "lyber-core", ">= 2.1.0"
 gem "daemons"
 gem "jhove-service"
@@ -19,6 +19,6 @@ group :development do
     instance_eval(File.read(mygems))
   end
 	gem "ruby-debug"
-	gem "lyberteam-devel", ">= 0.6.2"
+	gem "lyberteam-devel", ">= 0.7.0"
 end
 
