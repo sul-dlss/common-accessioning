@@ -8,10 +8,10 @@ gem "jhove-service"
 gem "pony"
 gem "whenever"
 gem "rake"
+gem "rspec", "< 2.0"
 
 group :test do
 	gem "rcov"
-	gem "rspec", "< 2.0"
 end
 
 group :development do
