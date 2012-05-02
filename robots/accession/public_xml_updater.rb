@@ -8,7 +8,7 @@ module Accession
     
     # For Initialization testing
     attr_reader :host
-    attr_accessor :msg, :conn
+    attr_accessor :msg, :conn, :heart_beat_timeout
  
     def PublicXmlUpdater.start_daemon
       updater = Accession::PublicXmlUpdater.new
@@ -22,6 +22,7 @@ module Accession
       @port = 61613
       @destination = "/topic/fedora.apim.update"
       @client_id = "public-xml-updater"
+      @heart_beat_timeout = 899   # Send a heartbeat every 15 minutes of inactivity
     end
 
     def connect
@@ -51,7 +52,8 @@ module Accession
     end
 
     def receive_messages
-      raw_message = @conn.receive
+      raw_message = nil
+      Timeout::timeout(@heart_beat_timeout) { raw_message = @conn.receive }
       if(raw_message.nil?)
         LyberCore::Log.warn("!!! Received nil message")
         return
@@ -61,6 +63,20 @@ module Accession
       process_message
       @conn.ack raw_message.headers["message-id"]
       @msg = nil
+    rescue Timeout::Error => te
+      LyberCore::Log.info("Connection Idle, sending heartbeat...")
+      begin
+        @conn.begin('heartbeat')
+        @conn.commit('heartbeat')
+        LyberCore::Log.info("Heartbeat Sent")
+      rescue Exception => he
+        body = "Unable to send heartbeat to broker\n"
+        body << "\n\nExeption:\n" << he.inspect << "\n" << he.backtrace.join("\n")
+        send_alert("Re-publisher stopped: heartbeat failed", body)
+        Lybercore::Log.fatal("Unable to send heartbeat")
+        Lybercore::Log.fatal(body)
+        raise he
+      end
     rescue SystemExit => se
        LyberCore::Log.info("Exiting updater")
        raise se
@@ -71,16 +87,16 @@ module Accession
       LyberCore::Log.fatal("!!!!!!!!!!!\n" << body << "!!!!!!!!!!!\n")
       if(@druid.nil?)
         LyberCore::Log.fatal("No druid. Sending alert")
-        no_druid_email_alert(body)
+        send_alert("Failed to republish metadata", body)
       else
         Dor::WorkflowService.update_workflow_error_status('dor', @druid, 'disseminationWF', 'publish', e.inspect, e.backtrace.join("\n"))
       end
     end
     
-    def no_druid_email_alert(body)
+    def send_alert(subject, body)
       Pony.mail(:to => "wmene@stanford.edu, lmcrae@stanford.edu",
                 :from => "public-xml-updater@stanford.edu",
-                :subject => "[#{ENV['ROBOT_ENVIRONMENT']}] Failed to re-publish metadadta",
+                :subject => "[#{ENV['ROBOT_ENVIRONMENT']}] #{subject}",
                 :body => body,
                 :via => :smtp,
                 :via_options => {
@@ -92,7 +108,7 @@ module Accession
                  }
        )
     end
-    
+        
     # Republish the object only if the message dealt with the correct datastream and the item has already been released
     def process_message
       start_time = Time.new
