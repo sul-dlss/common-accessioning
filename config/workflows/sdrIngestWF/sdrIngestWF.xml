@@ -5,5 +5,5 @@
      <process name="validate-bag" status="waiting"/>
      <process name="populate-metadata" status="waiting"/>
      <process name="verify-agreement" status="waiting" />
-     <process name="complete-deposit" lifecycle="registered" status="waiting" />
+     <process name="complete-deposit" lifecycle="deposited" status="waiting" />
 </workflow>

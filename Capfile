@@ -47,8 +47,8 @@ set :rvm_type, :system
 set :shared_config_certs_dir, true
 
 # These are robots that run as background daemons.  They are automatically restarted at deploy time
-#set :robots, %w(content-metadata descriptive-metadata rights-metadata publish shelve technical-metadata provenance-metadata cleanup)
-set :robots, %w(content-metadata descriptive-metadata rights-metadata publish shelve provenance-metadata cleanup)
+#set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata cleanup)
+set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve provenance-metadata cleanup)
 set :workflow, 'accessionWF'
 
 # common-accession specific tasks to start/stop the republisher
