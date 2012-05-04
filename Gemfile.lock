@@ -52,7 +52,7 @@ GEM
     columnize (0.3.6)
     confstruct (0.2.2)
     daemons (1.1.8)
-    dor-services (3.6.0)
+    dor-services (3.6.1)
       active-fedora (>= 4.0.0)
       active-fedora (>= 4.0.0.rc20)
       confstruct (>= 0.2.2)
