@@ -115,7 +115,7 @@ module Accession
       return unless correct_datastream?
       
       @druid = @msg.at_xpath("//xmlns:entry/xmlns:category[@scheme='fedora-types:pid']")['term']
-      return unless Dor::WorkflowService.get_lifecycle('dor', @druid, 'released')
+      return unless ['released','published'].any? { |lifecycle| Dor::WorkflowService.get_lifecycle('dor', @druid, lifecycle) }
 
       LyberCore::Log.info("Updating metadata for: #{@druid}")
       
