@@ -53,8 +53,8 @@ set :workflow, 'accessionWF'
 
 # common-accession specific tasks to start/stop the republisher
 after "dlss:stop_robots", "dlss:stop_republisher"
-# !!!!!!!!!!!!!!!!!!!!!! Republisher disabled during Remediation!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# after "dlss:start_robots", "dlss:start_republisher"
+
+after "dlss:start_robots", "dlss:start_republisher"
 namespace :dlss do
   task :start_republisher do
     run "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_republisher_daemon start"
