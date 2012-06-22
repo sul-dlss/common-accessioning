@@ -54,7 +54,7 @@ GEM
     columnize (0.3.6)
     confstruct (0.2.3)
     daemons (1.1.8)
-    dor-services (3.7.0)
+    dor-services (3.7.2)
       active-fedora (>= 4.0.0)
       active-fedora (>= 4.0.0.rc20)
       confstruct (>= 0.2.2)
@@ -62,6 +62,7 @@ GEM
       equivalent-xml (>= 0.2.2)
       json
       lyber-utils
+      net-sftp
       net-ssh
       nokogiri (~> 1.5.0)
       om (>= 1.5.0)
@@ -124,7 +125,7 @@ GEM
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
       net-ssh (>= 2.0.9)
-    net-ssh (2.3.0)
+    net-ssh (2.5.2)
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
     net-ssh-kerberos (0.2.7)
