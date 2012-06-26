@@ -9,6 +9,9 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/../../config/boot')
 
+# Turn off active_fedora updates of solr
+ENABLE_SOLR_UPDATES = false
+
 LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, "log", "embargo_release.log"))
 
 # Find objects to process
