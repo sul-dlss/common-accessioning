@@ -2,54 +2,15 @@
 # Will run one robot as specified 
 # Should be run from the root of the robot project
 # Assumes there's a ROBOT_ROOT/.rvmrc file that will load the correct ruby version and gemset, if necessary
-# robot_root$ ruby ./bin/run_robot accessionWF publish
+# robot_root$ ROBOT_ENVIRONMENT=test ./bin/run_robot start accessionWF:publish
 # 
-# With Options
-# Options must be placed BEFORE workflow and robot name
-# robot_root$ ruby ./bin/run_robot --druid druid:12345 accessionWF publish
-#
-# From cron
-# * * * * bash --login -c 'cd /path/to/robot_root && ruby./bin/run_robot.rb accessionWF publish' > /home/deploy/crondebug.log 2>&1
+# To run With Options
+# Options must be placed AFTER workflow and robot name
+# robot_root$ ROBOT_ENVIRONMENT=test ./bin/run_robot run accessionWF:shelve -d druid:aa12bb1234
 
 require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
+require 'lyber_core/robots/runner'
 
-action = ARGV.shift
-robots = []
-while ARGV.first =~ /:/
-  (wf,robot) = ARGV.shift.split(/:/)
-  if robot =~ /\*/
-    wf_module = Module.const_get(wf.classify[0..-3])
-    all_robots = wf_module.constants.select { |c| wf_module.const_get(c).ancestors.include?(LyberCore::Robots::Robot) }
-    robot_names = all_robots.collect { |c| c.underscore.dasherize }.select { |c| File.fnmatch?(robot,c) }
-    robot_names.each { |r| robots << [wf,r] }
-  else
-    robots << [wf,robot]
-  end
-end
-
-if action == 'run'
-  robots.each do |robot|
-    (workflow,robot_name) = robot
-    raw_module_name = workflow.split('WF').first
-    module_name = raw_module_name[0].chr.upcase << raw_module_name.slice(1, raw_module_name.size - 1)
-    robot_klass = Module.const_get(module_name).const_get(robot_name.split(/-/).collect { |w| w.capitalize }.join(''))
-    instance = robot_klass.new(:argv => ARGV)
-    instance.start
-  end
-else
-  sleep_time = Dor::Config.accessioning_robot_sleep_time || 900
-  controller = LyberCore::Robots::ServiceController.new(
-    :sleep_time  => sleep_time,
-    :logger      => logger, 
-    :working_dir => ROBOT_ROOT, 
-    :argv        => ARGV.dup)
-
-  case action
-  when 'start'
-    robots.each { |robot| controller.start(*robot) }
-  when 'stop'
-    robots.each { |robot| controller.stop(*robot) }
-  when 'status'
-    robots.each { |robot| puts controller.status_message(*robot) }
-  end
-end
+sleep_time = Dor::Config.accessioning_robot_sleep_time || 900
+runner = LyberCore::Robots::Runner.new(sleep_time)
+runner.run
