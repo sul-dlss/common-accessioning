@@ -127,7 +127,7 @@ module Accession
     
     def correct_datastream?
       if(@msg.at_xpath("//xmlns:entry/xmlns:category[@scheme='fedora-types:dsID' and " <<
-                      "(@term = 'identityMetadata' or @term = 'contentMetadata' or @term = 'rightsMetadata' or @term = 'descMetadata')]"))
+                      "(@term = 'identityMetadata' or @term = 'contentMetadata' or @term = 'rightsMetadata' or @term = 'descMetadata' or @term = 'RELS-EXT')]"))
         return true
       else
         return false
