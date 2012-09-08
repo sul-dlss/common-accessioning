@@ -11,14 +11,15 @@ gem "rake"
 gem "rspec", "< 2.0"
 
 group :test do
-	gem "rcov"
+	gem "rcov", :platform => :ruby_18
 end
 
 group :development do
   if File.exists?(mygems = File.join(ENV['HOME'],'.gemfile'))
     instance_eval(File.read(mygems))
   end
-	gem "ruby-debug"
+	gem "ruby-debug", :platform => :ruby_18
+	gem "debugger", :platform => :ruby_19
 	gem "lyberteam-devel", ">= 0.7.0"
 end
 
