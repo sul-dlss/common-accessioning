@@ -12,6 +12,7 @@ gem "rspec", "< 2.0"
 
 group :test do
 	gem "rcov", :platform => :ruby_18
+	gem "assembly-utils"
 end
 
 group :development do
