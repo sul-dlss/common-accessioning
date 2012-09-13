@@ -17,11 +17,10 @@
 #   You can then manually start the robots on your own
 #      $ cap dev deploy:start
 load 'deploy' if respond_to?(:namespace) # cap2 differentiator
+
 require 'dlss/capistrano/robots'
 
 set :application, "common-accessioning"
-
-set :rvm_ruby_string, "1.8.7-p358@#{application}"
 
 task :dev do
   role :app, "sul-lyberservices-dev.stanford.edu"
@@ -32,6 +31,7 @@ end
 task :testing do
   role :app, "sul-lyberservices-test.stanford.edu"
   set :deploy_env, "test"
+  set :branch, "develop"
 end
 
 task :production do

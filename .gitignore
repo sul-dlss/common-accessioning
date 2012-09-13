@@ -10,3 +10,5 @@ coverage.data
 pid
 config/environments/
 config/certs
+.rvmrc
+
