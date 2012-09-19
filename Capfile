@@ -20,6 +20,10 @@ load 'deploy' if respond_to?(:namespace) # cap2 differentiator
 
 require 'dlss/capistrano/robots'
 
+set :whenever_command, "bundle exec whenever"
+set :whenever_environment, defer { deploy_env }
+require "whenever/capistrano"
+
 set :application, "common-accessioning"
 
 task :dev do
@@ -48,8 +52,7 @@ set :rvm_type, :system
 set :shared_config_certs_dir, true
 
 # These are robots that run as background daemons.  They are automatically restarted at deploy time
-#set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata cleanup)
-set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve provenance-metadata cleanup)
+set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata cleanup)
 set :workflow, 'accessionWF'
 
 # common-accession specific tasks to start/stop the republisher
@@ -65,6 +68,3 @@ namespace :dlss do
     run "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_republisher_daemon stop" if released
   end
 end
-
-# announce the release to the release board
-after "dlss:start_republisher", "dlss:log_release"
