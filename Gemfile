@@ -1,5 +1,6 @@
 source :rubygems
 source "http://sulair-rails-dev.stanford.edu"
+source "http://sul-gems-prod.stanford.edu"
 
 gem "dor-services", "~> 3.6"
 gem "lyber-core"
