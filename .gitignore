@@ -11,4 +11,5 @@ pid
 config/environments/
 config/certs
 .rvmrc
+.DS_Store
 
