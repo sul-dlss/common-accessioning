@@ -38,7 +38,7 @@ GEM
     akami (1.2.0)
       gyoku (>= 0.4.0)
       nokogiri (>= 1.4.0)
-    assembly-utils (1.0.11)
+    assembly-utils (1.0.12)
       activeresource (>= 3.2.6)
       activesupport (>= 3.2.6)
       csv-mapper
@@ -63,7 +63,7 @@ GEM
     daemons (1.1.9)
     deprecation (0.0.5)
       activesupport
-    dor-services (3.13.1)
+    dor-services (3.13.4)
       active-fedora (>= 4.0.0)
       active-fedora (>= 4.0.0.rc20)
       confstruct (>= 0.2.2)
@@ -139,7 +139,7 @@ GEM
       treetop (~> 1.4.8)
     mediashelf-loggable (0.4.9)
     mime-types (1.19)
-    moab-versioning (0.8.7)
+    moab-versioning (0.8.8)
       confstruct
       happymapper
       hashery (>= 2.0.0)
