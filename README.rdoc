@@ -29,3 +29,6 @@ A simple "rake" should do everything you need
 
 ==Deployment
 See Capfile for deployment instructions
+
+==Versions
+ - 1.7.0 Robots are now versioning-aware
