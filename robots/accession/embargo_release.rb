@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #
 # Finds objects where the embargo release date has passed for embargoed items
-# Builds list of candidate objects by doing a Solr query from gsearch
+# Builds list of candidate objects by doing a Solr query
 #
 # Should run once a day from cron
 # Example cron entry
@@ -15,7 +15,7 @@ ENABLE_SOLR_UPDATES = false
 LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, "log", "embargo_release.log"))
 
 # Find objects to process
-solr = Dor::SearchService.gsearch("q" => "embargo_status_field:'embargoed' AND embargo_release_date:[* TO NOW]", 
+solr = Dor::SearchService.query("embargoMetadata_status_facet:'embargoed' AND embargo_release_date_dt:[* TO NOW]", 
                                   "rows" => "5000", 
                                   "fl" => "id")
 

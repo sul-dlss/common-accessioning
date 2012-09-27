@@ -17,10 +17,14 @@
 #   You can then manually start the robots on your own
 #      $ cap dev deploy:start
 load 'deploy' if respond_to?(:namespace) # cap2 differentiator
+
 require 'dlss/capistrano/robots'
 
+set :whenever_command, "bundle exec whenever"
+set :whenever_environment, defer { deploy_env }
+require "whenever/capistrano"
+
 set :application, "common-accessioning"
-set :rvm_ruby_string, "1.8.7@#{application}"
 
 task :dev do
   role :app, "sul-lyberservices-dev.stanford.edu"
@@ -31,6 +35,7 @@ end
 task :testing do
   role :app, "sul-lyberservices-test.stanford.edu"
   set :deploy_env, "test"
+  set :branch, "develop"
 end
 
 task :production do
@@ -42,13 +47,11 @@ set :user, "lyberadmin"
 set :repository,  "/afs/ir/dev/dlss/git/lyberteam/common-accessioning.git"
 set :local_repository, "ssh://corn.stanford.edu#{repository}"
 set :deploy_to, "/home/#{user}/#{application}"
-set :rvm_type, :system
 
 set :shared_config_certs_dir, true
 
 # These are robots that run as background daemons.  They are automatically restarted at deploy time
-#set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata cleanup)
-set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve provenance-metadata cleanup)
+set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata cleanup)
 set :workflow, 'accessionWF'
 
 # common-accession specific tasks to start/stop the republisher
@@ -64,6 +67,3 @@ namespace :dlss do
     run "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_republisher_daemon stop" if released
   end
 end
-
-# announce the release to the release board
-after "dlss:start_republisher", "dlss:log_release"

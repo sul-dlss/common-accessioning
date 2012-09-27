@@ -1,0 +1,23 @@
+<contentMetadata objectId="druid:oo000vt0001" type="file">
+  <resource data="content" id="main1" type="main-original" sequence="1">
+    <attr name="label">Body of dissertation (as submitted)</attr>
+    <file deliver="no" id="HEBARD DISSERTATION 8-26 1226.pdf" mimetype="application/pdf" preserve="yes" shelve="no" size="2586644">
+      <checksum type="MD5">675bc57c9b0e1bdc8efd1a0c394d5743</checksum>
+      <checksum type="SHA1">16ca6b93a7512bfad8f05d2e5c3893efee361986</checksum>
+    </file>
+  </resource>
+  <resource data="content" id="main2" type="main-augmented" sequence="2">
+    <attr name="label">Body of dissertation</attr>
+    <file deliver="yes" id="HEBARD DISSERTATION 8-26 1226-augmented.pdf" mimetype="application/pdf" preserve="yes" shelve="yes" size="2588299">
+      <checksum type="MD5">14bc855f9276ad9f4ba44703d1b009e1</checksum>
+      <checksum type="SHA1">dfd9372f586907305b17c7511a9e91d59da46308</checksum>
+    </file>
+  </resource>
+  <resource data="content" id="supplement1" type="supplement" sequence="3">
+    <label>Master network diagram</label>
+    <file id="Supplement 2 - masterNetwork.gif" mimetype="image/gif" preserve="yes" publish="yes" shelve="yes" size="33864">
+      <checksum type="MD5">3490142e94932774c26b67ca3779a222</checksum>
+      <checksum type="SHA1">28dae282c13c14700c0efbb5a54c620257cc05bf</checksum>
+    </file>
+  </resource>
+</contentMetadata>
