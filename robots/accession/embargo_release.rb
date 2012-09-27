@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #
 # Finds objects where the embargo release date has passed for embargoed items
-# Builds list of candidate objects by doing a Solr query from gsearch
+# Builds list of candidate objects by doing a Solr query
 #
 # Should run once a day from cron
 # Example cron entry
