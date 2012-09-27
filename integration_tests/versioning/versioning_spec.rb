@@ -159,8 +159,8 @@ describe "Digital Object Versioning" do
         v_md = obj.datastreams['versionMetadata']
         v_md.ng_xml.xpath('//version').size.should == 2
         
-        added_file = Pathname(Dor::Config.sdr.local_export_home).join(pid, 'data', 'content', test_5_new_file)
-        added_file.should exist
+        # Renames do not produce content directories to send over
+        Pathname(Dor::Config.sdr.local_export_home).join(pid, 'data', 'content', test_5_new_file).should_not exist
       end
     end
 

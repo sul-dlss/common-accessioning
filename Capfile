@@ -47,7 +47,6 @@ set :user, "lyberadmin"
 set :repository,  "/afs/ir/dev/dlss/git/lyberteam/common-accessioning.git"
 set :local_repository, "ssh://corn.stanford.edu#{repository}"
 set :deploy_to, "/home/#{user}/#{application}"
-set :rvm_type, :system
 
 set :shared_config_certs_dir, true
 
