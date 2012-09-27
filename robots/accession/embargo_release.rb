@@ -15,7 +15,7 @@ ENABLE_SOLR_UPDATES = false
 LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, "log", "embargo_release.log"))
 
 # Find objects to process
-solr = Dor::SearchService.gsearch("q" => "embargo_status_field:'embargoed' AND embargo_release_date:[* TO NOW]", 
+solr = Dor::SearchService.query("embargoMetadata_status_facet:'embargoed' AND embargo_release_date_dt:[* TO NOW]", 
                                   "rows" => "5000", 
                                   "fl" => "id")
 
