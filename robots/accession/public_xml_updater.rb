@@ -89,7 +89,7 @@ module Accession
         LyberCore::Log.fatal("No druid. Sending alert")
         send_alert("Failed to republish metadata", body)
       else
-        Dor::WorkflowService.update_workflow_error_status('dor', @druid, 'disseminationWF', 'publish', e.inspect, e.backtrace.join("\n"))
+        Dor::WorkflowService.update_workflow_error_status('dor', @druid, 'disseminationWF', 'publish', e.inspect, :error_txt => e.backtrace.join("\n"))
       end
     end
     
@@ -122,7 +122,7 @@ module Accession
       item = Dor::Item.load_instance(@druid)
       item.publish_metadata
       elapsed = Time.new - start_time
-      Dor::WorkflowService.update_workflow_status('dor', @druid, 'disseminationWF', 'publish', 'completed', elapsed, 'published')
+      Dor::WorkflowService.update_workflow_status('dor', @druid, 'disseminationWF', 'publish', 'completed', :elapsed => elapsed, :lifecycle => 'published')
     end
     
     def correct_datastream?

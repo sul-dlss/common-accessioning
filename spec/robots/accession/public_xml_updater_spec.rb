@@ -33,7 +33,7 @@ describe Accession::PublicXmlUpdater do
   end
   
   it "intializes with @host from Dor::Config" do
-    @bot.host.should == 'dor-test.stanford.edu'
+    @bot.host.should =~ /^dor-/
   end
   
   describe "#correct_datastream?" do
@@ -48,7 +48,7 @@ describe Accession::PublicXmlUpdater do
     it "checks if the object has reached the lifecycle milestone of 'released', publishes the metadata, and sets disseminationWF::publish to completed" do
       @bot.msg = Nokogiri::XML(@real_msg)
       Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', 'druid:td053mv5518', 'released').and_return(Time.now)
-      Dor::WorkflowService.should_receive(:update_workflow_status).with('dor', 'druid:td053mv5518','disseminationWF','publish','completed', kind_of(Numeric), 'published')
+      Dor::WorkflowService.should_receive(:update_workflow_status).with('dor', 'druid:td053mv5518','disseminationWF','publish','completed', {:elapsed => kind_of(Numeric), :lifecycle => 'published'})
 
       mock_item = mock('item')
       Dor::Item.should_receive(:load_instance).and_return(mock_item)
@@ -61,7 +61,7 @@ describe Accession::PublicXmlUpdater do
       @bot.msg = Nokogiri::XML(@real_msg)
       Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', 'druid:td053mv5518', 'released').and_return(nil)
       Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', 'druid:td053mv5518', 'published').and_return(Time.now)
-      Dor::WorkflowService.should_receive(:update_workflow_status).with('dor', 'druid:td053mv5518','disseminationWF','publish','completed', kind_of(Numeric), 'published')
+      Dor::WorkflowService.should_receive(:update_workflow_status).with('dor', 'druid:td053mv5518','disseminationWF','publish','completed', {:elapsed => kind_of(Numeric), :lifecycle => 'published'})
 
       mock_item = mock('item')
       Dor::Item.should_receive(:load_instance).and_return(mock_item)

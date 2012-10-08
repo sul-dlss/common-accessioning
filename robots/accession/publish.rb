@@ -14,7 +14,7 @@ module Accession
       obj = Dor::Item.find(work_item.druid)
       obj.publish_metadata
       elapsed = Time.new - start_time
-      Dor::WorkflowService.update_workflow_status('dor',work_item.druid,'disseminationWF','publish','completed',elapsed,'published')
+      Dor::WorkflowService.update_workflow_status('dor',work_item.druid,'disseminationWF','publish','completed',:elapsed => elapsed, :lifecycle => 'published')
     end 
   end
 end
