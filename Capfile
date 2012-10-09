@@ -35,7 +35,6 @@ end
 task :testing do
   role :app, "sul-lyberservices-test.stanford.edu"
   set :deploy_env, "test"
-  set :branch, "develop"
 end
 
 task :production do
