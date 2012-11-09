@@ -1,7 +1,7 @@
 # Initial setup run from laptop
 # 1) Setup directory structure on remote VM
 #   $ cap dev deploy:setup
-# 2) Manually copy environment specific config file to $application/shared/config/environments.  
+# 2) Manually copy environment specific config file to $application/shared/config/environments.
 #      Only necessary for initial install
 # 3) Manually copy certs to $application/shared/config/certs
 #      Only necessary for initial install
@@ -10,7 +10,7 @@
 # 5) Start robots on remote host
 #   $ cap dev deploy:start
 #
-# Future releases will stop the robots, update the code, then start the robots 
+# Future releases will stop the robots, update the code, then start the robots
 #   $ cap dev deploy
 # If you only want to stop the robots, update the code, and NOT start the robots
 #   $ cap dev deploy:update
@@ -42,7 +42,7 @@ task :production do
   set :deploy_env, "production"
 end
 
-set :user, "lyberadmin" 
+set :user, "lyberadmin"
 set :repository,  "/afs/ir/dev/dlss/git/lyberteam/common-accessioning.git"
 set :local_repository, "ssh://corn.stanford.edu#{repository}"
 set :deploy_to, "/home/#{user}/#{application}"
@@ -50,7 +50,7 @@ set :deploy_to, "/home/#{user}/#{application}"
 set :shared_config_certs_dir, true
 
 # These are robots that run as background daemons.  They are automatically restarted at deploy time
-set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata cleanup)
+set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata)
 set :workflow, 'accessionWF'
 
 # common-accession specific tasks to start/stop the republisher
@@ -61,7 +61,7 @@ namespace :dlss do
   task :start_republisher do
     run "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_republisher_daemon start"
   end
-  
+
   task :stop_republisher do
     run "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_republisher_daemon stop" if released
   end
