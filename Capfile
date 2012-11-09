@@ -52,17 +52,3 @@ set :shared_config_certs_dir, true
 # These are robots that run as background daemons.  They are automatically restarted at deploy time
 set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata)
 set :workflow, 'accessionWF'
-
-# common-accession specific tasks to start/stop the republisher
-after "dlss:stop_robots", "dlss:stop_republisher"
-
-after "dlss:start_robots", "dlss:start_republisher"
-namespace :dlss do
-  task :start_republisher do
-    run "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_republisher_daemon start"
-  end
-
-  task :stop_republisher do
-    run "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_republisher_daemon stop" if released
-  end
-end
