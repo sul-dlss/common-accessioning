@@ -1,15 +1,60 @@
 #!/usr/bin/env ruby
-# Will run one robot as specified 
+# Will run one robot as specified
 # Should be run from the root of the robot project
 # Assumes there's a ROBOT_ROOT/.rvmrc file that will load the correct ruby version and gemset, if necessary
 # robot_root$ ROBOT_ENVIRONMENT=test ./bin/run_robot start accessionWF:publish
-# 
+#
 # To run With Options
 # Options must be placed AFTER workflow and robot name
 # robot_root$ ROBOT_ENVIRONMENT=test ./bin/run_robot run accessionWF:shelve -d druid:aa12bb1234
 
 require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
 require 'lyber_core/robots/runner'
+
+module LyberCore
+  module Robots
+    class ServiceController < Daemons::ApplicationGroup
+
+      def start(workflow, robot_name)
+        result = false
+        app = find_app(workflow, robot_name).first
+        process_name = qname(workflow,robot_name)
+        if app.nil? or (app.running? == false)
+          @logger.info "Starting #{process_name}..."
+          with_app_name("#{process_name}") do
+              raw_module_name = workflow.split('WF').first
+              module_name = raw_module_name[0].chr.upcase << raw_module_name.slice(1, raw_module_name.size - 1)
+              robot_klass = Module.const_get(module_name).const_get(robot_name.split(/-/).collect { |w| w.capitalize }.join(''))
+              @files_to_reopen = ObjectSpace.each_object(File).select do |f|
+                 begin
+                   val = !f.closed?
+                 rescue IOError => ie
+                   raise unless ie.message =~ /uninitialized stream/
+                   val = false
+                 end
+                 val
+              end
+              robot_proc = lambda { robot_proc_loop(robot_klass, process_name) }
+              app = self.new_application({:mode => :proc, :proc => robot_proc, :dir_mode => :normal, :log_output => true, :log_dir => @pid_dir})
+              app.start
+              app
+          end
+
+          if app.running?
+            @logger.info "#{process_name} [#{app.pid.pid}] started."
+            result = true
+          else
+            @logger.error "Unable to start #{process_name}"
+          end
+        else app.running?
+          @logger.warn "Robot #{process_name} [#{app.pid.pid}] is already running"
+        end
+        return result
+      end
+    end
+  end
+end
+
 
 sleep_time = Dor::Config.accessioning_robot_sleep_time || 900
 runner = LyberCore::Robots::Runner.new(sleep_time)
