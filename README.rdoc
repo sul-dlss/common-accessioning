@@ -32,3 +32,4 @@ See Capfile for deployment instructions
 
 ==Versions
  - 1.7.0 Robots are now versioning-aware
+ - 1.7.4 Updated dor-services to get latest moab-versioning.
