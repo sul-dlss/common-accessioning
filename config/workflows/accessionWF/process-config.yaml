@@ -46,7 +46,7 @@ publish:
     error_limit: 10
 
 sdr-ingest-transfer:
-    prerequisite: provenance-metadata
+    prerequisite: remediate-object
     batch_limit: 1
     error_limit: 5
 
