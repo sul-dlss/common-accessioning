@@ -32,6 +32,13 @@ task :dev do
   set :deploy_env, "development"
 end
 
+# deploy to the test server with test and development gems for integration testing
+task :integration do
+  role :app, "sul-lyberservices-test.stanford.edu"
+  set :bundle_without,  []                        # deploy all the gem groups on the dev VM
+  set :deploy_env, "test"
+end
+
 task :testing do
   role :app, "sul-lyberservices-test.stanford.edu"
   set :deploy_env, "test"

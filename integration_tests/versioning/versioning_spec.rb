@@ -76,6 +76,8 @@ describe "Digital Object Versioning" do
   end
   
   context "version changes" do
+    
+    let(:pid_home) { pid.split(':')[1] }
 
     before(:each) do
       # mock call to get lifecycle so that object is 'accessioned' but not yet 'opened'
@@ -103,7 +105,7 @@ describe "Digital Object Versioning" do
         prov_md.ng_xml.xpath("/agent/what/event").size.should == 1
         
         # Check of the bagit directory for new file
-        added_file = Pathname(Dor::Config.sdr.local_export_home).join(pid, 'data', 'content', 'Permission from Houghton Mifflin.pdf')
+        added_file = Pathname(Dor::Config.sdr.local_export_home).join(pid_home, 'data', 'content', 'Permission from Houghton Mifflin.pdf')
         added_file.should exist
       end
     end
@@ -116,7 +118,7 @@ describe "Digital Object Versioning" do
         content_md = obj.datastreams['contentMetadata']
         content_md.ng_xml.xpath("//resource").size.should == 3 
 
-        added_file = Pathname(Dor::Config.sdr.local_export_home).join(pid, 'data', 'content', 'Supplement 1 - Glossary of Terms.pptx')
+        added_file = Pathname(Dor::Config.sdr.local_export_home).join(pid_home, 'data', 'content', 'Supplement 1 - Glossary of Terms.pptx')
         added_file.should_not exist
       end
     end    
@@ -129,7 +131,7 @@ describe "Digital Object Versioning" do
         content_md = obj.datastreams['contentMetadata']
         content_md.ng_xml.xpath("//resource").size.should == 4 
 
-        added_file = Pathname(Dor::Config.sdr.local_export_home).join(pid, 'data', 'content', 'HEBARD DISSERTATION 8-26 1226-augmented.pdf')
+        added_file = Pathname(Dor::Config.sdr.local_export_home).join(pid_home, 'data', 'content', 'HEBARD DISSERTATION 8-26 1226-augmented.pdf')
         added_file.should exist
       end
     end
@@ -160,7 +162,7 @@ describe "Digital Object Versioning" do
         v_md.ng_xml.xpath('//version').size.should == 2
         
         # Renames do not produce content directories to send over
-        Pathname(Dor::Config.sdr.local_export_home).join(pid, 'data', 'content', test_5_new_file).should_not exist
+        Pathname(Dor::Config.sdr.local_export_home).join(pid_home, 'data', 'content', test_5_new_file).should_not exist
       end
     end
 
@@ -173,7 +175,7 @@ describe "Digital Object Versioning" do
          content_md.ng_xml.at_xpath("//resource[@sequence='3' and @id='supplement2']").should be 
          content_md.ng_xml.at_xpath("//resource[@sequence='4' and @id='supplement1']").should be
 
-         Pathname(Dor::Config.sdr.local_export_home).join(pid, 'data', 'content').should_not exist
+         Pathname(Dor::Config.sdr.local_export_home).join(pid_home, 'data', 'content').should_not exist
        end
      end
 
@@ -184,7 +186,7 @@ describe "Digital Object Versioning" do
        it "handles metadata-only changes" do
          content_md = obj.datastreams['contentMetadata']
 
-         Pathname(Dor::Config.sdr.local_export_home).join(pid, 'data', 'content').should_not exist
+         Pathname(Dor::Config.sdr.local_export_home).join(pid_home, 'data', 'content').should_not exist
        end
      end
 
