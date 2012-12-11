@@ -8,9 +8,9 @@
   </resource>
   <resource data="content" id="main2" type="main-augmented" sequence="2">
     <attr name="label">Body of dissertation</attr>
-    <file deliver="yes" id="HEBARD DISSERTATION 8-26 1226-augmented.pdf" mimetype="application/pdf" preserve="yes" shelve="yes" size="2588299">
+    <file deliver="yes" id="HEBARD DISSERTATION 8-26 1226-augmented.pdf" mimetype="application/pdf" preserve="yes" shelve="yes" size="226244">
 	<checksum type="MD5">e73376c908d5bf2bbb324764753853c4</checksum>
-	<checksum type="SHA1">1e4e479a1e926f5c6c3ad7bbf7b19669a2c33a38</checksum>    
+	<checksum type="SHA1">1e4e479a1e926f5c6c3ad7bbf7b19669a2c33a38</checksum>
     </file>
   </resource>
   <resource data="content" id="supplement1" type="supplement" sequence="3">
