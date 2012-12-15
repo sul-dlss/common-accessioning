@@ -73,7 +73,7 @@ GEM
     deprecation (0.0.5)
       activesupport
     diff-lcs (1.1.3)
-    dor-services (3.17.9)
+    dor-services (3.17.10)
       active-fedora (~> 4.5)
       confstruct (>= 0.2.2)
       dor-workflow-service (>= 1.1.0)
