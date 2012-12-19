@@ -15,7 +15,7 @@ module Accession
 
     def process_item(work_item)
       obj = Dor::Item.find(work_item.druid)
-      obj.build_datastream(self.class.params[:datastream], self.class.params[:force] ? true : false)
+      obj.build_datastream(self.class.params[:datastream], self.class.params[:force] ? true : false, self.class.params[:require] ? true : false)
     end 
   end
 end
