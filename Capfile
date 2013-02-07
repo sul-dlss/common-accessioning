@@ -59,3 +59,22 @@ set :shared_config_certs_dir, true
 # These are robots that run as background daemons.  They are automatically restarted at deploy time
 set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata end-accession)
 set :workflow, 'accessionWF'
+
+# Tasks and methods that deal with starting and stopping the disseminationWF:cleanup robot
+before "deploy:update", "stop_cleanup"
+after "dlss:start_robots", "start_cleanup"
+
+# If anything goes wrong, undo.
+before "deploy:rollback", "stop_cleanup"
+
+def cleanup_cmd(action)
+  base_cmd = "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_robot " << action << " disseminationWF:cleanup"
+end
+
+task start_cleanup do
+  run cleanup_cmd('start')
+end
+
+task stop_cleanup do
+  run cleanup_cmd('stop') if released
+end
