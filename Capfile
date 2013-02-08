@@ -71,10 +71,10 @@ def cleanup_cmd(action)
   base_cmd = "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_robot " << action << " disseminationWF:cleanup"
 end
 
-task start_cleanup do
+task :start_cleanup do
   run cleanup_cmd('start')
 end
 
-task stop_cleanup do
+task :stop_cleanup do
   run cleanup_cmd('stop') if released
 end
