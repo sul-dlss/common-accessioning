@@ -96,7 +96,7 @@ GEM
       systemu
       uuidtools
       validatable
-    dor-workflow-service (1.2.2)
+    dor-workflow-service (1.2.3)
       activesupport
       confstruct
       nokogiri
