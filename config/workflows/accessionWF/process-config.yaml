@@ -24,7 +24,7 @@ provenance-metadata:
       - descriptive-metadata
       - rights-metadata
       - technical-metadata
-    batch_limit: 1
+    batch_limit: 1000
     error_limit: 5
 
 remediate-object:
@@ -32,7 +32,7 @@ remediate-object:
       - content-metadata
       - descriptive-metadata
       - rights-metadata
-    batch_limit: 100
+    batch_limit: 1000
     error_limit: 5
 
 shelve:
