@@ -11,37 +11,57 @@ require File.expand_path(File.dirname(__FILE__) + '/../../config/boot')
 
 # Turn off active_fedora updates of solr
 ENABLE_SOLR_UPDATES = false
-
 LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, "log", "embargo_release.log"))
 
-# Find objects to process
-solr = Dor::SearchService.query("embargoMetadata_status_facet:'embargoed' AND embargo_release_date_dt:[* TO NOW]", 
-                                  "rows" => "5000", 
-                                  "fl" => "id")
+# Finds druids from solr based on the passed in query
+# It will then load each item from Dor, and call the block with the item
+# @param [String] query used to locate druids of items to release from solr
+# @param [String] embargo_msg embargo type used in log messages (embargo vs 20% visibilty embargo)
+# @param [Proc] release_bloc gets executed after loading the object from DOR and opening new version
+#  Steps needed to release the particular embargo from the item
+def release_items(query, embargo_msg="embargo", &release_block)
+  # Find objects to process
+  LyberCore::Log.info("***** Querying solr: " << query)
+  solr = Dor::SearchService.query(query, "rows" => "5000", "fl" => "id")
 
-#r["response"]["docs"][0]["id"]
-num_found = solr["response"]["numFound"]
-if(num_found == 0)
-  LyberCore::Log.info("No objects to process")
-  exit
+  num_found = solr["response"]["numFound"]
+  if(num_found == 0)
+    LyberCore::Log.info("No objects to process")
+    return
+  end
+  LyberCore::Log.info("Found #{num_found} objects")
+
+  druid = ''
+  count = 0
+  solr["response"]["docs"].each do |doc|
+    begin
+      druid = doc["id"].first
+      LyberCore::Log.info("Releasing #{embargo_msg} for #{druid}")
+      ei = Dor::Item.find(druid)
+      ei.open_new_version
+      release_block.call(ei)
+      ei.save
+      ei.close_version :description => "#{embargo_msg} released", :significance => :admin
+      count += 1
+    rescue Exception => e
+      msg = "!!! Unable to release embargo for: #{druid}\n" << e.inspect << "\n" << e.backtrace.join("\n")
+      LyberCore::Log.error(msg)
+      Dor::WorkflowService.update_workflow_error_status 'dor', druid, 'accessionWF', 'embargo-release', "#{e.to_s}"
+    end
+  end
+
+  LyberCore::Log.info("Done! Processed #{count} objects out of #{num_found}")
 end
 
-druid = ''
-count = 0
-solr["response"]["docs"].each do |doc|
-  begin
-    druid = doc["id"].first
-    LyberCore::Log.info("Releasing embargo for #{druid}")
-    ei = Dor::Item.find(druid)
-    ei.release_embargo("application:accessionWF:embargo-release")
-    ei.save
-    Dor::WorkflowService.update_workflow_status 'dor', druid, 'accessionWF', 'embargo-release', 'completed'
-    count += 1
-  rescue Exception => e
-    msg = "!!! Unable to release embargo for: #{druid}\n" << e.inspect << "\n" << e.backtrace.join("\n")
-    LyberCore::Log.error(msg)
-    Dor::WorkflowService.update_workflow_error_status 'dor', druid, 'accessionWF', 'embargo-release', "#{e.to_s}"
+def release
+  release_items("embargoMetadata_status_facet:'embargoed' AND embargo_release_date_dt:[* TO NOW]") do |item|
+    item.release_embargo("application:accessionWF:embargo-release")
+  end
+
+  release_items("embargoMetadata_twenty_pct_status_facet:'embargoed' AND twenty_pct_visibility_release_date_dt:[* TO NOW]",
+                "20% visibility embargo") do |item|
+    item.release_embargo("application:accessionWF:embargo-release")
   end
 end
 
-LyberCore::Log.info("Done! Processed #{count} objects out of #{num_found}")
+release

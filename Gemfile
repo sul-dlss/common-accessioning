@@ -1,14 +1,14 @@
 source :rubygems
 source "http://sul-gems-prod.stanford.edu"
 
-gem "dor-services", "~> 3.17"
+gem "dor-services", "~>3.24"
 gem "lyber-core"
 gem "daemons"
 gem "jhove-service", ">=1.0.2"
 gem "pony"
 gem "whenever"
 gem "rake"
-gem "rspec", "< 2.0"
+gem "rspec"
 
 group :test do
 	gem "rcov", :platform => :ruby_18
