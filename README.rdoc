@@ -37,3 +37,4 @@ See Capfile for deployment instructions
  - 1.7.16 Update jhove-service to v1.0.2
  - 1.7.17 Updated dor-services to v3.21.0.
  - 1.8.0 Added disseminationWF:cleanup robot
+ - 1.10.0 Embargo release of 20% visible items
