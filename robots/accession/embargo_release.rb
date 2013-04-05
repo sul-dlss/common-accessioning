@@ -54,13 +54,13 @@ def release_items(query, embargo_msg="embargo", &release_block)
 end
 
 def release
-  release_items("embargoMetadata_status_facet:'embargoed' AND embargo_release_date_dt:[* TO NOW]") do |item|
+  release_items("embargoMetadata_status_t:'embargoed' AND embargo_release_date_dt:[* TO NOW]") do |item|
     item.release_embargo("application:accessionWF:embargo-release")
   end
 
-  release_items("embargoMetadata_twenty_pct_status_facet:'embargoed' AND twenty_pct_visibility_release_date_dt:[* TO NOW]",
+  release_items("embargoMetadata_twenty_pct_status_t:'embargoed' AND twenty_pct_visibility_release_date_dt:[* TO NOW]",
                 "20% visibility embargo") do |item|
-    item.release_embargo("application:accessionWF:embargo-release")
+    item.release_20_pct_vis_embargo("application:accessionWF:embargo-release")
   end
 end
 
