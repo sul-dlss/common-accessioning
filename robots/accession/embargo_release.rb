@@ -35,7 +35,7 @@ def release_items(query, embargo_msg="embargo", &release_block)
   count = 0
   solr["response"]["docs"].each do |doc|
     begin
-      druid = doc["id"].first
+      druid = doc["id"]
       LyberCore::Log.info("Releasing #{embargo_msg} for #{druid}")
       ei = Dor::Item.find(druid)
       ei.open_new_version
