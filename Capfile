@@ -22,6 +22,7 @@ require 'dlss/capistrano/robots'
 
 set :whenever_command, "bundle exec whenever"
 set :whenever_environment, defer { deploy_env }
+set :whenever_roles, [:app, :db]
 require "whenever/capistrano"
 
 set :application, "common-accessioning"

@@ -20,7 +20,7 @@ def fix_xsums(druid)
     #update contentmd
     file_hash={:name=>fname,:md5 => md5, :size=>size.to_s, :sha1=>sha1}
     cmds.update_file file_hash, fname
-    compare_checksums_with_sdr if(sdr_cm_doc)
+    compare_checksums_with_sdr(druid, file_hash, sdr_cm_doc) if(sdr_cm_doc)
   end
   cmds.save
 
@@ -62,18 +62,23 @@ def update_wf(druid)
   end
 end
 
+def fix(druid_path)
+  druids = IO.readlines(druid_path).map {|l| l.strip}
+
+  druids.each do |dr|
+    begin
+      fix_xsums dr
+      LOG.info "Finished #{dr}"
+    rescue Exception => e
+      LOG.error "Skipping #{dr} due to #{e.inspect}\n" << e.backtrace.join("\n")
+    end
+  end
+
+end
+
 require 'logger'
-log_path = File.join ROBOT_ROOT, 'log', 'etds-missing-md5.log'
+log_path = File.join ROBOT_ROOT, 'log', 'etd-xsum-fix.log'
 LOG = Logger.new(log_path)
 
-druids = IO.readlines('/home/lyberadmin/wmene/etds/missing-druids.0411.txt').map {|l| l.strip}
 
-druids.each do |dr|
-  begin
-    fix_xsums dr
-    LOG.info "Finished #{dr}"
-  rescue Exception => e
-    LOG.error "Skipping #{dr} due to #{e.inspect}"
-  end
-end
 
