@@ -1,5 +1,5 @@
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   remote: http://sul-gems-prod.stanford.edu/
   specs:
     actionmailer (3.2.8)
@@ -52,7 +52,7 @@ GEM
     bagit (0.2.0)
       validatable (~> 1.6)
     builder (3.0.4)
-    capistrano (2.13.4)
+    capistrano (2.15.3)
       highline
       net-scp (>= 1.0.0)
       net-sftp (>= 2.0.0)
@@ -115,7 +115,7 @@ GEM
     happymapper (0.4.0)
       libxml-ruby (~> 2.0)
     hashery (2.1.0)
-    highline (1.6.15)
+    highline (1.6.18)
     hike (1.2.1)
     hooks (0.2.2)
     httpi (2.0.2)
@@ -171,13 +171,13 @@ GEM
       nokogiri
       systemu
     multi_json (1.7.2)
-    net-scp (1.0.4)
-      net-ssh (>= 1.99.1)
+    net-scp (1.1.0)
+      net-ssh (>= 2.6.5)
     net-sftp (2.1.1)
       net-ssh (>= 2.6.5)
-    net-ssh (2.6.6)
-    net-ssh-gateway (1.1.0)
-      net-ssh (>= 1.99.1)
+    net-ssh (2.6.7)
+    net-ssh-gateway (1.2.0)
+      net-ssh (>= 2.6.5)
     net-ssh-kerberos (0.2.7)
       net-ssh (>= 2.0)
     nokogiri (1.5.9)
@@ -275,6 +275,7 @@ GEM
       activesupport (>= 2.3.4)
       chronic (~> 0.6.3)
     xml-simple (1.1.2)
+    yard (0.8.6.1)
 
 PLATFORMS
   ruby
@@ -293,3 +294,4 @@ DEPENDENCIES
   rspec
   ruby-debug
   whenever
+  yard

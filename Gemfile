@@ -1,4 +1,4 @@
-source :rubygems
+source "https://rubygems.org"
 source "http://sul-gems-prod.stanford.edu"
 
 gem "dor-services", "~>3.24"
@@ -22,5 +22,6 @@ group :development do
 	gem "ruby-debug", :platform => :ruby_18
 	gem "debugger", :platform => :ruby_19
 	gem "lyberteam-devel", ">= 0.7.0"
+	gem "yard"
 end
 
