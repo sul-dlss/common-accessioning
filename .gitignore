@@ -12,4 +12,6 @@ config/environments/
 config/certs
 .rvmrc
 .DS_Store
+.ruby-version
+.ruby-gemset
 
