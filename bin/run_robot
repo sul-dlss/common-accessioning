@@ -55,7 +55,5 @@ module LyberCore
   end
 end
 
-
-sleep_time = Dor::Config.accessioning_robot_sleep_time || 900
-runner = LyberCore::Robots::Runner.new(sleep_time)
+runner = LyberCore::Robots::Runner.new
 runner.run
