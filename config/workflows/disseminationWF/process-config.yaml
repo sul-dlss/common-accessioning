@@ -1,5 +1,5 @@
 cleanup:
-    prerequisite: dor:accessionWF:end-accession
+    prerequisite:
     batch_limit: 1000
     error_limit: 10
 
