@@ -18,20 +18,16 @@ technical-metadata:
     batch_limit: 1000
     error_limit: 50
 
-provenance-metadata:
-    prerequisite:
-      - content-metadata
-      - descriptive-metadata
-      - rights-metadata
-      - technical-metadata
-    batch_limit: 1000
-    error_limit: 50
-
 remediate-object:
     prerequisite:
       - content-metadata
       - descriptive-metadata
       - rights-metadata
+    batch_limit: 1000
+    error_limit: 50
+
+provenance-metadata:
+    prerequisite: remediate-object
     batch_limit: 1000
     error_limit: 50
 
@@ -46,9 +42,7 @@ publish:
     error_limit: 10
 
 sdr-ingest-transfer:
-    prerequisite:
-      - remediate-object
-      - provenance-metadata
+    prerequisite: provenance-metadata
     batch_limit: 1000
     error_limit: 50
 
