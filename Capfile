@@ -58,7 +58,7 @@ set :deploy_to, "/home/#{user}/#{application}"
 set :shared_config_certs_dir, true
 
 # These are robots that run as background daemons.  They are automatically restarted at deploy time
-set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata end-accession)
+set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata end-accession sdr-ingest-transfer)
 set :workflow, 'accessionWF'
 
 # Tasks and methods that deal with starting and stopping the disseminationWF:cleanup robot
