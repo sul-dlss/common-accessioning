@@ -23,14 +23,14 @@ remediate-object:
       - content-metadata
       - descriptive-metadata
       - rights-metadata
-	  - technical-metadata
+      - technical-metadata
     batch_limit: 1000
     error_limit: 50
 
 provenance-metadata:
     prerequisite:
-	  - remediate-object
-	  - shelve
+      - remediate-object
+      - shelve
     batch_limit: 1000
     error_limit: 50
 
@@ -54,7 +54,7 @@ sdr-ingest-transfer:
 end-accession:
     prerequisite: 
       - sdr-ingest-received
-	  - publish
+      - publish
     batch_limit: 1000
     error_limit: 50
 
