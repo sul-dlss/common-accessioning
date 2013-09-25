@@ -15,7 +15,7 @@ rights-metadata:
 
 technical-metadata:
     prerequisite: content-metadata
-    batch_limit: 1000
+    batch_limit: 50
     error_limit: 50
 
 remediate-object:
@@ -24,7 +24,7 @@ remediate-object:
       - descriptive-metadata
       - rights-metadata
       - technical-metadata
-    batch_limit: 1000
+    batch_limit: 50
     error_limit: 50
 
 provenance-metadata:
@@ -48,7 +48,7 @@ sdr-ingest-transfer:
     prerequisite: 
       - provenance-metadata
 
-    batch_limit: 1000
+    batch_limit: 50
     error_limit: 50
 
 end-accession:
