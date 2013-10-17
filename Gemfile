@@ -32,6 +32,7 @@ group :development do
 	gem "debugger", :platform => :ruby_19
 	gem "lyberteam-capistrano-devel", ">= 0.7.0"
   gem "capistrano", "< 3.0"
+  gem 'rvm-capistrano'
 	gem "yard"
 end
 
