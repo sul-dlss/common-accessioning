@@ -65,7 +65,7 @@ task :production do
   role :app, "sul-lyberservices-prod.stanford.edu"
   set :deploy_env, "production"
 end
-
+set :rvm_type,   :system
 set :user, "lyberadmin"
 set :repository,  "/afs/ir/dev/dlss/git/lyberteam/common-accessioning.git"
 set :local_repository, "ssh://corn.stanford.edu#{repository}"
