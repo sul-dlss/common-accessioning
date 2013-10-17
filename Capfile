@@ -19,6 +19,22 @@
 load 'deploy' if respond_to?(:namespace) # cap2 differentiator
 
 require 'dlss/capistrano/robots'
+require 'rvm/capistrano'
+set :rvm_ruby_string, "1.9.3-p448"
+
+set :shared_children, %w(
+  log
+  .rvmrc
+  config/certs
+  config/environments
+)
+
+set :shared_children, %w(
+  log
+  .rvmrc
+  config/certs
+  config/environments
+)
 
 set :whenever_command, "bundle exec whenever"
 set :whenever_environment, defer { deploy_env }
@@ -60,6 +76,19 @@ set :shared_config_certs_dir, true
 # These are robots that run as background daemons.  They are automatically restarted at deploy time
 set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata end-accession sdr-ingest-transfer)
 set :workflow, 'accessionWF'
+
+after "deploy", "rvm:trust_rvmrc"
+namespace :rvm do
+  task :trust_rvmrc do
+    run "rvm rvmrc trust #{release_path}"
+  end
+end
+
+namespace :dlss do
+  task :set_shared_children do
+    # no-op
+  end
+end
 
 # Tasks and methods that deal with starting and stopping the disseminationWF:cleanup robot
 before "deploy:update", "stop_cleanup"
