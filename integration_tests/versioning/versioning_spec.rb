@@ -18,10 +18,12 @@ describe "Digital Object Versioning" do
     nuke
     # Load fixture foxml into fedora
     fixture_dir = fixture_base + '/' + fixture_name
-    ActiveFedora::FixtureLoader.import_to_fedora File.join(fixture_dir, 'druid_oo000vt0001.xml')
+    loader = ActiveFedora::FixtureLoader.new(fixture_dir)
+    ActiveFedora::FixtureLoader.import_to_fedora(loader.filename_for_pid('druid:oo000vt0001'))
 
     # Create workspace directory, add content and metadata
     d = DruidTools::Druid.new pid, Dor::Config.stacks.local_workspace_root
+    
     d.mkdir
     d.content_dir
     d.metadata_dir
@@ -57,7 +59,7 @@ describe "Digital Object Versioning" do
 
   def nuke
     # Nuke from test environment
-    old = Dor::Item.find pid
+    old = Dor::Item.find pid rescue nil  
     old.cleanup unless old.nil?
     Assembly::Utils.cleanup_object pid, [:stacks, :dor]
     Assembly::Utils.delete_all_workflows pid
