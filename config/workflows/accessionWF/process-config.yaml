@@ -1,15 +1,15 @@
-content-metadata:
-    prerequisite: start-accession
-    batch_limit: 1000
-    error_limit: 50
-
 descriptive-metadata:
     prerequisite: start-accession
     batch_limit: 1000
     error_limit: 50
 
 rights-metadata:
-    prerequisite: start-accession
+    prerequisite: descriptive-metadata
+    batch_limit: 1000
+    error_limit: 50
+
+content-metadata:
+    prerequisite: rights-metadata
     batch_limit: 1000
     error_limit: 50
 
@@ -45,14 +45,13 @@ publish:
     error_limit: 10
 
 sdr-ingest-transfer:
-    prerequisite: 
+    prerequisite:
       - provenance-metadata
-
     batch_limit: 50
     error_limit: 50
 
 end-accession:
-    prerequisite: 
+    prerequisite:
       - sdr-ingest-received
       - publish
     batch_limit: 1000
