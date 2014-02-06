@@ -62,6 +62,7 @@ set :repository do
   sunetid = Capistrano::CLI.ui.ask(msg)
   "ssh://#{sunetid}@corn.stanford.edu/afs/ir/dev/dlss/git/lyberteam/common-accessioning.git"
 end
+set :branch, "jan-update"
 set :deploy_to, "/home/#{user}/#{application}"
 set :deploy_via, :copy
 set :copy_cache, :true
