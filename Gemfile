@@ -22,12 +22,10 @@ group :development do
     instance_eval(File.read(mygems))
   end
 	gem "debugger", :platform => :ruby_19
-	gem "lyberteam-capistrano-devel", "1.2.0"
-  gem "capistrano", "< 3.0"
 	gem "yard"
-	gem "ffi", "1.7.0"
-	gem "net-ssh", "2.6.7"
-	gem "net-sftp", "2.1.1"
-	gem 'gssapi', "1.1.3.stanford"
+	gem "capistrano", '~> 3.0'
+  gem 'capistrano-bundler', '~> 1.1'
+  gem "lyberteam-capistrano-devel", '3.0.0.pre1'
+  gem 'rainbow', '< 2.0'
 end
 
