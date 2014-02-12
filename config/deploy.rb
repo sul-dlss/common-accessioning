@@ -36,7 +36,7 @@ set :deploy_to, "/home/lyberadmin/#{fetch(:application)}"
 
 set :stages, %W(dev staging production)
 
-set :linked_dirs, %w(log config/environments config/environments)
+set :linked_dirs, %w(log config/environments config/certs)
 
 namespace :deploy do
 
