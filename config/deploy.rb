@@ -17,7 +17,7 @@ set :deploy_to, "/home/lyberadmin/#{fetch(:application)}"
 # set :format, :pretty
 
 # Default value for :log_level is :debug
-# set :log_level, :debug
+set :log_level, :info
 
 # Default value for :pty is false
 # set :pty, true
@@ -37,6 +37,19 @@ set :deploy_to, "/home/lyberadmin/#{fetch(:application)}"
 set :stages, %W(dev staging production)
 
 set :linked_dirs, %w(log config/environments config/certs)
+
+set :accession_robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata end-accession sdr-ingest-transfer)
+set :accession_wf, 'accessionWF'
+
+def robots
+  rbts = fetch(:accession_robots).map {|robot| "#{fetch(:accession_wf)}:#{robot}"}
+  rbts << 'disseminationWF:cleanup'
+end
+
+def released?
+  capture("ls -x #{releases_path}").split.length > 0
+end
+
 
 namespace :deploy do
 
@@ -59,4 +72,19 @@ namespace :deploy do
     end
   end
 
+
+  task :stop_robots do
+    on roles(:all) do
+      next unless released?
+      within release_path do
+        with path: "#{release_path}/bin:$PATH", robot_environment: fetch(:deploy_environment) do
+          execute :run_robot, 'stop', robots
+        end
+      end
+    end
+  end
+
+  after :started, :stop_robots
+
 end
+

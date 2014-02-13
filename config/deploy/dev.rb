@@ -2,4 +2,5 @@ server 'sul-lyberservices-dev.stanford.edu', user: 'lyberadmin', roles: %w{web a
 
 Capistrano::OneTimeKey.generate_one_time_key!
 
-set :whenever_environment, 'development'
+set :deploy_environment, 'development'
+set :whenever_environment, fetch(:deploy_environment)
