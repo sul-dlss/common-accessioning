@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 source "http://sul-gems-prod.stanford.edu"
 
-gem "dor-services"
+gem "dor-services", "~> 4.6"
 gem "lyber-core"
 gem "daemons"
 gem "jhove-service", ">=1.0.2"

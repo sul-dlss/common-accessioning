@@ -2,9 +2,9 @@ GEM
   remote: https://rubygems.org/
   remote: http://sul-gems-prod.stanford.edu/
   specs:
-    actionpack (3.2.14)
-      activemodel (= 3.2.14)
-      activesupport (= 3.2.14)
+    actionpack (3.2.17)
+      activemodel (= 3.2.17)
+      activesupport (= 3.2.17)
       builder (~> 3.0.0)
       erubis (~> 2.7.0)
       journey (~> 1.0.4)
@@ -25,13 +25,13 @@ GEM
       rsolr
       rubydora (~> 1.6)
       solrizer (~> 2.1)
-    activemodel (3.2.14)
-      activesupport (= 3.2.14)
+    activemodel (3.2.17)
+      activesupport (= 3.2.17)
       builder (~> 3.0.0)
-    activeresource (3.2.14)
-      activemodel (= 3.2.14)
-      activesupport (= 3.2.14)
-    activesupport (3.2.14)
+    activeresource (3.2.17)
+      activemodel (= 3.2.17)
+      activesupport (= 3.2.17)
+    activesupport (3.2.17)
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
     addressable (2.3.5)
@@ -69,55 +69,56 @@ GEM
     csv-mapper (0.5.1)
       fastercsv
     daemons (1.1.9)
-    debugger (1.6.2)
+    debugger (1.6.6)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
-      debugger-ruby_core_source (~> 1.2.3)
+      debugger-ruby_core_source (~> 1.3.2)
     debugger-linecache (1.2.0)
-    debugger-ruby_core_source (1.2.3)
-    deprecation (0.0.5)
+    debugger-ruby_core_source (1.3.2)
+    deprecation (0.1.0)
       activesupport
     diff-lcs (1.2.5)
     docile (1.1.3)
     docopt (0.5.0)
-    dor-services (4.3.2)
-      active-fedora (~> 5.6, >= 5.6.3)
-      activesupport
-      confstruct (>= 0.2.2)
-      dor-workflow-service (~> 1.3)
-      druid-tools (>= 0.2.3)
-      equivalent-xml (>= 0.2.2)
-      json
-      lyber-utils
-      moab-versioning (>= 1.2.1)
-      net-sftp
-      net-ssh
-      nokogiri (>= 1.6.0)
-      om
-      progressbar
-      rest-client
-      rsolr-ext
-      ruby-cache
-      ruby-graphviz
+    dor-services (4.6.2)
+      active-fedora (~> 5.7.1)
+      activesupport (~> 3.2.16)
+      confstruct (~> 0.2.2)
+      dor-workflow-service (~> 1.5)
+      druid-tools (~> 0.3.0)
+      equivalent-xml (~> 0.2.2)
+      json (~> 1.8.1)
+      moab-versioning (= 1.3.1)
+      net-sftp (~> 2.1.2)
+      net-ssh (~> 2.7.0)
+      nokogiri (= 1.6.0)
+      om (~> 1.8.0)
+      progressbar (~> 0.21.0)
+      rdf (~> 1.0.9.0)
+      rest-client (~> 1.6.7)
+      rsolr-ext (~> 1.0.3)
+      ruby-cache (~> 0.3.0)
+      ruby-graphviz (~> 1.0.9)
+      rubydora (~> 1.6.5)
       solrizer (~> 2.0)
-      stanford-mods (>= 0.0.14)
-      systemu
-      uuidtools
-      validatable
-    dor-workflow-service (1.3.3)
+      stanford-mods (~> 0.0.14)
+      systemu (~> 2.6.0)
+      uuidtools (~> 2.1.4)
+      validatable (~> 1.6.7)
+    dor-workflow-service (1.5.0)
       activesupport
       confstruct
       nokogiri
       rest-client
-    druid-tools (0.2.6)
-    equivalent-xml (0.3.0)
+    druid-tools (0.3.0)
+    equivalent-xml (0.2.9)
       nokogiri (>= 1.4.3)
     erubis (2.7.0)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
-    ffi (1.7.0)
-    gssapi (1.1.3.stanford)
+    ffi (1.9.3)
+    gssapi (1.1.2)
       ffi (>= 1.0.1)
     happymapper (0.4.1)
       libxml-ruby (~> 2.0)
@@ -126,9 +127,9 @@ GEM
     holepicker (0.3.1)
       json (>= 1.7.7)
       rainbow (>= 1.1.4)
-    hooks (0.3.1)
+    hooks (0.3.3)
     i18n (0.6.9)
-    iso-639 (0.1.0)
+    iso-639 (0.2.4)
     jhove-service (1.0.3)
       nokogiri (>= 1.4.3.1)
     journey (1.0.4)
@@ -145,30 +146,26 @@ GEM
       stomp
       systemu (>= 1.2.0)
       validatable
-    lyber-utils (0.1.2)
-      bagit (>= 0.1.0)
-      nokogiri (>= 1.4.3.1)
-      systemu (>= 1.2.0)
-      validatable
     lyberteam-capistrano-devel (3.0.0.pre1)
       capistrano (~> 3.0)
       capistrano-holepicker
       capistrano-one_time_key
       capistrano-releaseboard
-    mail (2.5.4)
-      mime-types (~> 1.16)
-      treetop (~> 1.4.8)
+    mail (2.2.7)
+      activesupport (>= 2.3.6)
+      mime-types
+      treetop (>= 1.4.5)
     mediashelf-loggable (0.4.9)
-    mime-types (1.25.1)
-    mini_portile (0.5.1)
-    moab-versioning (1.3.0)
+    mime-types (2.1)
+    mini_portile (0.5.2)
+    moab-versioning (1.3.1)
       confstruct
       happymapper
       hashery (>= 2.0.0)
       json
       nokogiri
       systemu
-    mods (0.0.22)
+    mods (0.0.23)
       iso-639
       nokogiri
       nom-xml
@@ -178,7 +175,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
-    net-ssh (2.8.0)
+    net-ssh (2.7.0)
     net-ssh-krb (0.3.0)
       gssapi (~> 1.1.2)
       net-ssh (>= 2.0)
@@ -194,8 +191,8 @@ GEM
       deprecation
       mediashelf-loggable
       nokogiri (>= 1.4.2)
-    polyglot (0.3.3)
-    pony (1.5.1)
+    polyglot (0.3.4)
+    pony (1.8)
       mail (>= 2.0)
     progressbar (0.21.0)
     rack (1.4.5)
@@ -223,10 +220,10 @@ GEM
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
       rspec-mocks (~> 2.14.0)
-    rspec-core (2.14.5)
-    rspec-expectations (2.14.3)
+    rspec-core (2.14.8)
+    rspec-expectations (2.14.5)
       diff-lcs (>= 1.1.3, < 2.0)
-    rspec-mocks (2.14.3)
+    rspec-mocks (2.14.6)
     ruby-cache (0.3.0)
     ruby-graphviz (1.0.9)
     rubydora (1.6.5)
@@ -261,10 +258,10 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh
       term-ansicolor
-    stanford-mods (0.0.21)
+    stanford-mods (0.0.24)
       mods
-    stomp (1.3.1)
-    systemu (2.5.2)
+    stomp (1.3.2)
+    systemu (2.6.3)
     term-ansicolor (1.3.0)
       tins (~> 1.0)
     tilt (1.4.1)
@@ -277,8 +274,8 @@ GEM
     whenever (0.9.0)
       activesupport (>= 2.3.4)
       chronic (>= 0.6.3)
-    xml-simple (1.1.2)
-    yard (0.8.7.2)
+    xml-simple (1.1.3)
+    yard (0.8.7.3)
 
 PLATFORMS
   ruby
@@ -289,7 +286,7 @@ DEPENDENCIES
   capistrano-bundler (~> 1.1)
   daemons
   debugger
-  dor-services
+  dor-services (~> 4.6)
   jhove-service (>= 1.0.2)
   lyber-core
   lyberteam-capistrano-devel (= 3.0.0.pre1)
