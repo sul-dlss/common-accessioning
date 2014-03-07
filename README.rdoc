@@ -38,3 +38,4 @@ See Capfile for deployment instructions
  - 1.7.17 Updated dor-services to v3.21.0.
  - 1.8.0 Added disseminationWF:cleanup robot
  - 1.10.0 Embargo release of 20% visible items
+ - 1.12.0 Latest dor-services and ruby 1.9.3 compatibility
