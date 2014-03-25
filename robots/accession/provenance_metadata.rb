@@ -3,12 +3,12 @@ module Accession
 
   class ProvenanceMetadata < LyberCore::Robots::Robot
 
-    def initialize(opts = {})
-      super('accessionWF', 'provenance-metadata', opts)
+    def initialize
+      super('dor', 'accessionWF', 'provenance-metadata')
     end
 
-    def process_item(work_item)
-      obj = Dor::Item.find(work_item.druid)
+    def process_item
+      obj = Dor::Item.find(@druid)
       obj.build_provenanceMetadata_datastream('accessionWF','DOR Common Accessioning completed')
     end
 

@@ -1,19 +1,15 @@
-
 module Accession
-  
+
   class Shelve < LyberCore::Robots::Robot
 
-    def initialize(opts = {})
-      super('accessionWF', 'shelve', opts)
+    def initialize
+      super('dor', 'accessionWF', 'shelve')
     end
 
-    def process_item(work_item)
-      obj = Dor::Item.find(work_item.druid)
+    def process_item
+      obj = Dor::Item.find(@druid)
       obj.shelve
     end
-    
+
   end
-
 end
-
-

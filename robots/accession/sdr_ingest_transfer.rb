@@ -3,12 +3,12 @@ module Accession
 
   class SdrIngestTransfer < LyberCore::Robots::Robot
 
-    def initialize(opts = {})
-      super('accessionWF', 'sdr-ingest-transfer', opts)
+    def initialize
+      super('dor', 'accessionWF', 'sdr-ingest-transfer')
     end
 
-    def process_item(work_item)
-      obj = Dor::Item.find(work_item.druid)
+    def process_item
+      obj = Dor::Item.find(@druid)
       obj.sdr_ingest_transfer("")
     end
 

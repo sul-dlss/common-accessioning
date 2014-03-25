@@ -5,15 +5,13 @@ module Accession
 
   class Publish < LyberCore::Robots::Robot
 
-    def initialize(opts = {})
-      super('accessionWF', 'publish', opts)
+    def initialize
+      super('dor', 'accessionWF', 'shelve')
     end
 
-    def process_item(work_item)
-      start_time = Time.new
-      obj = Dor::Item.find(work_item.druid)
+    def process_item
+      obj = Dor::Item.find(@druid)
       obj.publish_metadata
-      elapsed = Time.new - start_time
     end
   end
 end

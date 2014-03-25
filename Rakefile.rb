@@ -1,5 +1,6 @@
 require 'rake'
 require 'rake/testtask'
+require 'resque/tasks'
 
 # Import external rake tasks
 Dir.glob('lib/tasks/*.rake').each { |r| import r }
@@ -36,4 +37,8 @@ end
 desc 'Get application version'
 task :app_version do
   puts File.read(File.expand_path('../VERSION',__FILE__)).chomp
+end
+
+task :environment do
+  require_relative 'config/boot'
 end
