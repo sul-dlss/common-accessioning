@@ -1,7 +1,8 @@
 
 module Accession
 
-  class SdrIngestTransfer < LyberCore::Robots::Robot
+  class SdrIngestTransfer
+    include  LyberCore::Robot
 
     def initialize
       super('dor', 'accessionWF', 'sdr-ingest-transfer')

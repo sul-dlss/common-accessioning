@@ -3,7 +3,8 @@
 
 module Accession
 
-  class Publish < LyberCore::Robots::Robot
+  class Publish
+    include LyberCore::Robot
 
     def initialize
       super('dor', 'accessionWF', 'shelve')

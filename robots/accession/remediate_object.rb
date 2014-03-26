@@ -2,7 +2,8 @@
 
 module Accession
 
-  class RemediateObject < LyberCore::Robots::Robot
+  class RemediateObject
+    include LyberCore::Robot
 
     def initialize
       super('dor', 'accessionWF', 'remediate-object')

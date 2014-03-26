@@ -1,7 +1,8 @@
 
 module Dissemination
 
-  class Cleanup < LyberCore::Robots::Robot
+  class Cleanup
+    include LyberCore::Robot
 
     def initialize
       super('dor', 'disseminationWF', 'cleanup')

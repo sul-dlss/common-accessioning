@@ -4,7 +4,9 @@
 
 module Accession
 
-  class AbstractMetadata < LyberCore::Robots::Robot
+  class AbstractMetadata
+    include LyberCore::Robot
+
     def self.params
       { :process_name => nil, :datastream => nil }
     end
