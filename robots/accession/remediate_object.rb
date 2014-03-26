@@ -8,8 +8,8 @@ module Accession
       super('dor', 'accessionWF', 'remediate-object')
     end
 
-    def process_item
-      obj = Dor::Item.find(@druid)
+    def perform(druid)
+      obj = Dor::Item.find(druid)
       obj.upgrade!
     end
   end

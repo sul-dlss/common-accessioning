@@ -3,12 +3,12 @@ module Dissemination
 
   class Cleanup < LyberCore::Robots::Robot
 
-    def initialize(opts = {})
-      super('disseminationWF', 'cleanup', opts)
+    def initialize
+      super('dor', 'disseminationWF', 'cleanup')
     end
 
-    def process_item(work_item)
-      Dor::CleanupService.cleanup work_item
+    def perform(druid)
+      Dor::CleanupService.cleanup_by_druid druid
     end
 
   end

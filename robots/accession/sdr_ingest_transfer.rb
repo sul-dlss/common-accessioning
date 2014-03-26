@@ -7,8 +7,8 @@ module Accession
       super('dor', 'accessionWF', 'sdr-ingest-transfer')
     end
 
-    def process_item
-      obj = Dor::Item.find(@druid)
+    def perform(druid)
+      obj = Dor::Item.find(druid)
       obj.sdr_ingest_transfer("")
     end
 

@@ -13,8 +13,8 @@ module Accession
       super('dor', 'accessionWF', self.class.params[:process_name])
     end
 
-    def process_item
-      obj = Dor::Item.find(@druid)
+    def perform(druid)
+      obj = Dor::Item.find(druid)
       obj.build_datastream(self.class.params[:datastream], self.class.params[:force] ? true : false, self.class.params[:require] ? true : false)
     end
   end
