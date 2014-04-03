@@ -1,16 +1,21 @@
 
-module Dissemination
+module Robots
+  module DorRepo
+    module Dissemination
 
-  class Cleanup
-    include LyberCore::Robot
+      class Cleanup
+        include LyberCore::Robot
 
-    def initialize
-      super('dor', 'disseminationWF', 'cleanup')
+        def initialize
+          super('dor', 'disseminationWF', 'cleanup')
+        end
+
+        def perform(druid)
+          Dor::CleanupService.cleanup_by_druid druid
+        end
+
+      end
+
     end
-
-    def perform(druid)
-      Dor::CleanupService.cleanup_by_druid druid
-    end
-
   end
 end
