@@ -2,7 +2,7 @@ source "https://rubygems.org"
 source "http://sul-gems-prod.stanford.edu"
 
 gem "dor-services", "~> 4.6"
-gem "lyber-core", :path => '/Users/wmene/dev/afsgit/lyberteam/lyber-core'
+gem "lyber-core", "~> 3.0"
 gem "daemons"
 gem "jhove-service", ">=1.0.2"
 gem "pony"
@@ -12,6 +12,8 @@ gem "rspec"
 gem 'net-ssh-krb'
 gem 'resque'
 gem "pry-debugger", '0.2.2', :platform => :ruby_19
+gem 'robot-controller'
+gem 'dor-workflow-service', '~> 1.6'
 
 group :test do
 	gem "simplecov"

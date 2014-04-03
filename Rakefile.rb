@@ -1,6 +1,7 @@
 require 'rake'
 require 'rake/testtask'
 require 'resque/tasks'
+require 'robot-controller/tasks'
 
 # Import external rake tasks
 Dir.glob('lib/tasks/*.rake').each { |r| import r }

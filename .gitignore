@@ -8,10 +8,8 @@ coverage.data
 .idea
 *.tar.gz
 pid
-config/environments/
 config/certs
 .rvmrc
 .DS_Store
 .ruby-version
 .ruby-gemset
-
