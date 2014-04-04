@@ -9,7 +9,7 @@ module Robots
         include LyberCore::Robot
 
         def initialize
-          super('dor', 'accessionWF', 'shelve')
+          super('dor', 'accessionWF', 'publish')
         end
 
         def perform(druid)
