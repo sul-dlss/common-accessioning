@@ -10,8 +10,8 @@ WORKFLOW_STEPS = %w{
   dor:accessionWF:publish
   dor:accessionWF:provenance-metadata
   dor:accessionWF:sdr-ingest-transfer
-  dor:accessionWF:sdr-ingest-received
   dor:accessionWF:end-accession
+  dor:disseminationWF:cleanup
 }
 
 # number of workers for the given workflows

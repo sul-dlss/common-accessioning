@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
+
+opt = ARGV.shift
+if opt =~ /create/i
+  Dor::AccessionLite.create
+elsif opt =~ /reset/i
+  druid = ARGV.shift
+  Dor::AccessionLite.reset druid
+else
+  puts "Usage: lite_obj create OR lite_obj reset [druid]"
+end
