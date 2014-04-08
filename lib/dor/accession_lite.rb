@@ -12,8 +12,8 @@ module Dor
       build_rights_md
       build_tech_md
       init_accession_wf
-      puts "Created #{i.pid}"
-      i.pid
+      puts "Created #{@i.pid}"
+      @i.pid
     end
 
     def create
