@@ -7,31 +7,33 @@ require workflows
 Bluepill.application 'common-accessioning',
   :log_file => "#{WORKDIR}/log/bluepill.log" do |app|
   app.working_dir = WORKDIR
-  WORKFLOW_STEPS.each do |qualified_wf|
-    wf = qualified_wf.gsub(/:/, '_')
-    app.process(wf) do |process|
-      # use configuration for number of workers -- default is 1
-      n = WORKFLOW_N[qualified_wf] ? WORKFLOW_N[qualified_wf].to_i : 1
-      puts "Creating #{n} worker#{n>1?'s':' '} for #{qualified_wf}"
+  WORKFLOW_STEPS.each_index do |i|
+    # extract fully qualified WF properties
+    qualified_wf = WORKFLOW_STEPS[i]
+    n = qualified_wf.split(/:/).size
+    raise ArgumentError unless n == 3 or n == 4
+    wf = qualified_wf.split(/:/)[0..2].join('_')
+    
+    # prefix process name with index number to prevent
+    # duplicate process names if wf is run multiple times
+    app.process("#{i+1}:#{wf}") do |process|
+      puts "Creating robot #{process.name}"
 
       # queue order is *VERY* important
       #
-      # XXX: make this configurable based on wf
-      # WORKFLOW_PRIORITIES[wf] is the name of a second worker that reads the given queues
-      #
       # see RobotMaster::Queue#queue_name for naming convention
-      # @example
-      #     queue_name('dor:assemblyWF:jp2-create')
-      #     => 'dor_assemblyWF_jp2-create_default'
-      #     queue_name('dor:assemblyWF:jp2-create', 100)
-      #     => 'dor_assemblyWF_jp2-create_high'
       #
       queues = []
-      %w{critical high default low}.each do |p|
-        queues << "#{wf}_#{p}"
+      # check to see whether wf already includes priority
+      if n == 4
+        queues << qualified_wf.split(/:/).join('_')
+      else
+        # otherwise listen on all queues
+        %w{critical high default low}.each do |p|
+          queues << [wf, p].join('_')
+        end
       end
       queues = queues.join(',')
-      # puts "Using queues #{queues}"
 
       # use environment for these resque variables
       process.environment = {
@@ -44,20 +46,15 @@ Bluepill.application 'common-accessioning',
       process.group = robot_environment
       process.stdout = process.stderr = "#{WORKDIR}/log/#{wf}.log"
 
-      #process.pid_file = "#{WORKDIR}/run/#{wf}.pid"
-
-      # spawn n worker processes
-      if n > 1
-        process.start_command = "env COUNT=#{n} rake workers" # not resque:workers
-      else # 1 worker
-        process.start_command = "rake environment resque:work"
-      end
-      # puts "Using #{process.start_command}"
-      # puts "Using #{process.environment}"
-
+      # spawn worker processes
+      process.start_command = "rake environment resque:work"
+      
       # we use bluepill to daemonize the resque workers rather than using
       # resque's BACKGROUND flag
       process.daemonize = true
+      
+      # bluepill manages pid files
+      # process.pid_file = "#{WORKDIR}/run/#{wf}.pid"
 
       # graceful stops
       process.stop_grace_time = 60.seconds # must be greater than stop_signals total
