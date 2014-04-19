@@ -47,13 +47,3 @@ Resque.redis = REDIS_URL
 
 require 'active_support/core_ext' # camelcase
 require 'robot-controller'
-
-
-
-
-
-
-
-
-
-
