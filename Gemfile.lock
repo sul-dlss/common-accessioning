@@ -119,9 +119,9 @@ GEM
     happymapper (0.4.1)
       libxml-ruby (~> 2.0)
     hashery (2.1.1)
-    holepicker (0.3.1)
-      json (>= 1.7.7)
-      rainbow (>= 1.1.4)
+    holepicker (0.3.3)
+      json (~> 1.8)
+      rainbow (~> 2.0)
     hooks (0.3.6)
       uber (~> 0.0.4)
     i18n (0.6.9)
@@ -197,7 +197,7 @@ GEM
     rack (1.4.5)
     rack-protection (1.5.2)
       rack
-    rainbow (1.99.2)
+    rainbow (2.0.0)
     rake (10.1.1)
     rdf (1.0.9)
       addressable (>= 2.3)
@@ -301,13 +301,13 @@ DEPENDENCIES
   debugger
   dor-services (~> 4.6)
   dor-workflow-service (~> 1.6)
+  holepicker (~> 0.3, >= 0.3.3)
   jhove-service (>= 1.0.2)
   lyber-core (~> 3.1)
   lyberteam-capistrano-devel (= 3.0.0.pre1)
   net-ssh-krb
   pony
   pry-debugger (= 0.2.2)
-  rainbow (< 2.0)
   rake
   resque
   robot-controller
