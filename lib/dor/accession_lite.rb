@@ -131,5 +131,9 @@ module Dor
       Dor::WorkflowService.create_workflow 'dor', @i.pid, 'accessionWF', wf_xml
     end
 
+    def pid
+      @i.pid
+    end
+
   end
 end
