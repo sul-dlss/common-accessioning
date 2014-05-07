@@ -38,14 +38,17 @@ module Dor
     end
 
     def self.create_assembly
-      obj = Dor::AccessionLite.new
-      obj.create
-      obj.build_desc_md
-      obj.build_tech_md '/dor/assembly'
-      obj.build_rights_md
-      obj.build_id_md
+      obj = Dor::AccessionLite.new.build_assembly
+    end
 
-      druid = DruidTools::Druid.new(obj.pid, '/dor/assembly')
+    def build_assembly
+      create
+      build_desc_md
+      build_tech_md '/dor/assembly'
+      build_rights_md
+      build_id_md
+
+      druid = DruidTools::Druid.new(@i.pid, '/dor/assembly')
       md_dir = Pathname.new druid.metadata_dir
 
       cm_xml =<<-XML
@@ -66,9 +69,10 @@ module Dor
       # copy tif to content_dir
       FileUtils.cp(File.join(ROBOT_ROOT, 'spec', 'fixtures', 'image111.tif'), druid.content_dir)
 
-      obj.initialize_workflow 'assemblyWF'
+      @i.initialize_workflow 'assemblyWF'
 
-      puts "Created #{obj.pid} for assemblyWF"
+      puts "Created #{@i.pid} for assemblyWF"
+      @i.pid
     end
 
     def build_desc_md
@@ -129,10 +133,6 @@ module Dor
     def init_accession_wf
       wf_xml = IO.read(File.join(ROBOT_ROOT, 'config', 'workflows', 'accessionWF', 'lite.xml'))
       Dor::WorkflowService.create_workflow 'dor', @i.pid, 'accessionWF', wf_xml
-    end
-
-    def pid
-      @i.pid
     end
 
   end

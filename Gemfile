@@ -2,7 +2,7 @@ source "https://rubygems.org"
 source "http://sul-gems-prod.stanford.edu"
 
 gem "dor-services", "~> 4.6"
-gem "lyber-core", "~> 3.1"
+gem "lyber-core", "~> 3.2", ">=3.2.1"
 gem "daemons"
 gem "jhove-service", ">=1.0.2"
 gem "pony"

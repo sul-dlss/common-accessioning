@@ -130,7 +130,7 @@ GEM
       nokogiri (>= 1.4.3.1)
     json (1.8.1)
     libxml-ruby (2.7.0)
-    lyber-core (3.2.0)
+    lyber-core (3.2.1)
     lyber-utils (0.1.2)
       bagit (>= 0.1.0)
       nokogiri (>= 1.4.3.1)
@@ -303,7 +303,7 @@ DEPENDENCIES
   dor-workflow-service (~> 1.6)
   holepicker (~> 0.3, >= 0.3.3)
   jhove-service (>= 1.0.2)
-  lyber-core (~> 3.1)
+  lyber-core (~> 3.2, >= 3.2.1)
   lyberteam-capistrano-devel (= 3.0.0.pre1)
   net-ssh-krb
   pony
