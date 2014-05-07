@@ -41,8 +41,8 @@ module Dor
       obj = Dor::AccessionLite.new
       obj.create
       obj.build_desc_md
+      obj.build_tech_md '/dor/assembly'
       obj.build_rights_md
-      obj.build_tech_md
       obj.build_id_md
 
       druid = DruidTools::Druid.new(obj.pid, '/dor/assembly')
@@ -109,12 +109,12 @@ module Dor
       @i.datastreams['rightsMetadata'].save
     end
 
-    def build_tech_md
+    def build_tech_md base = Dor::Config.stacks.local_workspace_root
       xml =<<-XML
       <technicalMetadata xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" xmlns:mix="http://www.loc.gov/mix/v10" xmlns:textmd="info:lc/xmlns/textMD-v3" objectId="#{@i.pid}" datetime="2014-01-27T21:35:32Z">
       </technicalMetadata>
       XML
-      druid = DruidTools::Druid.new(@i.pid, Dor::Config.stacks.local_workspace_root)
+      druid = DruidTools::Druid.new(@i.pid, base)
       druid.metadata_dir      # build the metadata dir
       File.open(druid.metadata_dir + "/technicalMetadata.xml", 'w') do |f|
         f.write xml
