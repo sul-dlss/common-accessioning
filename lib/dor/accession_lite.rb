@@ -11,6 +11,7 @@ module Dor
       build_desc_md
       build_rights_md
       build_tech_md
+      build_id_md
       init_accession_wf
       puts "Created #{@i.pid}"
       @i.pid
@@ -34,6 +35,40 @@ module Dor
       @i = Dor::Item.find druid
       build_tech_md
       init_accession_wf
+    end
+
+    def self.create_assembly
+      obj = Dor::AccessionLite.new
+      obj.create
+      obj.build_desc_md
+      obj.build_rights_md
+      obj.build_tech_md
+      obj.build_id_md
+
+      druid = DruidTools::Druid.new(obj.pid, '/dor/assembly')
+      md_dir = Pathname.new druid.metadata_dir
+
+      cm_xml =<<-XML
+      <?xml version="1.0"?>
+      <contentMetadata objectId="#{druid.id}">
+          <resource type="image" sequence="1" id="#{druid.id}_1">
+              <label>Image 1</label>
+              <file preserve="yes" publish="no" shelve="no" id="image111.tif">
+              </file>
+          </resource>
+      </contentMetadata>
+      XML
+
+      File.open(md_dir + 'contentMetadata.xml', 'w') do |f|
+        f.write cm_xml
+      end
+
+      # copy tif to content_dir
+      FileUtils.cp(File.join(ROBOT_ROOT, 'spec', 'fixtures', 'image111.tif'), druid.content_dir)
+
+      obj.initialize_workflow 'assemblyWF'
+
+      puts "Created #{obj.pid} for assemblyWF"
     end
 
     def build_desc_md
@@ -84,6 +119,11 @@ module Dor
       File.open(druid.metadata_dir + "/technicalMetadata.xml", 'w') do |f|
         f.write xml
       end
+    end
+
+    def build_id_md
+      @i.identityMetadata.add_value 'objectType', 'item'
+      @i.identityMetadata.save
     end
 
     def init_accession_wf
