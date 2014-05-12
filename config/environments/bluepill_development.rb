@@ -57,9 +57,9 @@ Bluepill.application 'common-accessioning',
       # process.pid_file = "#{WORKDIR}/run/#{wf}.pid"
 
       # graceful stops
-      process.stop_grace_time = 60.seconds # must be greater than stop_signals total
+      process.stop_grace_time = 360.seconds # must be greater than stop_signals total
       process.stop_signals = [
-        :quit, 45.seconds, # waits for jobs, then exits gracefully
+        :quit, 300.seconds, # waits for jobs, then exits gracefully
         :term, 10.seconds, # kills jobs and exits
         :kill              # no mercy
       ]
