@@ -12,7 +12,7 @@ gem "rspec"
 gem 'net-ssh-krb'
 gem 'resque'
 gem "pry-debugger", '0.2.2', :platform => :ruby_19
-gem 'robot-controller'
+gem 'robot-controller', '>= 0.3.0'
 gem 'slop'
 
 group :test do
