@@ -38,10 +38,11 @@ GEM
     bagit (0.3.2)
       docopt (~> 0.5.0)
       validatable (~> 1.6)
-    bluepill (0.0.66)
-      activesupport (>= 3.0.0, < 4.0.0)
-      daemons (~> 1.1.4)
-      i18n (>= 0.5.0)
+    blue-daemons (1.1.11)
+    bluepill (0.0.67)
+      activesupport (>= 3, < 4.1)
+      blue-daemons (~> 1.1.11)
+      i18n (~> 0.5)
       state_machine (~> 1.1)
     builder (3.0.4)
     capistrano (3.1.0)
@@ -219,9 +220,8 @@ GEM
       vegas (~> 0.1.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    robot-controller (0.1.2)
-      bluepill (~> 0.0.64)
-      resque (~> 1.25.2)
+    robot-controller (0.3.0)
+      bluepill (~> 0.0.67)
     rsolr (1.0.9)
       builder (>= 2.1.2)
     rsolr-ext (1.0.3)
@@ -310,7 +310,7 @@ DEPENDENCIES
   pry-debugger (= 0.2.2)
   rake
   resque
-  robot-controller
+  robot-controller (>= 0.3.0)
   rspec
   simplecov
   slop

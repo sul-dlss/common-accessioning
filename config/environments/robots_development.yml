@@ -1,0 +1,86 @@
+#
+#  Robot allocation strategy
+#
+#  Format:
+#
+#    host:
+#      - robot[:lane[:instances]]
+#
+#  where
+#    1. robot is a single robot identifier (fully-qualified with
+#       REPO_SUITE_ROBOT, e.g., "dor_accessionWF_technical-metadata").
+#    2. lane is a single integer (4), a range (3-5), or a list (2,4,8), 
+#       or an asterix (*).
+#    3. instances is a single integer.
+#
+#  Both lane and instances are optional. Lane defaults to *, and 
+#  instances defaults to 1.
+#
+#  When a robot is allocated to multiple lanes, it reads them in
+#  PRIORITY ORDER. That is, if a robot is listening to lanes 1, 2, and 3,
+#  it works on lane 1 until empty, then lane 2 until empty, and then
+#  lane 3 until empty. In the meantime, if a job comes in on a faster
+#  lane, it works on that after finishing it's current job (i.e., after
+#  working on a job in lane 3, if a job comes in on lane 1 in the intermin,
+#  the robot will work on the lane 1 job next before returning to lane 3).
+#
+#  In general, lanes 1-5 are reserved for priority queues, and lanes 6-N
+#  are dedicated lanes. 
+#
+#  Note that the syntax is YAML, so the lists must not contain spaces or
+#  needs to be quoted.
+#  
+#    RIGHT
+#      - dor_accessionWF_technical-metadata:10:5
+#      - 'dor_accessionWF_technical-metadata : 10 : 5'
+#
+#    WRONG
+#      - dor_accessionWF_technical-metadata : 10 : 5
+#      - dor_accessionWF_technical-metadata: 10: 5
+#
+
+#
+# Robot 1 (8 CPU) hosts shelving and publish only
+#
+sul-robots1-dev:
+  - dor_accessionWF_shelve:*:3                # 3 robots for all lanes
+  - dor_accessionWF_shelve:6:3                # 3 robots for lane 6
+  - dor_accessionWF_shelve:7:3                # 3 robots for lane 7
+  - dor_accessionWF_shelve:8:3                # 3 robots for lane 8
+  - dor_accessionWF_shelve:9:3                # 3 robots for lane 9
+  - dor_accessionWF_shelve:10:3               # 3 robots for lane 10
+  - dor_accessionWF_publish:1-5:3             # 3 robots for lanes 1 through 5
+  - dor_accessionWF_publish:6:3               # 3 robots for lane 6
+  - dor_accessionWF_publish:7:3               # 3 robots for lane 7
+  - dor_accessionWF_publish:8:3               # 3 robots for lane 8
+  - dor_accessionWF_publish:9:3               # 3 robots for lane 9
+  - dor_accessionWF_publish:10:3              # 3 robots for lane 10
+  - dor_accessionWF_publish:6,9               # 1 robot for lane 6 and 9
+
+#
+# Robot 2 (16 CPU) hosts technical metadata creation only
+#
+sul-robots2-dev:
+  - dor_accessionWF_technical-metadata:1:5    # 5 robots for lane 1
+  - dor_accessionWF_technical-metadata:2:5    # 5 robots for lane 2
+  - dor_accessionWF_technical-metadata:3-5:5  # 5 robots for lanes 3, 4, 5
+  - dor_accessionWF_technical-metadata:6:2    # 2 robots for lane 6
+  - dor_accessionWF_technical-metadata:7:2    # 2 robots for lane 7
+  - dor_accessionWF_technical-metadata:8:2    # 2 robots for lane 8
+  - dor_accessionWF_technical-metadata:9:2    # 2 robots for lane 9
+  - dor_accessionWF_technical-metadata:10:2   # 2 robots for lane 10
+
+#
+# Robot 3 (4 CPU) hosts helper robots for all accessioning workflows
+#
+sul-robots3-dev:
+  - dor_accessionWF_descriptive-metadata      # 1 robot for all lanes
+  - dor_accessionWF_rights-metadata           # 1 robot for all lanes
+  - dor_accessionWF_content-metadata          # 1 robot for all lanes
+  - dor_accessionWF_technical-metadata        # 1 robot for all lanes
+  - dor_accessionWF_remediate-object          # 1 robot for all lanes
+  - dor_accessionWF_shelve:*:5                # 5 robots for all lanes
+  - dor_accessionWF_publish:*:10              # 10 robots for all lanes
+  - dor_accessionWF_provenance-metadata       # 1 robot for all lanes
+  - dor_accessionWF_sdr-ingest-transfer       # 1 robot for all lanes
+  - dor_accessionWF_end-accession             # 1 robot for all lanes
