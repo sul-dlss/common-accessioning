@@ -15,7 +15,7 @@
 #          - an asterix (*).
 #    3. instances is a single integer.
 #
-#  Both lane and instances are optional. Lane defaults to *, and 
+#  Both lane and instances are optional. Lane defaults to 'default', and 
 #  instances defaults to 1.
 #
 #  When a robot is allocated to multiple lanes, it reads them in
@@ -44,12 +44,13 @@
 # Robot 1 (8 CPU) hosts shelving and publish only
 #
 sul-robots1-dev:
-  - dor_accessionWF_shelve:A:3                # 3 robots for lane A
+  - dor_accessionWF_shelve:A                  # 1 robot for lane A
   - dor_accessionWF_shelve:B:3                # 3 robots for lane B
   - dor_accessionWF_shelve:C:3                # 3 robots for lane C
   - dor_accessionWF_shelve:D:3                # 3 robots for lane D
   - dor_accessionWF_shelve:E:3                # 3 robots for lane E
   - dor_accessionWF_shelve:*:3                # 3 robots for all lanes
+  - dor_accessionWF_shelve::3                 # 3 robots for default lane
   - dor_accessionWF_publish:A,C:3             # 3 robots for lanes A and C
   - dor_accessionWF_publish:B,D,E             # 1 robot for lanes B, D and E
   - dor_accessionWF_descriptive-metadata      # 1 robot for all lanes
@@ -72,13 +73,13 @@ sul-robots2-dev:
 # Robot 3 (4 CPU) hosts helper robots for all accessioning workflows
 #
 sul-robots3-dev:
-  - dor_accessionWF_descriptive-metadata      # 1 robot for all lanes
-  - dor_accessionWF_rights-metadata           # 1 robot for all lanes
-  - dor_accessionWF_content-metadata          # 1 robot for all lanes
-  - dor_accessionWF_technical-metadata        # 1 robot for all lanes
-  - dor_accessionWF_remediate-object          # 1 robot for all lanes
-  - dor_accessionWF_shelve                    # 1 robot for all lanes
-  - dor_accessionWF_publish                   # 1 robot for all lanes
-  - dor_accessionWF_provenance-metadata       # 1 robot for all lanes
-  - dor_accessionWF_sdr-ingest-transfer       # 1 robot for all lanes
-  - dor_accessionWF_end-accession             # 1 robot for all lanes
+  - dor_accessionWF_descriptive-metadata      # 1 robot for default lane
+  - dor_accessionWF_rights-metadata           # 1 robot for default lane
+  - dor_accessionWF_content-metadata          # 1 robot for default lane
+  - dor_accessionWF_technical-metadata        # 1 robot for default lane
+  - dor_accessionWF_remediate-object          # 1 robot for default lane
+  - dor_accessionWF_shelve                    # 1 robot for default lane
+  - dor_accessionWF_publish                   # 1 robot for default lane
+  - dor_accessionWF_provenance-metadata       # 1 robot for default lane
+  - dor_accessionWF_sdr-ingest-transfer       # 1 robot for default lane
+  - dor_accessionWF_end-accession             # 1 robot for default lane
