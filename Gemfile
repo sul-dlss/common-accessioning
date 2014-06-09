@@ -1,18 +1,19 @@
 source "https://rubygems.org"
 source "http://sul-gems-prod.stanford.edu"
 
-gem "dor-services", "~> 4.6"
+gem "activesupport"
+gem "dor-services", "~> 4.7"
 gem "lyber-core", "~> 3.2", ">=3.2.1"
 gem "daemons"
 gem "jhove-service", ">=1.0.2"
 gem "pony"
 gem "whenever"
 gem "rake"
-gem "rspec"
+gem "rspec", "2.14.1"
 gem 'net-ssh-krb'
 gem 'resque'
 gem "pry-debugger", '0.2.2', :platform => :ruby_19
-gem 'robot-controller', '>= 0.3.0'
+gem 'robot-controller', '~> 0.3', '>= 0.3.2'
 gem 'slop'
 
 group :test do

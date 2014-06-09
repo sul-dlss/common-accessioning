@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+# Will run remove one object, or a list of objects, from DOR by druid
+
+require 'bundler/setup'
+require 'slop'
+
+slop = Slop.new do
+  banner 'Usage: nuke [options]'
+  on :e, :environment=, 'Environment to run against.  \'production\' is not valid'
+  on :d, :druid=, 'One druid to run the robot with'
+  on :f, :file=, 'One file containing a druid per line'
+end
+
+slop.parse
+opts = slop.to_h
+
+unless opts[:druid] || opts[:file]
+  puts "Druid or File required"
+  puts slop.banner
+  exit 1
+end
+
+if opts[:environment] =~ /production/i || ENV['ROBOT_ENVIRONMENT'] =~ /production/i
+  puts "Cannot run nuke script in production"
+  exit 1
+end
+
+ENV['ROBOT_ENVIRONMENT'] = opts[:environment] unless opts[:environment].nil?
+require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
+
+if opts[:druid]
+  Dor::CleanupService.nuke! opts[:druid]
+  puts "#{opts[:druid]} nuked"
+  exit 0
+end
+
+# Nuke a file of druids
+druids = IO.readlines(opts[:file]).map {|l| l.strip}
+druids.each do |druid|
+  begin
+    Dor::CleanupService.nuke! druid
+    puts "#{druid} nuked"
+  rescue => e
+    puts "Unable to nuke #{druid}: #{e.message}"
+    puts e.backtrace.join("\n")
+  end
+end
