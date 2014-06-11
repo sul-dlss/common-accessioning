@@ -1,6 +1,3 @@
-# config valid only for Capistrano 3.1
-lock '3.1.0'
-
 set :application, 'common-accessioning'
 set :repo_url, 'https://github.com/sul-dlss/common-accessioning.git'
 
