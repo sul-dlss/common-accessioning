@@ -207,7 +207,7 @@ GEM
       vegas (~> 0.1.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    robot-controller (0.3.3)
+    robot-controller (0.3.4)
       bluepill (~> 0.0.67)
       resque (~> 1.25.2)
     rsolr (1.0.10)
@@ -296,7 +296,7 @@ DEPENDENCIES
   pry-debugger (= 0.2.2)
   rake
   resque
-  robot-controller (~> 0.3, >= 0.3.3)
+  robot-controller (~> 0.3, >= 0.3.4)
   rspec (= 2.14.1)
   simplecov
   slop
