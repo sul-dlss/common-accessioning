@@ -34,7 +34,7 @@ GEM
     activesupport (3.2.17)
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
-    addressable (2.3.6)
+    addressable (2.3.5)
     assembly-utils (1.3.0)
       activeresource
       activesupport
@@ -283,6 +283,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  addressable (= 2.3.5)
   assembly-utils
   capistrano (~> 3.0)
   capistrano-bundler (~> 1.1)

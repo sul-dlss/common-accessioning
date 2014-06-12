@@ -10,6 +10,7 @@ gem "whenever"
 gem "rake"
 gem "rspec"
 gem 'net-ssh-krb'
+gem 'addressable', '2.3.5'
 
 
 group :test do
