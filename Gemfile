@@ -2,13 +2,13 @@ source "https://rubygems.org"
 source "http://sul-gems-prod.stanford.edu"
 
 gem "dor-services", "~> 4.6.6.2"
-gem "lyber-core"
+gem "lyber-core", "~> 2.4"
 gem "daemons"
 gem "jhove-service", ">=1.0.2"
 gem "pony"
 gem "whenever"
 gem "rake"
-gem "rspec"
+gem "rspec", "<2.99"
 gem 'net-ssh-krb'
 gem 'addressable', '2.3.5'
 
