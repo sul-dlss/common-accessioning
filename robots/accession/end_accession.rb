@@ -13,7 +13,7 @@ module Robots
         def perform(druid)
           obj = Dor::Item.find(druid)
           obj.clear_diff_cache
-          obj.initiate_workflow 'disseminationWF'
+          obj.initialize_workflow 'disseminationWF'
         end
       end
 
