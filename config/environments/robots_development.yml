@@ -50,7 +50,6 @@ sul-robots1-dev:
   - dor_accessionWF_shelve:D:3                # 3 robots for lane D
   - dor_accessionWF_shelve:E:3                # 3 robots for lane E
   - dor_accessionWF_shelve:*:3                # 3 robots for all lanes
-  - dor_accessionWF_shelve::3                 # 3 robots for default lane
   - dor_accessionWF_publish:A,C:3             # 3 robots for lanes A and C
   - dor_accessionWF_publish:B,D,E             # 1 robot for lanes B, D and E
   - dor_accessionWF_descriptive-metadata      # 1 robot for all lanes
