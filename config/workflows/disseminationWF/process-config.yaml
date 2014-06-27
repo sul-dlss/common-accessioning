@@ -1,6 +1,0 @@
-cleanup:
-    prerequisite:
-    batch_limit: 1000
-    error_limit: 10
-
-repository: dor
