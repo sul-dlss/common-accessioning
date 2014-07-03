@@ -31,6 +31,6 @@ puts "Loading config from #{env_file}"
 require env_file
 
 require 'resque'
-Resque.redis = REDIS_URL || "localhost:6379/resque:#{ENV['ROBOT_ENVIRONMENT']}"
+Resque.redis = defined? REDIS_URL ? REDIS_URL : "localhost:6379/resque:#{ENV['ROBOT_ENVIRONMENT']}"
 
 require 'robot-controller'

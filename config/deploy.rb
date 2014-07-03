@@ -43,7 +43,7 @@ namespace :deploy do
       within release_path do
         test :bundle, :exec, :controller, :stop
         test :bundle, :exec, :controller, :quit
-        test :bundle, :exec, :controller, :boot
+        exec :bundle, :exec, :controller, :boot
       end
     end
   end
