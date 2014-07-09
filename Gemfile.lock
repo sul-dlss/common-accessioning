@@ -77,7 +77,7 @@ GEM
     diff-lcs (1.2.5)
     docile (1.1.5)
     docopt (0.5.0)
-    dor-services (4.11.0)
+    dor-services (4.11.1)
       active-fedora (~> 5.7.1)
       activesupport (~> 3.2, >= 3.2.18)
       confstruct (~> 0.2.2)
@@ -300,7 +300,7 @@ DEPENDENCIES
   capistrano-bundler (~> 1.1)
   daemons
   debugger
-  dor-services (~> 4.11)
+  dor-services (~> 4.11.1)
   holepicker (~> 0.3, >= 0.3.3)
   jhove-service (>= 1.0.2)
   lyber-core (~> 3.2, >= 3.2.1)
