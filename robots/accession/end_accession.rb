@@ -11,12 +11,31 @@ module Robots
         end
 
         def perform(druid)
-          obj = Dor::Item.find(druid)
-          obj.clear_diff_cache
-          obj.initialize_workflow 'disseminationWF'
+          druid_obj = Dor::Item.find(druid)
+          druid_obj.clear_diff_cache
+
+          #Call the default disseminationWF in all cases
+          druid_obj.initialize_workflow "disseminationWF"
+          
+          #Search for the specialized workflow
+          next_disseminationWF = get_special_disseminationWF(druid_obj)
+          if next_disseminationWF != "disseminationWF" and next_disseminationWF != "" 
+            druid_obj.initialize_workflow next_disseminationWF
+          end
+        end
+        
+        def get_special_disseminationWF(druid_obj)
+          apo = druid_obj.admin_policy_object
+          if apo.nil? 
+            raise "#{druid_obj.id} doesn't have a valid apo"
+          end
+
+          adminMetadata = apo.datastreams['administrativeMetadata'].content
+          adminMetadata_xml = Nokogiri::XML( adminMetadata)
+          next_disseminationWF = adminMetadata_xml.xpath("//administrativeMetadata/dissemination/workflow/@id").text
+          return next_disseminationWF
         end
       end
-
     end
   end
 end
