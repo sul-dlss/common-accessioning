@@ -35,6 +35,7 @@ require 'accession/rights_metadata'
 require 'accession/sdr_ingest_transfer'
 require 'accession/shelve'
 require 'accession/technical_metadata'
+require 'accession/archive_workspace'
 require 'dissemination/cleanup'
 
 env_file = File.expand_path(File.dirname(__FILE__) + "/./environments/#{environment}")
