@@ -14,14 +14,15 @@ module Robots
           druid_obj = Dor::Item.find(druid)
           druid_obj.clear_diff_cache
 
-          #Call the default disseminationWF in all cases
-          druid_obj.initialize_workflow "disseminationWF"
           
           #Search for the specialized workflow
           next_disseminationWF = get_special_disseminationWF(druid_obj)
           if next_disseminationWF != "disseminationWF" and next_disseminationWF != "" 
             druid_obj.initialize_workflow next_disseminationWF
           end
+
+          #Call the default disseminationWF in all cases
+          druid_obj.initialize_workflow "disseminationWF"
         end
         
         def get_special_disseminationWF(druid_obj)
