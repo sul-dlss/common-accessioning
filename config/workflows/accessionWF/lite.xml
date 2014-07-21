@@ -10,5 +10,6 @@
   <process name="publish" status="waiting" lifecycle="published"/>
   <process name="sdr-ingest-transfer" status="skipped" />
   <process name="sdr-ingest-received" status="completed" lifecycle="deposited"/>
+  <process name="reset-workspace" status="waiting" />
   <process name="end-accession" status="waiting" lifecycle="accessioned"/>
 </workflow>
