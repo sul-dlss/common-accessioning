@@ -16,6 +16,7 @@ gem "pry-debugger", '0.2.2', :platform => :ruby_19
 gem 'robot-controller', '~> 0.3', '>= 0.3.5'
 gem 'slop'
 gem 'addressable', '2.3.5'
+gem 'nokogiri' , '1.6.2.1'
 
 group :test do
 	gem "simplecov"
