@@ -4,7 +4,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
 
 opt = ARGV.shift
 if opt =~ /create/i
-  Dor::AccessionLite.create
+  apo_druid = ARGV.shift
+  Dor::AccessionLite.create apo_druid
 elsif opt =~ /reset/i
   druid = ARGV.shift
   Dor::AccessionLite.reset druid

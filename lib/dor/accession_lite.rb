@@ -1,13 +1,17 @@
 module Dor
 
   class AccessionLite
-
-    def self.create
-      Dor::AccessionLite.new.build
+    
+    def self.create apo_druid_id
+      puts ">#{apo_druid_id.nil?}<"
+      if apo_druid_id.nil? or apo_druid_id == ""
+        apo_druid_id = "druid:fg586rn4119"
+      end
+      Dor::AccessionLite.new.build apo_druid_id
     end
 
-    def build
-      create
+    def build apo_druid_id
+      create apo_druid_id
       build_desc_md
       build_rights_md
       build_tech_md
@@ -17,8 +21,11 @@ module Dor
       @i.pid
     end
 
-    def create
+    def create apo_druid_id
       @i = Dor::Item.new
+      apo = Dor::AdminPolicyObject.find apo_druid_id
+      @i.admin_policy_object = apo
+      
       begin
         @i.save
       rescue => e
