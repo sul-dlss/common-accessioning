@@ -6,7 +6,7 @@
   <process name="technical-metadata" status="waiting"/>
   <process name="provenance-metadata" status="waiting"/>
   <process name="remediate-object" status="waiting"/>
-  <process name="shelve" status="skipped"/>
+  <process name="shelve" status="waiting"/>
   <process name="publish" status="waiting" lifecycle="published"/>
   <process name="sdr-ingest-transfer" status="skipped" />
   <process name="sdr-ingest-received" status="completed" lifecycle="deposited"/>
