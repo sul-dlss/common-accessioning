@@ -12,8 +12,6 @@ module Robots
 
         def perform(druid)
           druid_obj = Dor::Item.find(druid)
-          druid_obj.clear_diff_cache
-
           
           #Search for the specialized workflow
           next_disseminationWF = get_special_disseminationWF(druid_obj)
