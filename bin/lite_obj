@@ -12,5 +12,5 @@ elsif opt =~ /reset/i
 elsif opt =~ /assembly/i
   Dor::AccessionLite.create_assembly
 else
-  puts "Usage: lite_obj create OR lite_obj reset [druid] OR lite_obj assembly"
+  puts "Usage: lite_obj create [apo_druid] OR lite_obj reset [druid] OR lite_obj assembly"
 end
