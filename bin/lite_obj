@@ -6,6 +6,9 @@ opt = ARGV.shift
 if opt =~ /create/i
   apo_druid = ARGV.shift
   Dor::AccessionLite.create apo_druid
+elsif opt =~ /blast/i
+  apo_druid = ARGV.shift
+  100.times.each {Dor::AccessionLite.create apo_druid}
 elsif opt =~ /reset/i
   druid = ARGV.shift
   Dor::AccessionLite.reset druid
