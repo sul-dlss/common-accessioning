@@ -131,7 +131,7 @@ GEM
       nokogiri (>= 1.4.3.1)
     json (1.8.1)
     libxml-ruby (2.7.0)
-    lyber-core (3.2.3)
+    lyber-core (3.2.4)
       dor-workflow-service (~> 1.7)
     lyber-utils (0.1.2)
       bagit (>= 0.1.0)
