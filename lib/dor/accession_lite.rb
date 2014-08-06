@@ -1,11 +1,13 @@
 module Dor
 
   class AccessionLite
-    
+
+    DEFAULT_APO = 'druid:fg586rn4119'
+
     def self.create apo_druid_id
       puts ">#{apo_druid_id.nil?}<"
       if apo_druid_id.nil? or apo_druid_id == ""
-        apo_druid_id = "druid:fg586rn4119"
+        apo_druid_id = DEFAULT_APO
       end
       Dor::AccessionLite.new.build apo_druid_id
     end
@@ -25,7 +27,7 @@ module Dor
       @i = Dor::Item.new
       apo = Dor::AdminPolicyObject.find apo_druid_id
       @i.admin_policy_object = apo
-      
+
       begin
         @i.save
       rescue => e
@@ -49,7 +51,7 @@ module Dor
     end
 
     def build_assembly
-      create ''
+      create DEFAULT_APO
       build_desc_md
       build_tech_md '/dor/assembly'
       build_rights_md
