@@ -49,7 +49,7 @@ module Dor
     end
 
     def build_assembly
-      create
+      create ''
       build_desc_md
       build_tech_md '/dor/assembly'
       build_rights_md
