@@ -39,6 +39,7 @@ task :app_version do
   puts File.read(File.expand_path('../VERSION',__FILE__)).chomp
 end
 
+desc 'Load complete environment into rake process'
 task :environment do
   require_relative 'config/boot'
 end

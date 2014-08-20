@@ -1,5 +1,12 @@
+# config valid only for Capistrano 3.1
+# lock '3.2.1'
+
 set :application, 'common-accessioning'
 set :repo_url, 'https://github.com/sul-dlss/common-accessioning.git'
+set :branch, 'master'
+
+# set :rvm_type, :system
+# set :rvm_ruby_string, 'ruby-1.9.3-p484'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
@@ -41,8 +48,14 @@ namespace :deploy do
   task :restart do
     on roles(:app), in: :sequence, wait: 10 do
       within release_path do
+        # Uncomment  with the first deploy 
+        # execute :bundle, :install
+        
+        # Comment with the first deploy
         test :bundle, :exec, :controller, :stop
         test :bundle, :exec, :controller, :quit
+        
+        # Always call the boot
         execute :bundle, :exec, :controller, :boot
       end
     end
