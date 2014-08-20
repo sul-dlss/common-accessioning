@@ -2,7 +2,7 @@ source "https://rubygems.org"
 source "http://sul-gems-prod.stanford.edu"
 
 gem "activesupport"
-gem "dor-services", "~> 4.12.1"
+gem "dor-services", "~> 4.13"
 gem "lyber-core", "~> 3.2", ">=3.2.3"
 gem "daemons"
 gem "jhove-service", ">=1.0.2"
