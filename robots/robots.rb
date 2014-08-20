@@ -1,3 +1,4 @@
+# Put each of your robots here and they will be included via config/boot.rb
 require 'accession/abstract_metadata'
 require 'accession/content_metadata'
 require 'accession/descriptive_metadata'
