@@ -6,4 +6,4 @@ Capistrano::OneTimeKey.generate_one_time_key!
 set :deploy_environment, 'production'
 set :whenever_environment, fetch(:deploy_environment)
 
-set :copy_exclude ['bin/nuke'] # no-no for production
+set :copy_exclude, ['bin/nuke'] # no-no for production
