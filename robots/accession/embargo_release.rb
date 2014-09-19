@@ -46,7 +46,7 @@ def release_items(query, embargo_msg="embargo", &release_block)
     rescue Exception => e
       msg = "!!! Unable to release embargo for: #{druid}\n" << e.inspect << "\n" << e.backtrace.join("\n")
       LyberCore::Log.error(msg)
-      Dor::WorkflowService.update_workflow_error_status 'dor', druid, 'accessionWF', 'embargo-release', "#{e.to_s}"
+      Dor::WorkflowService.update_workflow_error_status 'dor', druid, 'disseminationWF', 'embargo-release', "#{e.to_s}"
     end
   end
 
