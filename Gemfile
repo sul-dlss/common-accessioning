@@ -31,7 +31,6 @@ group :development do
 	gem "yard"
 	gem "capistrano", '~> 3.0'
   gem 'capistrano-bundler', '~> 1.1'
-  gem "lyberteam-capistrano-devel", '3.0.0.pre1'
-  gem 'holepicker', '~> 0.3', '>= 0.3.3'
+  gem "lyberteam-capistrano-devel", '3.1.0.pre1'
 end
 
