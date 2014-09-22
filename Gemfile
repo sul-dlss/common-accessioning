@@ -1,5 +1,4 @@
 source "https://rubygems.org"
-source "http://sul-gems-prod.stanford.edu"
 
 gem "activesupport"
 gem "dor-services", "~> 4.13"
