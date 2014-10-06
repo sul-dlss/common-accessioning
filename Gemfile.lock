@@ -79,7 +79,7 @@ GEM
     diff-lcs (1.2.5)
     docile (1.1.5)
     docopt (0.5.0)
-    dor-services (4.13.0)
+    dor-services (4.14.3)
       active-fedora (~> 5.7.1)
       activesupport (~> 3.2, >= 3.2.18)
       confstruct (~> 0.2.2)
@@ -204,7 +204,7 @@ GEM
     rdf-xsd (1.0.2.1)
       nokogiri (>= 1.5.0)
       rdf (>= 0.3.4)
-    rdoc (4.1.1)
+    rdoc (4.1.2)
       json (~> 1.4)
     redis (3.1.0)
     redis-namespace (1.5.1)
@@ -299,7 +299,7 @@ DEPENDENCIES
   capistrano-bundler (~> 1.1)
   daemons
   debugger
-  dor-services (~> 4.13)
+  dor-services (~> 4.14)
   jhove-service (>= 1.0.2)
   lyber-core (~> 3.2, >= 3.2.3)
   lyberteam-capistrano-devel (~> 3.1)
