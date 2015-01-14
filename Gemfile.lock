@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/sul-dlss/dor-services.git
-  revision: 4f0b8ab3f50371e7bd6798898fae1da9d41607f5
+  revision: 68b48fdbf27251b0d664d6da480a60baad5327c4
   branch: iiif-pres
   specs:
     dor-services (4.15.4)
@@ -137,11 +137,11 @@ GEM
       ffi (>= 1.0.1)
     hooks (0.3.6)
       uber (~> 0.0.4)
-    i18n (0.6.11)
+    i18n (0.7.0)
     iso-639 (0.2.5)
     jhove-service (1.0.3)
       nokogiri (>= 1.4.3.1)
-    json (1.8.1)
+    json (1.8.2)
     lyber-core (3.3.0)
       dor-workflow-service (~> 1.7)
     lyber-utils (0.1.2)
