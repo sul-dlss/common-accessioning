@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 gem "activesupport"
-gem "dor-services", "~> 4.15"
+gem "dor-services", :git => 'https://github.com/sul-dlss/dor-services.git', :branch => 'iiif-pres'
 gem "lyber-core", "~> 3.2", ">=3.2.3"
 gem "daemons"
 gem "jhove-service", ">=1.0.2"
@@ -16,6 +16,7 @@ gem 'robot-controller', '~> 1.0'
 gem 'slop'
 gem 'addressable', '2.3.5'
 gem 'nokogiri' , '1.6.2.1'
+gem 'osullivan', :git => 'https://github.com/sul-dlss/osullivan.git', :branch => 'as-32'
 
 group :test do
 	gem "simplecov"
