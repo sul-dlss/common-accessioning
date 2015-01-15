@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/sul-dlss/dor-services.git
-  revision: 68b48fdbf27251b0d664d6da480a60baad5327c4
+  revision: 1176e2c93b238b10a06e77378a87d64d51a23373
   branch: iiif-pres
   specs:
     dor-services (4.15.4)
