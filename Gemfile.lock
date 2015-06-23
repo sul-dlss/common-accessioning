@@ -324,6 +324,7 @@ DEPENDENCIES
   net-ssh-krb
   nokogiri (= 1.6.2.1)
   pony
+  pry
   pry-byebug
   pry-debugger
   rake
