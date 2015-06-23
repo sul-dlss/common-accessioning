@@ -17,7 +17,7 @@ LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, "log", "embargo_release.log"))
 # It will then load each item from Dor, and call the block with the item
 # @param [String] query used to locate druids of items to release from solr
 # @param [String] embargo_msg embargo type used in log messages (embargo vs 20% visibilty embargo)
-# @param [Proc] release_bloc gets executed after loading the object from DOR and opening new version
+# @yield [Dor::Item] gets executed after loading the object from DOR and opening new version
 #  Steps needed to release the particular embargo from the item
 def release_items(query, embargo_msg="embargo", &release_block)
   # Find objects to process
