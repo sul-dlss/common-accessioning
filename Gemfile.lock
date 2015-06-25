@@ -330,7 +330,7 @@ DEPENDENCIES
   pry-debugger
   rake
   resque
-  robot-controller (~> 1.0)
+  robot-controller (~> 2.0)
   rspec (= 2.14.1)
   simplecov
   slop
@@ -338,4 +338,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.10.4
+   1.10.5
