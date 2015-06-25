@@ -13,11 +13,9 @@ namespace :doc do
       yt.files   =  Dir.glob(File.join(project_root, 'lib', '*.rb')) + 
                     Dir.glob(File.join(project_root, 'lib', '**', '*.rb')) +
                     Dir.glob(File.join(project_root, 'robots', '**', '*.rb')) +
-                    Dir.glob(File.join(project_root, 'models', '**', '*.rb')) +
-                   [ File.join(project_root, 'README.rdoc') ] +
-                   [ File.join(project_root, 'README') ] 
+                    Dir.glob(File.join(project_root, 'models', '**', '*.rb'))
                                       
-      yt.options = ['--output-dir', doc_destination, '--readme', 'README.rdoc']
+      yt.options = ['--output-dir', doc_destination, '--readme', 'README.md']
     end
   rescue LoadError
     desc "Generate YARD Documentation"

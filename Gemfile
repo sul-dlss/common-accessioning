@@ -11,6 +11,7 @@ gem "rake"
 gem "rspec", "2.14.1"
 gem 'net-ssh-krb'
 gem 'resque'
+gem 'pry'
 gem "pry-debugger", :platform => :ruby_19
 gem "pry-byebug", :platform => [:ruby_20, :ruby_21]
 gem 'robot-controller', '~> 1.0'
