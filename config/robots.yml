@@ -1,0 +1,13 @@
+- dor_accessionWF_content-metadata
+- dor_accessionWF_descriptive-metadata
+- dor_accessionWF_embargo-release
+- dor_accessionWF_end-accession
+- dor_accessionWF_provenance-metadata
+- dor_accessionWF_publish
+- dor_accessionWF_remediate-object
+- dor_accessionWF_reset-workspace
+- dor_accessionWF_rights-metadata
+- dor_accessionWF_sdr-ingest-transfer
+- dor_accessionWF_shelve
+- dor_accessionWF_technical-metadata
+- dor_disseminationWF_cleanup

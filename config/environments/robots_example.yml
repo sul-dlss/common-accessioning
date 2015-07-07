@@ -14,6 +14,7 @@
 #          - a list of identiers ('A,B,C'), or 
 #          - an asterix (*).
 #    3. instances is a single integer.
+#    4. host can be the hostname or '*' for any host
 #
 #  Both lane and instances are optional. Lane defaults to 'default', and 
 #  instances defaults to 1.
@@ -39,24 +40,24 @@
 #      - dor_accessionWF_technical-metadata : A : 5
 #      - dor_accessionWF_technical-metadata: A: 5
 #
-sul-robots1-dev:
+robot1-dev:
   - dor_accessionWF_descriptive-metadata
   - dor_accessionWF_rights-metadata
   - dor_accessionWF_content-metadata
   - dor_accessionWF_technical-metadata
 
-sul-robots2-dev:
+robot2-dev:
   - dor_accessionWF_remediate-object
   - dor_accessionWF_provenance-metadata
   - dor_disseminationWF_cleanup
 
-sul-robots3-dev:
+robot3-dev:
   - dor_accessionWF_shelve
 
-sul-robots4-dev:
+robot4-dev:
   - dor_accessionWF_publish
 
-sul-robots5-dev:
+robot5-dev:
   - dor_accessionWF_sdr-ingest-transfer
   - dor_accessionWF_reset-workspace
   - dor_accessionWF_end-accession
