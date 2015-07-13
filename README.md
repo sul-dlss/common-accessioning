@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sul-dlss/common-accessioning.svg?branch=master)](https://travis-ci.org/sul-dlss/common-accessioning)
+
 # DOR common-accessioning Robots
 
 ## An overview of the workflow
