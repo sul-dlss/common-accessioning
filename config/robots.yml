@@ -1,3 +1,6 @@
+#
+# robots.yml - Provides the complete list of all robots in this suite
+#
 - dor_accessionWF_content-metadata
 - dor_accessionWF_descriptive-metadata
 - dor_accessionWF_embargo-release
