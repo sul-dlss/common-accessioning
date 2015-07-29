@@ -17,7 +17,7 @@ gem "pry-byebug", :platform => [:ruby_20, :ruby_21]
 gem 'robot-controller', '~> 2.0'
 gem 'slop'
 gem 'addressable', '2.3.5'
-gem 'nokogiri' , '1.6.2.1'
+gem 'nokogiri'
 
 group :test do
 	gem "simplecov"
