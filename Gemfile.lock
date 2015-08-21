@@ -232,7 +232,7 @@ GEM
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
     retries (0.0.5)
-    robot-controller (2.0.2)
+    robot-controller (2.0.3)
       bluepill (= 0.0.68)
       rake (~> 10.3)
       resque (~> 1.25.2)
@@ -335,3 +335,6 @@ DEPENDENCIES
   slop
   whenever
   yard
+
+BUNDLED WITH
+   1.10.6
