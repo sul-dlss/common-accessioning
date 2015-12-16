@@ -11,7 +11,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../config/boot')
 
 # Turn off active_fedora updates of solr
 ENABLE_SOLR_UPDATES = false
-LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, "log", "embargo_release.log"))
+LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, 'log', 'embargo_release.log'))
 
 # Finds druids from solr based on the passed in query
 # It will then load each item from Dor, and call the block with the item
@@ -19,23 +19,23 @@ LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, "log", "embargo_release.log"))
 # @param [String] embargo_msg embargo type used in log messages (embargo vs 20% visibilty embargo)
 # @yield [Dor::Item] gets executed after loading the object from DOR and opening new version
 #  Steps needed to release the particular embargo from the item
-def release_items(query, embargo_msg="embargo", &release_block)
+def release_items(query, embargo_msg = 'embargo', &release_block)
   # Find objects to process
-  LyberCore::Log.info("***** Querying solr: " << query)
-  solr = Dor::SearchService.query(query, "rows" => "5000", "fl" => "id")
+  LyberCore::Log.info('***** Querying solr: ' << query)
+  solr = Dor::SearchService.query(query, 'rows' => '5000', 'fl' => 'id')
 
-  num_found = solr["response"]["numFound"]
-  if(num_found == 0)
-    LyberCore::Log.info("No objects to process")
+  num_found = solr['response']['numFound']
+  if (num_found == 0)
+    LyberCore::Log.info('No objects to process')
     return
   end
   LyberCore::Log.info("Found #{num_found} objects")
 
   druid = ''
   count = 0
-  solr["response"]["docs"].each do |doc|
+  solr['response']['docs'].each do |doc|
     begin
-      druid = doc["id"]
+      druid = doc['id']
       LyberCore::Log.info("Releasing #{embargo_msg} for #{druid}")
       ei = Dor::Item.find(druid)
       ei.open_new_version
@@ -55,12 +55,12 @@ end
 
 def release
   release_items("embargoMetadata_status_t:'embargoed' AND embargo_release_date_dt:[* TO NOW]") do |item|
-    item.release_embargo("application:accessionWF:embargo-release")
+    item.release_embargo('application:accessionWF:embargo-release')
   end
 
   release_items("embargoMetadata_twenty_pct_status_t:'embargoed' AND twenty_pct_visibility_release_date_dt:[* TO NOW]",
-                "20% visibility embargo") do |item|
-    item.release_20_pct_vis_embargo("application:accessionWF:embargo-release")
+                '20% visibility embargo') do |item|
+    item.release_20_pct_vis_embargo('application:accessionWF:embargo-release')
   end
 end
 

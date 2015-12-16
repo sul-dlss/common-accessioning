@@ -12,7 +12,7 @@ module Robots
 
         def perform(druid)
           obj = Dor::Item.find(druid)
-          obj.build_provenanceMetadata_datastream('accessionWF','DOR Common Accessioning completed')
+          obj.build_provenanceMetadata_datastream('accessionWF', 'DOR Common Accessioning completed')
         end
 
       end
@@ -20,5 +20,3 @@ module Robots
     end
   end
 end
-
-

@@ -85,15 +85,6 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Max: 27
 
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/AndOr:
-  Exclude:
-    - 'lib/dor/accession_lite.rb'
-    - 'robots/accession/end_accession.rb'
-    - 'robots/dissemination/cleanup.rb'
-
 # Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, ProceduralMethods, FunctionalMethods, IgnoredMethods.
@@ -143,15 +134,6 @@ Style/Documentation:
     - 'robots/accession/shelve.rb'
     - 'robots/accession/technical_metadata.rb'
     - 'robots/dissemination/cleanup.rb'
-
-# Offense count: 6
-# Cop supports --auto-correct.
-Style/EmptyLines:
-  Exclude:
-    - 'Rakefile'
-    - 'bin/fix_xsums.rb'
-    - 'integration_tests/versioning/versioning_spec.rb'
-    - 'old_cap/Capfile'
 
 # Offense count: 8
 # Cop supports --auto-correct.
@@ -259,13 +241,6 @@ Style/MethodDefParentheses:
 Style/MethodName:
   Enabled: false
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, MinBodyLength, SupportedStyles.
-Style/Next:
-  Exclude:
-    - 'bin/fix_xsums.rb'
-
 # Offense count: 12
 # Cop supports --auto-correct.
 # Configuration parameters: PreferredDelimiters.
@@ -279,14 +254,6 @@ Style/PercentLiteralDelimiters:
 # Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist.
 Style/PredicateName:
   Exclude:
-    - 'robots/dissemination/cleanup.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: AllowMultipleReturnValues.
-Style/RedundantReturn:
-  Exclude:
-    - 'robots/accession/end_accession.rb'
     - 'robots/dissemination/cleanup.rb'
 
 # Offense count: 1
@@ -313,45 +280,6 @@ Style/SingleLineBlockParams:
 Style/SingleSpaceBeforeFirstArg:
   Exclude:
     - 'robots/accession/sdr_ingest_transfer.rb'
-
-# Offense count: 13
-# Cop supports --auto-correct.
-Style/SpaceAfterComma:
-  Exclude:
-    - 'Gemfile'
-    - 'Rakefile'
-    - 'bin/fix_xsums.rb'
-    - 'bin/run_robot'
-    - 'integration_tests/versioning/versioning_spec.rb'
-    - 'robots/accession/provenance_metadata.rb'
-    - 'robots/dissemination/cleanup.rb'
-
-# Offense count: 7
-# Cop supports --auto-correct.
-Style/SpaceAfterControlKeyword:
-  Exclude:
-    - 'Rakefile'
-    - 'bin/console'
-    - 'bin/fix_xsums.rb'
-    - 'bin/repub'
-    - 'robots/accession/embargo_release.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/SpaceAroundEqualsInParameterDefault:
-  Enabled: false
-
-# Offense count: 16
-# Cop supports --auto-correct.
-# Configuration parameters: MultiSpaceAllowedForOperators.
-Style/SpaceAroundOperators:
-  Exclude:
-    - 'bin/fix_xsums.rb'
-    - 'integration_tests/versioning/assertion_free_version_testing.rb'
-    - 'integration_tests/versioning/versioning_spec.rb'
-    - 'lib/dor/accession_lite.rb'
-    - 'robots/dissemination/cleanup.rb'
 
 # Offense count: 4
 # Cop supports --auto-correct.
@@ -384,12 +312,6 @@ Style/SpecialGlobalVars:
   Exclude:
     - 'config/boot.rb'
 
-# Offense count: 110
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/StringLiterals:
-  Enabled: false
-
 # Offense count: 3
 # Cop supports --auto-correct.
 # Configuration parameters: IgnoredMethods.
@@ -398,44 +320,6 @@ Style/SymbolProc:
     - 'bin/fix_xsums.rb'
     - 'bin/nuke'
     - 'bin/run_robot'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-Style/Tab:
-  Exclude:
-    - 'Gemfile'
-
-# Offense count: 11
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/TrailingBlankLines:
-  Exclude:
-    - 'Gemfile'
-    - 'Rakefile'
-    - 'bin/fix_xsums.rb'
-    - 'config/deploy.rb'
-    - 'integration_tests/spec_helper.rb'
-    - 'integration_tests/versioning/assertion_free_version_testing.rb'
-    - 'lib/dor/accession_lite.rb'
-    - 'lib/tasks/rdoc.rake'
-    - 'robots/accession/content_metadata.rb'
-    - 'robots/accession/descriptive_metadata.rb'
-    - 'robots/accession/provenance_metadata.rb'
-
-# Offense count: 10
-# Cop supports --auto-correct.
-Style/TrailingWhitespace:
-  Exclude:
-    - 'integration_tests/versioning/versioning_spec.rb'
-    - 'lib/tasks/rdoc.rake'
-    - 'robots/accession/end_accession.rb'
-    - 'robots/dissemination/cleanup.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/UnneededCapitalW:
-  Exclude:
-    - 'config/deploy.rb'
 
 # Offense count: 4
 # Configuration parameters: EnforcedStyle, SupportedStyles.

@@ -1,5 +1,5 @@
-$:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
-$:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "robots"))
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', 'robots'))
 
 require 'rubygems'
 require 'bundler/setup'
@@ -7,7 +7,7 @@ require 'logger'
 
 # Load the environment file based on Environment.  Default to development
 environment = ENV['ROBOT_ENVIRONMENT'] ||= 'development'
-ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + "/..")
+ROBOT_ROOT = File.expand_path(File.dirname(__FILE__) + '/..')
 ROBOT_LOG = Logger.new(File.join(ROBOT_ROOT, "log/#{environment}.log"))
 ROBOT_LOG.level = Logger::SEV_LABEL.index(ENV['ROBOT_LOG_LEVEL']) || Logger::INFO
 

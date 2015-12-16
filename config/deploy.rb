@@ -31,7 +31,7 @@ set :log_level, :info
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
-set :stages, %W(dev staging production)
+set :stages, %w(dev staging production)
 
 set :linked_dirs, %w(log run config/environments config/certs)
 
@@ -51,4 +51,3 @@ namespace :deploy do
   after :publishing, :restart
 
 end
-

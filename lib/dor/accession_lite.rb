@@ -6,7 +6,7 @@ module Dor
 
     def self.create apo_druid_id
       puts ">#{apo_druid_id.nil?}<"
-      if apo_druid_id.nil? or apo_druid_id == ""
+      if apo_druid_id.nil? || apo_druid_id == ''
         apo_druid_id = DEFAULT_APO
       end
       Dor::AccessionLite.new.build apo_druid_id
@@ -60,7 +60,7 @@ module Dor
       druid = DruidTools::Druid.new(@i.pid, '/dor/assembly')
       md_dir = Pathname.new druid.metadata_dir
 
-      cm_xml =<<-XML
+      cm_xml = <<-XML
       <?xml version="1.0"?>
       <contentMetadata objectId="#{druid.id}">
           <resource type="image" sequence="1" id="#{druid.id}_1">
@@ -85,7 +85,7 @@ module Dor
     end
 
     def build_desc_md
-      mods_xml =<<-XML
+      mods_xml = <<-XML
       <mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.3" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-3.xsd">
         <titleInfo>
           <title>Dummy title</title>
@@ -97,7 +97,7 @@ module Dor
     end
 
     def build_rights_md
-      r_xml =<<-XML
+      r_xml = <<-XML
       <rightsMetadata objectId="#{@i.pid}">
         <copyright>
           <human>(c) Copyright 2010 by Sebastian Jeremias Osterfeld</human>
@@ -123,13 +123,13 @@ module Dor
     end
 
     def build_tech_md base = Dor::Config.stacks.local_workspace_root
-      xml =<<-XML
+      xml = <<-XML
       <technicalMetadata xmlns:jhove="http://hul.harvard.edu/ois/xml/ns/jhove" xmlns:mix="http://www.loc.gov/mix/v10" xmlns:textmd="info:lc/xmlns/textMD-v3" objectId="#{@i.pid}" datetime="2014-01-27T21:35:32Z">
       </technicalMetadata>
       XML
       druid = DruidTools::Druid.new(@i.pid, base)
       druid.metadata_dir      # build the metadata dir
-      File.open(druid.metadata_dir + "/technicalMetadata.xml", 'w') do |f|
+      File.open(druid.metadata_dir + '/technicalMetadata.xml', 'w') do |f|
         f.write xml
       end
     end

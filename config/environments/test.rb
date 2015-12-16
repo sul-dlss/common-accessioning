@@ -1,1 +1,1 @@
-REDIS_URL = "redis_host"
+REDIS_URL = 'redis_host'

@@ -15,13 +15,13 @@ slop.parse
 opts = slop.to_h
 
 unless opts[:druid] || opts[:file]
-  puts "Druid or File required"
+  puts 'Druid or File required'
   puts slop.banner
   exit 1
 end
 
 if opts[:environment] =~ /production/i || ENV['ROBOT_ENVIRONMENT'] =~ /production/i
-  puts "Cannot run nuke script in production"
+  puts 'Cannot run nuke script in production'
   exit 1
 end
 

@@ -27,47 +27,46 @@ set :shared_children, %w(
   config/environments
 )
 
-set :whenever_command, "bundle exec whenever"
+set :whenever_command, 'bundle exec whenever'
 set :whenever_environment, defer { deploy_env }
 set :whenever_roles, [:app, :db]
-require "whenever/capistrano"
+require 'whenever/capistrano'
 
-set :application, "common-accessioning"
+set :application, 'common-accessioning'
 
 task :dev do
-  role :app, "sul-lyberservices-dev.stanford.edu"
+  role :app, 'sul-lyberservices-dev.stanford.edu'
   set :bundle_without,  []                        # deploy all the gem groups on the dev VM
-  set :deploy_env, "development"
+  set :deploy_env, 'development'
 end
 
 # deploy to the test server with test and development gems for integration testing
 task :integration do
-  role :app, "sul-lyberservices-test.stanford.edu"
+  role :app, 'sul-lyberservices-test.stanford.edu'
   set :bundle_without,  []                        # deploy all the gem groups on the dev VM
-  set :deploy_env, "test"
+  set :deploy_env, 'test'
 end
 
 task :testing do
-  role :app, "sul-lyberservices-test.stanford.edu"
-  set :deploy_env, "test"
+  role :app, 'sul-lyberservices-test.stanford.edu'
+  set :deploy_env, 'test'
 end
 
 task :production do
-  role :app, "sul-lyberservices-prod.stanford.edu"
-  set :deploy_env, "production"
+  role :app, 'sul-lyberservices-prod.stanford.edu'
+  set :deploy_env, 'production'
 end
-set :user, "lyberadmin"
+set :user, 'lyberadmin'
 set :repository do
-  msg = "Sunetid: "
+  msg = 'Sunetid: '
   sunetid = Capistrano::CLI.ui.ask(msg)
   "ssh://#{sunetid}@corn.stanford.edu/afs/ir/dev/dlss/git/lyberteam/common-accessioning.git"
 end
-set :branch, "jan-update"
+set :branch, 'jan-update'
 set :deploy_to, "/home/#{user}/#{application}"
 set :deploy_via, :copy
 set :copy_cache, :true
-set :copy_exclude, [".git"]
-
+set :copy_exclude, ['.git']
 
 # These are robots that run as background daemons.  They are automatically restarted at deploy time
 set :robots, %w(content-metadata descriptive-metadata rights-metadata remediate-object publish shelve technical-metadata provenance-metadata end-accession sdr-ingest-transfer)
@@ -80,14 +79,14 @@ namespace :dlss do
 end
 
 # Tasks and methods that deal with starting and stopping the disseminationWF:cleanup robot
-before "deploy:update", "stop_cleanup"
-after "dlss:start_robots", "start_cleanup"
+before 'deploy:update', 'stop_cleanup'
+after 'dlss:start_robots', 'start_cleanup'
 
 # If anything goes wrong, undo.
-before "deploy:rollback", "stop_cleanup"
+before 'deploy:rollback', 'stop_cleanup'
 
 def cleanup_cmd(action)
-  base_cmd = "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_robot " << action << " disseminationWF:cleanup"
+  base_cmd = "cd #{current_path}; ROBOT_ENVIRONMENT=#{deploy_env} ./bin/run_robot " << action << ' disseminationWF:cleanup'
 end
 
 task :start_cleanup do

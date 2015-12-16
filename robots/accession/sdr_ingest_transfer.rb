@@ -12,7 +12,7 @@ module Robots
 
         def perform(druid)
           obj = Dor::Item.find(druid)
-          obj.sdr_ingest_transfer("")
+          obj.sdr_ingest_transfer('')
         end
       end
 
