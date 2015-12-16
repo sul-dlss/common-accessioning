@@ -1,0 +1,13 @@
+inherit_from: .rubocop_todo.yml
+
+# rspec expect{...} is conventional
+Style/SpaceBeforeBlockBraces:
+  Exclude:
+    - 'spec/**/*_spec.rb'
+
+Style/EmptyLineBetweenDefs:
+  AllowAdjacentOneLineDefs: true
+
+# Configuration parameters: AllowURI, URISchemes.
+Metrics/LineLength:
+  Max: 200
