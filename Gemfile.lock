@@ -153,7 +153,7 @@ GEM
     mediashelf-loggable (0.4.10)
     method_source (0.8.2)
     mime-types (2.6.2)
-    mini_portile (0.6.2)
+    mini_portile2 (2.0.0)
     moab-versioning (1.4.4)
       confstruct
       json
@@ -176,8 +176,8 @@ GEM
       gssapi (~> 1.2.0)
       net-ssh (>= 2.0)
     netrc (0.10.3)
-    nokogiri (1.6.6.2)
-      mini_portile (~> 0.6.0)
+    nokogiri (1.6.7.2)
+      mini_portile2 (~> 2.0.0.rc2)
     nokogiri-happymapper (0.5.9)
       nokogiri (~> 1.5)
     nom-xml (0.5.3)
