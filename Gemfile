@@ -8,8 +8,7 @@ gem 'jhove-service', '>=1.0.2'
 gem 'pony'
 gem 'whenever'
 gem 'rake'
-gem 'rspec', '~> 2.99'
-gem 'net-ssh-krb'
+gem 'rspec', '~> 3.0'
 gem 'resque'
 gem 'pry'
 gem 'pry-byebug', :platform => [:ruby_20, :ruby_21]
@@ -30,5 +29,5 @@ group :development do
   gem 'yard'
   gem 'capistrano', '~> 3.0'
   gem 'capistrano-bundler', '~> 1.1'
-  gem 'lyberteam-capistrano-devel', '~> 3.1'
+  gem 'dlss-capistrano', '~> 3.1'
 end
