@@ -10,6 +10,6 @@ describe Robots::DorRepo::Accession::ProvenanceMetadata do
 
   it 'has a ROBOT_ROOT' do
     guessed_robot_root = File.expand_path(File.dirname(__FILE__) + '/../../..')
-    ROBOT_ROOT.should eql(guessed_robot_root)
+    expect(ROBOT_ROOT).to eql(guessed_robot_root)
   end
 end
