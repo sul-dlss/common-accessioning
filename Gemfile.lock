@@ -14,13 +14,13 @@ GEM
       rsolr
       rubydora (~> 1.6)
       solrizer (~> 2.1)
-    activemodel (3.2.22)
-      activesupport (= 3.2.22)
+    activemodel (3.2.22.1)
+      activesupport (= 3.2.22.1)
       builder (~> 3.0.0)
-    activeresource (3.2.22)
-      activemodel (= 3.2.22)
-      activesupport (= 3.2.22)
-    activesupport (3.2.22)
+    activeresource (3.2.22.1)
+      activemodel (= 3.2.22.1)
+      activesupport (= 3.2.22.1)
+    activesupport (3.2.22.1)
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
     addressable (2.3.5)
@@ -81,14 +81,14 @@ GEM
     diff-lcs (1.2.5)
     docile (1.1.5)
     docopt (0.5.0)
-    domain_name (0.5.25)
+    domain_name (0.5.20160128)
       unf (>= 0.0.5, < 1.0.0)
-    dor-services (4.22.3)
+    dor-services (4.23.0)
       active-fedora (~> 5.7.1)
       activesupport (~> 3.2, >= 3.2.18)
       addressable (= 2.3.5)
       confstruct (~> 0.2.7)
-      dor-workflow-service (~> 1.7, >= 1.7.7)
+      dor-workflow-service (~> 1.7.7)
       druid-tools (~> 0.4, >= 0.4.1)
       equivalent-xml (~> 0.5, >= 0.5.1)
       json (~> 1.8.1)
@@ -152,7 +152,7 @@ GEM
       mime-types (>= 1.16, < 3)
     mediashelf-loggable (0.4.10)
     method_source (0.8.2)
-    mime-types (2.6.2)
+    mime-types (2.99)
     mini_portile2 (2.0.0)
     moab-versioning (1.4.4)
       confstruct
@@ -175,16 +175,16 @@ GEM
     net-ssh-krb (0.4.0)
       gssapi (~> 1.2.0)
       net-ssh (>= 2.0)
-    netrc (0.10.3)
+    netrc (0.11.0)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     nokogiri-happymapper (0.5.9)
       nokogiri (~> 1.5)
-    nom-xml (0.5.3)
+    nom-xml (0.5.4)
       activesupport (>= 3.2.18)
       i18n
       nokogiri
-    om (1.8.0)
+    om (1.8.1)
       activemodel
       activesupport
       deprecation
@@ -297,7 +297,7 @@ GEM
     uber (0.0.15)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.1)
+    unf_ext (0.0.7.2)
     uuidtools (2.1.5)
     validatable (1.6.7)
     vegas (0.1.11)
@@ -336,3 +336,6 @@ DEPENDENCIES
   slop
   whenever
   yard
+
+BUNDLED WITH
+   1.11.2
