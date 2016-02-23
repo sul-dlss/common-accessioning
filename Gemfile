@@ -1,11 +1,9 @@
 source 'https://rubygems.org'
 
 gem 'activesupport'
-gem 'dor-services', '~> 5.2'
-gem 'lyber-core', '~> 3.2', '>=3.2.3'
-gem 'daemons'
+gem 'dor-services', '~> 5.4', '>= 5.4.2'
+gem 'lyber-core', '~> 4.0'
 gem 'jhove-service', '>=1.0.2'
-gem 'pony'
 gem 'whenever'
 gem 'rake'
 gem 'rspec', '~> 3.0'
@@ -14,7 +12,6 @@ gem 'pry'
 gem 'pry-byebug', :platform => [:ruby_20, :ruby_21]
 gem 'robot-controller', '~> 2.0'
 gem 'slop'
-gem 'addressable', '2.3.5'
 gem 'nokogiri'
 
 group :test do
