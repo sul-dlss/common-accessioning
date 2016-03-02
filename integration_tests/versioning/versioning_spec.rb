@@ -63,7 +63,7 @@ describe 'Digital Object Versioning' do
     old.cleanup unless old.nil?
     Assembly::Utils.cleanup_object pid, [:stacks, :dor]
     Assembly::Utils.delete_all_workflows pid
-    Dor::WorkflowService.delete_workflow 'sdr', pid, 'sdrIngestWF'
+    Dor::Config.workflow.client.delete_workflow 'sdr', pid, 'sdrIngestWF'
   end
 
   def copy_supp_file_1_to_stacks
@@ -93,8 +93,8 @@ describe 'Digital Object Versioning' do
 
     before(:each) do
       # mock call to get lifecycle so that object is 'accessioned' but not yet 'opened'
-      Dor::WorkflowService.should_receive(:get_lifecycle).with('dor', pid, 'accessioned').and_return(true)
-      Dor::WorkflowService.should_receive(:get_active_lifecycle).with('dor', pid, 'opened').twice.and_return(nil)
+      Dor::Config.workflow.client.should_receive(:get_lifecycle).with('dor', pid, 'accessioned').and_return(true)
+      Dor::Config.workflow.client.should_receive(:get_active_lifecycle).with('dor', pid, 'opened').twice.and_return(nil)
 
       obj.open_new_version
       copy_to_stacks
