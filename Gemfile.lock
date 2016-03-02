@@ -130,7 +130,7 @@ GEM
       nokogiri (>= 1.4.3.1)
     json (1.8.3)
     link_header (0.0.8)
-    lyber-core (4.0.2)
+    lyber-core (4.0.3)
       activesupport
       dor-workflow-service (>= 1.7, < 3)
     lyber-utils (0.1.2)
@@ -312,7 +312,7 @@ DEPENDENCIES
   dlss-capistrano (~> 3.1)
   dor-services (~> 5.5, >= 5.5.1)
   jhove-service (>= 1.0.2)
-  lyber-core (~> 4.0)
+  lyber-core (~> 4.0, >= 4.0.3)
   nokogiri
   pry
   pry-byebug
