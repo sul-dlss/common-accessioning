@@ -15,8 +15,8 @@ xml = <<-XML
 </workflow>
 XML
 
-Dor::WorkflowService.create_workflow 'dor', i.pid, 'testWF', xml
-Dor::WorkflowService.archive_workflow 'dor', i.pid, 'testWF'
+Dor::Config.workflow.client.create_workflow 'dor', i.pid, 'testWF', xml
+Dor::Config.workflow.client.archive_workflow 'dor', i.pid, 'testWF'
 
 i.open_new_version
 i.new_version_open?

@@ -52,10 +52,10 @@ LOG.warn %(Issue with SDR #{xsum_type} checksum comparison)
 end
 
 def update_wf(druid)
-  doc = Nokogiri::XML(Dor::WorkflowService.get_workflow_xml('dor', druid, 'accessionWF'))
+  doc = Nokogiri::XML(Dor::Config.workflow.client.get_workflow_xml('dor', druid, 'accessionWF'))
   errs = doc.xpath('//process[not(@archived) and @status="error"]')
   errs.map{|node| node['name']}.select{|name| name =~ /technical-metadata|shelve/ }.each do |proc|
-    Dor::WorkflowService.update_workflow_status 'dor', druid, 'accessionWF', proc, 'waiting'
+    Dor::Config.workflow.client.update_workflow_status 'dor', druid, 'accessionWF', proc, 'waiting'
   end
 end
 

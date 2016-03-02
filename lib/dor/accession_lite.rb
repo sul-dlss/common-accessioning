@@ -141,7 +141,7 @@ module Dor
 
     def init_accession_wf
       wf_xml = IO.read(File.join(ROBOT_ROOT, 'config', 'workflows', 'accessionWF', 'lite.xml'))
-      Dor::WorkflowService.create_workflow 'dor', @i.pid, 'accessionWF', wf_xml
+      Dor::Config.workflow.client.create_workflow 'dor', @i.pid, 'accessionWF', wf_xml
     end
 
   end
