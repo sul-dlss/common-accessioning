@@ -3,9 +3,7 @@ module Robots
   module DorRepo
     module Accession
 
-      class EndAccession
-        include LyberCore::Robot
-
+      class EndAccession < Robots::DorRepo::Accession::Base
         def initialize
           super('dor', 'accessionWF', 'end-accession')
         end

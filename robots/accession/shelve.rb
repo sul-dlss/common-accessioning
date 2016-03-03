@@ -2,9 +2,7 @@ module Robots
   module DorRepo
     module Accession
 
-      class Shelve
-        include LyberCore::Robot
-
+      class Shelve < Robots::DorRepo::Accession::Base
         def initialize
           super('dor', 'accessionWF', 'shelve')
         end

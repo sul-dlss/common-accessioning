@@ -26,6 +26,10 @@ module Robots
           truncate_druid_tree = DruidTools::AccessDruid.new(druid, workspace_root)
           (!Dir.glob(truncate_druid_tree.path).empty? && !Dir.glob(full_druid_tree.path + '*').empty?)
         end
+
+        def workflow_service
+          Dor::Config.workflow.client
+        end
       end
     end
   end

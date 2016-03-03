@@ -5,9 +5,7 @@ module Robots
   module DorRepo
     module Accession
 
-      class Publish
-        include LyberCore::Robot
-
+      class Publish < Robots::DorRepo::Accession::Base
         def initialize
           super('dor', 'accessionWF', 'publish')
         end

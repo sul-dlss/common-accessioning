@@ -6,8 +6,7 @@ module Robots
   module DorRepo
     module Accession
 
-      class AbstractMetadata
-        include LyberCore::Robot
+      class AbstractMetadata < Robots::DorRepo::Accession::Base
 
         def self.params
           { :process_name => nil, :datastream => nil }

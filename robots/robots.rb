@@ -1,3 +1,4 @@
+require 'accession/base'
 require 'accession/abstract_metadata'
 require 'accession/content_metadata'
 require 'accession/descriptive_metadata'
