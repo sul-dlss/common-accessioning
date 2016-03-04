@@ -3,9 +3,7 @@ module Robots
   module DorRepo
     module Accession
 
-      class ResetWorkspace
-        include LyberCore::Robot
-
+      class ResetWorkspace < Robots::DorRepo::Accession::Base
         def initialize
           super('dor', 'accessionWF', 'reset-workspace')
         end

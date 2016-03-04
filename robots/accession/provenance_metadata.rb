@@ -3,9 +3,7 @@ module Robots
   module DorRepo
     module Accession
 
-      class ProvenanceMetadata
-        include LyberCore::Robot
-
+      class ProvenanceMetadata < Robots::DorRepo::Accession::Base
         def initialize
           super('dor', 'accessionWF', 'provenance-metadata')
         end
