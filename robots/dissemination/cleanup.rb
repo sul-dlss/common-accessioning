@@ -3,8 +3,7 @@ module Robots
   module DorRepo
     module Dissemination
 
-      class Cleanup
-        include LyberCore::Robot
+      class Cleanup < Robots::DorRepo::Dissemination::Base
 
         def initialize
           super('dor', 'disseminationWF', 'cleanup')
@@ -25,10 +24,6 @@ module Robots
           full_druid_tree = DruidTools::Druid.new(druid, workspace_root)
           truncate_druid_tree = DruidTools::AccessDruid.new(druid, workspace_root)
           (!Dir.glob(truncate_druid_tree.path).empty? && !Dir.glob(full_druid_tree.path + '*').empty?)
-        end
-
-        def workflow_service
-          Dor::Config.workflow.client
         end
       end
     end
