@@ -10,6 +10,11 @@ module Robots
         end
       end
 
+      def perform(druid)
+        super(druid)
+      rescue Dor::Exception => e
+        LyberCore::Log.warn "technical-metadata: #{druid}: Ignoring #{e}"
+      end
     end
   end
 end
