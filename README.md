@@ -1,5 +1,10 @@
 [![Build Status](https://travis-ci.org/sul-dlss/common-accessioning.svg?branch=master)](https://travis-ci.org/sul-dlss/common-accessioning)
 
+
+# Documentation
+
+Check the [Wiki](https://github.com/sul-dlss/robot-master/wiki) in the robot-master repo.
+
 # DOR common-accessioning Robots
 
 ## An overview of the workflow
