@@ -80,7 +80,7 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     dor-rights-auth (1.1.0)
       nokogiri
-    dor-services (5.8.0)
+    dor-services (5.8.1)
       active-fedora (~> 6.0)
       activesupport (>= 3.2.18)
       confstruct (~> 0.2.7)
@@ -309,7 +309,7 @@ DEPENDENCIES
   capistrano (~> 3.0)
   capistrano-bundler (~> 1.1)
   dlss-capistrano (~> 3.1)
-  dor-services (~> 5.8.0)
+  dor-services (~> 5.8.1)
   jhove-service (>= 1.0.2)
   lyber-core (~> 4.0, >= 4.0.3)
   nokogiri
