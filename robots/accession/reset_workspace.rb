@@ -9,7 +9,7 @@ module Robots
         end
 
         def perform(druid)
-          druid_obj = Dor::find(druid)
+          druid_obj = Dor.find(druid)
           version = druid_obj.current_version
 
           workspace_root = Dor::Config.stacks.local_workspace_root

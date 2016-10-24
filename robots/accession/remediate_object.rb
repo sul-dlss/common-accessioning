@@ -10,7 +10,7 @@ module Robots
         end
 
         def perform(druid)
-          obj = Dor::Item.find(druid)
+          obj = Dor.find(druid)
           obj.upgrade!
         end
       end

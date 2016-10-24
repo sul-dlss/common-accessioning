@@ -9,7 +9,7 @@ module Robots
         end
 
         def perform(druid)
-          druid_obj = Dor::Item.find(druid)
+          druid_obj = Dor.find(druid)
 
           #Search for the specialized workflow
           next_disseminationWF = get_special_disseminationWF(druid_obj)

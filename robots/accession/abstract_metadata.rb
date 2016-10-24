@@ -17,7 +17,7 @@ module Robots
         end
 
         def perform(druid)
-          obj = Dor::Item.find(druid)
+          obj = Dor.find(druid)
           obj.build_datastream(self.class.params[:datastream], self.class.params[:force] ? true : false, self.class.params[:require] ? true : false)
         end
       end
