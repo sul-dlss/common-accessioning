@@ -2,7 +2,7 @@
 # Compare with SDRs checksums and log any differences
 
 def fix_xsums(druid)
-  i = Dor::Item.find druid
+  i = Dor.find druid
   cmds = i.contentMetadata
   files = cmds.resource.file.id
 

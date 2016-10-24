@@ -10,7 +10,7 @@ describe 'Digital Object Versioning' do
 
   let(:fixture_base) { File.expand_path(File.dirname(__FILE__) + '/../fixtures/versioning') }
   let(:pid) { 'druid:oo000vt0001' }
-  let(:obj) { Dor::Item.find pid }
+  let(:obj) { Dor.find pid }
   let(:wfi) { WfItem.new(pid) }  # Simulates workflow_item passed to the robots
 
   before(:each) do
@@ -59,7 +59,7 @@ describe 'Digital Object Versioning' do
 
   def nuke
     # Nuke from test environment
-    old = Dor::Item.find pid rescue nil
+    old = Dor.find pid rescue nil
     old.cleanup unless old.nil?
     Assembly::Utils.cleanup_object pid, [:stacks, :dor]
     Assembly::Utils.delete_all_workflows pid

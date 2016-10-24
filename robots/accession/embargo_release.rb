@@ -38,7 +38,7 @@ class EmbargoRelease
       begin
         druid = doc['id']
         LyberCore::Log.info("Releasing #{embargo_msg} for #{druid}")
-        ei = Dor::Item.find(druid)
+        ei = Dor.find(druid)
         ei.open_new_version
         release_block.call(ei)
         ei.save

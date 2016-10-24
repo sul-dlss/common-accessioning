@@ -41,7 +41,7 @@ module Dor
     end
 
     def reset druid
-      @i = Dor::Item.find druid
+      @i = Dor.find druid
       build_tech_md
       init_accession_wf
     end
