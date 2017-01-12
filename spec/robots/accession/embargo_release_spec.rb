@@ -6,7 +6,7 @@ describe 'embargo_release.rb' do
   end
 
   before(:each) do
-    allow_any_instance_of(RSolr::Client).to receive(:find) {
+    allow_any_instance_of(RSolr::Client).to receive(:get) {
       {
         'response' => {
           'numFound' => '1',

@@ -14,6 +14,10 @@ gem 'robot-controller', '~> 2.0'
 gem 'slop'
 gem 'nokogiri'
 
+# Pin bluepill to master branch of git since the gem release 0.1.2 is
+# incompatible with rails 5, can remove this when a new gem is released
+gem 'bluepill', git: 'https://github.com/bluepill-rb/bluepill.git'
+
 group :test do
   gem 'simplecov'
   gem 'assembly-utils'
