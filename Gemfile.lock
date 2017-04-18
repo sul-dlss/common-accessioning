@@ -65,7 +65,6 @@ GEM
     chronic (0.10.2)
     coderay (1.1.1)
     confstruct (0.2.7)
-    connection_pool (2.2.1)
     csv-mapper (0.5.1)
       fastercsv
     daemons (1.2.4)
@@ -163,8 +162,7 @@ GEM
     mono_logger (1.1.0)
     multi_json (1.11.2)
     multipart-post (2.0.0)
-    net-http-persistent (3.0.0)
-      connection_pool (~> 2.2)
+    net-http-persistent (2.9.4)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-sftp (2.1.2)
@@ -314,6 +312,7 @@ DEPENDENCIES
   dor-services (~> 5.11)
   jhove-service (>= 1.1.1)
   lyber-core (~> 4.0, >= 4.0.3)
+  net-http-persistent (~> 2)
   nokogiri
   pry
   pry-byebug
