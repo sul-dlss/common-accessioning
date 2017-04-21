@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'activesupport'
-gem 'dor-services', '~> 5.11'
+gem 'dor-services', '~> 5.23'
 gem 'lyber-core', '~> 4.0', '>= 4.0.3'
 gem 'jhove-service', '>=1.1.1'
 gem 'whenever'
