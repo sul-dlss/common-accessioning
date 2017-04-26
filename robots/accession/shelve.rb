@@ -9,7 +9,7 @@ module Robots
 
         def perform(druid)
           obj = Dor.find(druid)
-          obj.shelve
+          obj.shelve if obj.respond_to? :shelve
         end
 
       end

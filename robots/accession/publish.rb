@@ -12,7 +12,7 @@ module Robots
 
         def perform(druid)
           obj = Dor.find(druid)
-          obj.publish_metadata
+          obj.publish_metadata if obj.respond_to? :publish_metadata
         end
       end
 
