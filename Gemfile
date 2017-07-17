@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'activesupport'
 gem 'dor-services', '>= 5.23.1', '< 6'
-gem 'lyber-core', '~> 4.0', '>= 4.0.3'
+gem 'lyber-core',  '>=4.1.3'
 gem 'jhove-service', '>=1.1.3'
 gem 'whenever'
 gem 'rake'
@@ -14,6 +14,7 @@ gem 'robot-controller', '~> 2.0'
 gem 'slop'
 gem 'nokogiri'
 gem 'net-http-persistent', '~>2' # net-http-persistent >=3 breaks with faraday 0.12, see https://github.com/lostisland/faraday/issues/617
+gem 'honeybadger'
 
 group :test do
   gem 'simplecov'

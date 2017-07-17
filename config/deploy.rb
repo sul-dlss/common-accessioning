@@ -20,7 +20,7 @@ set :log_level, :info
 # set :pty, true
 
 # Default value for :linked_files is []
-# set :linked_files, %w{config/database.yml}
+set :linked_files, %w{config/honeybadger.yml}
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
@@ -34,6 +34,8 @@ set :log_level, :info
 set :stages, %w(dev staging production)
 
 set :linked_dirs, %w(log run config/environments config/certs)
+
+set :honeybadger_env, fetch(:stage)
 
 namespace :deploy do
 

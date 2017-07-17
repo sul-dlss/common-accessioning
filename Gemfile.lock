@@ -122,6 +122,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     haml (4.0.7)
       tilt
+    honeybadger (3.1.2)
     hooks (0.4.1)
       uber (~> 0.0.14)
     htmlentities (4.3.4)
@@ -157,7 +158,7 @@ GEM
       rdf-xsd (~> 1.1, >= 1.1.5)
       sparql (~> 1.99)
       sparql-client (~> 1.99)
-    lyber-core (4.1.1)
+    lyber-core (4.1.3)
       activesupport
       dor-workflow-service (>= 1.7, < 3)
     lyber-utils (0.1.2)
@@ -389,8 +390,9 @@ DEPENDENCIES
   capistrano-bundler (~> 1.1)
   dlss-capistrano (~> 3.1)
   dor-services (>= 5.23.1, < 6)
+  honeybadger
   jhove-service (>= 1.1.3)
-  lyber-core (~> 4.0, >= 4.0.3)
+  lyber-core (>= 4.1.3)
   net-http-persistent (~> 2)
   nokogiri
   pry
@@ -405,4 +407,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.14.6
+   1.15.2
