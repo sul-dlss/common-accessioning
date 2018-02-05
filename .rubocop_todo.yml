@@ -19,7 +19,6 @@ Lint/DeprecatedClassMethods:
     - 'Gemfile'
     - 'Rakefile'
     - 'bin/fix_xsums.rb'
-    - 'lib/tasks/rdoc.rake'
 
 # Offense count: 3
 Lint/HandleExceptions:
@@ -142,7 +141,6 @@ Style/EmptyLinesAroundBlockBody:
   Exclude:
     - 'config/deploy.rb'
     - 'integration_tests/versioning/versioning_spec.rb'
-    - 'lib/tasks/rdoc.rake'
 
 # Offense count: 4
 # Cop supports --auto-correct.
