@@ -16,9 +16,9 @@ GEM
       deprecation (~> 0.1)
       rdf (~> 1.1)
       rdf-vocab (~> 0.8)
-    activemodel (5.2.0)
-      activesupport (= 5.2.0)
-    activesupport (5.2.0)
+    activemodel (5.1.6)
+      activesupport (= 5.1.6)
+    activesupport (5.1.6)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
@@ -293,7 +293,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport
+  activemodel (~> 5.1.0)
+  activesupport (~> 5.1.0)
   assembly-utils
   capistrano (~> 3.0)
   capistrano-bundler (~> 1.1)
