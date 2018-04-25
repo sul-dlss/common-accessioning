@@ -6,3 +6,13 @@ require bootfile
 
 require 'pry'
 require 'rspec'
+require 'simplecov'
+require 'coveralls'
+
+SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+SimpleCov.start do
+  track_files "bin/**/*"
+  track_files "lib/dor/*.rb"
+  track_files "robots/**/*.rb"
+  add_filter "/spec/"
+end
