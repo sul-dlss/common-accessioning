@@ -1,9 +1,9 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    active-fedora (8.4.2)
+    active-fedora (8.5.0)
       active-triples (~> 0.4.0)
-      activesupport (>= 3.0.0)
+      activesupport (>= 4.2.10)
       deprecation
       nom-xml (>= 0.5.1)
       om (~> 3.1)
@@ -108,7 +108,7 @@ GEM
       activesupport (>= 3.0, < 6.0)
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
-    faraday (0.14.0)
+    faraday (0.15.0)
       multipart-post (>= 1.2, < 3)
     haml (4.0.7)
       tilt
