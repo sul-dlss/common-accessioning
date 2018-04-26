@@ -20,6 +20,7 @@ gem 'honeybadger'
 group :test do
   gem 'simplecov'
   gem 'assembly-utils'
+  gem 'coveralls', require: false
 end
 
 group :development do
