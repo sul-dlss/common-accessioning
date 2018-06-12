@@ -4,6 +4,10 @@
 
 Check the [Wiki](https://github.com/sul-dlss/robot-master/wiki) in the robot-master repo.
 
+## Deploying
+
+When deploying, be aware that the robots servers do not use shared-configs and configuration changes must be made manually. This is currently the case because we deploy several codebases to the robots machine, and we do not have a puppet role that can deploy shared-configs to several projects.
+
 # DOR common-accessioning Robots
 
 ## An overview of the workflow
