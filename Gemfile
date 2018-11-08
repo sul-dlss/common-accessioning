@@ -16,6 +16,7 @@ gem 'slop'
 gem 'nokogiri'
 gem 'net-http-persistent', '~>2' # net-http-persistent >=3 breaks with faraday 0.12, see https://github.com/lostisland/faraday/issues/617
 gem 'honeybadger'
+gem 'ed25519'
 
 group :test do
   gem 'simplecov'
