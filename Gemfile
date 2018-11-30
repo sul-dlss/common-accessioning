@@ -14,7 +14,6 @@ gem 'pry-byebug', :platform => [:ruby_20, :ruby_21]
 gem 'robot-controller', '~> 2.0'
 gem 'slop'
 gem 'nokogiri'
-gem 'net-http-persistent', '~>2' # net-http-persistent >=3 breaks with faraday 0.12, see https://github.com/lostisland/faraday/issues/617
 gem 'honeybadger'
 
 group :test do
