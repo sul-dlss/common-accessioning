@@ -12,18 +12,30 @@ describe Robots::DorRepo::Accession::Shelve do
     expect(robot.methods).to include(:work)
   end
 
-  it 'calls .shelve if that method is defined (e.g. item)' do
-    object = double(:shelve => true)
-    expect(Dor).to receive(:find).with(druid).and_return(object)
-    robot = Robots::DorRepo::Accession::Shelve.new
-    robot.perform(druid)
-  end
+  describe '#perform' do
+    let(:robot) { described_class.new }
+    subject(:perform) { robot.perform(druid) }
+    before do
+      allow(Dor::Config.workflow).to receive(:client).and_return(double(get_workflow_status: 'fail'))
+      allow(Dor::Config.workflow).to receive(:url).and_return('http://workflow.sdr/')
+      expect(Dor).to receive(:find).with(druid).and_return(object)
+    end
+    context 'when using an Item' do
+      let(:object) { Dor::Item.new(pid: druid) }
 
-  it 'does not call .shelve if that method is not defined (e.g. apo)' do
-    object = Object.new
-    expect(Dor).to receive(:find).with(druid).and_return(object)
-    robot = Robots::DorRepo::Accession::Shelve.new
-    expect { robot.perform(druid) }.not_to raise_error(NoMethodError) # we want to be sure that we don't call shelve if the method is not defined
-  end
+      it 'calls Shelve' do
+        expect(Dor::Shelve).to receive(:push).with(object)
+        perform
+      end
+    end
 
+    context 'when using an APO' do
+      let(:object) { Dor::AdminPolicyObject.new(pid: druid) }
+
+      it 'does not call Shelve' do
+        expect(Dor::Shelve).not_to receive(:push)
+        perform
+      end
+    end
+  end
 end

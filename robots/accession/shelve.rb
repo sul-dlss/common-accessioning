@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'dor/shelve'
+
 module Robots
   module DorRepo
     module Accession
@@ -11,11 +13,9 @@ module Robots
 
         def perform(druid)
           obj = Dor.find(druid)
-          obj.shelve if obj.respond_to? :shelve
+          Dor::Shelve.push(obj) if obj.is_a? Dor::Item
         end
-
       end
-
     end
   end
 end

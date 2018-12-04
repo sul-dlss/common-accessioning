@@ -5,6 +5,8 @@ environment = ENV['ROBOT_ENVIRONMENT'] = 'test'
 
 require 'simplecov'
 require 'coveralls'
+require 'equivalent-xml/rspec_matchers'
+
 
 SimpleCov.formatter = Coveralls::SimpleCov::Formatter
 SimpleCov.start do

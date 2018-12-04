@@ -21,6 +21,7 @@ gem 'honeybadger'
 group :test do
   gem 'simplecov'
   gem 'coveralls', require: false
+  gem 'equivalent-xml', '~> 0.6.0'
 end
 
 group :development do
