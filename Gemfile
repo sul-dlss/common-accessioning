@@ -29,3 +29,7 @@ group :development do
   gem 'capistrano-bundler', '~> 1.1'
   gem 'dlss-capistrano', '~> 3.1'
 end
+
+group :development, :test do
+  gem 'rubocop', '~> 0.60.0'
+end
