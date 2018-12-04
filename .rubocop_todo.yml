@@ -32,7 +32,7 @@ Layout/EmptyLines:
   Exclude:
     - 'config/deploy/stage.rb'
 
-# Offense count: 5
+# Offense count: 4
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: empty_lines, no_empty_lines
@@ -41,9 +41,8 @@ Layout/EmptyLinesAroundBlockBody:
     - 'config/deploy.rb'
     - 'spec/robots/accession/publish_spec.rb'
     - 'spec/robots/accession/remediate_object_spec.rb'
-    - 'spec/robots/accession/shelve_spec.rb'
 
-# Offense count: 7
+# Offense count: 6
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines, beginning_only, ending_only
@@ -53,7 +52,6 @@ Layout/EmptyLinesAroundClassBody:
     - 'robots/accession/abstract_metadata.rb'
     - 'robots/accession/embargo_release.rb'
     - 'robots/accession/provenance_metadata.rb'
-    - 'robots/accession/shelve.rb'
     - 'robots/dissemination/cleanup.rb'
 
 # Offense count: 2
@@ -62,7 +60,7 @@ Layout/EmptyLinesAroundMethodBody:
   Exclude:
     - 'bin/fix_xsums.rb'
 
-# Offense count: 25
+# Offense count: 24
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines
@@ -224,15 +222,15 @@ Lint/UselessAssignment:
     - 'lib/dor/accession_lite.rb'
     - 'spec/spec_helper.rb'
 
-# Offense count: 3
+# Offense count: 4
 Metrics/AbcSize:
   Max: 31
 
-# Offense count: 3
+# Offense count: 8
 # Configuration parameters: CountComments, ExcludedMethods.
 # ExcludedMethods: refine
 Metrics/BlockLength:
-  Max: 115
+  Max: 122
 
 # Offense count: 1
 # Configuration parameters: CountComments.
@@ -315,7 +313,7 @@ Style/ExpandPathArguments:
   Exclude:
     - 'Rakefile'
 
-# Offense count: 34
+# Offense count: 33
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, UseHashRocketsWithSymbolValues, PreferHashRocketsForNonAlnumEndingSymbols.
 # SupportedStyles: ruby19, hash_rockets, no_mixed_keys, ruby19_no_mixed_keys
@@ -335,7 +333,6 @@ Style/HashSyntax:
     - 'robots/accession/technical_metadata.rb'
     - 'spec/robots/accession/publish_spec.rb'
     - 'spec/robots/accession/remediate_object_spec.rb'
-    - 'spec/robots/accession/shelve_spec.rb'
 
 # Offense count: 5
 # Cop supports --auto-correct.
@@ -464,7 +461,7 @@ Style/UnneededInterpolation:
   Exclude:
     - 'robots/accession/embargo_release.rb'
 
-# Offense count: 73
+# Offense count: 105
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
 Metrics/LineLength:
