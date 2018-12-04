@@ -1,11 +1,14 @@
 require 'rake'
 require 'rake/testtask'
 require 'robot-controller/tasks'
+require 'rubocop/rake_task'
 
 # Import external rake tasks
 Dir.glob('lib/tasks/*.rake').each { |r| import r }
 
-task default: :spec
+RuboCop::RakeTask.new
+
+task default: %i[rubocop spec]
 
 task :clean do
   puts 'Cleaning old coverage.data'
