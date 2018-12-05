@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 # To start an pry session with gems and configuration loaded:
 # [robot_root] $ ./bin/console development
 unless (ARGV.first.nil?)
@@ -8,11 +10,9 @@ end
 require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
 
 silence_warnings do
-  begin
-    require 'pry'
-    IRB = Pry
-  rescue LoadError
-  end
+  require 'pry'
+  IRB = Pry
+rescue LoadError
 end
 
 IRB.start

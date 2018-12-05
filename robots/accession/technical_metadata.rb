@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Initialize technicalMetadata
 
 module Robots

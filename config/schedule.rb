@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 set :output, '/home/lyberadmin/common-accessioning/current/log/crondebug.log'
 
 every :day, :at => '2:16am', :roles => [:db] do

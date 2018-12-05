@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'accession/base'
 require 'accession/abstract_metadata'
 require 'accession/content_metadata'
