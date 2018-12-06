@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'activesupport', '~> 5.1.0' # 5.2.0 breaks: "can't modify frozen ActiveSupport::HashWithIndifferentAccess"
 gem 'activemodel', '~> 5.1.0' # needed so activesupport can be ~> 5.1.0
-gem 'dor-services', '~> 6.0'
+gem 'dor-services', '~> 6.0', '>= 6.0.5'
 gem 'lyber-core',  '>=4.1.3'
 gem 'jhove-service', '>=1.1.3'
 gem 'whenever'
