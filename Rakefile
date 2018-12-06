@@ -1,18 +1,25 @@
 require 'rake'
 require 'rake/testtask'
 require 'robot-controller/tasks'
-require 'rubocop/rake_task'
 
 # Import external rake tasks
 Dir.glob('lib/tasks/*.rake').each { |r| import r }
-
-RuboCop::RakeTask.new
 
 task default: %i[rubocop spec]
 
 task :clean do
   puts 'Cleaning old coverage.data'
   FileUtils.rm('coverage.data') if (File.exists? 'coverage.data')
+end
+
+begin
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new
+rescue LoadError
+  desc 'Run rubocop'
+  task :rubocop do
+    abort 'Please install the rubocop gem to run rubocop.'
+  end
 end
 
 require 'rspec/core/rake_task'
