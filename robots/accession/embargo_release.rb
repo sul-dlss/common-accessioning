@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.expand_path(File.dirname(__FILE__) + '/../../config/boot')
 
 #!/usr/bin/env ruby
@@ -22,7 +24,7 @@ class EmbargoRelease
   #  Steps needed to release the particular embargo from the item
   def self.release_items(query, embargo_msg = 'embargo', &release_block)
     # Find objects to process
-    LyberCore::Log.info('***** Querying solr: ' << query)
+    LyberCore::Log.info("***** Querying solr: #{query}")
     solr = Dor::SearchService.query(query, 'rows' => '5000', 'fl' => 'id')
 
     num_found = solr['response']['numFound']
@@ -35,20 +37,18 @@ class EmbargoRelease
     druid = ''
     count = 0
     solr['response']['docs'].each do |doc|
-      begin
-        druid = doc['id']
-        LyberCore::Log.info("Releasing #{embargo_msg} for #{druid}")
-        ei = Dor.find(druid)
-        ei.open_new_version
-        release_block.call(ei)
-        ei.save
-        ei.close_version :description => "#{embargo_msg} released", :significance => :admin
-        count += 1
-      rescue Exception => e
-        msg = "!!! Unable to release embargo for: #{druid}\n" << e.inspect << "\n" << e.backtrace.join("\n")
-        LyberCore::Log.error(msg)
-        Dor::Config.workflow.client.update_workflow_error_status 'dor', druid, 'disseminationWF', 'embargo-release', "#{e.to_s}"
-      end
+      druid = doc['id']
+      LyberCore::Log.info("Releasing #{embargo_msg} for #{druid}")
+      ei = Dor.find(druid)
+      ei.open_new_version
+      release_block.call(ei)
+      ei.save
+      ei.close_version :description => "#{embargo_msg} released", :significance => :admin
+      count += 1
+    rescue Exception => e
+      msg = "!!! Unable to release embargo for: #{druid}\n" << e.inspect << "\n" << e.backtrace.join("\n")
+      LyberCore::Log.error(msg)
+      Dor::Config.workflow.client.update_workflow_error_status 'dor', druid, 'disseminationWF', 'embargo-release', "#{e.to_s}"
     end
 
     LyberCore::Log.info("Done! Processed #{count} objects out of #{num_found}")

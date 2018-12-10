@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 gem 'activesupport', '~> 5.1.0' # 5.2.0 breaks: "can't modify frozen ActiveSupport::HashWithIndifferentAccess"

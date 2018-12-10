@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Robots
   module DorRepo
     module Dissemination

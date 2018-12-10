@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 server 'sul-robots1-test.stanford.edu', user: 'lyberadmin', roles: %w{web app db} # only server to get whenever cronjobs deployed to
 server 'sul-robots2-test.stanford.edu', user: 'lyberadmin', roles: %w{web app}
 

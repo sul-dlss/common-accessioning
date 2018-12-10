@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Runs all registered dor-services migrations on the object
 
 module Robots

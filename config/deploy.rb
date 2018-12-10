@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 set :application, 'common-accessioning'
 set :repo_url, 'https://github.com/sul-dlss/common-accessioning.git'
 

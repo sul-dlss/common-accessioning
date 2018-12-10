@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Clears the way for the standalone publishing robot to publish
 # the object's metadata to the Digital Stacks' document cache
 

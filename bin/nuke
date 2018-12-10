@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 # Will run remove one object, or a list of objects, from DOR by druid
 
 require 'bundler/setup'
@@ -37,11 +39,9 @@ end
 # Nuke a file of druids
 druids = IO.readlines(opts[:file]).map {|l| l.strip}
 druids.each do |druid|
-  begin
-    Dor::CleanupService.nuke! druid
-    puts "#{druid} nuked"
-  rescue => e
-    puts "Unable to nuke #{druid}: #{e.message}"
-    puts e.backtrace.join("\n")
-  end
+  Dor::CleanupService.nuke! druid
+  puts "#{druid} nuked"
+rescue => e
+  puts "Unable to nuke #{druid}: #{e.message}"
+  puts e.backtrace.join("\n")
 end

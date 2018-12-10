@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Add checksums to all files listed in contentMetadata
 # Compare with SDRs checksums and log any differences
 
@@ -63,12 +65,10 @@ def fix(druid_path)
   druids = IO.readlines(druid_path).map {|l| l.strip}
 
   druids.each do |dr|
-    begin
-      fix_xsums dr
-      LOG.info "Finished #{dr}"
-    rescue Exception => e
-      LOG.error "Skipping #{dr} due to #{e.inspect}\n" << e.backtrace.join("\n")
-    end
+    fix_xsums dr
+    LOG.info "Finished #{dr}"
+  rescue Exception => e
+    LOG.error "Skipping #{dr} due to #{e.inspect}\n" << e.backtrace.join("\n")
   end
 
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Ensures the existence of a given datastream within
 # a digital object, and loads it from the appropriate
 # source if necessary.
