@@ -11,7 +11,7 @@ gem 'rspec', '~> 3.0'
 gem 'resque'
 gem 'pry'
 gem 'pry-byebug', :platform => [:ruby_20, :ruby_21]
-gem 'robot-controller', '~> 2.0'
+gem 'robot-controller', '~> 3.0.0.beta1'
 gem 'slop'
 gem 'nokogiri'
 gem 'honeybadger'
