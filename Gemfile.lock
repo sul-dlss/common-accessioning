@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    active-fedora (8.5.0)
+    active-fedora (8.6.0)
       active-triples (~> 0.4.0)
       activesupport (>= 4.2.10)
       deprecation
@@ -191,7 +191,7 @@ GEM
     rack-protection (2.0.4)
       rack
     rainbow (3.0.0)
-    rake (12.3.1)
+    rake (12.3.2)
     rdf (1.99.1)
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (1.99.0)
