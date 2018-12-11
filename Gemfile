@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gem 'activesupport', '~> 5.1.0' # 5.2.0 breaks: "can't modify frozen ActiveSupport::HashWithIndifferentAccess"
 gem 'activemodel', '~> 5.1.0' # needed so activesupport can be ~> 5.1.0
+gem 'dor-fetcher', '~> 1.3'
 gem 'dor-services', '~> 6.0', '>= 6.0.5'
 gem 'lyber-core',  '>=4.1.3'
 gem 'jhove-service', '>=1.1.3'
@@ -21,6 +22,7 @@ gem 'honeybadger'
 group :test do
   gem 'simplecov'
   gem 'coveralls', require: false
+  gem 'webmock'
 end
 
 group :development do
