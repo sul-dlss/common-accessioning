@@ -69,7 +69,7 @@ RSpec.describe Dor::Release::Item do
     Dor::Release::Item.add_workflow_for_item(@druid)
   end
 
-  it 'should make a webservice call for updating_marc_records' do
+  it 'makes a webservice call for updating_marc_records' do
     stub_request(:post, 'https://example.com/v1/objects/oo000oo0001/update_marc_record')
       .to_return(status: 201, body: '', headers: {})
     expect(@item.update_marc_record).to be_truthy
