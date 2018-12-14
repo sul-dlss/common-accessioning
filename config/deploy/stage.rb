@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
-server 'sul-robots1-test.stanford.edu', user: 'lyberadmin', roles: %w{web app db} # only server to get whenever cronjobs deployed to
-server 'sul-robots2-test.stanford.edu', user: 'lyberadmin', roles: %w{web app}
+server 'common-accessioning-stage.stanford.edu', user: 'lyberadmin', roles: %w{web app db} # only server to get whenever cronjobs deployed to
 
+set :deploy_to, "/opt/app/lyberadmin/#{fetch(:application)}"
+
+set :linked_files, %w{}
 
 Capistrano::OneTimeKey.generate_one_time_key!
 
