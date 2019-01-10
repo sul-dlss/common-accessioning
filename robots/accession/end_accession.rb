@@ -14,7 +14,7 @@ module Robots
 
           # Search for the specialized workflow
           next_dissemination_wf = special_dissemination_wf(druid_obj)
-          if next_dissemination_wf != 'disseminationWF' && next_dissemination_wf.blank?
+          if next_dissemination_wf != 'disseminationWF' && next_dissemination_wf.present?
             druid_obj.initialize_workflow next_dissemination_wf
           end
 
