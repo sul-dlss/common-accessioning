@@ -46,7 +46,7 @@ class EmbargoRelease
       ei.close_version :description => "#{embargo_msg} released", :significance => :admin
       count += 1
     rescue Exception => e
-      msg = "!!! Unable to release embargo for: #{druid}\n" << e.inspect << "\n" << e.backtrace.join("\n")
+      msg = "!!! Unable to release embargo for: #{druid}\n#{e.inspect}\n#{e.backtrace.join("\n")}"
       LyberCore::Log.error(msg)
       Dor::Config.workflow.client.update_workflow_error_status 'dor', druid, 'disseminationWF', 'embargo-release', "#{e.to_s}"
     end

@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-describe 'embargo_release.rb' do
+RSpec.describe 'EmbargoRelease' do
   Dor.configure do
     workflow.url 'http://example.org/workflow'
   end
 
-  before(:each) do
+  before do
     allow_any_instance_of(RSolr::Client).to receive(:get) {
       {
         'response' => {
@@ -55,7 +55,8 @@ describe 'embargo_release.rb' do
     EOXML
   }
 
-  context "release_embargo" do
+  # TODO: #release_embargo is a method on Dor::Item (dor-services). The test should be moved there.
+  describe "#release_embargo" do
     let(:embargo_xml) { <<-EOXML
       <embargoMetadata>
         <status>embargoed</status>
@@ -91,6 +92,7 @@ describe 'embargo_release.rb' do
     end
   end
 
+  # TODO: #release_embargo is a method on Dor::Item (dor-services). The test should be moved there.
   context 'release_20_pct_vis_embargo' do
     let(:embargo_twenty_pct_xml) { <<-EOXML
       <embargoMetadata>
@@ -128,7 +130,29 @@ describe 'embargo_release.rb' do
     end
   end
 
-  it 'attempts to run EmbargoRelease.release' do
-    skip('difficult to test, need to include file to set expectation, but including file executes method call to be tested.  right thing to do would be to refactor into class def file and script execution file.')
+  describe '.release_items' do
+    before do
+      # TODO: just requiring the code runs the code, so we have to do some gymnastics to prevent it from running.
+      allow(Dor::SearchService).to receive(:query).and_return('response' => { 'numFound' => 0 })
+      require_relative '../../../robots/accession/embargo_release'
+    end
+
+    subject(:release_items) { EmbargoRelease.release_items(query, &block) }
+    let(:block) { proc { puts "Hey" } }
+    let(:query) { "foo" }
+    let(:response) do
+      { 'response' => { 'numFound' => 1, 'docs' => [{ 'id' => 'druid:999' }] } }
+    end
+
+    before do
+      expect(Dor::SearchService).to receive(:query).and_return(response)
+      allow(Dor).to receive(:find).and_raise(StandardError, "Not Found")
+    end
+
+    it "handles the error" do
+      expect(LyberCore::Log).to receive(:error).with(/!!! Unable to release embargo for: druid:999\n#<StandardError: Not Found>/)
+      expect(Dor::Config.workflow.client).to receive(:update_workflow_error_status)
+      release_items
+    end
   end
 end
