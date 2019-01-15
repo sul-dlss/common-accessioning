@@ -20,10 +20,13 @@ module Robots
 
         def perform(druid)
           obj = Dor.find(druid)
-          obj.build_datastream(self.class.params[:datastream], self.class.params[:force] ? true : false, self.class.params[:require] ? true : false)
+          builder = Dor::DatastreamBuilder.new(object: obj,
+                                               datastream: self.class.params[:datastream],
+                                               force: self.class.params[:force] ? true : false,
+                                               required: self.class.params[:require] ? true : false)
+          builder.build
         end
       end
-
     end
   end
 end
