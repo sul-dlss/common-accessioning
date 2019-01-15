@@ -5,7 +5,8 @@ server 'common-accessioning-stage-b.stanford.edu', user: 'lyberadmin', roles: %w
 
 Capistrano::OneTimeKey.generate_one_time_key!
 
-set :deploy_environment, 'test'
+# This gets set as the ROBOT_ENVIRONMENT veriable in crontab (via whenever)
+set :deploy_environment, 'production'
 set :whenever_environment, fetch(:deploy_environment)
 set :default_env, { :robot_environment => fetch(:deploy_environment) }
 set :whenever_roles, [:db, :app]
