@@ -38,25 +38,6 @@ From cron:
 * * * * bash --login -c 'cd /path/to/robot_root && ruby./bin/run_robot.rb accessionWF publish' > /home/deploy/crondebug.log 2>&1
 ```
 
-## Lite Objects
-
-If you want to create a minimal `Dor::Item` that will exercise most of the common-accessioning robots, you can create a `Dor::AccessionLite` object.  To use:
-
-- Go to the root of the deployed common-accessioning project
-- To create a new Lite object, run the following:
-
-  ```console
-  ./bin/lite_obj create
-  ```
-- To reset the accessionWF workflow for a lite object, run the following:
-
-  ```console
- ./bin/lite_obj reset {druid}
-  ```
-
-  The actual accessionWF being used is read from the file:
- `ROBOT_ROOT/config/workflows/accessionWF/lite.xml`
-
 ## Non-standard Robots
 
 - public_xml_updater, aka republisher - Republishes public XML if certain datastreams have been updated in Fedora
