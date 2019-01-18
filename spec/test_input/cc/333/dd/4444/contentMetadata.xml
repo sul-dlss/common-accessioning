@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<contentMetadata objectId="cc333dd4444">
+    <resource sequence="1" id="cc333dd4444_1">
+        <label>Image 1</label>
+        <file mimetype="crappy/mimetype" size="100" preserve="yes" publish="no" shelve="no" id="image222.tif">
+            <checksum type="md5">3d5812d6b2506ec96a6bdef5795a888b</checksum>
+        </file>
+        <file mimetype="crappy/again" size="500" preserve="yes" publish="no" shelve="no" id="image222.txt">
+            <checksum type="md5">0929b8b53d900da1ddd1603ec7f29c36</checksum>
+        </file>
+    </resource>
+</contentMetadata>

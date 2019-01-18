@@ -13,3 +13,5 @@ config/certs
 .DS_Store
 .ruby-version
 .ruby-gemset
+/tmp/*
+!/tmp/.keep
