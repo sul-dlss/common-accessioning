@@ -1,0 +1,1 @@
+require 'dor/release/item'

@@ -18,6 +18,8 @@ gem 'pry-byebug', :platform => [:ruby_20, :ruby_21]
 gem 'slop'
 gem 'nokogiri'
 gem 'honeybadger'
+gem 'assembly-image', '>=1.6.9'
+gem 'assembly-objectfile', '>=1.6.6'
 
 group :test do
   gem 'simplecov'
@@ -37,4 +39,5 @@ end
 
 group :development, :test do
   gem 'rubocop', '~> 0.60.0'
+  gem 'byebug'
 end
