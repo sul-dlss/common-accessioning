@@ -52,6 +52,16 @@ Dor::Config.configure do
     iiif_profile 'http://iiif.io/api/image/2/level1.json'
   end
 
+  etd do
+    # location where marc output will be dumped
+    marc_output_directory '/afs/ir/dept/SUL/dsg/libsys/LoadToSymph/ETD'
+
+    # Remote location of ETD content
+    workspace 'lyberadmin@lyberapps-prod.stanford.edu:/home/lyberadmin/workspace/'
+
+    symphony_url 'http://jenson.stanford.edu/cgi-bin/holding.pl?search=location&flexkey='
+  end
+
   dor do
     service_root 'https://USERNAME:PASSWORD@example.com/dor/v1'
   end
