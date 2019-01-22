@@ -18,7 +18,7 @@ module Dor::Assembly
     end
 
     def object
-      @fobj ||= Dor.find(@druid.druid)
+      @object ||= Dor.find(@druid.druid)
     end
 
     def check_for_path

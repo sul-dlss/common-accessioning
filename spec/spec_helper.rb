@@ -45,10 +45,10 @@ def setup_release_item(druid, obj_type, members)
   allow(@release_item).to receive_messages(
     object: @dor_item,
     object_type: obj_type.to_s.downcase,
-    "is_item?": (obj_type == :item),
-    "is_collection?": (obj_type == :collection),
-    "is_set?": (obj_type == :set),
-    "is_apo?": (obj_type == :apo),
+    "item?": (obj_type == :item),
+    "collection?": (obj_type == :collection),
+    "set?": (obj_type == :set),
+    "apo?": (obj_type == :apo),
     members: members
   )
   allow(Dor::Release::Item).to receive_messages(new: @release_item)

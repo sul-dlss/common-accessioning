@@ -74,33 +74,33 @@ describe Dor::Release::Item do
 
   it 'should return correct object types for an item' do
     allow(@dor_object).to receive(:identityMetadata).and_return(Dor::IdentityMetadataDS.from_xml('<identityMetadata><objectType>item</objectType></identityMetadata>'))
-    expect(@item.is_item?).to be_truthy
-    expect(@item.is_collection?).to be_falsey
-    expect(@item.is_set?).to be_falsey
-    expect(@item.is_apo?).to be_falsey
+    expect(@item.item?).to be_truthy
+    expect(@item.collection?).to be_falsey
+    expect(@item.set?).to be_falsey
+    expect(@item.apo?).to be_falsey
   end
 
   it 'should return correct object types for a set' do
     allow(@dor_object).to receive(:identityMetadata).and_return(Dor::IdentityMetadataDS.from_xml('<identityMetadata><objectType>set</objectType></identityMetadata>'))
-    expect(@item.is_item?).to be_falsey
-    expect(@item.is_collection?).to be_falsey
-    expect(@item.is_set?).to be_truthy
-    expect(@item.is_apo?).to be_falsey
+    expect(@item.item?).to be_falsey
+    expect(@item.collection?).to be_falsey
+    expect(@item.set?).to be_truthy
+    expect(@item.apo?).to be_falsey
   end
 
   it 'should return correct object types for a collection' do
     allow(@dor_object).to receive(:identityMetadata).and_return(Dor::IdentityMetadataDS.from_xml('<identityMetadata><objectType>collection</objectType></identityMetadata>'))
-    expect(@item.is_item?).to be_falsey
-    expect(@item.is_collection?).to be_truthy
-    expect(@item.is_set?).to be_falsey
-    expect(@item.is_apo?).to be_falsey
+    expect(@item.item?).to be_falsey
+    expect(@item.collection?).to be_truthy
+    expect(@item.set?).to be_falsey
+    expect(@item.apo?).to be_falsey
   end
 
   it 'should return correct object types for an apo' do
     allow(@dor_object).to receive(:identityMetadata).and_return(Dor::IdentityMetadataDS.from_xml('<identityMetadata><objectType>adminPolicy</objectType></identityMetadata>'))
-    expect(@item.is_item?).to be_falsey
-    expect(@item.is_collection?).to be_falsey
-    expect(@item.is_set?).to be_falsey
-    expect(@item.is_apo?).to be_truthy
+    expect(@item.item?).to be_falsey
+    expect(@item.collection?).to be_falsey
+    expect(@item.set?).to be_falsey
+    expect(@item.apo?).to be_truthy
   end
 end

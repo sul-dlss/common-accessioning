@@ -12,7 +12,7 @@ module Robots
 
         protected
 
-        def with_item(druid, items_only: Dor::Config.configure.assembly.items_only, &block)
+        def with_item(druid, items_only: Dor::Config.configure.assembly.items_only)
           ai = item(druid)
 
           if items_only && !ai.item?

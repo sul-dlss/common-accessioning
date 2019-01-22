@@ -22,12 +22,12 @@ module Dor::Assembly
 
     def content_metadata_exists?
       # indicate if a contentMetadata file exists
-      File.exists?(cm_file_name)
+      File.exist?(cm_file_name)
     end
 
     def stub_content_metadata_exists?
       # indicate if a stub contentMetadata file exists
-      File.exists?(stub_cm_file_name)
+      File.exist?(stub_cm_file_name)
     end
 
     def load_content_metadata
