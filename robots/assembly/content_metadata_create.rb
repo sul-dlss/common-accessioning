@@ -28,6 +28,6 @@ module Robots
           LyberCore::Robot::ReturnState.COMPLETED
         end
       end
-    end # end Assembly module
-  end # end DorRepo module
-end # end Robots module
+    end
+  end
+end
