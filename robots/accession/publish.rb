@@ -14,10 +14,11 @@ module Robots
 
         def perform(druid)
           obj = Dor.find(druid)
-          obj.publish_metadata if obj.respond_to? :publish_metadata
+          return unless obj.is_a?(Dor::Set) || obj.is_a?(Dor::Item)
+
+          Dor::PublishMetadataService.publish(obj)
         end
       end
-
     end
   end
 end
