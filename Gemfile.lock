@@ -133,7 +133,7 @@ GEM
       concurrent-ruby (~> 1.0)
     iso-639 (0.2.8)
     jaro_winkler (1.5.2)
-    jhove-service (1.1.4)
+    jhove-service (1.1.5)
       nokogiri (>= 1.4.3.1)
     json (2.1.0)
     link_header (0.0.8)
@@ -331,7 +331,7 @@ DEPENDENCIES
   dlss-capistrano (~> 3.1)
   dor-services (~> 6.0, >= 6.0.5)
   honeybadger
-  jhove-service (>= 1.1.4)
+  jhove-service (>= 1.1.5)
   lyber-core (>= 4.1.3)
   nokogiri
   pry
