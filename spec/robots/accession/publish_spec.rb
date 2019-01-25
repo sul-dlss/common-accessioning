@@ -2,29 +2,43 @@
 
 require 'spec_helper'
 
-require File.expand_path(File.dirname(__FILE__) + '/../../../robots/accession/publish')
-
-describe Robots::DorRepo::Accession::Publish do
+RSpec.describe Robots::DorRepo::Accession::Publish do
   let(:druid) { 'druid:oo000oo0001' }
+  let(:robot) { Robots::DorRepo::Accession::Publish.new }
 
-  it 'includes behavior from LyberCore::Robot' do
-    robot = Robots::DorRepo::Accession::Shelve.new
-    expect(robot.methods).to include(:work)
-  end
-
-  it 'calls .publish_metadata if that method is defined (e.g. item)' do
-    object = double(:publish_metadata => true)
+  before do
     expect(Dor).to receive(:find).with(druid).and_return(object)
-    robot = Robots::DorRepo::Accession::Publish.new
-    expect(object).to receive(:publish_metadata)
-    robot.perform(druid)
   end
 
-  it 'does not call .publish_metadata if that method is not defined (e.g. apo)' do
-    object = Object.new
-    expect(Dor).to receive(:find).with(druid).and_return(object)
-    robot = Robots::DorRepo::Accession::Publish.new
-    expect { robot.perform(druid) }.not_to raise_error(NoMethodError) # we want to be sure that we don't call publish_metadata if the method is not defined
-  end
+  describe '#perform' do
+    subject(:perform) { robot.perform(druid) }
+    before do
+      allow(Dor::PublishMetadataService).to receive(:publish)
+      perform
+    end
 
+    context 'when called on a Collection' do
+      let(:object) { Dor::Collection.new }
+
+      it 'publishes metadata' do
+        expect(Dor::PublishMetadataService).to have_received(:publish).with(object)
+      end
+    end
+
+    context 'when called on an Item' do
+      let(:object) { Dor::Item.new }
+
+      it 'publishes metadata' do
+        expect(Dor::PublishMetadataService).to have_received(:publish).with(object)
+      end
+    end
+
+    context 'when called on an APO' do
+      let(:object) { Dor::AdminPolicyObject.new }
+
+      it 'does not publish metadata' do
+        expect(Dor::PublishMetadataService).not_to have_received(:publish)
+      end
+    end
+  end
 end
