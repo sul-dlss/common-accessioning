@@ -46,8 +46,3 @@ begin
   end
 end
 require 'robot-controller'
-
-# ActiveFedora::OmDatastream v8.4.2 uses old-style `return false` to break callback cycle
-# Note: This setting is deprecated in ActiveSupport 5.1, removed in 5.2
-# We will need a different fix with the next upgrade.
-ActiveSupport.halt_callback_chains_on_return_false = true
