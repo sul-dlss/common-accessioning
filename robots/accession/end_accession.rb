@@ -4,7 +4,7 @@ module Robots
   module DorRepo
     module Accession
 
-      class EndAccession < Robots::DorRepo::Accession::Base
+      class EndAccession < Robots::DorRepo::Base
         def initialize
           super('dor', 'accessionWF', 'end-accession')
         end
