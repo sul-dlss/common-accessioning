@@ -4,7 +4,7 @@
 module Robots
   module DorRepo
     module Release
-      class ReleaseMembers
+      class ReleaseMembers < Robots::DorRepo::Base
         # Build off the base robot implementation which implements
         # features common to all robots
         include LyberCore::Robot

@@ -4,7 +4,7 @@ module Robots
   module DorRepo
     module Accession
 
-      class ResetWorkspace < Robots::DorRepo::Accession::Base
+      class ResetWorkspace < Robots::DorRepo::Base
         def initialize
           super('dor', 'accessionWF', 'reset-workspace')
         end

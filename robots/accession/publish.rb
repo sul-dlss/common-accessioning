@@ -7,7 +7,7 @@ module Robots
   module DorRepo
     module Accession
 
-      class Publish < Robots::DorRepo::Accession::Base
+      class Publish < Robots::DorRepo::Base
         def initialize
           super('dor', 'accessionWF', 'publish')
         end

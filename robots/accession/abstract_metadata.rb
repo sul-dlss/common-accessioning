@@ -8,7 +8,7 @@ module Robots
   module DorRepo
     module Accession
 
-      class AbstractMetadata < Robots::DorRepo::Accession::Base
+      class AbstractMetadata < Robots::DorRepo::Base
 
         def self.params
           { :process_name => nil, :datastream => nil }

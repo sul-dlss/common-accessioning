@@ -6,7 +6,7 @@ module Robots
   module DorRepo
     module Accession
 
-      class RemediateObject < Robots::DorRepo::Accession::Base
+      class RemediateObject < Robots::DorRepo::Base
         def initialize
           super('dor', 'accessionWF', 'remediate-object')
         end

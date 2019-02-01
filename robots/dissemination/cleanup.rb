@@ -3,8 +3,7 @@
 module Robots
   module DorRepo
     module Dissemination
-
-      class Cleanup < Robots::DorRepo::Dissemination::Base
+      class Cleanup < Robots::DorRepo::Base
 
         def initialize
           super('dor', 'disseminationWF', 'cleanup')
