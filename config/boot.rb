@@ -33,6 +33,8 @@ env_file = File.expand_path(File.dirname(__FILE__) + "/./environments/#{environm
 puts "Loading config from #{env_file}"
 require env_file
 
+Dor::WorkflowService.configure(Dor::Config.workflow.url)
+
 # Load Resque configuration and controller
 require 'resque'
 begin
