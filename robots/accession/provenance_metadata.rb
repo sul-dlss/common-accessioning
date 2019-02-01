@@ -4,7 +4,7 @@ module Robots
   module DorRepo
     module Accession
 
-      class ProvenanceMetadata < Robots::DorRepo::Accession::Base
+      class ProvenanceMetadata < Robots::DorRepo::Base
         def initialize
           super('dor', 'accessionWF', 'provenance-metadata')
         end

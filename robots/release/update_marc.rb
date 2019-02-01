@@ -3,7 +3,7 @@
 module Robots
   module DorRepo
     module Release
-      class UpdateMarc
+      class UpdateMarc < Robots::DorRepo::Base
         include LyberCore::Robot
 
         def initialize

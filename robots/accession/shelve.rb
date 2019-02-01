@@ -4,7 +4,7 @@ module Robots
   module DorRepo
     module Accession
 
-      class Shelve < Robots::DorRepo::Accession::Base
+      class Shelve < Robots::DorRepo::Base
         def initialize
           super('dor', 'accessionWF', 'shelve')
         end
