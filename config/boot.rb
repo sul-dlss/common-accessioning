@@ -33,6 +33,11 @@ env_file = File.expand_path(File.dirname(__FILE__) + "/./environments/#{environm
 puts "Loading config from #{env_file}"
 require env_file
 
+# Configure dor-services-client to use the dor-services URL
+Dor::Services::Client.configure(url: Dor::Config.dor_services.url,
+                                username: Dor::Config.dor_services.user,
+                                password: Dor::Config.dor_services.pass)
+
 # Load Resque configuration and controller
 require 'resque'
 begin
