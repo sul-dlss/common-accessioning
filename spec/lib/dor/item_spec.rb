@@ -65,11 +65,10 @@ describe Dor::Release::Item do
   end
 
   it 'should make a webservice call for updating_marc_records' do
-    stub_request(:post, 'https://example.com/dor/v1/objects/oo000oo0001/update_marc_record')
-      .with(headers: { 'Accept' => '*/*', 'Accept-Encoding' => 'gzip, deflate', 'Authorization' => 'Basic VVNFUk5BTUU6UEFTU1dPUkQ=' })
+    stub_request(:post, 'https://example.com/v1/objects/oo000oo0001/update_marc_record')
+      .with(headers: { 'Accept' => '*/*', 'Authorization' => 'Basic VVNFUk5BTUU6UEFTU1dPUkQ=' })
       .to_return(status: 201, body: '', headers: {})
-    # TODO: confirm RestClient call is made?
-    expect(@item.update_marc_record).to eq(201)
+    expect(@item.update_marc_record).to be_truthy
   end
 
   it 'should return correct object types for an item' do
