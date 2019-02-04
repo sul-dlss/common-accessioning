@@ -39,9 +39,8 @@ Dor::Config.configure do
     iiif_profile 'http://iiif.io/api/image/2/level1.json'
   end
 
-  dor do
-    service_root 'https://USERNAME:PASSWORD@example.com/dor/v1'
-  end
+  dor_services.url 'https://USERNAME:PASSWORD@example.com/dor/v1'
+  purl_services.url 'https://example.com'
 end
 
 REDIS_URL = '127.0.0.1:6379/resque:development' # hostname:port[:db]/namespace
