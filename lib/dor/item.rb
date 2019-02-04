@@ -71,7 +71,7 @@ module Dor::Release
 
     def update_marc_record
       with_retries(max_tries: Dor::Config.release.max_tries, base_sleep_seconds: Dor::Config.release.base_sleep_seconds, max_sleep_seconds: Dor::Config.release.max_sleep_seconds) do |_attempt|
-        url = "#{Dor::Config.dor.service_root}/objects/#{@druid}/update_marc_record"
+        url = "#{Dor::Config.dor_services.url}/objects/#{@druid}/update_marc_record"
         response = RestClient.post url, {}
         response.code
       end
