@@ -9,20 +9,20 @@
 require 'bundler/setup'
 require 'slop'
 
-slop = Slop.new do
-  banner 'Usage: run_robot repo:workflow:step [options]'
-  on :e, :environment=, 'Environment to run in (i.e. test, production). Defaults to development'
-  on :d, :druid=, 'One druid to run the robot with'
-  on :f, :file=, 'One file containing a druid per line'
+slop = Slop.parse do |o|
+  o.banner = 'Usage: ./bin/run_robot repo:workflow:step [options]'
+  o.string '-e', '--environment', 'Environment to run in (i.e. test, production). Defaults to development', default: 'development'
+  o.string '-d', '--druid', 'One druid to run the robot with', required: true
+  o.string '-f', '--file', 'One file containing a druid per line'
+  o.on '--help' do
+    puts o
+    exit
+  end
 end
 
-unless /^\w+:\w+:[-_\w]+$/.match?(ARGV.first)
-  puts slop.help
-  exit 1
-end
+ARGV.replace slop.arguments
 
 robot = ARGV.shift
-slop.parse
 opts = slop.to_h
 
 ENV['ROBOT_ENVIRONMENT'] = opts[:environment] unless opts[:environment].nil?
