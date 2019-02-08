@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'activesupport', '~> 5.2'
-gem 'dor-services', '~> 6.4'
+gem 'dor-services', '~> 6.5'
 gem 'lyber-core',  '>=4.1.3'
 gem 'jhove-service', '>=1.1.5'
 gem 'whenever'
