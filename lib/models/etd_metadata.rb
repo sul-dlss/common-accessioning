@@ -57,7 +57,7 @@ module EtdMetadata
     builder = Nokogiri::XML::Builder.new do |xml|
       props_ds = datastreams['properties']
       old_identity_ds = datastreams['identityMetadata']
-      old_identity_doc = Nokogiri::XML(old_identity_ds.content) unless old_identity_ds.nil?
+      old_identity_doc = Nokogiri::XML(old_identity_ds.content) unless old_identity_ds.new?
       xml.identityMetadata do
         xml.objectId do
           xml.text(pid)
@@ -76,7 +76,7 @@ module EtdMetadata
           xml.text(dissertation_id)
         end
         xml.otherId(name: 'catkey') do
-          unless old_identity_ds.nil?
+          unless old_identity_doc.nil?
             catkey = old_identity_doc.at_xpath('//catkey')
             catkey = old_identity_doc.at_xpath("//otherId[@name='catkey']") if catkey.nil?
             xml.text(catkey.text)
@@ -84,7 +84,7 @@ module EtdMetadata
         end
         # TODO: generate uuid
         xml.otherId(name: 'uuid') do
-          if old_identity_ds.nil?
+          if old_identity_doc.nil?
             xml.text(UUIDTools::UUID.timestamp_create)
           else
             uuid = old_identity_doc.at_xpath("//otherId[@name='uuid']")

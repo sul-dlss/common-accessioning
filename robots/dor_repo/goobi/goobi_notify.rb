@@ -16,7 +16,7 @@ module Robots
         def perform(druid)
           LyberCore::Log.debug "goobi-notify working on #{druid}"
 
-          with_retries(max_tries: Dor::Config.goobi.max_tries, base_sleep_seconds: Dor::Config.goobi.base_sleep_seconds, max_sleep_seconds: Dor::Config.goobi.max_sleep_seconds) do |_attempt|
+          with_retries(max_tries: 5, base_sleep_seconds: 10, max_sleep_seconds: 120) do |_attempt|
             Dor::Services::Client.object(druid).notify_goobi
           end
         end

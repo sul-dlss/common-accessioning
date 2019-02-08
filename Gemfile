@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'activesupport', '~> 5.2'
 gem 'dor-fetcher', '~> 1.3'
-gem 'dor-services', '~> 6.5'
+gem 'dor-services', '~> 7.0'
 gem 'dor-services-client', '~> 1.8'
-gem 'etd_model'
 gem 'lyber-core', '>=4.1.3'
 gem 'marc' # for etd_submit/submit_marc
 gem 'jhove-service', '>=1.1.5'

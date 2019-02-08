@@ -63,6 +63,12 @@ Dor::Config.configure do
     user 'USERNAME'
     pass 'PASSWORD'
   end
+
+  sdr do
+    local_workspace_root '/dor/workspace'
+    local_export_home '/dor/export'
+  end
+
   purl_services.url 'https://example.com'
 end
 
