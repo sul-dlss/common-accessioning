@@ -2,28 +2,43 @@
 
 require 'spec_helper'
 
-require File.expand_path(File.dirname(__FILE__) + '/../../../robots/accession/shelve')
-
-describe Robots::DorRepo::Accession::Shelve do
+RSpec.describe Robots::DorRepo::Accession::Shelve do
   let(:druid) { 'druid:oo000oo0001' }
+  let(:robot) { described_class.new }
 
-  it 'includes behavior from LyberCore::Robot' do
-    robot = Robots::DorRepo::Accession::Shelve.new
-    expect(robot.methods).to include(:work)
-  end
-
-  it 'calls .shelve if that method is defined (e.g. item)' do
-    object = double(:shelve => true)
+  before do
     expect(Dor).to receive(:find).with(druid).and_return(object)
-    robot = Robots::DorRepo::Accession::Shelve.new
-    robot.perform(druid)
   end
 
-  it 'does not call .shelve if that method is not defined (e.g. apo)' do
-    object = Object.new
-    expect(Dor).to receive(:find).with(druid).and_return(object)
-    robot = Robots::DorRepo::Accession::Shelve.new
-    expect { robot.perform(druid) }.not_to raise_error(NoMethodError) # we want to be sure that we don't call shelve if the method is not defined
-  end
+  describe '#perform' do
+    subject(:perform) { robot.perform(druid) }
+    before do
+      allow(Dor::ShelvingService).to receive(:shelve)
+      perform
+    end
 
+    context 'when called on a Collection' do
+      let(:object) { Dor::Collection.new }
+
+      it 'does not shelve' do
+        expect(Dor::ShelvingService).not_to have_received(:shelve)
+      end
+    end
+
+    context 'when called on an Item' do
+      let(:object) { Dor::Item.new }
+
+      it 'shelves the item' do
+        expect(Dor::ShelvingService).to have_received(:shelve).with(object)
+      end
+    end
+
+    context 'when called on an APO' do
+      let(:object) { Dor::AdminPolicyObject.new }
+
+      it 'does not shelve' do
+        expect(Dor::ShelvingService).not_to have_received(:shelve)
+      end
+    end
+  end
 end

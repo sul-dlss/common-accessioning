@@ -11,11 +11,11 @@ module Robots
 
         def perform(druid)
           obj = Dor.find(druid)
-          obj.shelve if obj.respond_to? :shelve
+          return unless obj.is_a?(Dor::Item)
+
+          Dor::ShelvingService.shelve(obj)
         end
-
       end
-
     end
   end
 end
