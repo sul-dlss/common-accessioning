@@ -101,7 +101,7 @@ GEM
       stanford-mods-normalizer (~> 0.1)
       systemu (~> 2.6)
       uuidtools (~> 2.1.4)
-    dor-services-client (1.5.0)
+    dor-services-client (1.5.1)
       activesupport (>= 4.2, < 6)
       deprecation
       faraday (~> 0.15)
