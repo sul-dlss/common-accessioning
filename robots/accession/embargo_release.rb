@@ -40,10 +40,10 @@ class EmbargoRelease
       druid = doc['id']
       LyberCore::Log.info("Releasing #{embargo_msg} for #{druid}")
       ei = Dor.find(druid)
-      ei.open_new_version
+      Dor::VersionService.open(ei)
       release_block.call(ei)
       ei.save
-      ei.close_version :description => "#{embargo_msg} released", :significance => :admin
+      Dor::VersionService.close(ei, description: "#{embargo_msg} released", significance: :admin)
       count += 1
     rescue Exception => e
       msg = "!!! Unable to release embargo for: #{druid}\n#{e.inspect}\n#{e.backtrace.join("\n")}"
