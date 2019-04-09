@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Dor::Release::Item do
+  let(:xml) { '<xml/>' }
+
   before do
     @druid = 'oo000oo0001'
     @item = Dor::Release::Item.new(druid: @druid, skip_heartbeat: true) # skip heartbeat check for dor-fetcher
@@ -16,7 +18,9 @@ RSpec.describe Dor::Release::Item do
 
     @dor_object = double(Dor)
     allow(Dor).to receive(:find).and_return(@dor_object)
-    allow(Dor::WorkflowObject).to receive(:initial_workflow).and_return(true)
+
+    allow(Dor::WorkflowObject).to receive(:initial_repo).with(Dor::Config.release.workflow_name).and_return(true)
+    allow(Dor::Services::Client).to receive_message_chain(:workflows, :initial).and_return(xml)
   end
 
   it 'should initialize' do
@@ -52,18 +56,21 @@ RSpec.describe Dor::Release::Item do
   end
 
   it 'creates the workflow for a collection' do
-    expect(Dor::Config.workflow.client).to receive(:create_workflow).exactly(1).times
+    expect(Dor::Config.workflow.client).to receive(:create_workflow).with(Dor::WorkflowObject.initial_repo(Dor::Config.release.workflow_name), @druid, Dor::Config.release.workflow_name, xml, {}).once
+
+    expect(Dor::Services::Client).to receive_message_chain(:workflows, :initial).with(name: Dor::Config.release.workflow_name)
     Dor::Release::Item.add_workflow_for_collection(@druid)
   end
 
   it 'creates the workflow for an item' do
-    expect(Dor::Config.workflow.client).to receive(:create_workflow).exactly(1).times
+    expect(Dor::Config.workflow.client).to receive(:create_workflow).with(Dor::WorkflowObject.initial_repo(Dor::Config.release.workflow_name), @druid, Dor::Config.release.workflow_name, xml, {}).once
+
+    expect(Dor::Services::Client).to receive_message_chain(:workflows, :initial).with(name: Dor::Config.release.workflow_name)
     Dor::Release::Item.add_workflow_for_item(@druid)
   end
 
   it 'should make a webservice call for updating_marc_records' do
     stub_request(:post, 'https://example.com/v1/objects/oo000oo0001/update_marc_record')
-      .with(headers: { 'Accept' => '*/*', 'Authorization' => 'Basic VVNFUk5BTUU6UEFTU1dPUkQ=' })
       .to_return(status: 201, body: '', headers: {})
     expect(@item.update_marc_record).to be_truthy
   end
