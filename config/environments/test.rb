@@ -23,9 +23,9 @@ Dor::Config.configure do
   release do
     fetcher_root 'http://localhost:3000/'
     workflow_name 'releaseWF'
-    max_tries 5 # the number of attempts to retry service calls before failing
-    max_sleep_seconds   120  # max sleep seconds between tries
-    base_sleep_seconds  10   # base sleep seconds between tries
+    max_tries 1 # the number of attempts to retry service calls before failing
+    max_sleep_seconds 1  # max sleep seconds between tries
+    base_sleep_seconds 1 # base sleep seconds between tries
   end
 
   stacks do

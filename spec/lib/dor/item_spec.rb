@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-describe Dor::Release::Item do
-  before :each do
+RSpec.describe Dor::Release::Item do
+  before do
     @druid = 'oo000oo0001'
     @item = Dor::Release::Item.new(druid: @druid, skip_heartbeat: true) # skip heartbeat check for dor-fetcher
     @n = 0
@@ -16,8 +16,7 @@ describe Dor::Release::Item do
 
     @dor_object = double(Dor)
     allow(Dor).to receive(:find).and_return(@dor_object)
-    allow(@dor_object).to receive(:create_workflow).and_return(true)
-    allow(Dor::Config.workflow.client).to receive(:update_workflow_status).and_return(true)
+    allow(Dor::WorkflowObject).to receive(:initial_workflow).and_return(true)
   end
 
   it 'should initialize' do
@@ -52,15 +51,13 @@ describe Dor::Release::Item do
     expect(@item.sub_collections).to eq @response['sets'] + @response['collections']
   end
 
-  it 'should add the workflow for a collection' do
-    expect(Dor).to receive(:find).with(@druid).and_return(@dor_object).exactly(1).times
-    expect(@dor_object).to receive(:create_workflow).with(Dor::Config.release.workflow_name).exactly(1).times
+  it 'creates the workflow for a collection' do
+    expect(Dor::Config.workflow.client).to receive(:create_workflow).exactly(1).times
     Dor::Release::Item.add_workflow_for_collection(@druid)
   end
 
-  it 'should add the workflow for an item' do
-    expect(Dor).to receive(:find).with(@druid).and_return(@dor_object).exactly(1).times
-    expect(@dor_object).to receive(:create_workflow).with(Dor::Config.release.workflow_name).exactly(1).times
+  it 'creates the workflow for an item' do
+    expect(Dor::Config.workflow.client).to receive(:create_workflow).exactly(1).times
     Dor::Release::Item.add_workflow_for_item(@druid)
   end
 
