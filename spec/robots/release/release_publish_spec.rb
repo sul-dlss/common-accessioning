@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Robots::DorRepo::Release::ReleasePublish do
   before :each do
     @druid = 'aa222cc3333'
-    setup_work_item(@druid)
+    @work_item = instance_double(Dor::Item)
     @r = Robots::DorRepo::Release::ReleasePublish.new
   end
 

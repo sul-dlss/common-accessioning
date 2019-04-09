@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
   before do
     @druid = 'druid:aa222cc3333'
-    setup_work_item(@druid)
+    @work_item = instance_double(Dor::Item)
     @r = Robots::DorRepo::Release::ReleaseMembers.new
     allow(RestClient).to receive_messages(post: nil, get: nil, put: nil) # don't actually make the RestClient calls, just assume they work
   end

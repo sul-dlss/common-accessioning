@@ -21,14 +21,9 @@ require 'rspec'
 require 'webmock/rspec'
 require 'equivalent-xml/rspec_matchers'
 
-def setup_work_item(druid)
-  @work_item = double("work_item")
-  allow(@work_item).to receive_messages(druid: druid)
-end
-
 def setup_release_item(druid, obj_type, members)
   @release_item = Dor::Release::Item.new(druid: druid, skip_heartbeat: true)
-  @dor_item = double(Dor)
+  @dor_item = instance_double(Dor::Item)
   allow(@dor_item).to receive_messages(
     publish_metadata: nil,
     id: druid
