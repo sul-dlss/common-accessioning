@@ -88,7 +88,7 @@ module Dor::Release
 
       # initiate workflow by making workflow service call
       with_retries(max_tries: Dor::Config.release.max_tries, base_sleep_seconds: Dor::Config.release.base_sleep_seconds, max_sleep_seconds: Dor::Config.release.max_sleep_seconds) do |_attempt|
-        Dor::Config.workflow.client.create_workflow('dor', druid, Dor::Config.release.workflow_name, Dor::WorkflowObject.initial_workflow(Dor::Config.release.workflow_name), {})
+        Dor::Config.workflow.client.create_workflow(Dor::WorkflowObject.initial_repo(Dor::Config.release.workflow_name), druid, Dor::Config.release.workflow_name, Dor::WorkflowObject.initial_workflow(Dor::Config.release.workflow_name), {})
       end
     end
   end
