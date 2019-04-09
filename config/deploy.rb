@@ -7,7 +7,7 @@ set :repo_url, 'https://github.com/sul-dlss/common-accessioning.git'
 ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, "/home/lyberadmin/#{fetch(:application)}"
+set :deploy_to, "/opt/app/lyberadmin/#{fetch(:application)}"
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -40,7 +40,6 @@ set :linked_dirs, %w(log run config/environments config/certs)
 set :honeybadger_env, fetch(:stage)
 
 namespace :deploy do
-
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 10 do
@@ -53,5 +52,7 @@ namespace :deploy do
   end
 
   after :publishing, :restart
-
 end
+
+# update shared_configs before restarting app
+before 'deploy:restart', 'shared_configs:update'

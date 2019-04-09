@@ -6,6 +6,7 @@ coverage/
 coverage.data
 .idea
 *.tar.gz
+*.log
 pid
 config/certs
 .rvmrc

@@ -3,7 +3,9 @@
 source 'https://rubygems.org'
 
 gem 'activesupport', '~> 5.2'
+gem 'dor-fetcher', '~> 1.3'
 gem 'dor-services', '~> 6.5'
+gem 'dor-services-client', '>=1.4.0'
 gem 'lyber-core',  '>=4.1.3'
 gem 'jhove-service', '>=1.1.5'
 gem 'whenever'
@@ -20,6 +22,7 @@ gem 'honeybadger'
 group :test do
   gem 'simplecov'
   gem 'coveralls', require: false
+  gem 'webmock'
 end
 
 group :development do

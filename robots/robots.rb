@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'accession/base'
+require 'common/base'
 require 'accession/abstract_metadata'
 require 'accession/content_metadata'
 require 'accession/descriptive_metadata'
@@ -13,5 +13,7 @@ require 'accession/sdr_ingest_transfer'
 require 'accession/shelve'
 require 'accession/technical_metadata'
 require 'accession/reset_workspace'
-require 'dissemination/base'
 require 'dissemination/cleanup'
+require 'release/release_members'
+require 'release/release_publish'
+require 'release/update_marc'

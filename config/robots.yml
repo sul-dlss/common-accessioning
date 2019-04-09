@@ -14,3 +14,6 @@
 - dor_accessionWF_shelve
 - dor_accessionWF_technical-metadata
 - dor_disseminationWF_cleanup
+- dor_releaseWF_release-publish
+- dor_releaseWF_release-members
+- dor_releaseWF_update-marc
