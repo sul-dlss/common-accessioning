@@ -18,7 +18,7 @@ gem 'pry-byebug', :platform => [:ruby_20, :ruby_21]
 gem 'slop'
 gem 'nokogiri'
 gem 'honeybadger'
-gem 'assembly-image', '>=1.6.9'
+gem 'assembly-image', '~> 1.7'
 gem 'assembly-objectfile', '>=1.6.6'
 
 group :test do
