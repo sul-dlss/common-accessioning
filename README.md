@@ -1,20 +1,11 @@
 [![Build Status](https://travis-ci.org/sul-dlss/common-accessioning.svg?branch=master)](https://travis-ci.org/sul-dlss/common-accessioning) [![Coverage Status](https://coveralls.io/repos/sul-dlss/common-accessioning/badge.svg?branch=master&service=github)](https://coveralls.io/github/sul-dlss/common-accessioning?branch=master)
 
-# Documentation
+# DOR consolidated robots
 
-Check the [Wiki](https://github.com/sul-dlss/robot-master/wiki) in the robot-master repo.
+This repository contains a number of Resque background jobs.
+The jobs are enqueued by [robot-master](https://github.com/sul-dlss/robot-master).
 
-## Deploying
-
-When deploying, be aware that the robots servers do not use shared-configs and configuration changes must be made manually. This is currently the case because we deploy several codebases to the robots machine, and we do not have a puppet role that can deploy shared-configs to several projects.
-
-# DOR common-accessioning Robots
-
-## An overview of the workflow
-
-You can see the steps of the workflow in `config/workflows/accessionWF`
-
-You can see the dependencies and settings for each step in `config/workflows/accessionWF/process-config.yaml`
+The [robot-master wiki](https://github.com/sul-dlss/robot-master/wiki) has more documenation about our robots.
 
 ## Execution
 
@@ -52,12 +43,6 @@ A simple "rake" should do everything you need
 
 See `Capfile` for deployment instructions
 
-## Versions
- - 1.7.0 Robots are now versioning-aware
- - 1.7.4 Updated dor-services to get latest moab-versioning.
- - 1.7.14 Desc metadata robot will raise and exception if the desc metadata couldnt be populated
- - 1.7.16 Update jhove-service to v1.0.2
- - 1.7.17 Updated dor-services to v3.21.0.
- - 1.8.0 Added disseminationWF:cleanup robot
- - 1.10.0 Embargo release of 20% visible items
- - 1.12.0 Latest dor-services and ruby 1.9.3 compatibility
+## Development
+
+Run `docker-compose` to bring up Redis which is a dependency of Resque.

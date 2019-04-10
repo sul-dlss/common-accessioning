@@ -1,0 +1,12 @@
+version: '3.6'
+volumes:
+  redis:
+
+services:
+  redis:
+    image: redis:3
+    command: redis-server
+    ports:
+      - 6379:6379
+    volumes:
+        - redis:/data
