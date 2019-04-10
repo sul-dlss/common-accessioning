@@ -35,24 +35,13 @@ set :linked_files, %w{config/honeybadger.yml}
 
 set :stages, %w(dev staging production)
 
-set :linked_dirs, %w(log run config/environments config/certs)
+# resque-pool writes it's pidfile to tmp/pids, so link it or we'll start a new
+# pool of workers with each deploy.
+set :linked_dirs, %w(log run config/environments config/certs tmp/pids)
 
 set :honeybadger_env, fetch(:stage)
 
-namespace :deploy do
-  desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 10 do
-      within release_path do
-        test :bundle, :exec, :controller, :stop
-        test :bundle, :exec, :controller, :quit
-        execute :bundle, :exec, :controller, :boot
-      end
-    end
-  end
-
-  after :publishing, :restart
-end
-
 # update shared_configs before restarting app
-before 'deploy:restart', 'shared_configs:update'
+before 'deploy:publishing', 'shared_configs:update'
+
+after 'deploy:publishing', 'resque:pool:full_restart'

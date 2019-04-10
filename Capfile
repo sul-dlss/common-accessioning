@@ -29,6 +29,7 @@ require 'capistrano/bundler'
 require 'dlss/capistrano'
 require 'whenever/capistrano'
 require 'capistrano/honeybadger'
+require 'capistrano-resque-pool'
 
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
 Dir.glob('lib/capistrano/tasks/*.cap').each { |r| import r }

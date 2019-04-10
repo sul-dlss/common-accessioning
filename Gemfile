@@ -12,9 +12,9 @@ gem 'whenever'
 gem 'rake'
 gem 'rspec', '~> 3.0'
 gem 'resque'
+gem 'resque-pool'
 gem 'pry'
 gem 'pry-byebug', :platform => [:ruby_20, :ruby_21]
-gem 'robot-controller', '~> 2.0'
 gem 'slop'
 gem 'nokogiri'
 gem 'honeybadger'
@@ -31,6 +31,7 @@ group :development do
   end
   gem 'capistrano', '~> 3.0'
   gem 'capistrano-bundler', '~> 1.1'
+  gem 'capistrano-resque-pool'
   gem 'dlss-capistrano', '~> 3.1'
 end
 
