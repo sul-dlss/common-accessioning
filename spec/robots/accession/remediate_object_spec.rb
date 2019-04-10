@@ -2,28 +2,35 @@
 
 require 'spec_helper'
 
-require File.expand_path(File.dirname(__FILE__) + '/../../../robots/accession/remediate_object')
-
-describe Robots::DorRepo::Accession::RemediateObject do
+RSpec.describe Robots::DorRepo::Accession::RemediateObject do
   let(:druid) { 'druid:oo000oo0001' }
+  let(:robot) { described_class.new }
 
   it 'includes behavior from LyberCore::Robot' do
-    robot = Robots::DorRepo::Accession::RemediateObject.new
     expect(robot.methods).to include(:work)
   end
 
-  it 'calls .upgrade! if that method is defined' do
-    object = double(:upgrade! => true)
-    expect(Dor).to receive(:find).with(druid).and_return(object)
-    robot = Robots::DorRepo::Accession::RemediateObject.new
-    robot.perform(druid)
-  end
+  describe '#perform' do
+    before do
+      expect(Dor).to receive(:find).with(druid).and_return(object)
+    end
 
-  it 'does not call .upgrade! if that method is not defined' do
-    object = Object.new
-    expect(Dor).to receive(:find).with(druid).and_return(object)
-    robot = Robots::DorRepo::Accession::RemediateObject.new
-    expect { robot.perform(druid) }.not_to raise_error(NoMethodError) # we want to be sure that we don't call upgrade! if the method is not defined
-  end
+    context 'on an object where upgrade! is defined' do
+      let(:object) { double(:upgrade! => true) }
 
+      it 'calls .upgrade!' do
+        robot.perform(druid)
+        expect(object).to have_received(:upgrade!)
+      end
+    end
+
+    context 'on an object where upgrade! is defined' do
+      let(:object) { Object.new }
+
+      it 'does not call .upgrade!' do
+        # we want to be sure that a NoMethodError is not raised
+        expect { robot.perform(druid) }.not_to raise_error
+      end
+    end
+  end
 end
