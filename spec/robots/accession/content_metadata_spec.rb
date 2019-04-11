@@ -14,10 +14,10 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
     end
     let(:druid) { 'druid:bd185gs2259' }
     let(:object) { Dor::Item.new(pid: druid) }
-    let(:builder) { instance_double(Dor::DatastreamBuilder, build: true) }
+    let(:builder) { instance_double(DatastreamBuilder, build: true) }
 
     it 'builds a datastream' do
-      expect(Dor::DatastreamBuilder).to receive(:new)
+      expect(DatastreamBuilder).to receive(:new)
         .with(datastream: Dor::ContentMetadataDS,
               force: true,
               object: object,
