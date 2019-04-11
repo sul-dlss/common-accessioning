@@ -15,7 +15,6 @@ class EmbargoRelease
   # Turn off active_fedora updates of solr
   ENABLE_SOLR_UPDATES = false
   LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, 'log', 'embargo_release.log'))
-
   # Finds druids from solr based on the passed in query
   # It will then load each item from Dor, and call the block with the item
   # @param [String] query used to locate druids of items to release from solr
@@ -34,25 +33,29 @@ class EmbargoRelease
     end
     LyberCore::Log.info("Found #{num_found} objects")
 
-    druid = ''
     count = 0
     solr['response']['docs'].each do |doc|
-      druid = doc['id']
-      LyberCore::Log.info("Releasing #{embargo_msg} for #{druid}")
-      ei = Dor.find(druid)
-      Dor::VersionService.open(ei)
-      release_block.call(ei)
-      ei.save
-      Dor::VersionService.close(ei, description: "#{embargo_msg} released", significance: :admin)
+      release_item(doc['id'], embargo_msg, &release_block)
       count += 1
-    rescue Exception => e
-      msg = "!!! Unable to release embargo for: #{druid}\n#{e.inspect}\n#{e.backtrace.join("\n")}"
-      LyberCore::Log.error(msg)
-      Dor::Config.workflow.client.update_workflow_error_status 'dor', druid, 'disseminationWF', 'embargo-release', "#{e.to_s}"
     end
 
     LyberCore::Log.info("Done! Processed #{count} objects out of #{num_found}")
   end
+
+  def self.release_item(druid, embargo_msg, &release_block)
+    ei = Dor.find(druid)
+    LyberCore::Log.info("Releasing #{embargo_msg} for #{druid}")
+
+    dor_service = Dor::Services::Client.object(druid)
+    dor_service.open_new_version
+    release_block.call(ei)
+    ei.save
+    dor_service.close_version(description: "#{embargo_msg} released", significance: 'admin')
+  rescue Exception => e
+    LyberCore::Log.error("!!! Unable to release embargo for: #{druid}\n#{e.inspect}\n#{e.backtrace.join("\n")}")
+    Dor::Config.workflow.client.update_workflow_error_status 'dor', druid, 'disseminationWF', 'embargo-release', "#{e.to_s}"
+  end
+  private_class_method :release_item
 
   def self.release
     release_items("embargo_status_ssim:\"embargoed\" AND embargo_release_dtsim:[* TO NOW]") do |item|
