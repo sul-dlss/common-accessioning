@@ -138,7 +138,7 @@ RSpec.describe 'EmbargoRelease' do
     end
 
     subject(:release_items) { EmbargoRelease.release_items(query, &block) }
-    let(:block) { proc { puts "Hey" } }
+    let(:block) { proc { } }
     let(:query) { "foo" }
     let(:response) do
       { 'response' => { 'numFound' => 1, 'docs' => [{ 'id' => 'druid:999' }] } }
@@ -146,13 +146,60 @@ RSpec.describe 'EmbargoRelease' do
 
     before do
       expect(Dor::SearchService).to receive(:query).and_return(response)
-      allow(Dor).to receive(:find).and_raise(StandardError, "Not Found")
     end
 
-    it "handles the error" do
-      expect(LyberCore::Log).to receive(:error).with(/!!! Unable to release embargo for: druid:999\n#<StandardError: Not Found>/)
-      expect(Dor::Config.workflow.client).to receive(:update_workflow_error_status)
-      release_items
+    context 'when the object is not in fedora' do
+      before do
+        allow(Dor).to receive(:find).and_raise(StandardError, "Not Found")
+      end
+
+      it "handles the error" do
+        expect(LyberCore::Log).to receive(:error).with(/!!! Unable to release embargo for: druid:999\n#<StandardError: Not Found>/)
+        expect(Dor::Config.workflow.client).to receive(:update_workflow_error_status)
+        release_items
+      end
+    end
+
+    context 'when the object is in fedora' do
+      let(:item) {
+        i = Dor::Item.new
+        rds = Dor::RightsMetadataDS.new
+        rds.content = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}.to_s
+        i.datastreams['rightsMetadata'] = rds
+        eds = Dor::EmbargoMetadataDS.new
+        eds.content = Nokogiri::XML(embargo_xml) {|config| config.default_xml.noblanks}.to_s
+        i.datastreams['embargoMetadata'] = eds
+        i
+      }
+
+      let(:embargo_xml) { <<-EOXML
+        <embargoMetadata>
+          <status>embargoed</status>
+          <releaseDate>#{embargo_release_date.iso8601}</releaseDate>
+          <twentyPctVisibilityStatus/>
+          <twentyPctVisibilityReleaseDate/>
+          #{release_access}
+        </embargoMetadata>
+        EOXML
+      }
+
+      before do
+        allow(Dor).to receive(:find).and_return(item)
+        allow(item).to receive(:save)
+        stub_request(:post, "https://example.com/v1/objects/druid:999/versions")
+          .to_return(status: 200, body: "3", headers: {})
+        stub_request(:post, "https://example.com/v1/objects/druid:999/versions/current/close")
+          .with(
+            body: "{\"description\":\"embargo released\",\"significance\":\"admin\"}"
+          )
+          .to_return(status: 200, body: "", headers: {})
+        allow(LyberCore::Log).to receive(:info)
+      end
+
+      it 'is successful' do
+        release_items
+        expect(LyberCore::Log).to have_received(:info).with("Done! Processed 1 objects out of 1")
+      end
     end
   end
 end
