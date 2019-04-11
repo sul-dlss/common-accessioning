@@ -13,3 +13,7 @@ config/certs
 .DS_Store
 .ruby-version
 .ruby-gemset
+
+
+spec/fixtures/assembly
+spec/fixtures/export

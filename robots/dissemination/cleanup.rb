@@ -12,7 +12,7 @@ module Robots
         def perform(druid)
           #decide whether the druid is full or truncated
           if is_full_druid_tree(druid)
-            Dor::CleanupResetService.cleanup_by_reset_druid druid
+            CleanupResetService.cleanup_by_reset_druid druid
           else
             Dor::CleanupService.cleanup_by_druid druid
           end
