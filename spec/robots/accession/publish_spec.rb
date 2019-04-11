@@ -13,7 +13,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }
     before do
-      allow(Dor::PublishMetadataService).to receive(:publish)
+      allow(PublishMetadataService).to receive(:publish)
       perform
     end
 
@@ -21,7 +21,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
       let(:object) { Dor::Collection.new }
 
       it 'publishes metadata' do
-        expect(Dor::PublishMetadataService).to have_received(:publish).with(object)
+        expect(PublishMetadataService).to have_received(:publish).with(object)
       end
     end
 
@@ -29,7 +29,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
       let(:object) { Dor::Item.new }
 
       it 'publishes metadata' do
-        expect(Dor::PublishMetadataService).to have_received(:publish).with(object)
+        expect(PublishMetadataService).to have_received(:publish).with(object)
       end
     end
 
@@ -37,7 +37,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
       let(:object) { Dor::AdminPolicyObject.new }
 
       it 'does not publish metadata' do
-        expect(Dor::PublishMetadataService).not_to have_received(:publish)
+        expect(PublishMetadataService).not_to have_received(:publish)
       end
     end
   end

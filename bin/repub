@@ -10,7 +10,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
 IO.readlines('/home/lyberadmin/repub_druids.txt').each do |druid|
   puts "Republishing #{druid}"
   object = Dor.find(druid)
-  Dor::PublishMetadataService.publish(object)
+  PublishMetadataService.publish(object)
 rescue Exception => e
   puts "ERR Problem with #{druid}\n" << e.inspect << "\n" << e.backtrace.join("\n")
 end
