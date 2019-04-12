@@ -6,10 +6,6 @@ module Robots
     module Release
       # Sends updated metadata to PURL. Specifically stuff in identityMetadata
       class ReleasePublish < Robots::DorRepo::Base
-        # Build off the base robot implementation which implements
-        # features common to all robots
-        include LyberCore::Robot
-
         def initialize
           super('dor', Dor::Config.release.workflow_name, 'release-publish', check_queued_status: true) # init LyberCore::Robot
         end

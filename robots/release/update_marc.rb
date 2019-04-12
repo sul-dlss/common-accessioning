@@ -4,8 +4,6 @@ module Robots
   module DorRepo
     module Release
       class UpdateMarc < Robots::DorRepo::Base
-        include LyberCore::Robot
-
         def initialize
           super('dor', Dor::Config.release.workflow_name, 'update-marc', check_queued_status: true) # init LyberCore::Robot
         end
