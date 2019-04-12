@@ -111,11 +111,11 @@ RSpec.describe PublishMetadataService do
       end
       let(:md_service) { instance_double(Dor::PublicDescMetadataService, to_xml: mods, ng_xml: Nokogiri::XML(mods)) }
       let(:dc_service) { instance_double(Dor::DublinCoreService, ng_xml: Nokogiri::XML('<oai_dc:dc></oai_dc:dc>')) }
-      let(:public_service) { instance_double(Dor::PublicXmlService, to_xml: '<publicObject></publicObject>') }
+      let(:public_service) { instance_double(PublicXmlService, to_xml: '<publicObject></publicObject>') }
 
       before do
         allow(Dor::DublinCoreService).to receive(:new).and_return(dc_service)
-        allow(Dor::PublicXmlService).to receive(:new).and_return(public_service)
+        allow(PublicXmlService).to receive(:new).and_return(public_service)
         allow(Dor::PublicDescMetadataService).to receive(:new).and_return(md_service)
       end
 
@@ -134,7 +134,7 @@ RSpec.describe PublishMetadataService do
           item.rightsMetadata.content = "<rightsMetadata><access type='discover'><machine><world/></machine></access></rightsMetadata>"
           service.publish
           expect(Dor::DublinCoreService).to have_received(:new).with(item)
-          expect(Dor::PublicXmlService).to have_received(:new).with(item)
+          expect(PublicXmlService).to have_received(:new).with(item)
           expect(Dor::PublicDescMetadataService).to have_received(:new).with(item)
         end
 
