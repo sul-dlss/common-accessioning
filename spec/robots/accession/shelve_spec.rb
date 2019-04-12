@@ -13,7 +13,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }
     before do
-      allow(Dor::ShelvingService).to receive(:shelve)
+      allow(ShelvingService).to receive(:shelve)
       perform
     end
 
@@ -21,7 +21,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
       let(:object) { Dor::Collection.new }
 
       it 'does not shelve' do
-        expect(Dor::ShelvingService).not_to have_received(:shelve)
+        expect(ShelvingService).not_to have_received(:shelve)
       end
     end
 
@@ -29,7 +29,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
       let(:object) { Dor::Item.new }
 
       it 'shelves the item' do
-        expect(Dor::ShelvingService).to have_received(:shelve).with(object)
+        expect(ShelvingService).to have_received(:shelve).with(object)
       end
     end
 
@@ -37,7 +37,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
       let(:object) { Dor::AdminPolicyObject.new }
 
       it 'does not shelve' do
-        expect(Dor::ShelvingService).not_to have_received(:shelve)
+        expect(ShelvingService).not_to have_received(:shelve)
       end
     end
   end
