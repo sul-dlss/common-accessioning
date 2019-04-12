@@ -1,0 +1,1 @@
+A non-tif file used for testing.

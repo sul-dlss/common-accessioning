@@ -53,19 +53,19 @@ module Dor::Release
       # LyberCore::Log.debug "republishing metadata for #{@druid}"
     end
 
-    def is_item?
+    def item?
       object_type.casecmp('item').zero?
     end
 
-    def is_collection?
+    def collection?
       object_type.casecmp('collection').zero?
     end
 
-    def is_set?
+    def set?
       object_type.casecmp('set').zero?
     end
 
-    def is_apo?
+    def apo?
       object_type.casecmp('adminpolicy').zero?
     end
 

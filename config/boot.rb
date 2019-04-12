@@ -25,8 +25,11 @@ end
 require 'dor-services'
 require 'lyber_core'
 
-# TODO Maybe move auto-require to just run_robot and spec_helper?
-Dir["#{ROBOT_ROOT}/lib/**/*.rb"].each { |f| require f }
+require 'cleanup_reset_service'
+require 'datastream_builder'
+require 'publish_metadata_service'
+require 'reset_workspace_service'
+require 'sdr_ingest_service'
 require 'robots'
 
 env_file = File.expand_path(File.dirname(__FILE__) + "/./environments/#{environment}")

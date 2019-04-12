@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<contentMetadata type="image" objectId="hh2222cc3333">
+    <resource sequence="1" type="image" id="hh2222cc3333_1">
+        <label>Image 1</label>
+        <file id="hh222cc3333_00_001.tif" />
+        <file id="hh222cc3333_05_001.jp2" />
+    </resource>
+    <resource sequence="2" type="image" id="hh2222cc3333_2">
+        <label>Image 2</label>
+        <file id="hh222cc3333_00_002.tif" />
+    </resource>
+    <resource sequence="3" type="image" id="hh2222cc3333_3">
+        <label>Image 3</label>
+        <file id="hh222cc3333_00_003.tif" />
+   </resource>
+    <resource type="image" sequence="4" id="hh2222cc3333_3">
+        <label>Image 4</label>
+        <file id="hh222cc3333_00_004.tif" />
+   </resource>
+    <resource type="image" sequence="5" id="hh2222cc3333_3">
+        <label>Image 5</label>
+        <file id="hh222cc3333_00_005.tif" />
+   </resource>
+</contentMetadata>

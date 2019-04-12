@@ -18,7 +18,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
   it 'should run the robot for an item or an apo and do nothing as a result' do
     %w[:item :apo].each do |item_type|
       setup_release_item(@druid, item_type, nil)
-      expect(@release_item.is_collection?).to be false # definitely not a collection
+      expect(@release_item.collection?).to be false # definitely not a collection
       expect(@r).to_not receive(:item_members) # we won't bother looking for item members if this is an item
       @r.perform(@work_item)
     end
@@ -29,7 +29,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     setup_release_item(@druid, :collection, members)
     allow(@dor_item).to receive_messages(get_newest_release_tag: { 'SearchWorks' => { 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' } })
     allow(@dor_item).to receive_messages(release_tags: { 'SearchWorks' => [{ 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' }] })
-    expect(@release_item.is_collection?).to be true
+    expect(@release_item.collection?).to be true
     expect(@release_item.item_members).to eq([])
     expect(@release_item.sub_collections).to eq(members['sets'])
     expect(@release_item).to_not receive(:item_members)
@@ -44,7 +44,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
                                                                    'Revs' => { 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'petucket' } })
     allow(@dor_item).to receive_messages(release_tags: { 'SearchWorks' => [{ 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' },
                                                                            'Revs' => { 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'petucket' }] })
-    expect(@release_item.is_collection?).to be true
+    expect(@release_item.collection?).to be true
     expect(@release_item.item_members).to eq([])
     expect(@release_item.sub_collections).to eq(members['collections'])
     expect(@release_item).to_not receive(:item_members)
@@ -60,7 +60,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     setup_release_item(@druid, :collection, members)
     allow(@dor_item).to receive_messages(get_newest_release_tag: { 'SearchWorks' => { 'release' => true, 'what' => 'collection', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' } })
     allow(@dor_item).to receive_messages(release_tags: { 'SearchWorks' => [{ 'release' => true, 'what' => 'collection', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' }] })
-    expect(@release_item.is_collection?).to be true
+    expect(@release_item.collection?).to be true
     expect(@release_item.item_members).to eq(members['items'])
     expect(@release_item.sub_collections).to eq([])
     expect(Dor::Release::Item).to receive(:add_workflow_for_item).exactly(4).times # four workflows added, one for each item
@@ -77,7 +77,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
                                                                    'Revs' => { 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'petucket' } })
     allow(@dor_item).to receive_messages(release_tags: { 'SearchWorks' => [{ 'release' => true, 'what' => 'collection', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' },
                                                                            'Revs' => { 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'petucket' }] })
-    expect(@release_item.is_collection?).to be true
+    expect(@release_item.collection?).to be true
     expect(@release_item.item_members).to eq(members['items'])
     expect(Dor::Release::Item).to receive(:add_workflow_for_item).exactly(4).times # four workflows added, one for each item
     @r.perform(@work_item)
@@ -88,7 +88,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     setup_release_item(@druid, :collection, 'collections' => collections)
     allow(@dor_item).to receive_messages(get_newest_release_tag: { 'SearchWorks' => { 'release' => true, 'what' => 'collection', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' } })
     allow(@dor_item).to receive_messages(release_tags: { 'SearchWorks' => [{ 'release' => true, 'what' => 'collection', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' }] })
-    expect(@release_item.is_collection?).to be true
+    expect(@release_item.collection?).to be true
     expect(@release_item.item_members).to eq([])
     expect(@release_item.sub_collections).to eq(collections)
     expect(Dor::Release::Item).to receive(:add_workflow_for_collection).exactly(2).times # two workflows added, one for each collection
@@ -100,7 +100,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     setup_release_item(@druid, :collection, 'collections' => collections + [{ 'druid' => @druid }]) # add self to the list of collections since this is what purl-fetcher does
     allow(@dor_item).to receive_messages(get_newest_release_tag: { 'SearchWorks' => { 'release' => true, 'what' => 'collection', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' } })
     allow(@dor_item).to receive_messages(release_tags: { 'SearchWorks' => [{ 'release' => true, 'what' => 'collection', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' }] })
-    expect(@release_item.is_collection?).to be true
+    expect(@release_item.collection?).to be true
     expect(@release_item.item_members).to eq([])
     expect(@release_item.sub_collections).to eq(collections) # it has removed itself and is back to the original list
     expect(Dor::Release::Item).to receive(:add_workflow_for_collection).exactly(2).times # only two workflows added (it doesn't add a workflow for itself)
