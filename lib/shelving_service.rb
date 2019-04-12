@@ -21,9 +21,9 @@ class ShelvingService
     workspace_druid = DruidTools::Druid.new(work.id, Dor::Config.stacks.local_workspace_root)
     workspace_content_pathname = workspace_content_dir(diff, workspace_druid)
     # delete, rename, or copy files to the stacks area
-    Dor::DigitalStacksService.remove_from_stacks(stacks_object_pathname, diff)
-    Dor::DigitalStacksService.rename_in_stacks(stacks_object_pathname, diff)
-    Dor::DigitalStacksService.shelve_to_stacks(workspace_content_pathname, stacks_object_pathname, diff)
+    DigitalStacksService.remove_from_stacks(stacks_object_pathname, diff)
+    DigitalStacksService.rename_in_stacks(stacks_object_pathname, diff)
+    DigitalStacksService.shelve_to_stacks(workspace_content_pathname, stacks_object_pathname, diff)
   end
 
   private

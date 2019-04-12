@@ -30,6 +30,7 @@ require 'datastream_builder'
 require 'publish_metadata_service'
 require 'reset_workspace_service'
 require 'sdr_ingest_service'
+require 'digital_stacks_service'
 require 'shelving_service'
 require 'robots'
 

@@ -41,9 +41,9 @@ RSpec.describe ShelvingService do
       stacks_object_pathname = Pathname(DruidTools::StacksDruid.new(druid, stacks_root).path)
       # make sure the DigitalStacksService is getting the correct delete, rename, and shelve requests
       # (These methods are unit tested in digital_stacks_service_spec.rb)
-      expect(Dor::DigitalStacksService).to receive(:remove_from_stacks).with(stacks_object_pathname, mock_diff)
-      expect(Dor::DigitalStacksService).to receive(:rename_in_stacks).with(stacks_object_pathname, mock_diff)
-      expect(Dor::DigitalStacksService).to receive(:shelve_to_stacks).with(mock_workspace_path, stacks_object_pathname, mock_diff)
+      expect(DigitalStacksService).to receive(:remove_from_stacks).with(stacks_object_pathname, mock_diff)
+      expect(DigitalStacksService).to receive(:rename_in_stacks).with(stacks_object_pathname, mock_diff)
+      expect(DigitalStacksService).to receive(:shelve_to_stacks).with(mock_workspace_path, stacks_object_pathname, mock_diff)
       described_class.shelve(work)
     end
   end
