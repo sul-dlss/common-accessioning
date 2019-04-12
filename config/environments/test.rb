@@ -62,3 +62,12 @@ end
 
 REDIS_URL = '127.0.0.1:6379/resque:development' # hostname:port[:db]/namespace
 # REDIS_TIMEOUT = '5' # seconds
+
+# Remote location of ETD content
+ETD_WORKSPACE = 'lyberadmin@lyberapps-dev.stanford.edu:/home/lyberadmin/workspace/'
+
+# hostname where symphony resides
+SYMPHONY_URL = 'http://lyberservices-dev.stanford.edu/cgi-bin/holdings.php?flexkey='
+
+# location where marc output will be dumped
+MARC_OUTPUT_DIRECTORY = '/tmp'
