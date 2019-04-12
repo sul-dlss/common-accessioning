@@ -31,7 +31,7 @@ Layout/EmptyLinesAroundClassBody:
     - 'robots/accession/provenance_metadata.rb'
     - 'robots/dissemination/cleanup.rb'
 
-# Offense count: 17
+# Offense count: 15
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines
@@ -43,7 +43,6 @@ Layout/EmptyLinesAroundModuleBody:
     - 'robots/accession/provenance_metadata.rb'
     - 'robots/accession/publish.rb'
     - 'robots/accession/remediate_object.rb'
-    - 'robots/accession/reset_workspace.rb'
     - 'robots/accession/rights_metadata.rb'
     - 'robots/accession/sdr_ingest_transfer.rb'
     - 'robots/accession/shelve.rb'
@@ -243,6 +242,11 @@ Style/CommentAnnotation:
     - 'config/boot.rb'
 
 # Offense count: 1
+Style/CommentedKeyword:
+  Exclude:
+    - 'lib/reset_workspace_service.rb'
+
+# Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SingleLineConditionsOnly, IncludeTernaryExpressions.
 # SupportedStyles: assign_to_condition, assign_inside_condition
@@ -260,10 +264,11 @@ Style/ExpandPathArguments:
   Exclude:
     - 'Rakefile'
 
-# Offense count: 1
+# Offense count: 2
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
   Exclude:
+    - 'lib/reset_workspace_service.rb'
     - 'lib/sdr_ingest_service.rb'
 
 # Offense count: 26
