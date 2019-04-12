@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Merges contentMetadata from several objects into one.
+# Merges contentMetadata from several objects into one and sends it to PURL
 class PublishMetadataService
   # @param [Dor::Item] item the object to be publshed
   def self.publish(item)

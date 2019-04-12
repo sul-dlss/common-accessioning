@@ -4,6 +4,7 @@
 module Robots
   module DorRepo
     module Release
+      # Sends updated metadata to PURL. Specifically stuff in identityMetadata
       class ReleasePublish < Robots::DorRepo::Base
         # Build off the base robot implementation which implements
         # features common to all robots
@@ -20,7 +21,7 @@ module Robots
         def perform(druid)
           LyberCore::Log.debug "release-publish working on #{druid}"
           item = Dor::Release::Item.new druid: druid
-          item.object.publish_metadata # if item.republish_needed?  # assuming you have a "republish_needed?" method on dor-services, which we don't have currently, so just do a publish for now
+          PublishMetadataService.publish(item.object)
         end
       end
     end

@@ -2,16 +2,20 @@
 
 require 'spec_helper'
 
-describe Robots::DorRepo::Release::ReleasePublish do
-  before :each do
-    @druid = 'aa222cc3333'
-    @work_item = instance_double(Dor::Item)
-    @r = Robots::DorRepo::Release::ReleasePublish.new
+RSpec.describe Robots::DorRepo::Release::ReleasePublish do
+  let(:druid) { 'aa222cc3333' }
+  let(:release_item) { Dor::Release::Item.new(druid: druid, skip_heartbeat: true) }
+  let(:dor_item) { instance_double(Dor::Item, id: druid) }
+  let(:robot) { described_class.new }
+
+  before do
+    allow(PublishMetadataService).to receive(:publish)
+    allow(release_item).to receive(:object).and_return(dor_item)
+    allow(Dor::Release::Item).to receive_messages(new: release_item)
   end
 
-  it 'should run the robot, calling publish metadata on the dor item' do
-    setup_release_item(@druid, :item, nil)
-    expect(@dor_item).to receive(:publish_metadata).once
-    @r.perform(@work_item)
+  it 'calls the publish metadata service with the dor item' do
+    robot.perform(druid)
+    expect(PublishMetadataService).to have_received(:publish).with(dor_item)
   end
 end
