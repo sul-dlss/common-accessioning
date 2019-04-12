@@ -3,7 +3,7 @@
 module Robots
   module DorRepo
     module Accession
-
+      # Push file changes for shelve-able files into stacks
       class Shelve < Robots::DorRepo::Base
         def initialize
           super('dor', 'accessionWF', 'shelve')
@@ -13,7 +13,7 @@ module Robots
           obj = Dor.find(druid)
           return unless obj.is_a?(Dor::Item)
 
-          Dor::ShelvingService.shelve(obj)
+          ShelvingService.shelve(obj)
         end
       end
     end

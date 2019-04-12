@@ -30,6 +30,7 @@ require 'datastream_builder'
 require 'publish_metadata_service'
 require 'reset_workspace_service'
 require 'sdr_ingest_service'
+require 'shelving_service'
 require 'robots'
 
 env_file = File.expand_path(File.dirname(__FILE__) + "/./environments/#{environment}")
