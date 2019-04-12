@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-# Clears the way for the standalone publishing robot to publish
-# the object's metadata to the Digital Stacks' document cache
-
 module Robots
   module DorRepo
     module Accession
-
+      # Sends initial metadata to PURL, in robots/release/release_publish we push
+      # to PURL again with updates to identityMetadata
       class Publish < Robots::DorRepo::Base
         def initialize
           super('dor', 'accessionWF', 'publish')
