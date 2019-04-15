@@ -24,7 +24,7 @@ class PublishMetadataService
   attr_reader :item
 
   def transfer_metadata
-    transfer_to_document_store(Dor::DublinCoreService.new(item).ng_xml.to_xml(&:no_declaration), 'dc')
+    transfer_to_document_store(DublinCoreService.new(item).ng_xml.to_xml(&:no_declaration), 'dc')
     %w[identityMetadata contentMetadata rightsMetadata].each do |stream|
       transfer_to_document_store(item.datastreams[stream].content.to_s, stream) if item.datastreams[stream]
     end
