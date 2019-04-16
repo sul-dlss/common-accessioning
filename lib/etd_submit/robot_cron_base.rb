@@ -5,10 +5,10 @@ module EtdSubmit
     attr_reader :repo, :workflow_name, :step_name, :prerequisites
 
     def start
-      lanes = Dor::Config.workflow.client.get_lane_ids(*qualified_workflow_name.split(/:/))
+      lanes = Dor::Config.workflow.client.lane_ids(*qualified_workflow_name.split(/:/))
 
       lanes.each do |lane|
-        results = Dor::Config.workflow.client.get_objects_for_workstep(
+        results = Dor::Config.workflow.client.objects_for_workstep(
           prerequisites,
           qualified_workflow_name,
           lane
