@@ -18,9 +18,9 @@ RSpec.describe DatastreamBuilder do
   let(:dsid) { 'descMetadata' }
 
   describe '#build' do
-    # Paths to two files with the same content.
-    subject(:build) { builder.build }
+    subject(:build) { builder.build { |ds| item.build_descMetadata_datastream(ds) } }
 
+    # Paths to two files with the same content.
     let(:f1) { 'workspace/ab/123/cd/4567/ab123cd4567/metadata/descMetadata.xml' }
     let(:f2) { 'workspace/ab/123/cd/4567/desc_metadata.xml' }
 
@@ -47,7 +47,6 @@ RSpec.describe DatastreamBuilder do
 
         before do
           allow_any_instance_of(described_class).to receive(:find_metadata_file).and_return(dm_filename)
-          allow(File).to receive(:read).and_return(dm_fixture_xml)
         end
 
         context 'when the file is newer than datastream' do
@@ -87,12 +86,12 @@ RSpec.describe DatastreamBuilder do
             .from(false).to(true)
         end
 
-        context 'when the datastream cannot be generated' do
+        context 'when the datastream is required and not generated' do
           let(:required) { true }
-          let(:dsid) { 'contentMetadata' }
+          # fails because the block doesn't build the datastream
+          subject(:build) { builder.build { |ds| } }
 
           it 'raises an exception' do
-            # Fails because there is no build_contentMetadata_datastream() method.
             expect { build }.to raise_error(RuntimeError)
           end
         end

@@ -24,6 +24,8 @@ class DatastreamBuilder
     raise 'Datastream required, but none provided' if required && !datastream
   end
 
+  # Populates the datastream from the file if the file is newer than the datastream.
+  # if no file exists it calls the provided block and passes the datastream to be built.
   def build
     return unless datastream
 
@@ -31,8 +33,10 @@ class DatastreamBuilder
     if file_newer_than_datastream?
       create_from_file(filename)
     elsif force || empty_datastream?
-      create_default
+      yield(datastream)
     end
+    datastream.save unless datastream.digital_object.new?
+
     # Check for success.
     raise "Required datastream #{datastream_name} could not be populated!" if required && empty_datastream?
   end
@@ -66,15 +70,6 @@ class DatastreamBuilder
     content = File.read(filename)
     datastream.content = content
     datastream.ng_xml = Nokogiri::XML(content) if datastream.respond_to?(:ng_xml)
-    datastream.save unless datastream.digital_object.new?
-  end
-
-  def create_default
-    meth = "build_#{datastream_name}_datastream".to_sym
-    return unless object.respond_to?(meth)
-
-    object.public_send(meth, datastream)
-    datastream.save unless datastream.digital_object.new?
   end
 
   # Tries to find a file for the datastream.
