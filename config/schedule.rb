@@ -21,6 +21,7 @@ every :day, at: '10:10pm' do
 end
 
 every :hour, at: 40 do
+  # This polls symphony to see if it has the data from submit-marc
   robot_cron 'dor:etdSubmitWF:check-marc'
 end
 
