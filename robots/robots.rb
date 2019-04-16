@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'common/base'
-require 'accession/abstract_metadata'
 require 'accession/content_metadata'
 require 'accession/descriptive_metadata'
 require 'accession/end_accession'
