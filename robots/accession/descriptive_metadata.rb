@@ -1,17 +1,22 @@
 # frozen_string_literal: true
 
-# Initialize contentMetadata
-
 module Robots
   module DorRepo
     module Accession
+      # Creates the descMetadata datastream
+      class DescriptiveMetadata < Robots::DorRepo::Base
+        def initialize
+          super('dor', 'accessionWF', 'descriptive-metadata')
+        end
 
-      class DescriptiveMetadata < AbstractMetadata
-        def self.params
-          { :process_name => 'descriptive-metadata', :datastream => 'descMetadata', :require => true }
+        def perform(druid)
+          obj = Dor.find(druid)
+          builder = DatastreamBuilder.new(object: obj,
+                                          datastream: obj.descMetadata,
+                                          required: true)
+          builder.build
         end
       end
-
     end
   end
 end

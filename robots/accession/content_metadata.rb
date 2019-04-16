@@ -1,12 +1,20 @@
 # frozen_string_literal: true
 
-# Initialize contentMetadata
 module Robots
   module DorRepo
     module Accession
-      class ContentMetadata < AbstractMetadata
-        def self.params
-          { :process_name => 'content-metadata', :datastream => 'contentMetadata', :force => true }
+      # Creates the contentMetadata datastream
+      class ContentMetadata < Robots::DorRepo::Base
+        def initialize
+          super('dor', 'accessionWF', 'content-metadata')
+        end
+
+        def perform(druid)
+          obj = Dor.find(druid)
+          builder = DatastreamBuilder.new(object: obj,
+                                          datastream: obj.contentMetadata,
+                                          force: true)
+          builder.build
         end
       end
     end

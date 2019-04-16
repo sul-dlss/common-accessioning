@@ -1,17 +1,21 @@
 # frozen_string_literal: true
 
-# Initialize contentMetadata
-
 module Robots
   module DorRepo
     module Accession
+      # Creates the rightsMetadata datastream
+      class RightsMetadata < Robots::DorRepo::Base
+        def initialize
+          super('dor', 'accessionWF', 'rights-metadata')
+        end
 
-      class RightsMetadata < AbstractMetadata
-        def self.params
-          { :process_name => 'rights-metadata', :datastream => 'rightsMetadata' }
+        def perform(druid)
+          obj = Dor.find(druid)
+          builder = DatastreamBuilder.new(object: obj,
+                                          datastream: obj.rightsMetadata)
+          builder.build
         end
       end
-
     end
   end
 end

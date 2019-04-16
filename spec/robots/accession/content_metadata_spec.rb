@@ -2,8 +2,6 @@
 
 require 'spec_helper'
 
-require File.expand_path(File.dirname(__FILE__) + '/../../../robots/accession/content_metadata')
-
 RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
   subject(:robot) { described_class.new }
 
@@ -20,8 +18,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
       expect(DatastreamBuilder).to receive(:new)
         .with(datastream: Dor::ContentMetadataDS,
               force: true,
-              object: object,
-              required: false).and_return(builder)
+              object: object).and_return(builder)
       expect(builder).to receive(:build)
       perform
     end
