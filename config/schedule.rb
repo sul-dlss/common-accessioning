@@ -9,6 +9,7 @@ every :day, :at => '2:16am', :roles => [:db] do
          '/opt/app/lyberadmin/common-accessioning/current/robots/accession/embargo_release.rb'
 end
 
+set :environment_variable, 'ROBOT_ENVIRONMENT'
 job_type :robot_cron, 'cd :path && :environment_variable=:environment :bundle_command bin/run_robot_cron :task :output'
 
 every :day, at: '9:10pm' do
@@ -30,6 +31,5 @@ end
 every 5.minutes do
   # cannot use :output with Hash/String because we don't want append behavior
   set :output, -> { '> log/verify.log 2> log/cron.log' }
-  set :environment_variable, 'ROBOT_ENVIRONMENT'
   rake 'robots:verify'
 end
