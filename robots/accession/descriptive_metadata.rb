@@ -14,7 +14,9 @@ module Robots
           builder = DatastreamBuilder.new(object: obj,
                                           datastream: obj.descMetadata,
                                           required: true)
-          builder.build
+          builder.build do |ds|
+            obj.build_descMetadata_datastream(ds)
+          end
         end
       end
     end

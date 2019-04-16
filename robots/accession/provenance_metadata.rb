@@ -13,9 +13,7 @@ module Robots
           obj = Dor.find(druid)
           obj.build_provenanceMetadata_datastream('accessionWF', 'DOR Common Accessioning completed')
         end
-
       end
-
     end
   end
 end
