@@ -19,3 +19,4 @@ config/certs
 
 spec/fixtures/assembly
 spec/fixtures/export
+spec/fixtures/workspace/*/*/*/*/*/temp/
