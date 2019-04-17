@@ -15,7 +15,7 @@ module Robots
                                           datastream: obj.descMetadata,
                                           required: true)
           builder.build do |ds|
-            obj.build_descMetadata_datastream(ds)
+            DescMetadataService.build(obj, ds)
           end
         end
       end
