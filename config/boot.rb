@@ -26,6 +26,7 @@ require 'dor-services'
 require 'lyber_core'
 
 require 'cleanup_reset_service'
+require 'dublin_core_service'
 require 'datastream_builder'
 require 'publish_metadata_service'
 require 'public_xml_service'
