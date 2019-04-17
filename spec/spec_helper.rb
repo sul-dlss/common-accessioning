@@ -35,7 +35,6 @@ def setup_release_item(druid, obj_type, members)
   @release_item = Dor::Release::Item.new(druid: druid, skip_heartbeat: true)
   @dor_item = instance_double(Dor::Item)
   allow(@dor_item).to receive_messages(
-    publish_metadata: nil,
     id: druid
   )
   allow(@release_item).to receive_messages(
