@@ -1,16 +1,11 @@
-<technicalMetadata objectId='druid:dd116zh0343' datetime='2019-04-11T03:43:02Z'
+<technicalMetadata objectId='druid:du000ps9999' datetime='2012-07-19T23:33:30Z'
     xmlns:jhove='http://hul.harvard.edu/ois/xml/ns/jhove'
     xmlns:mix='http://www.loc.gov/mix/v10'
     xmlns:textmd='info:lc/xmlns/textMD-v3' >
-  <file id='folder1PuSu/story5a.txt'>
+  <file id='a1.txt'>
     <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
-    <jhove:lastModified>2019-01-07T08:52:10-06:00</jhove:lastModified>
-    <jhove:size>3614</jhove:size>
     <jhove:format>ASCII</jhove:format>
     <jhove:status>Well-Formed and valid</jhove:status>
-    <jhove:sigMatch>
-      <jhove:module>WARC-kb</jhove:module>
-    </jhove:sigMatch>
     <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
     <jhove:properties>
       <textmd:textMD>
@@ -23,15 +18,10 @@
       </textmd:textMD>
     </jhove:properties>
   </file>
-  <file id='folder2PdSa/storyAa.txt'>
+  <file id='a4.txt'>
     <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
-    <jhove:lastModified>2019-01-07T08:52:10-06:00</jhove:lastModified>
-    <jhove:size>10717</jhove:size>
     <jhove:format>ASCII</jhove:format>
     <jhove:status>Well-Formed and valid</jhove:status>
-    <jhove:sigMatch>
-      <jhove:module>WARC-kb</jhove:module>
-    </jhove:sigMatch>
     <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
     <jhove:properties>
       <textmd:textMD>
@@ -44,15 +34,10 @@
       </textmd:textMD>
     </jhove:properties>
   </file>
-  <file id='folder3PaSd/storyFa.txt'>
+  <file id='a5.txt'>
     <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
-    <jhove:lastModified>2019-01-07T08:52:10-06:00</jhove:lastModified>
-    <jhove:size>28726</jhove:size>
     <jhove:format>ASCII</jhove:format>
     <jhove:status>Well-Formed and valid</jhove:status>
-    <jhove:sigMatch>
-      <jhove:module>WARC-kb</jhove:module>
-    </jhove:sigMatch>
     <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
     <jhove:properties>
       <textmd:textMD>
@@ -65,15 +50,10 @@
       </textmd:textMD>
     </jhove:properties>
   </file>
-  <file id='folder1PuSu/story3m.txt'>
+  <file id='a6.txt'>
     <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
-    <jhove:lastModified>2019-01-07T08:52:10-06:00</jhove:lastModified>
-    <jhove:size>5941</jhove:size>
     <jhove:format>ASCII</jhove:format>
     <jhove:status>Well-Formed and valid</jhove:status>
-    <jhove:sigMatch>
-      <jhove:module>WARC-kb</jhove:module>
-    </jhove:sigMatch>
     <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
     <jhove:properties>
       <textmd:textMD>
@@ -86,36 +66,10 @@
       </textmd:textMD>
     </jhove:properties>
   </file>
-  <file id='folder2PdSa/story8m.txt'>
+  <file id='b1.txt'>
     <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
-    <jhove:lastModified>2019-01-07T08:52:10-06:00</jhove:lastModified>
-    <jhove:size>5645</jhove:size>
     <jhove:format>ASCII</jhove:format>
     <jhove:status>Well-Formed and valid</jhove:status>
-    <jhove:sigMatch>
-      <jhove:module>WARC-kb</jhove:module>
-    </jhove:sigMatch>
-    <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
-    <jhove:properties>
-      <textmd:textMD>
-        <textmd:character_info>
-          <textmd:byte_order>big</textmd:byte_order>
-          <textmd:byte_size>8</textmd:byte_size>
-          <textmd:character_size>1</textmd:character_size>
-          <textmd:linebreak>LF</textmd:linebreak>
-        </textmd:character_info>
-      </textmd:textMD>
-    </jhove:properties>
-  </file>
-  <file id='folder3PaSd/storyDm.txt'>
-    <jhove:reportingModule release='1.3' date='2006-09-05'>ASCII-hul</jhove:reportingModule>
-    <jhove:lastModified>2019-01-07T08:52:10-06:00</jhove:lastModified>
-    <jhove:size>25336</jhove:size>
-    <jhove:format>ASCII</jhove:format>
-    <jhove:status>Well-Formed and valid</jhove:status>
-    <jhove:sigMatch>
-      <jhove:module>WARC-kb</jhove:module>
-    </jhove:sigMatch>
     <jhove:mimeType>text/plain; charset=US-ASCII</jhove:mimeType>
     <jhove:properties>
       <textmd:textMD>

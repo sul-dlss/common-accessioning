@@ -355,6 +355,7 @@ DEPENDENCIES
   honeybadger
   jhove-service (>= 1.1.5)
   lyber-core (>= 4.1.3)
+  moab-versioning (~> 4.0)
   nokogiri
   pry
   pry-byebug
