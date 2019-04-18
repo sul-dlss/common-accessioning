@@ -77,7 +77,7 @@ RSpec.describe PublishMetadataService do
       end
 
       it 'does not publish the object' do
-        expect(Dor::DigitalStacksService).not_to receive(:transfer_to_document_store)
+        expect(DigitalStacksService).not_to receive(:transfer_to_document_store)
         service.publish
       end
 
