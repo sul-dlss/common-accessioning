@@ -20,6 +20,12 @@ Dor::Config.configure do
     workspace '/tmp'
   end
 
+  metadata do
+    catalog.url 'http://example.edu/catalog/mods'
+    catalog.user 'user'
+    catalog.pass 'pass'
+  end
+
   assembly do
     root_dir      ['spec/test_input', 'spec/test_input2'] # directories to search for content that should be acted upon by the robots
     cm_file_name  'contentMetadata.xml' # the name of the contentMetadata file
