@@ -52,29 +52,47 @@ class SdrIngestService
   #   into the workspace's metadata directory, overwriting existing file if present
   def self.extract_datastreams(dor_item, workspace)
     metadata_dir = Pathname.new(workspace.path('metadata', true))
-    Dor::Config.sdr.datastreams.to_hash.each_pair do |ds_name, required|
-      ds_name = ds_name.to_s
+    datastream_config.each do |ds_name, required|
       metadata_file = metadata_dir.join("#{ds_name}.xml")
-      metadata_string = get_datastream_content(dor_item, ds_name, required)
+      metadata_string = datastream_content(dor_item, ds_name, required)
       metadata_file.open('w') { |f| f << metadata_string } if metadata_string
     end
     metadata_dir
   end
 
+  # @return[Hash<Symbol,Boolean>] a hash of datastreams and whether they are required
+  def self.datastream_config
+    {
+      administrativeMetadata: false,
+      contentMetadata: false,
+      descMetadata: true,
+      defaultObjectRights: false,
+      events: false,
+      embargoMetadata: false,
+      identityMetadata: true,
+      provenanceMetadata: true,
+      relationshipMetadata: true,
+      rightsMetadata: false,
+      roleMetadata: false,
+      sourceMetadata: false,
+      technicalMetadata: false,
+      versionMetadata: true,
+      workflows: false,
+      geoMetadata: false
+    }
+  end
+  private_class_method :datastream_config
+
   # @param [Dor::Item] dor_item The representation of the digital object
-  # @param [String] ds_name The name of the desired Fedora datastream
-  # @param [String] required Enumeration: one of ['required', 'optional']
+  # @param [Symbol] ds_name The name of the desired Fedora datastream
+  # @param [Boolean] required is the datastream required
   # @return [String] return the xml text of the specified datastream if it exists.
   #   If not found, return nil unless it is a required datastream in which case raise exception
-  def self.get_datastream_content(dor_item, ds_name, required)
-    ds = (ds_name == 'relationshipMetadata' ? 'RELS-EXT' : ds_name)
-    if dor_item.datastreams.key?(ds) && !dor_item.datastreams[ds].new?
-      return dor_item.datastreams[ds].content
-    elsif required == 'optional'
-      return nil
-    else
-      raise "required datastream #{ds_name} not found in DOR"
-    end
+  def self.datastream_content(dor_item, ds_name, required)
+    ds = (ds_name == :relationshipMetadata ? 'RELS-EXT' : ds_name.to_s)
+    return dor_item.datastreams[ds].content if dor_item.datastreams.key?(ds) && !dor_item.datastreams[ds].new?
+
+    raise "required datastream #{ds_name} not found in DOR" if required
   end
 
   # @param [Pathname] metadata_dir the location of the metadata directory in the workspace
