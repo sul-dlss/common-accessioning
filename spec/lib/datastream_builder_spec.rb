@@ -3,13 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe DatastreamBuilder do
-  class ProcessableItem < ActiveFedora::Base
-    include Dor::Itemizable
-    include Dor::Processable
-    include Dor::Versionable
-    include Dor::Describable
-  end
-
   subject(:builder) do
     described_class.new(object: item, datastream: item.datastreams[dsid], force: true, required: required)
   end
@@ -18,7 +11,9 @@ RSpec.describe DatastreamBuilder do
   let(:dsid) { 'descMetadata' }
 
   describe '#build' do
-    subject(:build) { builder.build { |ds| item.build_descMetadata_datastream(ds) } }
+    subject(:build) do
+      builder.build { |ds| DescMetadataService.build(item, ds) }
+    end
 
     # Paths to two files with the same content.
     let(:f1) { 'workspace/ab/123/cd/4567/ab123cd4567/metadata/descMetadata.xml' }
@@ -40,7 +35,7 @@ RSpec.describe DatastreamBuilder do
     context 'when operating on an Item' do
       before { item.contentMetadata.content = '<contentMetadata/>' }
 
-      let(:item) { instantiate_fixture('druid:ab123cd4567', ProcessableItem) }
+      let(:item) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
 
       context 'when the datastream exists as a file' do
         let(:time) { Time.now.utc }
@@ -65,7 +60,7 @@ RSpec.describe DatastreamBuilder do
           before do
             allow(File).to receive(:mtime).and_return(time - 99)
             allow(item.descMetadata).to receive(:createDate).and_return(time)
-            allow(item).to receive(:fetch_descMetadata_datastream).and_return(dm_builder_xml)
+            allow(DescMetadataService).to receive(:fetch_datastream).and_return(dm_builder_xml)
           end
 
           it 'file older than datastream: should use the builder' do
@@ -78,7 +73,7 @@ RSpec.describe DatastreamBuilder do
       context 'when the datastream does not exist as a file' do
         before do
           allow_any_instance_of(described_class).to receive(:find_metadata_file).and_return(nil)
-          allow(item).to receive(:fetch_descMetadata_datastream).and_return(dm_builder_xml)
+          allow(DescMetadataService).to receive(:fetch_datastream).and_return(dm_builder_xml)
         end
 
         it 'uses the datastream method builder' do
