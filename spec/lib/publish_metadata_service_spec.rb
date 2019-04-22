@@ -2,20 +2,9 @@
 
 require 'spec_helper'
 
-class PublishableItem < ActiveFedora::Base
-  include Dor::Identifiable
-  include Dor::Publishable
-  include Dor::Describable
-  include Dor::Processable
-  include Dor::Releaseable
-  include Dor::Rightsable
-  include Dor::Governable
-  include Dor::Itemizable
-end
-
 RSpec.describe PublishMetadataService do
   let(:item) do
-    instantiate_fixture('druid:ab123cd4567', PublishableItem).tap do |i|
+    instantiate_fixture('druid:ab123cd4567', Dor::Item).tap do |i|
       i.contentMetadata.content = '<contentMetadata/>'
       i.rels_ext.content = rels
     end

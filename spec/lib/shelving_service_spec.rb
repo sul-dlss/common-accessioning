@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ShelvingService do
   let(:shelvable_item) do
-    Class.new(ActiveFedora::Base) { include Dor::Itemizable }
+    Dor::Item
   end
 
   let!(:stacks_root) { Dir.mktmpdir }

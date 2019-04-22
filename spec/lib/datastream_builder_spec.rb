@@ -3,13 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe DatastreamBuilder do
-  class ProcessableItem < ActiveFedora::Base
-    include Dor::Itemizable
-    include Dor::Processable
-    include Dor::Versionable
-    include Dor::Describable
-  end
-
   subject(:builder) do
     described_class.new(object: item, datastream: item.datastreams[dsid], force: true, required: required)
   end
@@ -42,7 +35,7 @@ RSpec.describe DatastreamBuilder do
     context 'when operating on an Item' do
       before { item.contentMetadata.content = '<contentMetadata/>' }
 
-      let(:item) { instantiate_fixture('druid:ab123cd4567', ProcessableItem) }
+      let(:item) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
 
       context 'when the datastream exists as a file' do
         let(:time) { Time.now.utc }
