@@ -19,7 +19,7 @@ RSpec.describe Dor::Release::Item do
     @dor_object = instance_double(Dor::Item)
     allow(Dor).to receive(:find).and_return(@dor_object)
 
-    allow(Dor::WorkflowObject).to receive(:initial_repo).with(Dor::Config.release.workflow_name).and_return(true)
+    allow(Dor::WorkflowObject).to receive(:initial_repo).with('releaseWF').and_return(true)
     allow(Dor::Services::Client).to receive_message_chain(:workflows, :initial).and_return(xml)
   end
 
@@ -56,16 +56,16 @@ RSpec.describe Dor::Release::Item do
   end
 
   it 'creates the workflow for a collection' do
-    expect(Dor::Config.workflow.client).to receive(:create_workflow).with(Dor::WorkflowObject.initial_repo(Dor::Config.release.workflow_name), @druid, Dor::Config.release.workflow_name, xml, {}).once
+    expect(Dor::Config.workflow.client).to receive(:create_workflow).with(Dor::WorkflowObject.initial_repo('releaseWF'), @druid, 'releaseWF', xml, {}).once
 
-    expect(Dor::Services::Client).to receive_message_chain(:workflows, :initial).with(name: Dor::Config.release.workflow_name)
+    expect(Dor::Services::Client).to receive_message_chain(:workflows, :initial).with(name: 'releaseWF')
     Dor::Release::Item.add_workflow_for_collection(@druid)
   end
 
   it 'creates the workflow for an item' do
-    expect(Dor::Config.workflow.client).to receive(:create_workflow).with(Dor::WorkflowObject.initial_repo(Dor::Config.release.workflow_name), @druid, Dor::Config.release.workflow_name, xml, {}).once
+    expect(Dor::Config.workflow.client).to receive(:create_workflow).with(Dor::WorkflowObject.initial_repo('releaseWF'), @druid, 'releaseWF', xml, {}).once
 
-    expect(Dor::Services::Client).to receive_message_chain(:workflows, :initial).with(name: Dor::Config.release.workflow_name)
+    expect(Dor::Services::Client).to receive_message_chain(:workflows, :initial).with(name: 'releaseWF')
     Dor::Release::Item.add_workflow_for_item(@druid)
   end
 

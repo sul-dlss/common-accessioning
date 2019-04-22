@@ -84,16 +84,16 @@ module Dor::Release
     end
 
     def self.create_workflow(druid)
-      LyberCore::Log.debug "...adding workflow #{Dor::Config.release.workflow_name} for #{druid}"
+      LyberCore::Log.debug "...adding workflow releaseWF for #{druid}"
 
       # initiate workflow by making workflow service call
       with_retries(max_tries: Dor::Config.release.max_tries, base_sleep_seconds: Dor::Config.release.base_sleep_seconds, max_sleep_seconds: Dor::Config.release.max_sleep_seconds) do |_attempt|
-        Dor::Config.workflow.client.create_workflow(Dor::WorkflowObject.initial_repo(Dor::Config.release.workflow_name), druid, Dor::Config.release.workflow_name, initial_workflow, {})
+        Dor::Config.workflow.client.create_workflow(Dor::WorkflowObject.initial_repo('releaseWF'), druid, 'releaseWF', initial_workflow, {})
       end
     end
 
     def self.initial_workflow
-      client.workflows.initial(name: Dor::Config.release.workflow_name)
+      client.workflows.initial(name: 'releaseWF')
     end
 
     def self.client
