@@ -34,7 +34,7 @@ RSpec.describe SdrIngestService do
     expect(File).to be_directory(Dor::Config.sdr.local_export_home)
   end
 
-  describe 'get_datastream_content' do
+  describe 'datastream_content' do
     before do
       @ds_name = 'myMetadata'
       @mock_item = double('item')
@@ -46,8 +46,9 @@ RSpec.describe SdrIngestService do
       expect(@mock_datastream).to receive(:new?).and_return(false)
       expect(@mock_datastream).to receive(:content).and_return(metadata_string)
       expect(@mock_item).to receive(:datastreams).exactly(3).times.and_return(@ds_name => @mock_datastream)
-      expect(described_class.get_datastream_content(@mock_item, @ds_name, 'required')).to eq metadata_string
+      expect(described_class.datastream_content(@mock_item, @ds_name, true)).to eq metadata_string
     end
+
     context 'when datastream is empty or missing' do
       before do
         expect(@mock_datastream).not_to receive(:content)
@@ -55,10 +56,10 @@ RSpec.describe SdrIngestService do
       end
 
       it 'returns nil if datastream was optional' do
-        expect(described_class.get_datastream_content(@mock_item, 'dummy', 'optional')).to be_nil
+        expect(described_class.datastream_content(@mock_item, 'dummy', false)).to be_nil
       end
       it 'raises exception if datastream was required' do
-        expect { described_class.get_datastream_content(@mock_item, 'dummy', 'required') }.to raise_exception(RuntimeError)
+        expect { described_class.datastream_content(@mock_item, 'dummy', true) }.to raise_exception(RuntimeError)
       end
     end
   end
@@ -146,16 +147,24 @@ RSpec.describe SdrIngestService do
     allow(metadata_file).to receive(:exist?).and_return(false)
     expect(metadata_dir).to receive(:join).at_least(5).times.and_return(metadata_file)
     expect(metadata_file).to receive(:open).at_least(5).times
-    # Dor::SdrIngestService.stub(:get_datastream_content).and_return('<metadata/>')
+    # Dor::SdrIngestService.stub(:datastream_content).and_return('<metadata/>')
     metadata_string = '<metadata/>'
-    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'contentMetadata', 'required').once.and_return(metadata_string)
-    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'descMetadata', 'required').once.and_return(metadata_string)
-    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'identityMetadata', 'required').once.and_return(metadata_string)
-    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'provenanceMetadata', 'required').once.and_return(metadata_string)
-    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'relationshipMetadata', 'required').once.and_return(metadata_string)
-    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'technicalMetadata', 'required').once.and_return(metadata_string)
-    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'sourceMetadata', 'optional').once.and_return(metadata_string)
-    expect(described_class).to receive(:get_datastream_content).with(dor_item, 'rightsMetadata', 'optional').once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :administrativeMetadata, false).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :contentMetadata, false).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :defaultObjectRights, false).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :descMetadata, true).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :events, false).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :geoMetadata, false).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :embargoMetadata, false).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :identityMetadata, true).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :provenanceMetadata, true).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :relationshipMetadata, true).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :roleMetadata, false).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :technicalMetadata, false).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :sourceMetadata, false).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :rightsMetadata, false).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :versionMetadata, true).once.and_return(metadata_string)
+    expect(described_class).to receive(:datastream_content).with(dor_item, :workflows, false).once.and_return(metadata_string)
     described_class.extract_datastreams(dor_item, workspace)
   end
 
