@@ -1,69 +1,101 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'etd_submit/catalog_status'
 
-# describe Robots::DorRepo::EtdSubmit::CatalogStatus do
-#   before do
-#     @mock_workflow = double('workflow')
-#     @mock_queue = double('queue')
-#     @mock_dor_service = double('DorService')
-#   end
+RSpec.describe Robots::DorRepo::EtdSubmit::CatalogStatus do
+  subject(:robot) { described_class.new }
 
-#   it 'processes a batch of druids from a list of files' do
-#     list_file = 'spec/fixtures/list.txt'
+  describe '.perform' do
+    subject(:perform) { robot.perform(druid) }
+    before do
+      allow(Dor).to receive(:find).and_return(object)
+      allow(Dor::WorkflowService).to receive(:get_workflow_xml).and_return(workflow)
+      stub_request(:get, 'http://lyberservices-dev.stanford.edu/cgi-bin/holdings.php?flexkey=dorbd185gs2259')
+        .to_return(status: 200, body: xml)
+    end
+    let(:druid) { 'druid:bd185gs2259' }
+    let(:object) { Etd.new(pid: druid) }
+    let(:workflow) { '<processes />' }
 
-#     LyberCore::Workflow.should_receive(:new).and_return(@mock_workflow)
-#     @mock_workflow.should_receive(:queue).with('catalog-status').and_return(@mock_queue)
-#     @mock_queue.should_receive(:enqueue_identifiers).with('druid', ['druid:mj151qw9093'])
-#     EtdSubmit::CatalogStatus.should_receive(:process_queue)
-#     EtdSubmit::CatalogStatus.process_batch(list_file)
-#   end
+    context 'when nodes are empty' do
+      let(:xml) { '<xml />' }
+      it 'returns waiting' do
+        expect(perform.status).to eq 'waiting'
+      end
+    end
 
-#   it 'processes a batch of druids by getting workflow status from DOR' do
-#     LyberCore::Workflow.should_receive(:new).and_return(@mock_workflow)
-#     @mock_workflow.should_receive(:queue).with('catalog-status').and_return(@mock_queue)
-#     @mock_queue.should_receive(:enqueue_workstep_waiting)
-#     EtdSubmit::CatalogStatus.should_receive(:process_queue)
-#     EtdSubmit::CatalogStatus.process_batch
-#   end
-# end
+    context 'when current_location == home_location' do
+      let(:xml) do
+        <<~XML
+          <?xml version="1.0" encoding="UTF-8"?>
+          <titles>
+              <record>
+                  <key type="flexkey">dormj151qw9093</key>
+                  <catkey>8379324</catkey>
+                  <home>U-ARCHIVES</home>
+                  <current>SHADOW</current>
+              </record>
+              <record>
+                  <key type="flexkey">dormj151qw9093</key>
+                  <catkey>8379324</catkey>
+                  <home>INTERNET</home>
+                  <current>INTERNET</current>
+              </record>
+          </titles>
+        XML
+      end
 
-# describe 'should return true if current_location == home_location' do
-#   before(:all) do
-#     @symphony_output1 = IO.read('spec/fixtures/druid_mj151qw9093/symphony_output1.xml')
-#     @symphony_output2 = IO.read('spec/fixtures/druid_mj151qw9093/symphony_output2.xml')
-#     @workflow = IO.read('spec/fixtures/druid_mj151qw9093/etdAccessionWF.xml')
-#     @workflow_shadow = IO.read('spec/fixtures/druid_mj151qw9093/etdAccessionWF_shadow.xml')
-#     @druid = 'druid:mj151qw9093'
-#     @flexkey = 'dormj151qw9093'
-#   end
+      it 'returns done' do
+        expect(perform).to be true
+      end
+    end
 
-#   it 'checks symphony for the status of the record' do
-#     DorService.should_receive(:query_symphony).with(@flexkey).and_return(@symphony_output2)
-#     DorService.should_receive(:get_workflow_xml).with(@druid, 'etdAccessionWF').and_return(@workflow)
+    context 'when current_location != home_location' do
+      let(:xml) do
+        <<~XML
+          <?xml version="1.0" encoding="UTF-8"?>
+          <titles>
+              <record>
+                  <key type="flexkey">dormj151qw9093</key>
+                  <catkey>8379324</catkey>
+                  <home>U-ARCHIVES</home>
+                  <current>SHADOW</current>
+              </record>
+              <record>
+                  <key type="flexkey">dormj151qw9093</key>
+                  <catkey>8379324</catkey>
+                  <home>INTERNET</home>
+                  <current>SHADOW</current>
+              </record>
+          </titles>
+        XML
+      end
 
-#     catalog_check = EtdSubmit::CatalogStatus.process_item(@druid)
-#     catalog_check.should be true
-#   end
+      let(:workflow) do
+        <<~XML
+          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+            <workflow objectId="druid:mj151qw9093" id="etdAccessionWF">
+                <process name="start-accession" lifecycle="inprocess" status="completed" attempts="1" />
+                <process name="submit-marc" lifecycle="inprocess" status="waiting" />
+                <process name="check-marc" status="waiting" />
+                <process name="catalog-status" status="waiting" />
+                <process name="descriptive-metadata" status="waiting" />
+                <process name="ingest-deposit" status="waiting" />
+                <process name="ingest-receipt" status="waiting" />
+                <process name="shelve" life-cycle="released" status="waiting" />
+                <process name="google-send" status="waiting" />
+                <process name="google-confirm" status="waiting" />
+                <process name="qoop-send" status="waiting" />
+                <process name="qoop-confirm" status="waiting" />
+                <process name="cleanup" lifecycle="accessioned" status="waiting" />
+                <process name="ingest-complete" lifecycle="archived" status="waiting" />
+            </workflow>
+        XML
+      end
 
-#   it 'returns false if current_location != home_location, but update the workflow if @status != current_location' do
-#     current_location = 'SHADOW'
-#     DorService.should_receive(:query_symphony).with(@flexkey).and_return(@symphony_output1)
-#     DorService.should_receive(:get_workflow_xml).with(@druid, 'etdAccessionWF').and_return(@workflow)
-#     DorService.should_receive(:updateWorkflowStatus).with(@druid, 'etdAccessionWF', 'catalog-status', current_location, 0, 'inprocess')
-
-#     catalog_check = EtdSubmit::CatalogStatus.check_status(@druid)
-#     catalog_check.should be false
-#   end
-
-#   it 'returns false if current_location != home_location, but not update the workflow if @status = current_location' do
-#     current_location = 'SHADOW'
-#     DorService.should_receive(:query_symphony).with(@flexkey).and_return(@symphony_output1)
-#     DorService.should_receive(:get_workflow_xml).with(@druid, 'etdAccessionWF').and_return(@workflow_shadow)
-#     DorService.should_not_receive(:updateWorkflowStatus).with(@druid, 'etdAccessionWF', 'catalog-status', current_location, 0, 'inprocess')
-
-#     catalog_check = EtdSubmit::CatalogStatus.check_status(@druid)
-#     catalog_check.should be false
-#   end
-# end
+      it 'returns nil' do
+        expect(perform).to be_nil
+      end
+    end
+  end
+end
