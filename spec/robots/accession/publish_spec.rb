@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::Accession::Publish do
   let(:druid) { 'druid:oo000oo0001' }
   let(:robot) { Robots::DorRepo::Accession::Publish.new }
+  let(:object_client) { instance_double(Dor::Services::Client::Object, publish: true) }
 
   before do
     expect(Dor).to receive(:find).with(druid).and_return(object)
@@ -13,7 +14,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }
     before do
-      allow(PublishMetadataService).to receive(:publish)
+      allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
       perform
     end
 
@@ -21,7 +22,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
       let(:object) { Dor::Collection.new }
 
       it 'publishes metadata' do
-        expect(PublishMetadataService).to have_received(:publish).with(object)
+        expect(object_client).to have_received(:publish)
       end
     end
 
@@ -29,7 +30,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
       let(:object) { Dor::Item.new }
 
       it 'publishes metadata' do
-        expect(PublishMetadataService).to have_received(:publish).with(object)
+        expect(object_client).to have_received(:publish)
       end
     end
 
@@ -37,7 +38,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
       let(:object) { Dor::AdminPolicyObject.new }
 
       it 'does not publish metadata' do
-        expect(PublishMetadataService).not_to have_received(:publish)
+        expect(object_client).not_to have_received(:publish)
       end
     end
   end

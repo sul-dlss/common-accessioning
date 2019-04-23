@@ -16,8 +16,7 @@ module Robots
         # @param [String] druid -- the Druid identifier for the object to process
         def perform(druid)
           LyberCore::Log.debug "release-publish working on #{druid}"
-          item = Dor::Release::Item.new druid: druid
-          PublishMetadataService.publish(item.object)
+          Dor::Services::Client.object(druid).publish
         end
       end
     end

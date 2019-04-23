@@ -14,7 +14,7 @@ module Robots
           obj = Dor.find(druid)
           return unless obj.is_a?(Dor::Set) || obj.is_a?(Dor::Item)
 
-          PublishMetadataService.publish(obj)
+          Dor::Services::Client.object(druid).publish
         end
       end
     end
