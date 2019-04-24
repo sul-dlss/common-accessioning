@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'etd_submit/submit_marc'
-require 'fileutils'
 
 describe Robots::DorRepo::EtdSubmit::SubmitMarc do
   describe 'Exporting MARC' do

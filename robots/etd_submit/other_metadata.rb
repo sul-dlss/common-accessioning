@@ -40,9 +40,8 @@ module Robots
         def transfer_object(source_dir, dest_dir)
           rsync = 'rsync -a -e ssh --recursive --checksum  '
           rsync_cmd = rsync + "'" + source_dir + "/' " + dest_dir + '/'
-          print rsync_cmd + "\n"
           execute(rsync_cmd)
-          raise "#{File.basename(source_dir)} is not found in  #{dest_dir}" unless File.exist?(dest_dir)
+          raise "#{File.basename(source_dir)} is not found in #{dest_dir}" unless File.exist?(dest_dir)
 
           true
         rescue StandardError => e
