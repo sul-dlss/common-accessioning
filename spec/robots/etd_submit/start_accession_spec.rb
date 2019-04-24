@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'etd_submit/start_accession'
 
 RSpec.describe Robots::DorRepo::EtdSubmit::StartAccession do
   subject(:robot) { described_class.new }
