@@ -1,51 +1,50 @@
 # frozen_string_literal: true
 
-# require 'spec_helper'
-# require 'etd_submit/check_marc'
+require 'spec_helper'
 
-# describe Robots::DorRepo::EtdSubmit::CheckMarc do
-#   before do
-#     @mock_workflow = double('workflow')
-#     @mock_queue = double('queue')
-#     @mock_dor_service = double('DorService')
-#   end
+RSpec.describe Robots::DorRepo::EtdSubmit::CheckMarc do
+  subject(:robot) { described_class.new }
 
-#   it 'processes a batch of druids from a list of files' do
-#     list_file = 'spec/fixtures/list.txt'
+  describe '.perform' do
+    subject(:perform) { robot.perform(druid) }
+    before do
+      allow(Etd).to receive(:find).and_return(object)
+      stub_request(:get, 'http://lyberservices-dev.stanford.edu/cgi-bin/holdings.php?flexkey=dorbd185gs2259')
+        .to_return(status: 200, body: xml)
+      allow(object).to receive(:save)
+    end
 
-#     LyberCore::Robots::Workflow.should_receive(:new).and_return(@mock_workflow)
-#     @mock_workflow.should_receive(:queue).with('check-marc').and_return(@mock_queue)
-#     @mock_queue.should_receive(:enqueue_identifiers).with('druid', ["druid:mj151qw9093"])
-#     EtdSubmit::CheckMarc.should_receive(:process_queue)
-#     EtdSubmit::CheckMarc.process_queue(list_file)
-#   end
+    let(:druid) { 'druid:bd185gs2259' }
+    let(:object) { Etd.new(pid: druid) }
 
-#   it 'processes a batch of druids by getting workflow status from DOR' do
-#     LyberCore::Robots::Workflow.should_receive(:new).and_return(@mock_workflow)
-#     @mock_workflow.should_receive(:queue).with('check-marc').and_return(@mock_queue)
-#     @mock_queue.should_receive(:enqueue_workstep_waiting)
-#     EtdSubmit::CheckMarc.should_receive(:process_queue)
-#     EtdSubmit::CheckMarc.process_batch()
-#   end
-# end
+    context 'when nodes are empty' do
+      let(:xml) do
+        <<~XML
+          <?xml version="1.0" encoding="UTF-8"?>
+          <titles>
+              <record>
+                  <key type="flexkey">dormj151qw9093</key>
+                  <catkey>8379324</catkey>
+                  <home>U-ARCHIVES</home>
+                  <current>SHADOW</current>
+              </record>
+              <record>
+                  <key type="flexkey">dormj151qw9093</key>
+                  <catkey>8379324</catkey>
+                  <home>INTERNET</home>
+                  <current>INTERNET</current>
+              </record>
+          </titles>
+        XML
+      end
 
-# describe "check marc record"  do
-#    before(:all) do
-#      @symphony_output1 = IO.read('spec/fixtures/druid_mj151qw9093/symphony_output1.xml')
-#    end
-#
-#    it "should check symphony for current location" do
-#     druid="druid:mj151qw9093"
-#     flexkey = "dormj151qw9093"
-#
-#     identity_string =  "<?xml version=\"1.0\"?>\n<identityMetadata>\n  <catkey>8379324</catkey>\n</identityMetadata>\n"
-#     identity_metadata = Nokogiri::XML('<identityMetadata/>')
-#
-#     DorService.should_receive(:query_symphony).with(flexkey).and_return(@symphony_output1)
-#     DorService.should_receive(:add_datastream_unless_exists).with(druid,'identityMetadata','identityMetadata', identity_metadata.to_xml ).and_return(nil)
-#     DorService.should_receive(:get_datastream).with(druid, 'identityMetadata').and_return(identity_metadata.to_s)
-#     DorService.should_receive(:update_datastream).with(druid, 'identityMetadata', identity_string)
-#
-#     EtdSubmit::CheckMarc.check_marc(druid)
-#    end
-# end
+      let(:ng) { Nokogiri::XML(object.datastreams['identityMetadata'].content) }
+
+      it 'adds identityMetadata with the catkey' do
+        expect(perform).to be true
+        expect(ng.xpath('//otherId[@name="catkey"]').first.text).to eq '8379324'
+        expect(object).to have_received(:save)
+      end
+    end
+  end
+end
