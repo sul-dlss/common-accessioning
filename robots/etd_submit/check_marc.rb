@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 # frozen_string_literal: true
 
 require 'models/etd'
@@ -29,7 +28,6 @@ module Robots
 
           current_location = symphony_xml.search('/titles/record[home="INTERNET"]/current').first
           catkey_xml = symphony_xml.search('/titles/record[home="INTERNET"]/catkey').first
-
           return LyberCore::Robot::ReturnState.WAITING if current_location.nil? || catkey_xml.nil?
 
           #========= Add the identity datastream to dor with ckey  ==========#
@@ -61,7 +59,6 @@ module Robots
             req.options.timeout = 20
             req.options.open_timeout = 20
           end
-          puts "!!! #{res.body}"
           res.body
         end
       end
