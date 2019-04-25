@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe DatastreamBuilder do
   subject(:builder) do
-    described_class.new(object: item, datastream: item.datastreams[dsid], force: true, required: required)
+    described_class.new(object: item, datastream: ds, force: true, required: required)
   end
 
   let(:required) { false }
-  let(:dsid) { 'descMetadata' }
+  let(:ds) { item.descMetadata }
 
   describe '#build' do
     subject(:build) do
@@ -22,15 +22,6 @@ RSpec.describe DatastreamBuilder do
     let(:dm_filename) { File.join(@fixture_dir, f1) } # Path used inside build_datastream().
     let(:dm_fixture_xml) { read_fixture(f2) } # Path to fixture.
     let(:dm_builder_xml) { dm_fixture_xml.sub(/FROM_FILE/, 'FROM_BUILDER') }
-
-    describe 'when the item is a collection (and the datastream is nil)' do
-      let(:item) { Dor::Collection.new(pid: 'druid:bd185gs2256') }
-      let(:dsid) { 'contentMetadata' }
-
-      it 'is a no-op' do
-        expect(build).to be_nil
-      end
-    end
 
     context 'when operating on an Item' do
       before { item.contentMetadata.content = '<contentMetadata/>' }

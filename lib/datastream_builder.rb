@@ -27,8 +27,6 @@ class DatastreamBuilder
   # Populates the datastream from the file if the file is newer than the datastream.
   # if no file exists it calls the provided block and passes the datastream to be built.
   def build
-    return unless datastream
-
     # See if datastream exists as a file and if the file's timestamp is newer than datastream's timestamp.
     if file_newer_than_datastream?
       create_from_file(filename)
