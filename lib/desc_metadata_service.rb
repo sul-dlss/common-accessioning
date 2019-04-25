@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Call Symphony and build the descMetadata datastream with what Symphony returns
 class DescMetadataService
   def self.build(obj, datastream)
     content = fetch_datastream(obj)
