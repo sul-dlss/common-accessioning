@@ -139,8 +139,8 @@ GEM
     haml (5.0.4)
       temple (>= 0.8.0)
       tilt
-    hashdiff (0.3.8)
-    honeybadger (4.2.1)
+    hashdiff (0.3.9)
+    honeybadger (4.2.2)
     hooks (0.4.1)
       uber (~> 0.0.14)
     htmlentities (4.3.4)
@@ -207,7 +207,7 @@ GEM
       nokogiri (>= 1.4.2)
       solrizer (~> 3.3)
     parallel (1.17.0)
-    parser (2.6.2.1)
+    parser (2.6.3.0)
       ast (~> 2.4.0)
     pony (1.13.1)
       mail (>= 2.0)
@@ -345,7 +345,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    whenever (0.10.0)
+    whenever (0.11.0)
       chronic (>= 0.6.3)
     xml-simple (1.1.5)
 
