@@ -33,7 +33,7 @@ class DatastreamBuilder
     elsif force || empty_datastream?
       yield(datastream)
     end
-    datastream.save unless datastream.digital_object.new?
+    datastream.save
 
     # Check for success.
     raise "Required datastream #{datastream_name} could not be populated!" if required && empty_datastream?
