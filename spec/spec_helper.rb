@@ -20,6 +20,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
 require 'pry'
 require 'rspec'
 require 'webmock/rspec'
+WebMock.disable_net_connect!(allow: ['localhost:8983', 'localhost:8984'])
 require 'equivalent-xml/rspec_matchers'
 require 'support/foxml_helper'
 

@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'EmbargoRelease' do
-  Dor.configure do
-    workflow.url 'http://example.org/workflow'
-  end
-
   before do
     allow_any_instance_of(RSolr::Client).to receive(:get) {
       {

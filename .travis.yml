@@ -1,10 +1,30 @@
 language: ruby
 dist: xenial
 
+sudo: required
+services:
+  - docker
+
 notifications:
   email: false
 
 cache: bundler
 
+before_install:
+  # Travis's docker-compose is too old to handle v3.6 docker-compose templates.
+  # This code is from Travis's documentation: https://docs.travis-ci.com/user/docker/#using-docker-compose
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  # Start everything except redis
+  - docker-compose up -d solr fcrepo
+  - docker-compose ps
+
 rvm:
   - 2.5.3 # deployed
+
+env:
+  global:
+    - NOKOGIRI_USE_SYSTEM_LIBRARIES=true # speeds up bundle install
+    - DOCKER_COMPOSE_VERSION=1.23.1
