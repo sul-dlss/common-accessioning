@@ -10,3 +10,16 @@ services:
       - 6379:6379
     volumes:
         - redis:/data
+
+  fcrepo:
+    image: suldlss/fcrepo:no-messaging-latest
+    ports:
+      - 8983:8080
+
+  solr:
+    image: solr:7
+    volumes:
+      - ./solr_conf/conf/:/myconfig
+    command: solr-create -c argo -d /myconfig
+    ports:
+      - 8984:8983

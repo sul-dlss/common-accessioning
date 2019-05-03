@@ -4,17 +4,17 @@ CERT_DIR = File.join(File.dirname(__FILE__), '../..', 'certs')
 
 Dor::Config.configure do
   fedora do
-    url       'https://USERNAME:PASSWORD@example.com/fedora'
+    url 'http://fedoraAdmin:fedoraAdmin@localhost:8983/fedora'
   end
 
-  ssl do
-    cert_file File.join(CERT_DIR, 'dlss-dev-test.crt')
-    key_file  File.join(CERT_DIR, 'dlss-dev-test.key')
-    key_pass  ''
-  end
+  # ssl do
+  #   cert_file File.join(CERT_DIR, 'dlss-dev-test.crt')
+  #   key_file  File.join(CERT_DIR, 'dlss-dev-test.key')
+  #   key_pass  ''
+  # end
 
   workflow.url 'https://example.com/workflow/'
-  solr.url 'http://localhost:8983/solr/argo'
+  solr.url 'http://localhost:8984/solr/argo'
 
   robots do
     workspace '/tmp'

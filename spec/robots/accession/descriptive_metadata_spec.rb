@@ -14,22 +14,30 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
 
     let(:druid) { 'druid:ab123cd4567' }
 
-    before do
-      allow(Dor).to receive(:find).and_return(object)
-    end
-
-    let(:builder) { instance_double(DatastreamBuilder, build: true) }
-
     context 'on an item' do
-      let(:object) { Dor::Item.new(pid: druid) }
+      before do
+        # rubocop:disable Lint/HandleExceptions
+        begin
+          Dor::Item.find(druid).destroy
+        rescue ActiveFedora::ObjectNotFoundError
+          # This repo is already clean
+        end
+        # rubocop:enable Lint/HandleExceptions
 
-      it 'builds a datastream' do
-        expect(DatastreamBuilder).to receive(:new)
-          .with(datastream: Dor::DescMetadataDS,
-                required: true,
-                object: object).and_return(builder)
-        expect(builder).to receive(:build)
+        stub_request(:get, 'https://example.com/workflow/objects/druid:ab123cd4567/workflows')
+          .to_return(status: 200, body: '', headers: {})
+        stub_request(:get, 'https://example.com/workflow/dor/objects/druid:ab123cd4567/lifecycle')
+          .to_return(status: 200, body: '', headers: {})
+        stub_request(:get, 'http://example.edu/catalog/mods/?catkey=12345')
+          .to_return(status: 200, body: xml)
+      end
+
+      let!(:object) { Dor::Item.create!(pid: druid, catkey: '12345') }
+      let(:xml) { '<mods><titleInfo><title>Hello</title></titleInfo></mods>' }
+
+      it 'builds a datastream from the remote service call' do
         perform
+        expect(object.reload.descMetadata.content).to be_equivalent_to xml
       end
     end
   end
