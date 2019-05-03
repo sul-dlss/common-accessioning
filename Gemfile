@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 gem 'activesupport', '~> 5.2'
 gem 'dor-fetcher', '~> 1.3'
 gem 'dor-services', '~> 6.5'
-gem 'dor-services-client', '>=1.4.0'
+gem 'dor-services-client', '~> 1.8'
 gem 'etd_model'
 gem 'lyber-core',  '>=4.1.3'
 gem 'marc' # for etd_submit/submit_marc
