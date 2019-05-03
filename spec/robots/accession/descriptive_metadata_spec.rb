@@ -2,16 +2,35 @@
 
 require 'spec_helper'
 
-require File.expand_path(File.dirname(__FILE__) + '/../../../robots/accession/descriptive_metadata')
+RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
+  subject(:robot) { described_class.new }
 
-describe Robots::DorRepo::Accession::DescriptiveMetadata do
   it 'includes behavior from LyberCore::Robot' do
-    robot = Robots::DorRepo::Accession::DescriptiveMetadata.new
     expect(robot.methods).to include(:work)
   end
 
-  it 'has a ROBOT_ROOT' do
-    guessed_robot_root = File.expand_path(File.dirname(__FILE__) + '/../../..')
-    expect(ROBOT_ROOT).to eql(guessed_robot_root)
+  describe '#perform' do
+    subject(:perform) { robot.perform(druid) }
+
+    let(:druid) { 'druid:ab123cd4567' }
+
+    before do
+      allow(Dor).to receive(:find).and_return(object)
+    end
+
+    let(:builder) { instance_double(DatastreamBuilder, build: true) }
+
+    context 'on an item' do
+      let(:object) { Dor::Item.new(pid: druid) }
+
+      it 'builds a datastream' do
+        expect(DatastreamBuilder).to receive(:new)
+          .with(datastream: Dor::DescMetadataDS,
+                required: true,
+                object: object).and_return(builder)
+        expect(builder).to receive(:build)
+        perform
+      end
+    end
   end
 end
