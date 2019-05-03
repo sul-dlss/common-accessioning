@@ -15,6 +15,7 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
     let(:druid) { 'druid:ab123cd4567' }
 
     context 'on an item' do
+      let(:object_client) { instance_double(Dor::Services::Client::Object, refresh_metadata: true) }
       before do
         # rubocop:disable Lint/HandleExceptions
         begin
@@ -28,16 +29,15 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
           .to_return(status: 200, body: '', headers: {})
         stub_request(:get, 'https://example.com/workflow/dor/objects/druid:ab123cd4567/lifecycle')
           .to_return(status: 200, body: '', headers: {})
-        stub_request(:get, 'http://example.edu/catalog/mods/?catkey=12345')
-          .to_return(status: 200, body: xml)
+
+        allow(Dor::Services::Client).to receive(:object).and_return(object_client)
       end
 
       let!(:object) { Dor::Item.create!(pid: druid, catkey: '12345') }
-      let(:xml) { '<mods><titleInfo><title>Hello</title></titleInfo></mods>' }
 
       it 'builds a datastream from the remote service call' do
         perform
-        expect(object.reload.descMetadata.content).to be_equivalent_to xml
+        expect(object_client).to have_received(:refresh_metadata)
       end
     end
   end

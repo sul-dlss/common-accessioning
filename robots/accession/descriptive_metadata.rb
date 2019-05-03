@@ -14,12 +14,11 @@ module Robots
         def perform(druid)
           obj = Dor.find(druid)
           builder = DatastreamBuilder.new(object: obj,
-                                          datastream: obj.descMetadata,
-                                          required: true)
-          builder.build do |ds|
+                                          datastream: obj.descMetadata)
+          builder.build do |_ds|
             # If there's no file on disk that's newer than the datastream and
             # the datastream has never been populated, use Symphony:
-            DescMetadataService.build(obj, ds)
+            Dor::Services::Client.object(druid).refresh_metadata
           end
         end
       end
