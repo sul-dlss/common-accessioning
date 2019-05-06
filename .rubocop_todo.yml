@@ -219,13 +219,6 @@ Style/HashSyntax:
     - 'config/schedule.rb'
     - 'spec/robots/accession/remediate_object_spec.rb'
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/IfUnlessModifier:
-  Exclude:
-    - 'bin/console'
-    - 'robots/accession/end_accession.rb'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: Strict.

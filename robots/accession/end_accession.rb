@@ -13,9 +13,7 @@ module Robots
 
           # Search for the specialized workflow
           next_dissemination_wf = special_dissemination_wf(druid_obj)
-          if next_dissemination_wf != 'disseminationWF' && next_dissemination_wf.present?
-            druid_obj.initialize_workflow next_dissemination_wf
-          end
+          druid_obj.initialize_workflow next_dissemination_wf if next_dissemination_wf != 'disseminationWF' && next_dissemination_wf.present?
 
           # Call the default disseminationWF in all cases
           druid_obj.initialize_workflow 'disseminationWF'
@@ -23,9 +21,7 @@ module Robots
 
         def special_dissemination_wf(druid_obj)
           apo = druid_obj.admin_policy_object
-          if apo.nil?
-            raise "#{druid_obj.id} doesn't have a valid apo"
-          end
+          raise "#{druid_obj.id} doesn't have a valid apo" if apo.nil?
 
           adminMetadata = apo.datastreams['administrativeMetadata'].content
           adminMetadata_xml = Nokogiri::XML(adminMetadata)
