@@ -25,14 +25,12 @@ end
 require 'dor-services'
 require 'lyber_core'
 
-require 'cleanup_reset_service'
-require 'datastream_builder'
-require 'reset_workspace_service'
-require 'sdr_ingest_service'
-require 'technical_metadata_service'
-require 'digital_stacks_service'
-require 'shelving_service'
-require 'robots'
+require 'zeitwerk'
+loader = Zeitwerk::Loader.new
+loader.push_dir('.')
+loader.push_dir('lib')
+loader.push_dir('lib/models')
+loader.setup
 
 env_file = File.expand_path(File.dirname(__FILE__) + "/./environments/#{environment}")
 puts "Loading config from #{env_file}"

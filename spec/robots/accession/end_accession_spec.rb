@@ -2,8 +2,6 @@
 
 require 'spec_helper'
 
-require File.expand_path(File.dirname(__FILE__) + '/../../../robots/accession/end_accession')
-
 RSpec.describe Robots::DorRepo::Accession::EndAccession do
   let(:object) { Dor::Item.new }
   let(:apo) { Dor::AdminPolicyObject.new }

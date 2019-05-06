@@ -26,6 +26,7 @@ gem 'honeybadger'
 gem 'assembly-image', '~> 1.7'
 gem 'assembly-objectfile', '>=1.6.6'
 gem 'uuidtools' # For models/etd_metadata
+gem 'zeitwerk', '~> 2.1'
 
 group :test do
   gem 'simplecov'

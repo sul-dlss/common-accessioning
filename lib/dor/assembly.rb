@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
-require 'dor/assembly/content_metadata'
-require 'dor/assembly/checksumable'
-require 'dor/assembly/findable'
-require 'dor/assembly/identifiable'
-require 'dor/assembly/item'
 require 'assembly-image'
 
+module Dor
+  module Assembly
+  end
+end
 Dor::Config.configure do
   assembly do
     jp2_resource_types  %w[page image] # only file nodes in resources of this 'type' will have jp2 derivatives made, and only if valid image mimetypes as defined by assembly-objectfile gem
