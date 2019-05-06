@@ -50,12 +50,6 @@ Lint/ShadowedException:
   Exclude:
     - 'config/boot.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Lint/StringConversionInInterpolation:
-  Exclude:
-    - 'robots/accession/embargo_release.rb'
-
 # Offense count: 6
 Lint/UnderscorePrefixedVariableName:
   Exclude:
