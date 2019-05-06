@@ -52,7 +52,7 @@ class EmbargoRelease
     dor_service.close_version(description: "#{embargo_msg} released", significance: 'admin')
   rescue Exception => e
     LyberCore::Log.error("!!! Unable to release embargo for: #{druid}\n#{e.inspect}\n#{e.backtrace.join("\n")}")
-    Dor::Config.workflow.client.update_workflow_error_status 'dor', druid, 'disseminationWF', 'embargo-release', "#{e.to_s}"
+    Dor::Config.workflow.client.update_workflow_error_status 'dor', druid, 'disseminationWF', 'embargo-release', e.to_s
   end
   private_class_method :release_item
 
