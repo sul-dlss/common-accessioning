@@ -37,7 +37,7 @@ if opts[:druid]
 end
 
 # Nuke a file of druids
-druids = IO.readlines(opts[:file]).map {|l| l.strip}
+druids = IO.readlines(opts[:file]).map { |l| l.strip }
 druids.each do |druid|
   Dor::CleanupService.nuke! druid
   puts "#{druid} nuked"

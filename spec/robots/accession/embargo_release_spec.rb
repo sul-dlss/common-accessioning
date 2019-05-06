@@ -18,7 +18,8 @@ RSpec.describe 'EmbargoRelease' do
 
   let(:embargo_release_date) { Time.now.utc - 100000 }
 
-  let(:release_access) { <<-EOXML
+  let(:release_access) {
+    <<-EOXML
     <releaseAccess>
       <access type="discover">
         <machine>
@@ -34,7 +35,8 @@ RSpec.describe 'EmbargoRelease' do
     EOXML
   }
 
-  let(:rights_xml) { <<-EOXML
+  let(:rights_xml) {
+    <<-EOXML
     <rightsMetadata objectId="druid:rt923jk342">
       <access type="discover">
         <machine>
@@ -53,7 +55,8 @@ RSpec.describe 'EmbargoRelease' do
 
   # TODO: #release_embargo is a method on Dor::Item (dor-services). The test should be moved there.
   describe "#release_embargo" do
-    let(:embargo_xml) { <<-EOXML
+    let(:embargo_xml) {
+      <<-EOXML
       <embargoMetadata>
         <status>embargoed</status>
         <releaseDate>#{embargo_release_date.iso8601}</releaseDate>
@@ -66,10 +69,10 @@ RSpec.describe 'EmbargoRelease' do
     let(:item) {
       i = Dor::Item.new
       rds = Dor::RightsMetadataDS.new
-      rds.content = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}.to_s
+      rds.content = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }.to_s
       i.datastreams['rightsMetadata'] = rds
       eds = Dor::EmbargoMetadataDS.new
-      eds.content = Nokogiri::XML(embargo_xml) {|config| config.default_xml.noblanks}.to_s
+      eds.content = Nokogiri::XML(embargo_xml) { |config| config.default_xml.noblanks }.to_s
       i.datastreams['embargoMetadata'] = eds
       i
     }
@@ -90,7 +93,8 @@ RSpec.describe 'EmbargoRelease' do
 
   # TODO: #release_embargo is a method on Dor::Item (dor-services). The test should be moved there.
   context 'release_20_pct_vis_embargo' do
-    let(:embargo_twenty_pct_xml) { <<-EOXML
+    let(:embargo_twenty_pct_xml) {
+      <<-EOXML
       <embargoMetadata>
         <status>embargoed</status>
         <releaseDate>#{embargo_release_date.iso8601}</releaseDate>
@@ -103,10 +107,10 @@ RSpec.describe 'EmbargoRelease' do
     let(:item) {
       i = Dor::Item.new
       rds = Dor::RightsMetadataDS.new
-      rds.content = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}.to_s
+      rds.content = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }.to_s
       i.datastreams['rightsMetadata'] = rds
       eds = Dor::EmbargoMetadataDS.new
-      eds.content = Nokogiri::XML(embargo_twenty_pct_xml) {|config| config.default_xml.noblanks}.to_s
+      eds.content = Nokogiri::XML(embargo_twenty_pct_xml) { |config| config.default_xml.noblanks }.to_s
       i.datastreams['embargoMetadata'] = eds
       i
     }
@@ -134,7 +138,7 @@ RSpec.describe 'EmbargoRelease' do
     end
 
     subject(:release_items) { EmbargoRelease.release_items(query, &block) }
-    let(:block) { proc { } }
+    let(:block) { proc {} }
     let(:query) { "foo" }
     let(:response) do
       { 'response' => { 'numFound' => 1, 'docs' => [{ 'id' => 'druid:999' }] } }
@@ -160,15 +164,16 @@ RSpec.describe 'EmbargoRelease' do
       let(:item) {
         i = Dor::Item.new
         rds = Dor::RightsMetadataDS.new
-        rds.content = Nokogiri::XML(rights_xml) {|config| config.default_xml.noblanks}.to_s
+        rds.content = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }.to_s
         i.datastreams['rightsMetadata'] = rds
         eds = Dor::EmbargoMetadataDS.new
-        eds.content = Nokogiri::XML(embargo_xml) {|config| config.default_xml.noblanks}.to_s
+        eds.content = Nokogiri::XML(embargo_xml) { |config| config.default_xml.noblanks }.to_s
         i.datastreams['embargoMetadata'] = eds
         i
       }
 
-      let(:embargo_xml) { <<-EOXML
+      let(:embargo_xml) {
+        <<-EOXML
         <embargoMetadata>
           <status>embargoed</status>
           <releaseDate>#{embargo_release_date.iso8601}</releaseDate>
