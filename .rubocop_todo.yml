@@ -163,19 +163,6 @@ Style/BracesAroundHashParameters:
     - 'config/deploy/prod.rb'
     - 'config/deploy/stage.rb'
 
-# Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle.
-# SupportedStyles: nested, compact
-Style/ClassAndModuleChildren:
-  Exclude:
-    - 'lib/dor/assembly/checksumable.rb'
-    - 'lib/dor/assembly/content_metadata.rb'
-    - 'lib/dor/assembly/findable.rb'
-    - 'lib/dor/assembly/identifiable.rb'
-    - 'lib/dor/assembly/item.rb'
-    - 'lib/dor/release/item.rb'
-
 # Offense count: 1
 Style/CommentedKeyword:
   Exclude:
