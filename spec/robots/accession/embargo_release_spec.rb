@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'EmbargoRelease' do
+RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
   before do
     allow_any_instance_of(RSolr::Client).to receive(:get) {
       {
@@ -13,7 +13,7 @@ RSpec.describe 'EmbargoRelease' do
       }
     }
     # must do require after mocking Solr call because loading the file calls method
-    require File.expand_path(File.dirname(__FILE__) + '/../../../robots/accession/embargo_release')
+    require File.expand_path(File.dirname(__FILE__) + '/../../../robots/dor_repo/accession/embargo_release')
   end
 
   let(:embargo_release_date) { Time.now.utc - 100000 }
@@ -134,10 +134,10 @@ RSpec.describe 'EmbargoRelease' do
     before do
       # TODO: just requiring the code runs the code, so we have to do some gymnastics to prevent it from running.
       allow(Dor::SearchService).to receive(:query).and_return('response' => { 'numFound' => 0 })
-      require_relative '../../../robots/accession/embargo_release'
+      require_relative '../../../robots/dor_repo/accession/embargo_release'
     end
 
-    subject(:release_items) { EmbargoRelease.release_items(query, &block) }
+    subject(:release_items) { Robots::DorRepo::Accession::EmbargoRelease.release_items(query, &block) }
     let(:block) { proc {} }
     let(:query) { "foo" }
     let(:response) do
