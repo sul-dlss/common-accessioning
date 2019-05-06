@@ -28,9 +28,3 @@ end
 every :hour, at: 41 do
   robot_cron 'dor:etdSubmitWF:catalog-status'
 end
-
-every 5.minutes do
-  # cannot use :output with Hash/String because we don't want append behavior
-  set :output, -> { '> log/verify.log 2> log/cron.log' }
-  rake 'robots:verify'
-end
