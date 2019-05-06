@@ -2,7 +2,7 @@
 
 require File.expand_path(File.dirname(__FILE__) + '/../../config/boot')
 
-#!/usr/bin/env ruby
+# !/usr/bin/env ruby
 #
 # Finds objects where the embargo release date has passed for embargoed items
 # Builds list of candidate objects by doing a Solr query
@@ -11,7 +11,6 @@ require File.expand_path(File.dirname(__FILE__) + '/../../config/boot')
 # Example cron entry
 # 16 2 * * * bash --login -c 'cd /home/lyberadmin/common-accessioning && ROBOT_ENVIRONMENT=test ruby ./robots/accession/embargo_release.rb' > /home/lyberadmin/common-accessioning/log/crondebug.log 2>&1
 class EmbargoRelease
-
   # Turn off active_fedora updates of solr
   ENABLE_SOLR_UPDATES = false
   LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, 'log', 'embargo_release.log'))

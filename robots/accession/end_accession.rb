@@ -3,7 +3,6 @@
 module Robots
   module DorRepo
     module Accession
-
       class EndAccession < Robots::DorRepo::Base
         def initialize
           super('dor', 'accessionWF', 'end-accession')
@@ -18,7 +17,7 @@ module Robots
             druid_obj.initialize_workflow next_dissemination_wf
           end
 
-          #Call the default disseminationWF in all cases
+          # Call the default disseminationWF in all cases
           druid_obj.initialize_workflow 'disseminationWF'
         end
 
@@ -29,7 +28,7 @@ module Robots
           end
 
           adminMetadata = apo.datastreams['administrativeMetadata'].content
-          adminMetadata_xml = Nokogiri::XML( adminMetadata)
+          adminMetadata_xml = Nokogiri::XML(adminMetadata)
           adminMetadata_xml.xpath('//administrativeMetadata/dissemination/workflow/@id').text
         end
       end

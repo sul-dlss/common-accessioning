@@ -5,7 +5,6 @@
 module Robots
   module DorRepo
     module Accession
-
       class RemediateObject < Robots::DorRepo::Base
         def initialize
           super('dor', 'accessionWF', 'remediate-object')
@@ -16,7 +15,6 @@ module Robots
           obj.upgrade! if obj.respond_to? :upgrade!
         end
       end
-
     end
   end
 end
