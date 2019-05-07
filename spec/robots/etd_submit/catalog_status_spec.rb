@@ -9,7 +9,7 @@ RSpec.describe Robots::DorRepo::EtdSubmit::CatalogStatus do
     subject(:perform) { robot.perform(druid) }
     before do
       allow(Dor).to receive(:find).and_return(object)
-      allow(Dor::WorkflowService).to receive(:get_workflow_xml).and_return(workflow)
+      allow(Dor::Config.workflow.client).to receive(:workflow_xml).and_return(workflow)
       stub_request(:get, 'http://lyberservices-dev.stanford.edu/cgi-bin/holdings.php?flexkey=dorbd185gs2259')
         .to_return(status: 200, body: xml)
     end
