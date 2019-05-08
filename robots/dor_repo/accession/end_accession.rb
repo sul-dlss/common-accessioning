@@ -16,7 +16,7 @@ module Robots
           druid_obj.initialize_workflow next_dissemination_wf if next_dissemination_wf != 'disseminationWF' && next_dissemination_wf.present?
 
           # Call the default disseminationWF in all cases
-          druid_obj.initialize_workflow 'disseminationWF'
+          Dor::Services::Client.object(druid).workflow.create(wf_name: 'disseminationWF')
         end
 
         def special_dissemination_wf(druid_obj)
