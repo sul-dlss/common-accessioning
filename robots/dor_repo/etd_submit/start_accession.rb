@@ -12,16 +12,10 @@ module Robots
         end
 
         def perform(druid)
-          api_client.object(druid).workflow.create(wf_name: workflow_name)
+          Dor::Services::Client.object(druid).workflow.create(wf_name: workflow_name)
         end
 
         private
-
-        def api_client
-          @api_client ||= Dor::Services::Client.configure(url: Dor::Config.dor_services.url,
-                                                          username: Dor::Config.dor_services.user,
-                                                          password: Dor::Config.dor_services.pass)
-        end
 
         def workflow_name
           'accessionWF'
