@@ -94,13 +94,7 @@ module Dor
       end
 
       def self.initial_workflow
-        client.workflows.initial(name: 'releaseWF')
-      end
-
-      def self.client
-        Dor::Services::Client.configure(url: Dor::Config.dor_services.url,
-                                        username: Dor::Config.dor_services.username,
-                                        password: Dor::Config.dor_services.password)
+        Dor::Services::Client.workflows.initial(name: 'releaseWF')
       end
     end
   end
