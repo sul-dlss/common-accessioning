@@ -3,13 +3,13 @@
 # DOR consolidated robots
 
 This repository contains a number of Resque background jobs.
-The jobs are enqueued by [robot-master](https://github.com/sul-dlss/robot-master).
+The jobs are enqueued by [workflow-server-rails](https://github.com/sul-dlss/workflow-server-rails).
 
-The [robot-master wiki](https://github.com/sul-dlss/robot-master/wiki) has more documentation about our robots.
+Most of the jobs are run by [resque-pool](https://github.com/nevans/resque-pool) but some are invoked as cron jobs.  See `config/schedule.rb` for those.
 
-## Execution
+It's also possible to invoke the jobs manually:
 
-Should be run from the root of the robot project
+From the root of the robot project
 
 ```console
 $ ./bin/run_robot accessionWF publish
@@ -21,17 +21,6 @@ Options must be placed BEFORE workflow and robot name:
 ```console
 $ ./bin/run_robot --druid druid:12345 accessionWF publish
 ```
-
-From cron:
-
-```
-* * * * bash --login -c 'cd /path/to/robot_root && ruby ./bin/run_robot.rb accessionWF publish' > /home/deploy/crondebug.log 2>&1
-```
-
-## Non-standard Robots
-
-- embargo_release
-    Run from cron once a day to release items that are no longer under embargo
 
 ## Running tests
 A simple "rake" should do everything you need
