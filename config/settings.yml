@@ -1,0 +1,6 @@
+  dor_services:
+    url:  'https://example.com'
+    user: 'USERNAME'
+    pass: 'PASSWORD'
+    token: secret-token
+    token_header: 'X-Auth'

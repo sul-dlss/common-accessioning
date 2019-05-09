@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'activesupport', '~> 5.2'
+gem 'config', '~> 1.7'
 gem 'dor-fetcher', '~> 1.3'
 gem 'dor-services', '~> 7.0'
 gem 'dor-services-client', '~> 1.8'
