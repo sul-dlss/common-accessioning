@@ -32,8 +32,9 @@ class SdrIngestService
     bagger.deposit_group('metadata', metadata_dir)
     bagger.create_tagfiles
     verify_bag_structure(bag_dir)
-    # start SDR preservation workflow (but do not create the workflows datastream)
-    Dor::CreateWorkflowService.create_workflow(dor_item, name: 'preservationIngestWF', create_ds: false)
+
+    # start SDR preservation workflow
+    Dor::Config.workflow.client.create_workflow_by_name(druid, 'preservationIngestWF')
   rescue Exception => e
     raise Dor::Exception, "Error exporting new object version to bag: #{e.message}"
   end

@@ -69,11 +69,12 @@ RSpec.describe SdrIngestService do
     let(:sdr_client) { instance_double(Dor::Services::Client::SDR, signature_catalog: signature_catalog) }
     let(:signature_catalog) { Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests')) }
     let(:druid) { 'druid:dd116zh0343' }
+    let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: true) }
 
     before do
+      allow(Dor::Config.workflow).to receive(:client).and_return(workflow_client)
       allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
       @dor_item = double('dor_item')
-      expect(Dor::CreateWorkflowService).to receive(:create_workflow).with(@dor_item, name: 'preservationIngestWF', create_ds: false)
       allow(@dor_item).to receive(:pid).and_return(druid)
       @metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
       expect(described_class).to receive(:extract_datastreams).with(@dor_item, an_instance_of(DruidTools::Druid)).and_return(@metadata_dir)
@@ -109,7 +110,9 @@ RSpec.describe SdrIngestService do
                                   'export/dd116zh0343/versionAdditions.xml',
                                   'export/dd116zh0343/versionInventory.xml'
                                 ])
+      expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'preservationIngestWF')
     end
+
     specify 'with no change in content' do
       v1_content_metadata = @fixtures.join('sdr_repo/dd116zh0343/v0001/data/metadata/contentMetadata.xml')
       expect(described_class).to receive(:get_content_metadata).with(@metadata_dir).and_return(v1_content_metadata.read)
@@ -134,6 +137,7 @@ RSpec.describe SdrIngestService do
                                   'export/dd116zh0343/versionAdditions.xml',
                                   'export/dd116zh0343/versionInventory.xml'
                                 ])
+      expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'preservationIngestWF')
     end
   end
 
