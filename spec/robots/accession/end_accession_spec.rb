@@ -6,14 +6,13 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   let(:object) { instance_double(Dor::Item, admin_policy_object: apo) }
   let(:apo) { Dor::AdminPolicyObject.new }
   let(:druid) { 'druid:oo000oo0001' }
-  let(:object_client) { instance_double(Dor::Services::Client::Object, workflow: workflow_client) }
-  let(:workflow_client) { instance_double(Dor::Services::Client::Workflow, create: true) }
+  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil) }
 
   subject(:robot) { described_class.new }
 
   before do
     allow(Dor).to receive(:find).with(druid).and_return(object)
-    allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
+    allow(Dor::Config.workflow).to receive(:client).and_return(workflow_client)
   end
 
   describe '#perform' do
@@ -21,7 +20,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
     it 'kicks off dissemination' do
       perform
-      expect(workflow_client).to have_received(:create).with(wf_name: 'disseminationWF')
+      expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'disseminationWF')
     end
   end
 end

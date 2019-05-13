@@ -7,15 +7,15 @@ RSpec.describe Robots::DorRepo::EtdSubmit::StartAccession do
 
   describe '#perform' do
     let(:druid) { 'druid:mj151qw9093' }
-    let(:mock_workflow_instance) { instance_double(Dor::Services::Client::Workflow, create: nil) }
+    let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil) }
 
     before do
-      allow(Dor::Services::Client.object(druid)).to receive(:workflow).and_return(mock_workflow_instance)
+      allow(Dor::Config.workflow).to receive(:client).and_return(workflow_client)
     end
 
-    it 'invokes Dor::Services::Client with druid and workflow name' do
+    it 'invokes Dor::Workflow::Client with druid and workflow name' do
       robot.perform(druid)
-      expect(mock_workflow_instance).to have_received(:create).with(wf_name: 'accessionWF')
+      expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'accessionWF')
     end
   end
 end

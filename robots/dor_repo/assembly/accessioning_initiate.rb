@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative './base'
-require 'dor/services/client'
 
 module Robots
   module DorRepo
@@ -15,7 +14,7 @@ module Robots
           @ai = item(druid)
           LyberCore::Log.info("Inititate accessioning for #{@ai.druid.id}")
           initialize_workspace if @ai.item?
-          initialize_workflow
+          start_accession_workflow
           true
         end
 
@@ -25,8 +24,8 @@ module Robots
           Dor::Services::Client.object(@ai.druid.druid).workspace.create(source: @ai.path_to_object)
         end
 
-        def initialize_workflow
-          Dor::Services::Client.object(@ai.druid.druid).workflow.create(wf_name: 'accessionWF')
+        def start_accession_workflow
+          Dor::Config.workflow.client.create_workflow_by_name(@ai.druid.druid, 'accessionWF')
         end
       end
     end
