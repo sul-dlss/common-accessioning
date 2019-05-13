@@ -5,13 +5,14 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
   let(:base_url) { 'http://dor-services.example.edu' }
   let(:druid) { 'aa222cc3333' }
-  let(:mock_workflow_instance) { double(create: nil) }
+  let(:namespaced_druid) { "druid:#{druid}" }
   let(:mock_workspace_instance) { double(create: nil) }
+  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil) }
 
   subject(:robot) { Robots::DorRepo::Assembly::AccessioningInitiate.new(druid: druid) }
 
   before do
-    allow(Dor::Services::Client.object("druid:#{druid}")).to receive(:workflow).and_return(mock_workflow_instance)
+    allow(Dor::Config.workflow).to receive(:client).and_return(workflow_client)
     allow(Dor::Services::Client.object("druid:#{druid}")).to receive(:workspace).and_return(mock_workspace_instance)
   end
 
@@ -25,7 +26,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
       robot.perform(@assembly_item)
       expect(mock_workspace_instance).to have_received(:create)
         .with(source: 'spec/test_input2/aa/222/cc/3333')
-      expect(mock_workflow_instance).to have_received(:create).with(wf_name: 'accessionWF')
+      expect(workflow_client).to have_received(:create_workflow_by_name).with(namespaced_druid, 'accessionWF')
     end
   end
 
@@ -39,7 +40,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
         expect(@assembly_item).not_to be_item
         robot.perform(@assembly_item)
         expect(mock_workspace_instance).not_to have_received(:create)
-        expect(mock_workflow_instance).to have_received(:create).with(wf_name: 'accessionWF')
+        expect(workflow_client).to have_received(:create_workflow_by_name).with(namespaced_druid, 'accessionWF')
       end
     end
 
@@ -51,7 +52,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
       it 'initiates accessioning, but does not initialize the workspace' do
         robot.perform(@assembly_item)
         expect(mock_workspace_instance).not_to have_received(:create)
-        expect(mock_workflow_instance).to have_received(:create).with(wf_name: 'accessionWF')
+        expect(workflow_client).to have_received(:create_workflow_by_name).with(namespaced_druid, 'accessionWF')
       end
     end
 
@@ -63,7 +64,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
       it 'initiates accessioning, but does not initialize the workspace' do
         robot.perform(@assembly_item)
         expect(mock_workspace_instance).not_to have_received(:create)
-        expect(mock_workflow_instance).to have_received(:create).with(wf_name: 'accessionWF')
+        expect(workflow_client).to have_received(:create_workflow_by_name).with(namespaced_druid, 'accessionWF')
       end
     end
   end

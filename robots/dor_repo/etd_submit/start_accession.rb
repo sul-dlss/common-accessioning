@@ -12,13 +12,7 @@ module Robots
         end
 
         def perform(druid)
-          Dor::Services::Client.object(druid).workflow.create(wf_name: workflow_name)
-        end
-
-        private
-
-        def workflow_name
-          'accessionWF'
+          Dor::Config.workflow.client.create_workflow_by_name(druid, 'accessionWF')
         end
       end
     end
