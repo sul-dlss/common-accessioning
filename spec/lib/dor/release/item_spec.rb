@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Dor::Release::Item do
-  let(:xml) { '<xml/>' }
-
   before do
     @druid = 'oo000oo0001'
     @item = Dor::Release::Item.new(druid: @druid, skip_heartbeat: true) # skip heartbeat check for dor-fetcher
@@ -20,7 +18,6 @@ RSpec.describe Dor::Release::Item do
     allow(Dor).to receive(:find).and_return(@dor_object)
 
     allow(Dor::WorkflowObject).to receive(:initial_repo).with('releaseWF').and_return(true)
-    allow(Dor::Services::Client).to receive_message_chain(:workflows, :initial).and_return(xml)
   end
 
   it 'should initialize' do
@@ -56,17 +53,15 @@ RSpec.describe Dor::Release::Item do
   end
 
   it 'creates the workflow for a collection' do
-    expect(Dor::Config.workflow.client).to receive(:create_workflow).with(Dor::WorkflowObject.initial_repo('releaseWF'), @druid, 'releaseWF', xml, {}).once
+    expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).with(@druid, 'releaseWF').once
 
-    expect(Dor::Services::Client).to receive_message_chain(:workflows, :initial).with(name: 'releaseWF')
-    Dor::Release::Item.add_workflow_for_collection(@druid)
+    Dor::Release::Item.create_release_workflow(@druid)
   end
 
   it 'creates the workflow for an item' do
-    expect(Dor::Config.workflow.client).to receive(:create_workflow).with(Dor::WorkflowObject.initial_repo('releaseWF'), @druid, 'releaseWF', xml, {}).once
+    expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).with(@druid, 'releaseWF').once
 
-    expect(Dor::Services::Client).to receive_message_chain(:workflows, :initial).with(name: 'releaseWF')
-    Dor::Release::Item.add_workflow_for_item(@druid)
+    Dor::Release::Item.create_release_workflow(@druid)
   end
 
   it 'makes a webservice call for updating_marc_records' do
