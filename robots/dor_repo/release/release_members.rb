@@ -32,7 +32,7 @@ module Robots
               if item.item_members # if there are any members, iterate through and add item workflows (which includes setting the first step to completed)
 
                 item.item_members.each do |item_member|
-                  Dor::Release::Item.add_workflow_for_item(item_member['druid'])
+                  Dor::Release::Item.create_release_workflow(item_member['druid'])
                 end
 
               else # no members found
@@ -49,7 +49,7 @@ module Robots
 
             item.sub_collections&.each do |sub_collection|
               with_retries(max_tries: Dor::Config.release.max_tries, base_sleep_seconds: Dor::Config.release.base_sleep_seconds, max_sleep_seconds: Dor::Config.release.max_sleep_seconds) do |_attempt|
-                Dor::Release::Item.add_workflow_for_collection(sub_collection['druid'])
+                Dor::Release::Item.create_release_workflow(sub_collection['druid'])
               end
             end
 
