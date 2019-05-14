@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
-$:.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
-$:.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', 'robots'))
-
 require 'rubygems'
 require 'bundler/setup'
-require 'logger'
-require 'honeybadger'
+Bundler.require(:default)
+require 'lyber_core' # Because lyber-core gem doesn't require this by default.
 
 # Load the environment file based on Environment.  Default to development
 environment = ENV['ROBOT_ENVIRONMENT'] ||= 'development'
@@ -16,16 +13,8 @@ ROBOT_LOG.level = Logger::SEV_LABEL.index(ENV['ROBOT_LOG_LEVEL']) || Logger::INF
 
 # Override Solrizer's logger before it gets a chance to load and pollute
 # STDERR.
-begin
-  require 'solrizer'
-  Solrizer.logger = ROBOT_LOG
-rescue LoadError, NameError, NoMethodError
-end
+Solrizer.logger = ROBOT_LOG
 
-require 'dor-services'
-require 'lyber_core'
-
-require 'zeitwerk'
 loader = Zeitwerk::Loader.new
 loader.push_dir('.')
 loader.push_dir('lib')
@@ -36,7 +25,6 @@ env_file = File.expand_path(File.dirname(__FILE__) + "/./environments/#{environm
 puts "Loading config from #{env_file}"
 require env_file
 
-require 'config'
 Config.setup do |config|
   # Name of the constant exposing loaded settings
   config.const_name = 'Settings'
@@ -67,7 +55,6 @@ Dor::Services::Client.configure(url: Settings.dor_services.url,
                                 token_header: Settings.dor_services.token_header)
 
 # Load Resque configuration and controller
-require 'resque'
 begin
   if defined? REDIS_TIMEOUT
     _server, _namespace = REDIS_URL.split('/', 2)
