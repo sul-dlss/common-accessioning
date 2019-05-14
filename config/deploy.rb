@@ -41,6 +41,8 @@ set :linked_dirs, %w(log run config/environments config/settings config/certs tm
 
 set :honeybadger_env, fetch(:stage)
 
+set :resque_server_roles, :workers
+
 # update shared_configs before restarting app
 before 'deploy:publishing', 'shared_configs:update'
 
