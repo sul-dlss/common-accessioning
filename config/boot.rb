@@ -3,7 +3,6 @@
 require 'rubygems'
 require 'bundler/setup'
 Bundler.require(:default)
-require 'lyber_core' # Because lyber-core gem doesn't require this by default.
 
 # Load the environment file based on Environment.  Default to development
 environment = ENV['ROBOT_ENVIRONMENT'] ||= 'development'

@@ -184,7 +184,7 @@ GEM
       nokogiri (>= 1.4.3.1)
     json (2.2.0)
     link_header (0.0.8)
-    lyber-core (5.0.0)
+    lyber-core (5.0.1)
       activesupport
       dor-services (~> 7.0)
     mail (2.7.1)
@@ -213,7 +213,7 @@ GEM
       nom-xml (~> 1.0)
     mono_logger (1.1.0)
     multi_json (1.13.1)
-    multipart-post (2.1.0)
+    multipart-post (2.1.1)
     mustermann (1.0.3)
     net-http-persistent (3.0.1)
       connection_pool (~> 2.2)
