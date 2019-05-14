@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'assembly-objectfile'
-require 'dor/assembly/stub_content_metadata_parser'
 
 module Dor
   module Assembly
