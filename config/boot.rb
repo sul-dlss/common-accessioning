@@ -45,10 +45,15 @@ Config.load_and_set_settings(
   Config.setting_files(File.expand_path(__dir__), environment)
 )
 
-# Configure dor-services-client to use the dor-services URL
-Dor::Services::Client.configure(url: Settings.dor_services.url,
-                                token: Settings.dor_services.token,
-                                token_header: Settings.dor_services.token_header)
+module CommonAccessioning
+  def self.connect_dor_services_app
+    Dor::Services::Client.configure(url: Settings.dor_services.url,
+                                    token: Settings.dor_services.token,
+                                    token_header: Settings.dor_services.token_header)
+  end
+end
+
+CommonAccessioning.connect_dor_services_app
 
 # Load Resque configuration and controller
 begin
