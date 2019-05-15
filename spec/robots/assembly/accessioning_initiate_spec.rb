@@ -35,37 +35,11 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
       setup_assembly_item(druid, :set)
     end
 
-    context 'and items_only is the default' do
-      it 'initiates accessioning, but does not initialize the workspace' do
-        expect(@assembly_item).not_to be_item
-        robot.perform(@assembly_item)
-        expect(mock_workspace_instance).not_to have_received(:create)
-        expect(workflow_client).to have_received(:create_workflow_by_name).with(namespaced_druid, 'accessionWF')
-      end
-    end
-
-    context 'and items_only is set to false' do
-      before do
-        Dor::Config.configure.assembly.items_only = false
-      end
-
-      it 'initiates accessioning, but does not initialize the workspace' do
-        robot.perform(@assembly_item)
-        expect(mock_workspace_instance).not_to have_received(:create)
-        expect(workflow_client).to have_received(:create_workflow_by_name).with(namespaced_druid, 'accessionWF')
-      end
-    end
-
-    context 'and items_only is set to true' do
-      before do
-        Dor::Config.configure.assembly.items_only = true
-      end
-
-      it 'initiates accessioning, but does not initialize the workspace' do
-        robot.perform(@assembly_item)
-        expect(mock_workspace_instance).not_to have_received(:create)
-        expect(workflow_client).to have_received(:create_workflow_by_name).with(namespaced_druid, 'accessionWF')
-      end
+    it 'initiates accessioning, but does not initialize the workspace' do
+      expect(@assembly_item).not_to be_item
+      robot.perform(@assembly_item)
+      expect(mock_workspace_instance).not_to have_received(:create)
+      expect(workflow_client).to have_received(:create_workflow_by_name).with(namespaced_druid, 'accessionWF')
     end
   end
 end
