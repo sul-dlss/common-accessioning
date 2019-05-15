@@ -17,7 +17,7 @@ every :day, at: '9:10pm' do
 end
 
 every :day, at: '10:10pm' do
-  command "cd #{path}; #{environment_variable}=#{environment} #{bundle_command} bin/run_marc_builder.sh"
+  command "cd #{path}; #{environment_variable}=#{environment} #{bundle_command} robots/dor_repo/etd_submit/build_symphony_marc.rb"
 end
 
 every :hour, at: 40 do
