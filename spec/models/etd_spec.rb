@@ -3,7 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe Etd do
-  subject(:etd) { described_class.new(pid: 'druid:ab123cd4567') }
+  subject(:etd) { described_class.new(pid: druid) }
+  let(:druid) { 'druid:ab123cd4567' }
+
+  describe '.find' do
+    before do
+      allow(etd.workflows).to receive(:content).and_return('')
+      etd.identityMetadata.objectType = 'item'
+      etd.save!
+    end
+    it 'loads the object as an Etd' do
+      expect(described_class.find(druid)).to be_kind_of Etd
+    end
+  end
 
   describe '#generate_content_metadata_xml' do
     subject(:generate) { etd.generate_content_metadata_xml }
