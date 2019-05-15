@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-server 'common-accessioning-stage-a.stanford.edu', user: 'lyberadmin', roles: %w{workers cron} # only server to get whenever cronjobs deployed to
-server 'common-accessioning-stage-b.stanford.edu', user: 'lyberadmin', roles: %w{workers}
+server 'common-accessioning-stage-a.stanford.edu', user: 'lyberadmin', roles: %w{app cron} # only server to get whenever cronjobs deployed to
+server 'common-accessioning-stage-b.stanford.edu', user: 'lyberadmin', roles: %w{app}
 
 Capistrano::OneTimeKey.generate_one_time_key!
 
