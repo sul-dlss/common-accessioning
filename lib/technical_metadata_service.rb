@@ -14,7 +14,6 @@ class TechnicalMetadataService
   # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
   # @return [Boolean] True if technical metadata is correctly added or updated
   def self.add_update_technical_metadata(dor_item)
-    test_jhove_service
     druid = dor_item.pid
     content_group_diff = get_content_group_diff(dor_item)
     deltas = get_file_deltas(content_group_diff)
@@ -37,19 +36,6 @@ class TechnicalMetadataService
     ds.save
     true
   end
-
-  # @return [Boolean] Make sure that the jhove-service gem is loaded
-  def self.test_jhove_service
-    unless defined? ::JhoveService
-      begin
-        require 'jhove_service'
-      rescue LoadError => e
-        puts e.inspect
-        raise 'jhove-service dependency gem was not found.  Please add it to your Gemfile and run bundle install'
-      end
-    end
-  end
-  private_class_method :test_jhove_service
 
   # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
   # @return [FileGroupDifference] The differences between two versions of a group of files
