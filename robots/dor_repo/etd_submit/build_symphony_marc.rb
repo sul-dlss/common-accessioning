@@ -7,7 +7,7 @@
 #
 # Should run once a day from cron by the bin/run_marc_builder.sh script
 
-require File.expand_path(File.dirname(__FILE__) + '/../../config/boot')
+require File.expand_path(File.dirname(__FILE__) + '/../../../config/boot')
 require 'pony'
 
 ETD_ALERTS_LIST = 'etd-alerts@lists.stanford.edu'
