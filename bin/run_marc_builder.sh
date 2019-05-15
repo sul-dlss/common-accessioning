@@ -7,4 +7,4 @@
 # for a temporary lock file
 #
 
-/opt/app/lyberadmin/common-accessioning/current/robots/etd_submit/build_symphony_marc.rb
+/opt/app/lyberadmin/common-accessioning/current/robots/dor_repo/etd_submit/build_symphony_marc.rb
