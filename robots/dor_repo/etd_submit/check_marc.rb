@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'models/etd'
 require 'timeout'
 
 module Robots
