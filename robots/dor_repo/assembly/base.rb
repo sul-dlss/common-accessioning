@@ -3,13 +3,7 @@
 module Robots
   module DorRepo
     module Assembly
-      class Base
-        include LyberCore::Robot
-
-        def workflow_service
-          Dor::Config.workflow.client
-        end
-
+      class Base < Robots::DorRepo::Base
         protected
 
         def with_item(druid, items_only: Dor::Config.configure.assembly.items_only)
