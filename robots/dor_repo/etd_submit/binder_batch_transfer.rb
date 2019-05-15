@@ -56,8 +56,6 @@ module Robots
       end
 
       class BinderBatchTransfer
-        include ::EtdSubmit::TransferUtils
-
         # @param [String] report_file path to a pipe-delimited report from https://etd.stanford.edu/reports
         # @param [String] binder_quarter_root path to the binder dropoff directory for the quarter
         def initialize(report_file, binder_quarter_root)
@@ -84,7 +82,7 @@ module Robots
 
             begin
               LyberCore::Log.info("Fetching content for #{etd.druid}")
-              etd.content_file = get_augmented_pdf_filename(etd.druid)
+              etd.content_file = augmented_pdf_filename(etd.druid)
             rescue StandardError => e
               LyberCore::Log.error("#{e.inspect}\n" << e.backtrace.join("\n") << "\n!!!!!!!!!!!!!!!!!!")
               workflow_error etd.druid, e
@@ -95,6 +93,15 @@ module Robots
           end
 
           send_to_binder
+        end
+
+        def augmented_pdf_filename(pid)
+          pair_tree = DruidTools::PurlDruid.new(pid, DIGITAL_STACKS_STORAGE_ROOT)
+          file_path = File.join(pair_tree.content_dir, '*-augmented.pdf')
+          file = Dir.glob(file_path).first
+          raise "Augmented File error -- Unable to find #{file_path}." unless file
+
+          file
         end
 
         def send_to_binder
