@@ -12,10 +12,10 @@ module Robots
 
         protected
 
-        def with_item(druid, items_only: Dor::Config.configure.assembly.items_only)
+        def with_item(druid)
           ai = item(druid)
 
-          if items_only && !ai.item?
+          if !ai.item?
             LyberCore::Log.info("Skipping #{@step_name} for #{druid} since it is not an item")
           else
             ai.load_content_metadata

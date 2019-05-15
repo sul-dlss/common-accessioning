@@ -24,8 +24,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     context 'for an item' do
       let(:type) { :item }
 
-      it 'should create jp2 for type=item' do
-        Dor::Config.configure.assembly.items_only = true
+      it 'creates jp2 for type=item' do
         expect(@assembly_item).to receive(:item?)
         expect(@assembly_item).to receive(:load_content_metadata)
         expect(robot).to receive(:create_jp2s).with(@assembly_item)
@@ -36,30 +35,11 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     context 'for a set' do
       let(:type) { :set }
 
-      context 'when items_only is true' do
-        before do
-          Dor::Config.configure.assembly.items_only = true
-        end
-
-        it 'does not create jp2 for type=set if configured that way' do
-          expect(@assembly_item).to receive(:item?)
-          expect(@assembly_item).not_to receive(:load_content_metadata)
-          expect(robot).not_to receive(:create_jp2s).with(@assembly_item)
-          perform
-        end
-      end
-
-      context 'when items_only is false' do
-        before do
-          Dor::Config.configure.assembly.items_only = false
-        end
-
-        it 'creates jp2 for type=set if configured that way' do
-          expect(@assembly_item).not_to receive(:item?)
-          expect(@assembly_item).to receive(:load_content_metadata)
-          expect(robot).to receive(:create_jp2s).with(@assembly_item)
-          perform
-        end
+      it 'does not create jp2 for type=set' do
+        expect(@assembly_item).to receive(:item?)
+        expect(@assembly_item).not_to receive(:load_content_metadata)
+        expect(robot).not_to receive(:create_jp2s).with(@assembly_item)
+        perform
       end
     end
   end

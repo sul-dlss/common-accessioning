@@ -25,7 +25,7 @@ module Robots
           # and modify content metadata XML to reflect the new file.
           jp2able_fnode_tuples = []
           # grab all the file node tuples for each valid resource type that we want to generate derivates for
-          Dor::Config.assembly.jp2_resource_types.each do |resource_type|
+          %w[page image].each do |resource_type|
             jp2able_fnode_tuples += item.fnode_tuples(resource_type)
           end
           jp2able_fnode_tuples.each do |fn, obj|
