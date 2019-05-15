@@ -5,8 +5,6 @@
 # Reads the day's marc files from the local temporary directory and builds one file
 # in the MARC_OUTPUT_DIRECTORY
 #
-# Should run once a day from cron by the bin/run_marc_builder.sh script
-
 require File.expand_path(File.dirname(__FILE__) + '/../../../config/boot')
 require 'pony'
 
