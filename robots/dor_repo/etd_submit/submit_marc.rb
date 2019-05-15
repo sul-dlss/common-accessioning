@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'models/etd'
-require 'marc'
 require 'fileutils'
 
 module Robots

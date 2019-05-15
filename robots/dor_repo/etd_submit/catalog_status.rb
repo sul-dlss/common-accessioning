@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'models/etd'
-
 module Robots
   module DorRepo
     module EtdSubmit
