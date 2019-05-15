@@ -15,6 +15,7 @@ module EtdSubmit
         )
 
         results.each do |druid|
+          Honeybadger.context(druid: druid)
           work(druid)
         end
       end
