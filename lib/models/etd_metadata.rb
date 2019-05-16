@@ -17,7 +17,7 @@ module EtdMetadata
     metadata = case ds_name
                when 'identityMetadata' then generate_identity_metadata_xml
                when 'contentMetadata' then generate_content_metadata_xml
-               when 'rightsMetadata' then Dor::Etd::RightsMetdataGenerator.generate(self)
+               when 'rightsMetadata' then Dor::Etd::RightsMetadataGenerator.generate(self)
                when 'versionMetadata' then generate_version_metadata_xml
                end
     return if metadata.nil?
