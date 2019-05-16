@@ -5,6 +5,11 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::EtdSubmit::OtherMetadata do
   subject(:robot) { described_class.new }
 
+  describe '#systemu' do
+    # Validate that the stub we use later is valid for this object
+    it { is_expected.to respond_to(:systemu) }
+  end
+
   describe '#perform' do
     let(:druid) { 'druid:mj151qw9093' }
     let(:object) { Etd.new(pid: druid) }
