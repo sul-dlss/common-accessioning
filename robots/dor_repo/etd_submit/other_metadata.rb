@@ -11,8 +11,8 @@ module Robots
           super('dor', 'etdSubmitWF', 'other-metadata', opts)
         end
 
+        # create metadata datastreams for the work item
         def perform(druid)
-          # create metadata datastreams for the work item
           etd = Etd.find(druid)
 
           druid_tools_druid = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
