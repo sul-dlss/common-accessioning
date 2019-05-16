@@ -414,6 +414,7 @@ DEPENDENCIES
   rubocop (~> 0.60.0)
   simplecov
   slop
+  systemu (~> 2.6)
   uuidtools
   webmock
   whenever
