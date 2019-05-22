@@ -17,10 +17,33 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }
+    context 'when there is no special dissemniation workflow' do
+      it 'kicks off dissemination' do
+        perform
+        expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'disseminationWF')
+      end
+    end
 
-    it 'kicks off dissemination' do
-      perform
-      expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'disseminationWF')
+    context 'when there is a special dissemniation workflow' do
+      before do
+        apo.administrativeMetadata.content = xml
+      end
+
+      let(:xml) do
+        <<~XML
+          <administrativeMetadata>
+            <dissemination>
+              <workflow id="wasDisseminationWF"/>
+            </dissemination>
+          </administrativeMetadata>
+        XML
+      end
+
+      it 'kicks off both dissemination workflows' do
+        perform
+        expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'wasDisseminationWF')
+        expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'disseminationWF')
+      end
     end
   end
 end
