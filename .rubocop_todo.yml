@@ -131,12 +131,6 @@ Naming/VariableNumber:
   Exclude:
     - 'spec/lib/cleanup_reset_service_spec.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Performance/RegexpMatch:
-  Exclude:
-    - 'lib/technical_metadata_service.rb'
-
 # Offense count: 8
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, ProceduralMethods, FunctionalMethods, IgnoredMethods.
