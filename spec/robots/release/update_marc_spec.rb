@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe Robots::DorRepo::Release::UpdateMarc do
-  before :each do
+  before do
     @druid = 'aa222cc3333'
     @work_item = instance_double(Dor::Item)
-    @r = Robots::DorRepo::Release::UpdateMarc.new
+    @r = described_class.new
   end
 
   it 'calls the update marc record method' do

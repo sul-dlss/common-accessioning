@@ -312,6 +312,8 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.7)
+    rubocop-rspec (1.33.0)
+      rubocop (>= 0.60.0)
     ruby-cache (0.3.0)
     ruby-progressbar (1.10.0)
     rubydora (2.1.0)
@@ -410,6 +412,7 @@ DEPENDENCIES
   resque-pool
   rspec (~> 3.0)
   rubocop (~> 0.70.0)
+  rubocop-rspec
   simplecov
   slop
   systemu (~> 2.6)

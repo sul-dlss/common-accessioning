@@ -77,9 +77,10 @@ RSpec.describe DatastreamBuilder do
         end
 
         context 'when the datastream is required and not generated' do
+          subject(:build) { builder.build { |ds| } }
+
           let(:required) { true }
           # fails because the block doesn't build the datastream
-          subject(:build) { builder.build { |ds| } }
 
           it 'raises an exception' do
             expect { build }.to raise_error(RuntimeError)

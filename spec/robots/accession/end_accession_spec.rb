@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Accession::EndAccession do
+  subject(:robot) { described_class.new }
+
   let(:object) { instance_double(Dor::Item, admin_policy_object: apo) }
   let(:apo) { Dor::AdminPolicyObject.new }
   let(:druid) { 'druid:oo000oo0001' }
   let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil) }
-
-  subject(:robot) { described_class.new }
 
   before do
     allow(Dor).to receive(:find).with(druid).and_return(object)
@@ -17,6 +17,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }
+
     context 'when there is no special dissemniation workflow' do
       it 'kicks off dissemination' do
         perform

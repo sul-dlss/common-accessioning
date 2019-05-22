@@ -12,6 +12,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
 
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }
+
     before do
       allow(ShelvingService).to receive(:shelve)
       perform

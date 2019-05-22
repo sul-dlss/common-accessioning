@@ -10,7 +10,7 @@ describe Robots::DorRepo::Goobi::GoobiNotify do
                        'Authorization' => 'Basic VVNFUk5BTUU6UEFTU1dPUkQ=',
                        'Content-Length' => '0' })
       .to_return(status: 200, body: '', headers: {})
-    r = Robots::DorRepo::Goobi::GoobiNotify.new
+    r = described_class.new
     response = r.perform(druid)
     expect(response).to be true
   end

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
+  subject(:result) { robot.perform(druid) }
+
   let(:druid) { 'aa111bb2222' }
   let(:robot) { described_class.new(druid: druid) }
   let(:type) { 'item' }
@@ -19,8 +21,6 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
   before do
     allow(Dor::Assembly::Item).to receive(:new).and_return(item)
   end
-
-  subject(:result) { robot.perform(druid) }
 
   context 'if type is not item' do
     let(:type) { 'collection' }

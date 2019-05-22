@@ -7,18 +7,21 @@ RSpec.describe Robots::DorRepo::EtdSubmit::CatalogStatus do
 
   describe '.perform' do
     subject(:perform) { robot.perform(druid) }
+
     before do
       allow(Dor).to receive(:find).and_return(object)
       allow(Dor::Config.workflow.client).to receive(:workflow_xml).and_return(workflow)
       stub_request(:get, 'http://lyberservices-dev.stanford.edu/cgi-bin/holdings.php?flexkey=dorbd185gs2259')
         .to_return(status: 200, body: xml)
     end
+
     let(:druid) { 'druid:bd185gs2259' }
     let(:object) { Etd.new(pid: druid) }
     let(:workflow) { '<processes />' }
 
     context 'when nodes are empty' do
       let(:xml) { '<xml />' }
+
       it 'returns waiting' do
         expect(perform.status).to eq 'waiting'
       end

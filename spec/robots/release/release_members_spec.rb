@@ -3,26 +3,26 @@
 require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
+  subject(:perform) { robot.perform(work_item) }
+
   let(:robot) { described_class.new }
   let(:druid) { 'druid:aa222cc3333' }
   let(:work_item) { instance_double(Dor::Item) }
-
-  subject(:perform) { robot.perform(work_item) }
 
   before do
     allow(RestClient).to receive_messages(post: nil, get: nil, put: nil) # don't actually make the RestClient calls, just assume they work
   end
 
-  it 'should run the robot' do
+  it 'runs the robot' do
     setup_release_item(druid, :item, nil)
     perform
   end
 
-  it 'should run the robot for an item or an apo and do nothing as a result' do
+  it 'runs the robot for an item or an apo and do nothing as a result' do
     %w[:item :apo].each do |item_type|
       setup_release_item(druid, item_type, nil)
       expect(@release_item.collection?).to be false # definitely not a collection
-      expect(robot).to_not receive(:item_members) # we won't bother looking for item members if this is an item
+      expect(robot).not_to receive(:item_members) # we won't bother looking for item members if this is an item
       perform
     end
   end
@@ -46,7 +46,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       expect(@release_item.collection?).to be true
       expect(@release_item.item_members).to eq([])
       expect(@release_item.sub_collections).to eq(members['sets'])
-      expect(@release_item).to_not receive(:item_members)
+      expect(@release_item).not_to receive(:item_members)
       expect(Dor::Release::Item).to receive(:create_release_workflow).once # one workflow added for the sub-collection
       perform
     end
@@ -72,7 +72,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       expect(@release_item.collection?).to be true
       expect(@release_item.item_members).to eq([])
       expect(@release_item.sub_collections).to eq(members['collections'])
-      expect(@release_item).to_not receive(:item_members)
+      expect(@release_item).not_to receive(:item_members)
       expect(Dor::Release::Item).to receive(:create_release_workflow).once # one workflow added for the sub-collection
       perform
     end
@@ -151,7 +151,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
         expect(@release_item.collection?).to be true
         expect(@release_item.item_members).to eq([])
         expect(@release_item.sub_collections).to eq(collections)
-        expect(Dor::Release::Item).to receive(:create_release_workflow).exactly(2).times # two workflows added, one for each collection
+        expect(Dor::Release::Item).to receive(:create_release_workflow).twice # two workflows added, one for each collection
         perform
       end
     end
@@ -166,7 +166,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
         expect(@release_item.collection?).to be true
         expect(@release_item.item_members).to eq([])
         expect(@release_item.sub_collections).to eq(collections) # it has removed itself and is back to the original list
-        expect(Dor::Release::Item).to receive(:create_release_workflow).exactly(2).times # only two workflows added (it doesn't add a workflow for itself)
+        expect(Dor::Release::Item).to receive(:create_release_workflow).twice # only two workflows added (it doesn't add a workflow for itself)
         perform
       end
     end

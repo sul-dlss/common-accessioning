@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Etd do
   subject(:etd) { described_class.new(pid: druid) }
+
   let(:druid) { 'druid:ab123cd4567' }
 
   describe '.find' do
@@ -12,8 +13,9 @@ RSpec.describe Etd do
       etd.identityMetadata.objectType = 'item'
       etd.save!
     end
+
     it 'loads the object as an Etd' do
-      expect(described_class.find(druid)).to be_kind_of Etd
+      expect(described_class.find(druid)).to be_kind_of described_class
     end
   end
 
@@ -22,9 +24,11 @@ RSpec.describe Etd do
 
     context 'when called on rightsMetadata' do
       let(:ds_name) { 'rightsMetadata' }
+
       before do
         allow(Dor::Etd::RightsMetadataGenerator).to receive(:generate)
       end
+
       it 'calls the generator' do
         populate
         expect(Dor::Etd::RightsMetadataGenerator).to have_received(:generate).with(etd)
