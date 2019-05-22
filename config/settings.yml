@@ -1,5 +1,5 @@
   dor_services:
-    url:  'https://example.com'
+    url:  'https://dor-services-test.stanford.test'
     user: 'USERNAME'
     pass: 'PASSWORD'
     token: secret-token
