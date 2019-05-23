@@ -47,6 +47,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'rubocop', '~> 0.60.0'
+  gem 'rubocop', '~> 0.70.0'
+  gem 'rubocop-rspec'
   gem 'byebug'
 end

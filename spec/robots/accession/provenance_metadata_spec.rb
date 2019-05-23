@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Accession::ProvenanceMetadata do
-  let(:robot) { Robots::DorRepo::Accession::ProvenanceMetadata.new }
+  let(:robot) { described_class.new }
 
   it 'includes behavior from LyberCore::Robot' do
     expect(robot.methods).to include(:work)

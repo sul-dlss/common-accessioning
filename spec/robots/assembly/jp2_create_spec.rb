@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
-  let(:robot) { Robots::DorRepo::Assembly::Jp2Create.new(druid: druid) }
+  let(:robot) { described_class.new(druid: druid) }
 
   def get_filenames(item)
     item.file_nodes.map { |fn| item.path_to_content_file fn['id'] }
@@ -14,11 +14,12 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
   end
 
   describe '#perform' do
+    subject(:perform) { robot.perform(@assembly_item) }
+
     before do
       setup_assembly_item(druid, type)
     end
 
-    subject(:perform) { robot.perform(@assembly_item) }
     let(:druid) { 'aa222cc3333' }
 
     context 'for an item' do
@@ -84,6 +85,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
     context 'with mixed resource types' do
       let(:druid) { 'ff222cc3333' }
+
       before do
         allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
       end
@@ -154,6 +156,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     context 'when some files exist' do
       let(:druid) { 'ff222cc3333' }
       let(:copy_jp2) { File.join TMP_ROOT_DIR, 'ff/222/cc/3333', 'image115.jp2' }
+
       before do
         # copy an existing jp2
         source_jp2 = File.join TMP_ROOT_DIR, 'ff/222/cc/3333', 'image111.jp2'

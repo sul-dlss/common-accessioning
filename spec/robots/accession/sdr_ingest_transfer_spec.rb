@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Accession::SdrIngestTransfer do
   subject(:robot) { described_class.new }
+
   let(:druid) { 'druid:aa222cc3333' }
   let(:object) { instance_double(Dor::Item) }
 

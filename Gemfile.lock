@@ -241,7 +241,6 @@ GEM
       ast (~> 2.4.0)
     pony (1.13.1)
       mail (>= 2.0)
-    powerpack (0.1.2)
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -306,14 +305,15 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
-    rubocop (0.60.0)
+    rubocop (0.70.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
-      parser (>= 2.5, != 2.5.1.1)
-      powerpack (~> 0.1)
+      parser (>= 2.6)
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (~> 1.4.0)
+      unicode-display_width (>= 1.4.0, < 1.7)
+    rubocop-rspec (1.33.0)
+      rubocop (>= 0.60.0)
     ruby-cache (0.3.0)
     ruby-progressbar (1.10.0)
     rubydora (2.1.0)
@@ -367,7 +367,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.6)
-    unicode-display_width (1.4.1)
+    unicode-display_width (1.6.0)
     uuidtools (2.1.5)
     vegas (0.1.11)
       rack (>= 1.0.0)
@@ -411,7 +411,8 @@ DEPENDENCIES
   resque
   resque-pool
   rspec (~> 3.0)
-  rubocop (~> 0.60.0)
+  rubocop (~> 0.70.0)
+  rubocop-rspec
   simplecov
   slop
   systemu (~> 2.6)

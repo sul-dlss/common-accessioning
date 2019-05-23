@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
+  subject(:robot) { described_class.new(druid: druid) }
+
   let(:base_url) { 'http://dor-services.example.edu' }
   let(:druid) { 'aa222cc3333' }
   let(:namespaced_druid) { "druid:#{druid}" }
   let(:mock_workspace_instance) { double(create: nil) }
   let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil) }
-
-  subject(:robot) { Robots::DorRepo::Assembly::AccessioningInitiate.new(druid: druid) }
 
   before do
     allow(Dor::Config.workflow).to receive(:client).and_return(workflow_client)

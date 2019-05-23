@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Accession::Publish do
   let(:druid) { 'druid:oo000oo0001' }
-  let(:robot) { Robots::DorRepo::Accession::Publish.new }
+  let(:robot) { described_class.new }
   let(:object_client) { instance_double(Dor::Services::Client::Object, publish: true) }
 
   before do
@@ -13,6 +13,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
 
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }
+
     before do
       allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
       perform

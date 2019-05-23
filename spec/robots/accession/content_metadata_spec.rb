@@ -7,9 +7,11 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
 
   describe '.perform' do
     subject(:perform) { robot.perform(druid) }
+
     before do
       allow(Dor).to receive(:find).and_return(object)
     end
+
     let(:druid) { 'druid:bd185gs2259' }
     let(:builder) { instance_double(DatastreamBuilder, build: true) }
 

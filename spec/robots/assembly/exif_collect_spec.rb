@@ -29,6 +29,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
 
     context "when it's a set" do
       let(:type) { 'set' }
+
       it 'does not collect exif' do
         expect(item).not_to receive(:load_content_metadata)
         expect(robot).not_to receive(:collect_exif_info)
@@ -58,15 +59,17 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
 
   describe '#image_data_xml' do
     subject(:image_data_xml) { robot.send(:image_data_xml,  exif) }
+
     let(:exif) { double 'image_width' => 55, 'image_height' => 66 }
 
     it { is_expected.to eq('<imageData width="55" height="66"/>') }
   end
 
   describe '#collect_exif_info' do
+    subject(:result) { robot.send(:collect_exif_info, item) }
+
     let(:item) { Dor::Assembly::Item.new(druid: druid) }
 
-    subject(:result) { robot.send(:collect_exif_info, item) }
     let(:exif) { double('result', mimetype: nil, image_width: 7, image_height: 9) }
 
     before do
@@ -105,6 +108,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
       end
 
       let(:druid) { 'druid:aa111bb2222' }
+
       before do
         allow(Assembly::ObjectFile).to receive(:new).and_return(
           double('one', mimetype: 'image/tiff', filesize: 63_468, object_type: :image, exif: exif),
@@ -241,6 +245,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
       end
 
       let(:druid) { 'druid:ff222cc3333' }
+
       before do
         allow(Assembly::ObjectFile).to receive(:new).and_return(
           double('one', mimetype: 'image/tiff', filesize: 63_468, object_type: :image, exif: exif),

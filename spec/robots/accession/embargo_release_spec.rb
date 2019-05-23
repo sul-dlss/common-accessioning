@@ -4,14 +4,12 @@ require 'spec_helper'
 
 RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
   before do
-    allow_any_instance_of(RSolr::Client).to receive(:get) {
-      {
-        'response' => {
-          'numFound' => '1',
-          'docs' => {}
-        }
+    allow_any_instance_of(RSolr::Client).to receive(:get).and_return(
+      'response' => {
+        'numFound' => '1',
+        'docs' => {}
       }
-    }
+    )
     # must do require after mocking Solr call because loading the file calls method
     require File.expand_path(File.dirname(__FILE__) + '/../../../robots/dor_repo/accession/embargo_release')
   end
@@ -76,6 +74,7 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
       i.datastreams['embargoMetadata'] = eds
       i
     }
+
     it 'rights metadata has no embargo after Dor::Item.release_embargo' do
       expect(item.rightsMetadata.ng_xml.at_xpath('//embargoReleaseDate')).not_to be_nil
       expect(item.rightsMetadata.content).to match('embargoReleaseDate')
@@ -131,13 +130,14 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
   end
 
   describe '.release_items' do
+    subject(:release_items) { Robots::DorRepo::Accession::EmbargoRelease.release_items(query, &block) }
+
     before do
       # TODO: just requiring the code runs the code, so we have to do some gymnastics to prevent it from running.
       allow(Dor::SearchService).to receive(:query).and_return('response' => { 'numFound' => 0 })
       require_relative '../../../robots/dor_repo/accession/embargo_release'
     end
 
-    subject(:release_items) { Robots::DorRepo::Accession::EmbargoRelease.release_items(query, &block) }
     let(:block) { proc {} }
     let(:query) { "foo" }
     let(:response) do

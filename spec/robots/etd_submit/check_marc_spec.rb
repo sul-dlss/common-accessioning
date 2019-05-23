@@ -7,6 +7,7 @@ RSpec.describe Robots::DorRepo::EtdSubmit::CheckMarc do
 
   describe '.perform' do
     subject(:perform) { robot.perform(druid) }
+
     before do
       allow(Etd).to receive(:find).and_return(object)
       stub_request(:get, 'http://lyberservices-dev.stanford.edu/cgi-bin/holdings.php?flexkey=dorbd185gs2259')

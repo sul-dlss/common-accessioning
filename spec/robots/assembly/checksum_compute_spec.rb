@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 describe Robots::DorRepo::Assembly::ChecksumCompute do
-  before :each do
+  before do
     @druid = 'aa222cc3333'
     allow(Dor::Assembly::Item).to receive(:new).and_return(@assembly_item)
-    @r = Robots::DorRepo::Assembly::ChecksumCompute.new(druid: @druid)
+    @r = described_class.new(druid: @druid)
   end
 
-  it 'should compute checksums for type=item' do
+  it 'computes checksums for type=item' do
     setup_assembly_item(@druid, :item)
     expect(@assembly_item).to be_item
     expect(@assembly_item).to receive(:load_content_metadata)
@@ -17,7 +17,7 @@ describe Robots::DorRepo::Assembly::ChecksumCompute do
     @r.perform(@assembly_item)
   end
 
-  it 'should not compute checksums for type=set' do
+  it 'does not compute checksums for type=set' do
     setup_assembly_item(@druid, :set)
     expect(@assembly_item).not_to be_item
     expect(@assembly_item).not_to receive(:load_content_metadata)

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Dissemination::Cleanup do
   subject(:robot) { described_class.new }
+
   let(:druid) { 'druid:aa222cc3333' }
 
   describe '#perform' do
