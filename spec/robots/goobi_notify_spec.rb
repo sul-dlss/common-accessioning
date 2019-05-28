@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Robots::DorRepo::Goobi::GoobiNotify do
   it 'makes the web service call to notify goobi' do
     druid = 'druid:aa222cc3333'
-    stub_request(:post, "https://example.com/v1/objects/#{druid}/notify_goobi")
+    stub_request(:post, "https://dor-services-test.stanford.test/v1/objects/#{druid}/notify_goobi")
       .with(headers: { 'Accept' => '*/*',
                        'Authorization' => 'Basic VVNFUk5BTUU6UEFTU1dPUkQ=',
                        'Content-Length' => '0' })
