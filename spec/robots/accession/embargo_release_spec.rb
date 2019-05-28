@@ -187,9 +187,9 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
       before do
         allow(Dor).to receive(:find).and_return(item)
         allow(item).to receive(:save)
-        stub_request(:post, "https://example.com/v1/objects/druid:999/versions")
+        stub_request(:post, "https://dor-services-test.stanford.test/v1/objects/druid:999/versions")
           .to_return(status: 200, body: "3", headers: {})
-        stub_request(:post, "https://example.com/v1/objects/druid:999/versions/current/close")
+        stub_request(:post, "https://dor-services-test.stanford.test/v1/objects/druid:999/versions/current/close")
           .with(
             body: "{\"description\":\"embargo released\",\"significance\":\"admin\"}"
           )

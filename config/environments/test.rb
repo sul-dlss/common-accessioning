@@ -58,12 +58,6 @@ Dor::Config.configure do
     iiif_profile 'http://iiif.io/api/image/2/level1.json'
   end
 
-  dor_services do
-    url  'https://example.com'
-    user 'USERNAME'
-    pass 'PASSWORD'
-  end
-
   sdr do
     local_workspace_root '/dor/workspace'
     local_export_home '/dor/export'
