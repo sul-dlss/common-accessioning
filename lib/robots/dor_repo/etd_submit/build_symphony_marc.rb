@@ -5,7 +5,7 @@
 # Reads the day's marc files from the local temporary directory and builds one file
 # in the MARC_OUTPUT_DIRECTORY
 #
-require File.expand_path(File.dirname(__FILE__) + '/../../../config/boot')
+require File.expand_path(File.dirname(__FILE__) + '/../../../../config/boot')
 require 'pony'
 
 ETD_ALERTS_LIST = 'etd-alerts@lists.stanford.edu'

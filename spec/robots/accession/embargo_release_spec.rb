@@ -11,7 +11,7 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
       }
     )
     # must do require after mocking Solr call because loading the file calls method
-    require File.expand_path(File.dirname(__FILE__) + '/../../../robots/dor_repo/accession/embargo_release')
+    require File.expand_path(File.dirname(__FILE__) + '/../../../lib/robots/dor_repo/accession/embargo_release')
   end
 
   let(:embargo_release_date) { Time.now.utc - 100000 }
@@ -135,7 +135,7 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
     before do
       # TODO: just requiring the code runs the code, so we have to do some gymnastics to prevent it from running.
       allow(Dor::SearchService).to receive(:query).and_return('response' => { 'numFound' => 0 })
-      require_relative '../../../robots/dor_repo/accession/embargo_release'
+      require_relative '../../../lib/robots/dor_repo/accession/embargo_release'
     end
 
     let(:block) { proc {} }
