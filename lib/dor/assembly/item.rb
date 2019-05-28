@@ -13,7 +13,7 @@ module Dor
         # Always converts @druid to a Druid object.
         @druid = params[:druid]
         @druid = DruidTools::Druid.new(@druid) unless @druid.class == DruidTools::Druid
-        root_dir_config = Dor::Config.assembly.root_dir
+        root_dir_config = Settings.assembly.root_dir
         @root_dir = root_dir_config.class == String ? [root_dir_config] : root_dir_config # this allows us to accept either a string or an array of strings as a root dir configuration
         check_for_path
       end

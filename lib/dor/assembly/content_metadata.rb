@@ -12,12 +12,12 @@ module Dor
 
       # return the location to store or load the contentMetadata.xml file (could be in either the new or old location)
       def cm_file_name
-        @cm_file_name ||= path_to_metadata_file(Dor::Config.assembly.cm_file_name)
+        @cm_file_name ||= path_to_metadata_file(Settings.assembly.cm_file_name)
       end
 
       # return the location to read the stubContentMetadata.xml file from (could be in either the new or old location)
       def stub_cm_file_name
-        @stub_cm_file_name ||= path_to_metadata_file(Dor::Config.assembly.stub_cm_file_name)
+        @stub_cm_file_name ||= path_to_metadata_file(Settings.assembly.stub_cm_file_name)
       end
 
       def content_metadata_exists?
@@ -32,14 +32,14 @@ module Dor
 
       def load_content_metadata
         # Loads content metadata XML into a Nokogiri document.
-        raise "Content metadata file #{Dor::Config.assembly.cm_file_name} not found for #{druid.id} in any of the root directories: #{@root_dir.join(',')}" unless content_metadata_exists?
+        raise "Content metadata file #{Settings.assembly.cm_file_name} not found for #{druid.id} in any of the root directories: #{@root_dir.join(',')}" unless content_metadata_exists?
 
         @cm = Nokogiri.XML(File.open(cm_file_name)) { |conf| conf.default_xml.noblanks }
       end
 
       def load_stub_content_metadata
         # Loads stub content metadata XML into a Nokogiri document.
-        raise "Stub content metadata file #{Dor::Config.assembly.stub_cm_file_name} not found for #{druid.id} in any of the root directories: #{@root_dir.join(',')}" unless stub_content_metadata_exists?
+        raise "Stub content metadata file #{Settings.assembly.stub_cm_file_name} not found for #{druid.id} in any of the root directories: #{@root_dir.join(',')}" unless stub_content_metadata_exists?
 
         @stub_cm = Nokogiri.XML(File.open(stub_cm_file_name)) { |conf| conf.default_xml.noblanks }
       end
@@ -75,7 +75,7 @@ module Dor
       end
 
       def create_basic_content_metadata
-        raise "Content metadata file #{Dor::Config.assembly.cm_file_name} exists already for #{druid.id}" if content_metadata_exists?
+        raise "Content metadata file #{Settings.assembly.cm_file_name} exists already for #{druid.id}" if content_metadata_exists?
 
         LyberCore::Log.info("Creating basic content metadata for #{druid.id}")
 

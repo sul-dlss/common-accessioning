@@ -15,7 +15,7 @@ module Robots
         def perform(druid)
           etd = Etd.find(druid)
 
-          druid_tools_druid = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
+          druid_tools_druid = DruidTools::Druid.new(druid, Settings.sdr.local_workspace_root)
           content_dir = druid_tools_druid.content_dir
 
           # now transfer the pdfs from lyberapps into the workspace parent content directory

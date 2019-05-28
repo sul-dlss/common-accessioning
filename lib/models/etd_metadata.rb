@@ -34,7 +34,7 @@ module EtdMetadata
   end
 
   def content_path
-    druid = DruidTools::Druid.new(pid, Dor::Config.sdr.local_workspace_root)
+    druid = DruidTools::Druid.new(pid, Settings.sdr.local_workspace_root)
 
     druid.content_dir(false)
   end

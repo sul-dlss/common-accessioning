@@ -44,7 +44,7 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
       expect(item).not_to receive(:convert_stub_content_metadata)
       expect(item).not_to receive(:create_basic_content_metadata)
       expect(item).not_to receive(:persist_content_metadata)
-      exp_msg = "#{Dor::Config.assembly.stub_cm_file_name} and #{Dor::Config.assembly.cm_file_name} both exist for #{druid}"
+      exp_msg = "#{Settings.assembly.stub_cm_file_name} and #{Settings.assembly.cm_file_name} both exist for #{druid}"
       expect { result }.to raise_error RuntimeError, exp_msg
     end
   end
@@ -58,7 +58,7 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
       expect(item).not_to receive(:create_basic_content_metadata)
       expect(item).not_to receive(:persist_content_metadata)
       expect(result.status).to eq('skipped')
-      expect(result.note).to eq("#{Dor::Config.assembly.cm_file_name} exists")
+      expect(result.note).to eq("#{Settings.assembly.cm_file_name} exists")
     end
   end
 

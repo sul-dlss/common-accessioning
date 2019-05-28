@@ -9,10 +9,7 @@ RSpec.describe TechnicalMetadataService do
   before do
     fixtures = Pathname(File.dirname(__FILE__)).join('../fixtures')
     wsfixtures = fixtures.join('workspace').to_s
-    Dor::Config.push! do
-      sdr.local_workspace_root wsfixtures
-    end
-
+    allow(Settings.sdr).to receive_messages(local_workspace_root: wsfixtures)
     @sdr_repo = fixtures.join('sdr_repo')
     @inventory_differences = {}
     @deltas      = {}
@@ -36,10 +33,6 @@ RSpec.describe TechnicalMetadataService do
       @new_file_techmd[id] = described_class.send(:get_new_technical_metadata, druid, @new_files[id])
       @expected_techmd[id] = Pathname(druid_tool[id].metadata_dir).join('technicalMetadata.xml').read
     end
-  end
-
-  after do
-    Dor::Config.pop!
   end
 
   after(:all) do
