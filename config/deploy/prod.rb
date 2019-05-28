@@ -13,5 +13,4 @@ set :whenever_environment, fetch(:deploy_environment)
 set :default_env, { :robot_environment => fetch(:deploy_environment) }
 set :whenever_roles, [:cron]
 
-set :copy_exclude, ['bin/nuke'] # no-no for production
 set :honeybadger_server, primary(:cron)
