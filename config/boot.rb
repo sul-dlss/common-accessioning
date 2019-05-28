@@ -16,9 +16,12 @@ ROBOT_LOG.level = Logger::SEV_LABEL.index(ENV['ROBOT_LOG_LEVEL']) || Logger::INF
 Solrizer.logger = ROBOT_LOG
 
 loader = Zeitwerk::Loader.new
-loader.push_dir('.')
-loader.push_dir('lib')
-loader.push_dir('lib/models')
+loader.log!
+loader.ignore(File.expand_path('vendor'))
+loader.ignore(File.expand_path('vendor/**/*.rb'))
+loader.push_dir(File.expand_path('.'))
+loader.push_dir(File.expand_path('lib'))
+loader.push_dir(File.expand_path('lib/models'))
 loader.setup
 
 env_file = File.expand_path(File.dirname(__FILE__) + "/./environments/#{environment}")
