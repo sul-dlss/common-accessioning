@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require File.expand_path(File.dirname(__FILE__) + '/../../../config/boot')
+require File.expand_path(File.dirname(__FILE__) + '/../../../../config/boot')
 
 # !/usr/bin/env ruby
 #
