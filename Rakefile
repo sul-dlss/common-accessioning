@@ -32,6 +32,13 @@ task :app_version do
   puts File.read(File.expand_path('../VERSION', __FILE__)).chomp
 end
 
+# Set up resque-pool
+task 'resque:pool:setup' do
+  Resque::Pool.after_prefork do |_job|
+    Resque.redis.client.reconnect
+  end
+end
+
 task 'resque:setup' => :environment
 
 task :environment do
