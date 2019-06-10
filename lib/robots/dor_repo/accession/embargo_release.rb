@@ -50,10 +50,10 @@ module Robots
           LyberCore::Log.info("Releasing #{embargo_msg} for #{druid}")
 
           dor_service = Dor::Services::Client.object(druid)
-          dor_service.open_new_version
+          dor_service.version.open
           release_block.call(ei)
           ei.save
-          dor_service.close_version(description: "#{embargo_msg} released", significance: 'admin')
+          dor_service.version.close(description: "#{embargo_msg} released", significance: 'admin')
         rescue Exception => e
           LyberCore::Log.error("!!! Unable to release embargo for: #{druid}\n#{e.inspect}\n#{e.backtrace.join("\n")}")
           Dor::Config.workflow.client.update_workflow_error_status 'dor', druid, 'disseminationWF', 'embargo-release', e.to_s
