@@ -7,19 +7,18 @@ The jobs are enqueued by [workflow-server-rails](https://github.com/sul-dlss/wor
 
 Most of the jobs are run by [resque-pool](https://github.com/nevans/resque-pool) but some are invoked as cron jobs.  See `config/schedule.rb` for those.
 
-It's also possible to invoke the jobs manually:
+It's also possible to invoke the jobs manually or have an interactive shell:
 
-From the root of the robot project
+From the root of the robot project:
 
+Interactive console:
 ```console
-$ ./bin/run_robot accessionWF publish
+$ ROBOT_ENVIRONMENT=production ./bin/console
 ```
 
-With Options
-Options must be placed BEFORE workflow and robot name:
-
+Running a single robot step manually (without checking current workflow status):
 ```console
-$ ./bin/run_robot --druid druid:12345 accessionWF publish
+$ ./bin/run_robot --druid druid:12345 --environment production dor:accessionWF:publish
 ```
 
 ## Running tests
