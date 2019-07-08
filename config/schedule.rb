@@ -6,7 +6,7 @@ every :day, at: '2:16am' do
   command 'cd /opt/app/lyberadmin/common-accessioning/current/ && ' \
           'BUNDLE_GEMFILE=/opt/app/lyberadmin/common-accessioning/current/Gemfile ' \
           "ROBOT_ENVIRONMENT=#{environment} /usr/local/rvm/wrappers/default/ruby " \
-          '/opt/app/lyberadmin/common-accessioning/current/robots/accession/embargo_release.rb'
+          '/opt/app/lyberadmin/common-accessioning/current/lib/robots/dor_repo/accession/embargo_release.rb'
 end
 
 set :environment_variable, 'ROBOT_ENVIRONMENT'
