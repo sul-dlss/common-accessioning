@@ -155,7 +155,7 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
 
       it "handles the error" do
         expect(LyberCore::Log).to receive(:error).with(/!!! Unable to release embargo for: druid:999\n#<StandardError: Not Found>/)
-        expect(Dor::Config.workflow.client).to receive(:update_workflow_error_status)
+        expect(Honeybadger).to receive(:notify)
         release_items
       end
     end
