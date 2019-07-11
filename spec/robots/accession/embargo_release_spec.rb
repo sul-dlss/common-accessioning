@@ -151,9 +151,10 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
     context 'when the object is not in fedora' do
       before do
         allow(Dor).to receive(:find).and_raise(StandardError, "Not Found")
+        allow(Dor::Config.workflow.client).to receive(:lifecycle).with('dor', 'druid:999', 'accessioned').and_return(nil)
       end
 
-      it "handles the error" do
+      it 'handles the error' do
         expect(LyberCore::Log).to receive(:error).with(/!!! Unable to release embargo for: druid:999\n#<StandardError: Not Found>/)
         expect(Honeybadger).to receive(:notify)
         release_items
@@ -195,10 +196,20 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
           )
           .to_return(status: 200, body: "", headers: {})
         allow(LyberCore::Log).to receive(:info)
+        allow(LyberCore::Log).to receive(:warn)
+      end
+
+      it 'skips release if not accessioned' do
+        allow(Dor::Config.workflow.client).to receive(:lifecycle).with('dor', 'druid:999', 'accessioned').and_return(nil)
+        release_items
+        expect(LyberCore::Log).to have_received(:warn).with(/Skipping druid:999 - not yet accessioned/)
+        expect(LyberCore::Log).not_to have_received(:info).with(/Releasing embargo for druid:999/)
       end
 
       it 'is successful' do
+        allow(Dor::Config.workflow.client).to receive(:lifecycle).with('dor', 'druid:999', 'accessioned').and_return(Time.now - 1.day)
         release_items
+        expect(LyberCore::Log).to have_received(:info).with(/Releasing embargo for druid:999/)
         expect(LyberCore::Log).to have_received(:info).with("Done! Processed 1 objects out of 1")
       end
     end
