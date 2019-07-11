@@ -47,6 +47,12 @@ module Robots
 
         def self.release_item(druid, embargo_msg, &release_block)
           ei = Dor.find(druid)
+
+          unless Dor::Config.workflow.client.lifecycle('dor', druid, 'accessioned')
+            LyberCore::Log.warn("Skipping #{druid} - not yet accessioned")
+            return
+          end
+
           LyberCore::Log.info("Releasing #{embargo_msg} for #{druid}")
 
           dor_service = Dor::Services::Client.object(druid)
