@@ -246,7 +246,7 @@ GEM
     rack-protection (2.0.5)
       rack
     rainbow (3.0.0)
-    rake (12.3.2)
+    rake (12.3.3)
     rdf (1.99.1)
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (1.99.0)
@@ -354,7 +354,7 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.9)
-    tins (1.21.0)
+    tins (1.21.1)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     uber (0.0.15)
@@ -372,7 +372,7 @@ GEM
     whenever (1.0.0)
       chronic (>= 0.6.3)
     xml-simple (1.1.5)
-    zeitwerk (2.1.8)
+    zeitwerk (2.1.9)
 
 PLATFORMS
   ruby
