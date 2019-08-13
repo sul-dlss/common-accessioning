@@ -10,6 +10,8 @@ module Dor
           :simple_book
         elsif stub_object_type.include?('map')
           :map
+        elsif stub_object_type.casecmp('3d').zero? # just in case it comes in as 3D...
+          :"3d"
         elsif stub_object_type == 'image'
           :simple_image
         else
