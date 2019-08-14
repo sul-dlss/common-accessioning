@@ -7,7 +7,7 @@ describe Robots::DorRepo::Goobi::GoobiNotify do
     druid = 'druid:aa222cc3333'
     stub_request(:post, "https://dor-services-test.stanford.test/v1/objects/#{druid}/notify_goobi")
       .with(headers: { 'Accept' => '*/*',
-                       'Authorization' => 'Basic VVNFUk5BTUU6UEFTU1dPUkQ=',
+                       'X-Auth' => 'Bearer secret-token',
                        'Content-Length' => '0' })
       .to_return(status: 200, body: '', headers: {})
     r = described_class.new
