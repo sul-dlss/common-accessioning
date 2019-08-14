@@ -6,8 +6,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem 'activesupport', '~> 5.2'
 gem 'config', '~> 1.7'
 gem 'dor-fetcher', '~> 1.3'
-gem 'dor-services', '~> 7.0'
-gem 'dor-services-client', '~> 1.10'
+gem 'dor-services', '~> 7.2'
+gem 'dor-services-client', '~> 2.0'
 gem 'lyber-core', '~> 5.0'
 gem 'marc' # for etd_submit/submit_marc
 gem 'jhove-service', '>=1.1.5'
