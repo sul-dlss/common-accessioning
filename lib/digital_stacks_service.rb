@@ -110,11 +110,4 @@ class DigitalStacksService
     end
     false
   end
-
-  # Assumes the digital stacks storage root is mounted to the local file system
-  # TODO: since this is delegating to the Druid, this method may not be necessary
-  def self.prune_stacks_dir(id)
-    stacks_druid_tree = DruidTools::StacksDruid.new(id, Dor::Config.stacks.local_stacks_root)
-    stacks_druid_tree.prune!
-  end
 end
