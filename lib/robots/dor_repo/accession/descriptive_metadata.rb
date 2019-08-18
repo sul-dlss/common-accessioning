@@ -20,6 +20,14 @@ module Robots
             # the datastream has never been populated, use Symphony:
             Dor::Services::Client.object(druid).refresh_metadata
           end
+
+          raise 'descMetadata missing required fields (<title>)' if missing_required_fields?(obj.descMetadata)
+        end
+
+        private
+
+        def missing_required_fields?(desc_md_ds)
+          desc_md_ds.mods_title.blank?
         end
       end
     end
