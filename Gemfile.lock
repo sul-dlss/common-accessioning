@@ -266,7 +266,7 @@ GEM
       rdf (~> 1.1, >= 1.1.10)
     rdf-xsd (1.99.0)
       rdf (~> 1.99)
-    redis (4.1.0)
+    redis (4.1.2)
     redis-namespace (1.6.0)
       redis (>= 3.0.4)
     resque (2.0.0)
@@ -402,7 +402,6 @@ DEPENDENCIES
   pry
   pry-byebug
   rake
-  redis (= 4.1.0)
   resque
   resque-pool
   rspec (~> 3.0)

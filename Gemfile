@@ -15,9 +15,6 @@ gem 'moab-versioning', '~> 4.0'
 gem 'whenever'
 gem 'rake'
 gem 'rspec', '~> 3.0'
-# We're locking redis to 4.1.0, to test the theory that 4.1.1 causes redis errors like:
-# Redis::CannotConnectError: Error connecting to Redis on sul-robots-redis-prod.stanford.edu:6379 (Redis::TimeoutError)
-gem 'redis', '4.1.0'
 gem 'resque'
 gem 'resque-pool'
 gem 'pony' # send email, for etd_submit/build_symphony_marc
