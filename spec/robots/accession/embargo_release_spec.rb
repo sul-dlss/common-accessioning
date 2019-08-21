@@ -155,9 +155,11 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
       end
 
       it 'handles the error' do
-        expect(LyberCore::Log).to receive(:error).with(/!!! Unable to release embargo for: druid:999\n#<StandardError: Not Found>/)
-        expect(Honeybadger).to receive(:notify)
+        allow(Honeybadger).to receive(:notify)
+        allow(LyberCore::Log).to receive(:error)
         release_items
+        expect(LyberCore::Log).to have_received(:error).with(/!!! Unable to release embargo for: druid:999\n#<StandardError: Not Found>/)
+        expect(Honeybadger).to have_received(:notify)
       end
     end
 
@@ -187,7 +189,6 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
 
       before do
         allow(Dor).to receive(:find).and_return(item)
-        allow(item).to receive(:save)
         stub_request(:post, "https://dor-services-test.stanford.test/v1/objects/druid:999/versions")
           .to_return(status: 200, body: "3", headers: {})
         stub_request(:post, "https://dor-services-test.stanford.test/v1/objects/druid:999/versions/current/close")
@@ -211,6 +212,22 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
         release_items
         expect(LyberCore::Log).to have_received(:info).with(/Releasing embargo for druid:999/)
         expect(LyberCore::Log).to have_received(:info).with("Done! Processed 1 objects out of 1")
+      end
+
+      context 'when it cannot save the object' do
+        before do
+          allow(Dor::Config.workflow.client).to receive(:lifecycle).with('dor', 'druid:999', 'accessioned').and_return(Time.now - 1.day)
+          allow(item).to receive(:save!).and_raise(StandardError, 'ActiveFedoraError, actually')
+        end
+
+        it 'handles error' do
+          allow(LyberCore::Log).to receive(:error)
+          allow(Honeybadger).to receive(:notify)
+          release_items
+          exp_msg = 'Unable to release embargo for: druid:999'
+          expect(LyberCore::Log).to have_received(:error).with(/#{"!!! #{exp_msg}\n#<StandardError: ActiveFedoraError, actually>.*"}/)
+          expect(Honeybadger).to have_received(:notify).with(/.*#{exp_msg}.*/, anything)
+        end
       end
     end
   end

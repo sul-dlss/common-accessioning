@@ -58,7 +58,7 @@ module Robots
           dor_service = Dor::Services::Client.object(druid)
           dor_service.version.open
           release_block.call(ei)
-          ei.save
+          ei.save!
           dor_service.version.close(description: "#{embargo_msg} released", significance: 'admin')
         rescue Exception => e
           LyberCore::Log.error("!!! Unable to release embargo for: #{druid}\n#{e.inspect}\n#{e.backtrace.join("\n")}")

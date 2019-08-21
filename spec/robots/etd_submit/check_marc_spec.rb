@@ -12,7 +12,6 @@ RSpec.describe Robots::DorRepo::EtdSubmit::CheckMarc do
       allow(Etd).to receive(:find).and_return(object)
       stub_request(:get, 'http://lyberservices-dev.stanford.edu/cgi-bin/holdings.php?flexkey=dorbd185gs2259')
         .to_return(status: 200, body: xml)
-      allow(object).to receive(:save)
     end
 
     let(:druid) { 'druid:bd185gs2259' }
@@ -23,28 +22,44 @@ RSpec.describe Robots::DorRepo::EtdSubmit::CheckMarc do
         <<~XML
           <?xml version="1.0" encoding="UTF-8"?>
           <titles>
-              <record>
-                  <key type="flexkey">dormj151qw9093</key>
-                  <catkey>8379324</catkey>
-                  <home>U-ARCHIVES</home>
-                  <current>SHADOW</current>
-              </record>
-              <record>
-                  <key type="flexkey">dormj151qw9093</key>
-                  <catkey>8379324</catkey>
-                  <home>INTERNET</home>
-                  <current>INTERNET</current>
-              </record>
+            <record>
+              <key type="flexkey">dormj151qw9093</key>
+              <catkey>8379324</catkey>
+              <home>U-ARCHIVES</home>
+              <current>SHADOW</current>
+            </record>
+            <record>
+              <key type="flexkey">dormj151qw9093</key>
+              <catkey>8379324</catkey>
+              <home>INTERNET</home>
+              <current>INTERNET</current>
+            </record>
           </titles>
         XML
       end
 
       let(:ng) { Nokogiri::XML(object.datastreams['identityMetadata'].content) }
 
-      it 'adds identityMetadata with the catkey' do
-        expect(perform).to be true
-        expect(ng.xpath('//otherId[@name="catkey"]').first.text).to eq '8379324'
-        expect(object).to have_received(:save)
+      context 'when it saves the datastream' do
+        before do
+          allow(object).to receive(:save!).and_return(true)
+        end
+
+        it 'adds identityMetadata with the catkey' do
+          expect(perform).to be true
+          expect(ng.xpath('//otherId[@name="catkey"]').first.text).to eq '8379324'
+          expect(object).to have_received(:save!)
+        end
+      end
+
+      context 'when it cannot save the datastream' do
+        before do
+          allow(object).to receive(:save!).and_raise(StandardError, 'ActiveFedoraError, actually')
+        end
+
+        it 'raises an error' do
+          expect { perform }.to raise_error(StandardError, 'ActiveFedoraError, actually')
+        end
       end
     end
   end

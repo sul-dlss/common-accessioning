@@ -46,7 +46,7 @@ module Robots
           ds = ActiveFedora::Datastream.new(etd.inner_object, 'identityMetadata', dsLabel: 'identityMetadata', controlGroup: 'X')
           ds.content = identity_xml.to_xml
           etd.add_datastream(ds)
-          etd.save
+          etd.save!
 
           true
         end

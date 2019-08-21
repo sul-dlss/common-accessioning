@@ -33,7 +33,11 @@ class TechnicalMetadataService
     ds = dor_item.datastreams['technicalMetadata']
     ds.dsLabel = 'Technical Metadata'
     ds.content = final_techmd
-    ds.save
+    # NOTE: can't use save! because this is an ActiveFedora::Datastream, so we get
+    # OM::XML::Terminology::BadPointerError:
+    #   This Terminology does not have a root term defined that corresponds to ":save!"
+    raise "problem saving ActiveFedora::Datastream technicalMetadata for #{druid}" unless ds.save
+
     true
   end
 
