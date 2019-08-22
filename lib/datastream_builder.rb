@@ -33,10 +33,12 @@ class DatastreamBuilder
     elsif force || empty_datastream?
       yield(datastream)
     end
-    datastream.save
+    # NOTE: can't use save! because this is an ActiveFedora::Datastream, so we get
+    # OM::XML::Terminology::BadPointerError:
+    #   This Terminology does not have a root term defined that corresponds to ":save!"
+    raise "Problem saving ActiveFedora::Datastream #{datastream_name} for #{object.pid}" unless datastream.save
 
-    # Check for success.
-    raise "Required datastream #{datastream_name} could not be populated!" if required && empty_datastream?
+    raise "Required datastream #{datastream_name} was not populated for #{object.pid}" if required && empty_datastream?
   end
 
   private

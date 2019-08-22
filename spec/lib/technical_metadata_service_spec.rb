@@ -50,23 +50,45 @@ RSpec.describe TechnicalMetadataService do
     end
   end
 
-  specify 'Dor::TechnicalMetadataService.add_update_technical_metadata' do
-    object_ids.each do |id|
-      dor_item = double(Dor::Item)
-      allow(dor_item).to receive(:pid).and_return("druid:#{id}")
-      expect(described_class).to receive(:get_content_group_diff).with(dor_item).and_return(@inventory_differences[id])
-      expect(described_class).to receive(:get_file_deltas).with(@inventory_differences[id]).and_return(@deltas[id])
-      expect(described_class).to receive(:get_old_technical_metadata).with(dor_item).and_return(@repo_techmd[id])
-      expect(described_class).to receive(:get_new_technical_metadata).with(dor_item.pid, an_instance_of(Array)).and_return(@new_file_techmd[id])
-      mock_datastream = double('datastream')
-      ds_hash = { 'technicalMetadata' => mock_datastream }
-      allow(dor_item).to receive(:datastreams).and_return(ds_hash)
-      unless @inventory_differences[id].difference_count == 0
-        expect(mock_datastream).to receive(:dsLabel=).with('Technical Metadata')
-        expect(mock_datastream).to receive(:content=).with(/<technicalMetadata/)
-        expect(mock_datastream).to receive(:save)
+  describe 'Dor::TechnicalMetadataService.add_update_technical_metadata' do
+    specify 'when save is successful' do
+      object_ids.each do |id|
+        dor_item = double(Dor::Item)
+        allow(dor_item).to receive(:pid).and_return("druid:#{id}")
+        expect(described_class).to receive(:get_content_group_diff).with(dor_item).and_return(@inventory_differences[id])
+        expect(described_class).to receive(:get_file_deltas).with(@inventory_differences[id]).and_return(@deltas[id])
+        expect(described_class).to receive(:get_old_technical_metadata).with(dor_item).and_return(@repo_techmd[id])
+        expect(described_class).to receive(:get_new_technical_metadata).with(dor_item.pid, an_instance_of(Array)).and_return(@new_file_techmd[id])
+        mock_datastream = double('datastream', save: true)
+        ds_hash = { 'technicalMetadata' => mock_datastream }
+        allow(dor_item).to receive(:datastreams).and_return(ds_hash)
+        unless @inventory_differences[id].difference_count == 0
+          expect(mock_datastream).to receive(:dsLabel=).with('Technical Metadata')
+          expect(mock_datastream).to receive(:content=).with(/<technicalMetadata/)
+          expect(mock_datastream).to receive(:save)
+        end
+        described_class.add_update_technical_metadata(dor_item)
       end
-      described_class.add_update_technical_metadata(dor_item)
+    end
+    specify 'when it cannot save the datastream' do
+      object_ids.each do |id|
+        dor_item = double(Dor::Item)
+        allow(dor_item).to receive(:pid).and_return("druid:#{id}")
+        expect(described_class).to receive(:get_content_group_diff).with(dor_item).and_return(@inventory_differences[id])
+        expect(described_class).to receive(:get_file_deltas).with(@inventory_differences[id]).and_return(@deltas[id])
+        expect(described_class).to receive(:get_old_technical_metadata).with(dor_item).and_return(@repo_techmd[id])
+        expect(described_class).to receive(:get_new_technical_metadata).with(dor_item.pid, an_instance_of(Array)).and_return(@new_file_techmd[id])
+        mock_datastream = double('datastream', save: false)
+        ds_hash = { 'technicalMetadata' => mock_datastream }
+        allow(dor_item).to receive(:datastreams).and_return(ds_hash)
+        unless @inventory_differences[id].difference_count == 0
+          expect(mock_datastream).to receive(:dsLabel=).with('Technical Metadata')
+          expect(mock_datastream).to receive(:content=).with(/<technicalMetadata/)
+          expect(mock_datastream).to receive(:save)
+        end
+        err_regex = /problem saving ActiveFedora::Datastream technicalMetadata for druid:#{id}/
+        expect { described_class.add_update_technical_metadata(dor_item) }.to raise_error(RuntimeError, err_regex)
+      end
     end
   end
 

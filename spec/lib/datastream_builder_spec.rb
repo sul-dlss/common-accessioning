@@ -83,8 +83,24 @@ RSpec.describe DatastreamBuilder do
           # fails because the block doesn't build the datastream
 
           it 'raises an exception' do
-            expect { build }.to raise_error(RuntimeError)
+            expect { build }.to raise_error(RuntimeError, 'Required datastream technicalMetadata was not populated for druid:ab123cd4567')
           end
+        end
+      end
+
+      context 'when it cannot save the datastream' do
+        subject(:build) { builder.build { |ds| } }
+
+        before do
+          allow_any_instance_of(described_class).to receive(:find_metadata_file).and_return(nil)
+          allow(TechnicalMetadataService).to receive(:add_update_technical_metadata) do |obj|
+            obj.technicalMetadata.content = dm_builder_xml
+          end
+          allow(ds).to receive(:save).and_return(false)
+        end
+
+        it 'raises an error' do
+          expect { build }.to raise_error(StandardError, 'Problem saving ActiveFedora::Datastream technicalMetadata for druid:ab123cd4567')
         end
       end
     end
