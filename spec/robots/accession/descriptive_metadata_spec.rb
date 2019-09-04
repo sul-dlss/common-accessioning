@@ -48,7 +48,7 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
         allow(object).to receive(:descMetadata).and_return(mock_desc_md_ds)
         allow(Dor).to receive(:find).and_return(object)
 
-        expect { perform }.to raise_error(RuntimeError, 'descMetadata missing required fields (<title>)')
+        expect { perform }.to raise_error(RuntimeError, "#{druid} descMetadata missing required fields (<title>)")
       end
     end
   end

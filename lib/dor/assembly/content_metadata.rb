@@ -75,7 +75,7 @@ module Dor
       end
 
       def create_basic_content_metadata
-        raise "Content metadata file #{Dor::Config.assembly.cm_file_name} exists already" if content_metadata_exists?
+        raise "Content metadata file #{Dor::Config.assembly.cm_file_name} exists already for #{druid.id}" if content_metadata_exists?
 
         LyberCore::Log.info("Creating basic content metadata for #{druid.id}")
 
