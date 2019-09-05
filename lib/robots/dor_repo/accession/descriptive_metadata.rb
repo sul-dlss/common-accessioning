@@ -21,7 +21,7 @@ module Robots
             Dor::Services::Client.object(druid).refresh_metadata
           end
 
-          raise 'descMetadata missing required fields (<title>)' if missing_required_fields?(obj.descMetadata)
+          raise "#{druid} descMetadata missing required fields (<title>)" if missing_required_fields?(obj.descMetadata)
         end
 
         private

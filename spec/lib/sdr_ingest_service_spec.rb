@@ -37,7 +37,7 @@ RSpec.describe SdrIngestService do
   describe 'datastream_content' do
     before do
       @ds_name = 'myMetadata'
-      @mock_item = double('item')
+      @mock_item = double('item', pid: '123')
       @mock_datastream = double('datastream')
     end
 

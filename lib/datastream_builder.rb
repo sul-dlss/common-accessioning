@@ -21,7 +21,7 @@ class DatastreamBuilder
     @datastream = datastream
     @force = force
     @required = required
-    raise 'Datastream required, but none provided' if required && !datastream
+    raise "Datastream required, but none provided for #{object.pid}" if required && !datastream
   end
 
   # Populates the datastream from the file if the file is newer than the datastream.

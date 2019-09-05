@@ -59,7 +59,7 @@ module Robots
         # @param [String] report_file path to a pipe-delimited report from https://etd.stanford.edu/reports
         # @param [String] binder_quarter_root path to the binder dropoff directory for the quarter
         def initialize(report_file, binder_quarter_root)
-          raise 'Needs path to report file' if report_file.nil?
+          raise "#{druid} Needs path to report file" if report_file.nil?
 
           LyberCore::Log.set_logfile("#{ROBOT_ROOT}/log/binder-batch-transfer.log")
           LyberCore::Log.set_level(1)
@@ -99,7 +99,7 @@ module Robots
           pair_tree = DruidTools::PurlDruid.new(pid, Dor::Config.stacks.local_storage_root)
           file_path = File.join(pair_tree.content_dir, '*-augmented.pdf')
           file = Dir.glob(file_path).first
-          raise "Augmented File error -- Unable to find #{file_path}." unless file
+          raise "#{druid} Augmented File error -- Unable to find #{file_path}." unless file
 
           file
         end

@@ -43,14 +43,14 @@ module Robots
           true
         rescue StandardError => e
           LyberCore::Log.fatal "Can't rsync contents from #{source_dir} to #{dest_dir}: #{e}"
-          raise
+          raise "Can't rsync contents from #{source_dir} to #{dest_dir}: #{e.message}"
         end
 
         def ensure_workspace_exists(workspace)
           FileUtils.mkdir_p(workspace) unless File.directory?(workspace)
-        rescue StandardError
-          LyberCore::Log.fatal("Can't create workspace_base #{workspace}")
-          raise
+        rescue StandardError => e
+          LyberCore::Log.fatal("Can't create workspace_base #{workspace}: #{e}")
+          raise "Can't create workspace_base #{workspace} #{e.message}"
         end
 
         private
