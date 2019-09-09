@@ -9,10 +9,10 @@ require 'byebug'
 
 SimpleCov.formatter = Coveralls::SimpleCov::Formatter
 SimpleCov.start do
-  track_files "bin/**/*"
-  track_files "lib/dor/*.rb"
-  track_files "robots/**/*.rb"
-  add_filter "/spec/"
+  track_files 'bin/**/*'
+  track_files 'lib/dor/*.rb'
+  track_files 'robots/**/*.rb'
+  add_filter '/spec/'
 end
 
 require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
