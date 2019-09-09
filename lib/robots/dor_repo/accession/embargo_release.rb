@@ -49,7 +49,7 @@ module Robots
           ei = Dor.find(druid)
 
           unless Dor::Config.workflow.client.lifecycle('dor', druid, 'accessioned')
-            LyberCore::Log.warn("Skipping #{druid} - not yet accessioned")
+            notify_repo_manager "Skipping #{druid} - not yet accessioned"
             return
           end
 
@@ -65,6 +65,18 @@ module Robots
           Honeybadger.notify "Unable to release embargo for: #{druid}", backtrace: e.backtrace
         end
         private_class_method :release_item
+
+        def self.notify_repo_manager(message)
+          LyberCore::Log.warn message
+
+          Pony.mail(to: Settings.repository_manager.email,
+                    from: Settings.repository_manager.email,
+                    subject: "[#{ENV['ROBOT_ENVIRONMENT']}] Embargo release notification",
+                    body: message,
+                    via: :smtp,
+                    via_options: Settings.smtp)
+        end
+        private_class_method :notify_repo_manager
 
         def self.release
           release_items('embargo_status_ssim:"embargoed" AND embargo_release_dtsim:[* TO NOW]') do |item|

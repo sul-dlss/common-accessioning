@@ -37,13 +37,7 @@ rescue StandardError => e
             subject: "[#{ENV['ROBOT_ENVIRONMENT']}] Failed to build MARC for Symphony",
             body: msg,
             via: :smtp,
-            via_options: {
-              address: 'smtp.stanford.edu',
-              port: '25',
-              enable_starttls_auto: true,
-              authentication: :plain, # :plain, :login, :cram_md5, no auth by default
-              domain: 'localhost.localdomain' # the HELO domain provided by the client to the server
-            })
+            via_options: Settings.smtp)
 end
 
 # TODO: maybe cleanup old tmp marc directories?
