@@ -53,9 +53,14 @@ module Robots
             return
           end
 
+          dor_service = Dor::Services::Client.object(druid)
+          unless dor_service.version.openable?
+            LyberCore::Log.warn("Skipping #{druid} - object is already open")
+            return
+          end
+
           LyberCore::Log.info("Releasing #{embargo_msg} for #{druid}")
 
-          dor_service = Dor::Services::Client.object(druid)
           dor_service.version.open
           release_block.call(ei)
           ei.save!

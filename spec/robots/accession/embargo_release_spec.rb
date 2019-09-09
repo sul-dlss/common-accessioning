@@ -189,6 +189,8 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
 
       before do
         allow(Dor).to receive(:find).and_return(item)
+        stub_request(:get, 'https://dor-services-test.stanford.test/v1/objects/druid:999/versions/openable')
+          .to_return(status: 200, body: 'true')
         stub_request(:post, 'https://dor-services-test.stanford.test/v1/objects/druid:999/versions')
           .to_return(status: 200, body: '3', headers: {})
         stub_request(:post, 'https://dor-services-test.stanford.test/v1/objects/druid:999/versions/current/close')
@@ -205,6 +207,22 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
         release_items
         expect(LyberCore::Log).to have_received(:warn).with(/Skipping druid:999 - not yet accessioned/)
         expect(LyberCore::Log).not_to have_received(:info).with(/Releasing embargo for druid:999/)
+      end
+
+      context 'when not openable' do
+        let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client) }
+        let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, openable?: false) }
+
+        before do
+          allow(Dor::Services::Client).to receive(:object).and_return(object_client)
+          allow(Dor::Config.workflow.client).to receive(:lifecycle).with('dor', 'druid:999', 'accessioned').and_return(Time.now - 1.day)
+        end
+
+        it 'skips release' do
+          release_items
+          expect(LyberCore::Log).to have_received(:warn).with(/Skipping druid:999 - object is already open/)
+          expect(LyberCore::Log).not_to have_received(:info).with(/Releasing embargo for druid:999/)
+        end
       end
 
       it 'is successful' do
