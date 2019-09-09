@@ -52,7 +52,7 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
   }
 
   # TODO: #release_embargo is a method on Dor::Item (dor-services). The test should be moved there.
-  describe "#release_embargo" do
+  describe '#release_embargo' do
     let(:embargo_xml) {
       <<-EOXML
       <embargoMetadata>
@@ -139,7 +139,7 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
     end
 
     let(:block) { proc {} }
-    let(:query) { "foo" }
+    let(:query) { 'foo' }
     let(:response) do
       { 'response' => { 'numFound' => 1, 'docs' => [{ 'id' => 'druid:999' }] } }
     end
@@ -150,7 +150,7 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
 
     context 'when the object is not in fedora' do
       before do
-        allow(Dor).to receive(:find).and_raise(StandardError, "Not Found")
+        allow(Dor).to receive(:find).and_raise(StandardError, 'Not Found')
         allow(Dor::Config.workflow.client).to receive(:lifecycle).with('dor', 'druid:999', 'accessioned').and_return(nil)
       end
 
@@ -189,13 +189,13 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
 
       before do
         allow(Dor).to receive(:find).and_return(item)
-        stub_request(:post, "https://dor-services-test.stanford.test/v1/objects/druid:999/versions")
-          .to_return(status: 200, body: "3", headers: {})
-        stub_request(:post, "https://dor-services-test.stanford.test/v1/objects/druid:999/versions/current/close")
+        stub_request(:post, 'https://dor-services-test.stanford.test/v1/objects/druid:999/versions')
+          .to_return(status: 200, body: '3', headers: {})
+        stub_request(:post, 'https://dor-services-test.stanford.test/v1/objects/druid:999/versions/current/close')
           .with(
-            body: "{\"description\":\"embargo released\",\"significance\":\"admin\"}"
+            body: '{"description":"embargo released","significance":"admin"}'
           )
-          .to_return(status: 200, body: "", headers: {})
+          .to_return(status: 200, body: '', headers: {})
         allow(LyberCore::Log).to receive(:info)
         allow(LyberCore::Log).to receive(:warn)
       end
@@ -211,7 +211,7 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
         allow(Dor::Config.workflow.client).to receive(:lifecycle).with('dor', 'druid:999', 'accessioned').and_return(Time.now - 1.day)
         release_items
         expect(LyberCore::Log).to have_received(:info).with(/Releasing embargo for druid:999/)
-        expect(LyberCore::Log).to have_received(:info).with("Done! Processed 1 objects out of 1")
+        expect(LyberCore::Log).to have_received(:info).with('Done! Processed 1 objects out of 1')
       end
 
       context 'when it cannot save the object' do

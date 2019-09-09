@@ -389,16 +389,6 @@ Style/SpecialGlobalVars:
     - 'spec/test_input/images/make_test_tif.rb'
     - 'tmp/test_input/images/make_test_tif.rb'
 
-# Offense count: 15
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, ConsistentQuotesInMultiline.
-# SupportedStyles: single_quotes, double_quotes
-Style/StringLiterals:
-  Exclude:
-    - 'Capfile'
-    - 'spec/robots/accession/embargo_release_spec.rb'
-    - 'spec/spec_helper.rb'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: .
