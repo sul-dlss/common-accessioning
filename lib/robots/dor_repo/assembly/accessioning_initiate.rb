@@ -19,7 +19,6 @@ module Robots
         private
 
         def initialize_workspace
-          Honeybadger.notify('No auth header set') unless Dor::Services::Client.instance.send(:connection).headers.key?('X-Auth')
           Dor::Services::Client.object(@ai.druid.druid).workspace.create(source: @ai.path_to_object)
         end
 
