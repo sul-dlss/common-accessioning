@@ -1,4 +1,3 @@
   dor_services:
     url:  'https://dor-services-test.stanford.test'
     token: secret-token
-    token_header: 'X-Auth'

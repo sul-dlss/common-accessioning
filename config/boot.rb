@@ -48,8 +48,7 @@ Config.load_and_set_settings(
 module CommonAccessioning
   def self.connect_dor_services_app
     Dor::Services::Client.configure(url: Settings.dor_services.url,
-                                    token: Settings.dor_services.token,
-                                    token_header: Settings.dor_services.token_header)
+                                    token: Settings.dor_services.token)
   end
 end
 
