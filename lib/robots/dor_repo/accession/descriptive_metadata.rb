@@ -21,6 +21,7 @@ module Robots
             Dor::Services::Client.object(druid).refresh_metadata
           end
 
+          obj = Dor.find(druid) # reload object to get latest content
           raise "#{druid} descMetadata missing required fields (<title>)" if missing_required_fields?(obj.descMetadata)
         end
 
