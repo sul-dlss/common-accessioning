@@ -36,19 +36,25 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
       end
 
       it 'raises error if descMetadata mods has no <title>' do
-        mods = <<-EOXML
-        <mods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.loc.gov/mods/v3" version="3.6" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd">
-          <recordInfo>
-            <recordIdentifier source="SIRSI">a13132918</recordIdentifier>
-            <recordOrigin>Converted from MARCXML to MODS version 3.6 using MARC21slim2MODS3-6_SDR.xsl (SUL version 1 2018/06/13; LC Revision 1.118 2018/01/31)</recordOrigin>
-          </recordInfo>
-        </mods>
-        EOXML
-        mock_desc_md_ds = instance_double('datastream', dsid: 'descMetadata', new?: false, content: mods, save: true, mods_title: '')
-        allow(object).to receive(:descMetadata).and_return(mock_desc_md_ds)
+        allow(object).to receive(:descMetadata).and_return(Dor::DescMetadataDS.new)
         allow(Dor).to receive(:find).and_return(object)
 
         expect { perform }.to raise_error(RuntimeError, "#{druid} descMetadata missing required fields (<title>)")
+      end
+
+      it 'does not raise error if descMetadata has a mods_title value' do
+        mock_desc_md_ds = instance_double(Dor::DescMetadataDS, dsid: 'descMetadata', new?: false, content: '', save: true, mods_title: 'anything')
+        allow(object).to receive(:descMetadata).and_return(mock_desc_md_ds)
+        allow(Dor).to receive(:find).and_return(object)
+
+        expect { perform }.not_to raise_error
+      end
+
+      it 'reloads the Dor object if it makes remote service call' do
+        allow(object.descMetadata).to receive(:mods_title).and_return('anything')
+        perform
+        expect(object_client).to have_received(:refresh_metadata)
+        expect(Dor).to have_received(:find).with(druid).twice
       end
     end
   end
