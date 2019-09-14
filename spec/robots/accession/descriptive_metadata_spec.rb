@@ -30,6 +30,7 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
       let!(:object) { Dor::Item.create!(pid: druid, catkey: '12345') }
 
       it 'builds a datastream from the remote service call' do
+        allow(object).to receive(:reload)
         allow(object.descMetadata).to receive(:mods_title).and_return('anything')
         perform
         expect(object_client).to have_received(:refresh_metadata)
@@ -50,11 +51,12 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
         expect { perform }.not_to raise_error
       end
 
-      it 'reloads the Dor object if it makes remote service call' do
+      it 'reloads the Dor object' do
         allow(object.descMetadata).to receive(:mods_title).and_return('anything')
+        allow(object).to receive(:reload)
         perform
         expect(object_client).to have_received(:refresh_metadata)
-        expect(Dor).to have_received(:find).with(druid).twice
+        expect(object).to have_received(:reload)
       end
     end
   end
