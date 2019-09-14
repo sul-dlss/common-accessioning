@@ -59,7 +59,7 @@ class DatastreamBuilder
   end
 
   def file_date
-    File.mtime(filename)
+    File.mtime(filename) if filename
   end
 
   def datastream_date
