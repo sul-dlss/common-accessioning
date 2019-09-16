@@ -1,5 +1,5 @@
 language: ruby
-dist: xenial
+dist: bionic
 
 sudo: required
 services:
@@ -11,8 +11,10 @@ notifications:
 cache: bundler
 
 before_install:
-  # Update rubygems so that bundler will work
+  # Update rubygems so that bundler will work (for ruby 2.5.3)
   - gem update --system
+  # Install bundler 2.0
+  - gem install bundler
   # Travis's docker-compose is too old to handle v3.6 docker-compose templates.
   # This code is from Travis's documentation: https://docs.travis-ci.com/user/docker/#using-docker-compose
   - sudo rm /usr/local/bin/docker-compose
