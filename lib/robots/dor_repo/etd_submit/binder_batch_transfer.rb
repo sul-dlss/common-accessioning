@@ -137,7 +137,7 @@ module Robots
         end
 
         def workflow_success(druid)
-          workflow_service.update_workflow_status 'dor', druid, 'etdSubmitWF', 'binder-transfer', 'completed'
+          workflow_service.update_status druid: druid, workflow: 'etdSubmitWF', process: 'binder-transfer', status: 'completed'
         rescue StandardError => e
           LyberCore::Log.error("Unable to set workflow for #{druid}")
           LyberCore::Log.error(e.inspect.to_s)
