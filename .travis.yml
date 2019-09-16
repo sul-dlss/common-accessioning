@@ -25,6 +25,7 @@ before_install:
 
 rvm:
   - 2.5.3 # deployed
+  - 2.6.4 # latest
 
 env:
   global:
