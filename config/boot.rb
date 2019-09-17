@@ -19,10 +19,6 @@ loader.push_dir(File.absolute_path("#{__FILE__}/../../lib"))
 loader.push_dir(File.absolute_path("#{__FILE__}/../../lib/models"))
 loader.setup
 
-env_file = File.expand_path(File.dirname(__FILE__) + "/./environments/#{environment}")
-puts "Loading config from #{env_file}"
-require env_file
-
 Config.setup do |config|
   # Name of the constant exposing loaded settings
   config.const_name = 'Settings'
@@ -44,6 +40,10 @@ end
 Config.load_and_set_settings(
   Config.setting_files(File.expand_path(__dir__), environment)
 )
+
+env_file = File.expand_path(File.dirname(__FILE__) + "/./environments/#{environment}")
+puts "Loading config from #{env_file}"
+require env_file
 
 module CommonAccessioning
   def self.connect_dor_services_app
