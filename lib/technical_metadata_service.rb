@@ -149,7 +149,10 @@ class TechnicalMetadataService
     old_file_nodes = get_file_nodes(old_techmd)
     new_file_nodes = get_file_nodes(new_techmd)
     merged_nodes = {}
+    # Note that this handles the error case when the old techmd does not include some files it is expected to.
     deltas[:identical].each do |path|
+      next unless old_file_nodes.key?(path)
+
       merged_nodes[path] = old_file_nodes[path]
     end
     deltas[:modified].each do |path|
@@ -159,11 +162,15 @@ class TechnicalMetadataService
       merged_nodes[path] = new_file_nodes[path]
     end
     deltas[:renamed].each do |oldpath, newpath|
+      next unless old_file_nodes.key?(oldpath)
+
       clone = old_file_nodes[oldpath].clone
       clone.sub!(/<file\s*id.*?["'].*?["'].*?>/, "<file id='#{newpath}'>")
       merged_nodes[newpath] = clone
     end
     deltas[:copyadded].each do |oldpath, newpath|
+      next unless old_file_nodes.key?(oldpath)
+
       clone = old_file_nodes[oldpath].clone
       clone.sub!(/<file\s*id.*?["'].*?["'].*?>/, "<file id='#{newpath}'>")
       merged_nodes[newpath] = clone

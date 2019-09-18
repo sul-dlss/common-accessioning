@@ -231,44 +231,75 @@ RSpec.describe TechnicalMetadataService do
     end
   end
 
-  specify 'Dor::TechnicalMetadataService.merge_file_nodes' do
-    object_ids.each do |id|
-      old_techmd = @repo_techmd[id]
-      new_techmd = @new_file_techmd[id]
-      new_nodes = described_class.send(:get_file_nodes, new_techmd)
-      deltas = @deltas[id]
-      merged_nodes = described_class.send(:merge_file_nodes, old_techmd, new_techmd, deltas)
-      case id
-      when 'dd116zh0343'
-        expect(new_nodes.keys.sort). to eq([
-                                             'folder1PuSu/story3m.txt',
-                                             'folder1PuSu/story5a.txt',
-                                             'folder2PdSa/story8m.txt',
-                                             'folder2PdSa/storyAa.txt',
-                                             'folder3PaSd/storyDm.txt',
-                                             'folder3PaSd/storyFa.txt'
-                                           ])
-        expect(merged_nodes.keys.sort).to eq([
-                                               'folder1PuSu/story1u.txt',
-                                               'folder1PuSu/story2rr.txt',
+  describe 'Dor::TechnicalMetadataService.merge_file_nodes' do
+    specify 'when no errors in metadata' do
+      object_ids.each do |id|
+        old_techmd = @repo_techmd[id]
+        new_techmd = @new_file_techmd[id]
+        new_nodes = described_class.send(:get_file_nodes, new_techmd)
+        deltas = @deltas[id]
+        merged_nodes = described_class.send(:merge_file_nodes, old_techmd, new_techmd, deltas)
+        case id
+        when 'dd116zh0343'
+          expect(new_nodes.keys.sort). to eq([
                                                'folder1PuSu/story3m.txt',
                                                'folder1PuSu/story5a.txt',
-                                               'folder2PdSa/story6u.txt',
-                                               'folder2PdSa/story7rr.txt',
                                                'folder2PdSa/story8m.txt',
                                                'folder2PdSa/storyAa.txt',
-                                               'folder3PaSd/storyBu.txt',
-                                               'folder3PaSd/storyCrr.txt',
                                                'folder3PaSd/storyDm.txt',
                                                'folder3PaSd/storyFa.txt'
                                              ])
-      when 'du000ps9999'
-        expect(new_nodes.keys.sort). to eq([])
-        expect(merged_nodes.keys.sort).to eq(['a1.txt', 'a4.txt', 'a5.txt', 'a6.txt', 'b1.txt'])
-      when 'jq937jp0017'
-        expect(new_nodes.keys.sort). to eq(['page-1.jpg', 'page-2.jpg'])
-        expect(merged_nodes.keys.sort).to eq(['page-1.jpg', 'page-2.jpg', 'page-3.jpg', 'page-4.jpg', 'title.jpg'])
+          expect(merged_nodes.keys.sort).to eq([
+                                                 'folder1PuSu/story1u.txt',
+                                                 'folder1PuSu/story2rr.txt',
+                                                 'folder1PuSu/story3m.txt',
+                                                 'folder1PuSu/story5a.txt',
+                                                 'folder2PdSa/story6u.txt',
+                                                 'folder2PdSa/story7rr.txt',
+                                                 'folder2PdSa/story8m.txt',
+                                                 'folder2PdSa/storyAa.txt',
+                                                 'folder3PaSd/storyBu.txt',
+                                                 'folder3PaSd/storyCrr.txt',
+                                                 'folder3PaSd/storyDm.txt',
+                                                 'folder3PaSd/storyFa.txt'
+                                               ])
+        when 'du000ps9999'
+          expect(new_nodes.keys.sort). to eq([])
+          expect(merged_nodes.keys.sort).to eq(['a1.txt', 'a4.txt', 'a5.txt', 'a6.txt', 'b1.txt'])
+        when 'jq937jp0017'
+          expect(new_nodes.keys.sort). to eq(['page-1.jpg', 'page-2.jpg'])
+          expect(merged_nodes.keys.sort).to eq(['page-1.jpg', 'page-2.jpg', 'page-3.jpg', 'page-4.jpg', 'title.jpg'])
+        end
       end
+    end
+    specify 'when files are missing from existing technical metadata' do
+      id = 'dd116zh0343'
+      old_techmd = Pathname(druid_tool[id].metadata_dir).join('technicalMetadata-bad.xml').read
+      new_techmd = @new_file_techmd[id]
+      new_nodes = described_class.send(:get_file_nodes, new_techmd)
+      deltas = @deltas[id]
+      # Remove folder1PuSu/story1u.txt (identical), folder1PuSu/story2r.txt (renamed) from old_techmd.
+      merged_nodes = described_class.send(:merge_file_nodes, old_techmd, new_techmd, deltas)
+      expect(new_nodes.keys.sort). to eq([
+                                           'folder1PuSu/story3m.txt',
+                                           'folder1PuSu/story5a.txt',
+                                           'folder2PdSa/story8m.txt',
+                                           'folder2PdSa/storyAa.txt',
+                                           'folder3PaSd/storyDm.txt',
+                                           'folder3PaSd/storyFa.txt'
+                                         ])
+      expect(merged_nodes.keys.sort).to eq([
+                                             'folder1PuSu/story3m.txt',
+                                             'folder1PuSu/story5a.txt',
+                                             'folder2PdSa/story6u.txt',
+                                             'folder2PdSa/story7rr.txt',
+                                             'folder2PdSa/story8m.txt',
+                                             'folder2PdSa/storyAa.txt',
+                                             'folder3PaSd/storyBu.txt',
+                                             'folder3PaSd/storyCrr.txt',
+                                             'folder3PaSd/storyDm.txt',
+                                             'folder3PaSd/storyFa.txt'
+                                           ])
     end
   end
 
