@@ -96,7 +96,7 @@ module Robots
         end
 
         def augmented_pdf_filename(pid)
-          pair_tree = DruidTools::PurlDruid.new(pid, Dor::Config.stacks.local_storage_root)
+          pair_tree = DruidTools::PurlDruid.new(pid, Dor::Config.stacks.local_stacks_root)
           file_path = File.join(pair_tree.content_dir, '*-augmented.pdf')
           file = Dir.glob(file_path).first
           raise "#{druid} Augmented File error -- Unable to find #{file_path}." unless file

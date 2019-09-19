@@ -48,7 +48,7 @@ module Robots
             end
 
             item.sub_collections&.each do |sub_collection|
-              with_retries(max_tries: Dor::Config.release.max_tries, base_sleep_seconds: Dor::Config.release.base_sleep_seconds, max_sleep_seconds: Dor::Config.release.max_sleep_seconds) do |_attempt|
+              with_retries(max_tries: Settings.release.max_tries, base_sleep_seconds: Settings.release.base_sleep_seconds, max_sleep_seconds: Settings.release.max_sleep_seconds) do |_attempt|
                 Dor::Release::Item.create_release_workflow(sub_collection['druid'])
               end
             end

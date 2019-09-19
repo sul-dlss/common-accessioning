@@ -11,14 +11,13 @@ RSpec.describe ShelvingService do
   let!(:workspace_root) { Dir.mktmpdir }
 
   before do
-    Dor::Config.push! { |c| c.stacks.local_stacks_root stacks_root }
-    Dor::Config.push! { |c| c.stacks.local_workspace_root workspace_root }
+    allow(Dor::Config.stacks).to receive_messages(local_stacks_root: stacks_root,
+                                                  local_workspace_root: workspace_root)
   end
 
   after do
     FileUtils.remove_entry stacks_root
     FileUtils.remove_entry workspace_root
-    Dor::Config.pop!
   end
 
   let(:work) { shelvable_item.new(pid: druid) }
@@ -26,7 +25,7 @@ RSpec.describe ShelvingService do
 
   describe '.shelve' do
     let(:druid) { 'druid:ng782rw8378' }
-    let(:mock_diff) { double(Moab::FileGroupDifference) }
+    let(:mock_diff) { double('Moab::FileGroupDifference') }
     let(:mock_workspace_path) { double(Pathname) }
 
     before do

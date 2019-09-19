@@ -12,7 +12,7 @@ module Dor
         # Takes a druid, either as a string or as a Druid object.
         @druid = params[:druid]
         skip_heartbeat = params[:skip_heartbeat] || false
-        @fetcher = DorFetcher::Client.new(service_url: Dor::Config.release.fetcher_root, skip_heartbeat: skip_heartbeat)
+        @fetcher = DorFetcher::Client.new(service_url: Settings.release.fetcher_root, skip_heartbeat: skip_heartbeat)
       end
 
       def object
@@ -20,7 +20,7 @@ module Dor
       end
 
       def members
-        @members || with_retries(max_tries: Dor::Config.release.max_tries, base_sleep_seconds: Dor::Config.release.base_sleep_seconds, max_sleep_seconds: Dor::Config.release.max_sleep_seconds) do |_attempt|
+        @members || with_retries(max_tries: Settings.release.max_tries, base_sleep_seconds: Settings.release.base_sleep_seconds, max_sleep_seconds: Settings.release.max_sleep_seconds) do |_attempt|
           @members = @fetcher.get_collection(@druid) # cache members in an instance variable
         end
       end
@@ -71,7 +71,7 @@ module Dor
       end
 
       def update_marc_record
-        with_retries(max_tries: Dor::Config.release.max_tries, base_sleep_seconds: Dor::Config.release.base_sleep_seconds, max_sleep_seconds: Dor::Config.release.max_sleep_seconds) do |_attempt|
+        with_retries(max_tries: Settings.release.max_tries, base_sleep_seconds: Settings.release.base_sleep_seconds, max_sleep_seconds: Settings.release.max_sleep_seconds) do |_attempt|
           Dor::Services::Client.object(@druid).update_marc_record
         end
       end
@@ -80,7 +80,7 @@ module Dor
         LyberCore::Log.debug "...adding workflow releaseWF for #{druid}"
 
         # initiate workflow by making workflow service call
-        with_retries(max_tries: Dor::Config.release.max_tries, base_sleep_seconds: Dor::Config.release.base_sleep_seconds, max_sleep_seconds: Dor::Config.release.max_sleep_seconds) do |_attempt|
+        with_retries(max_tries: Settings.release.max_tries, base_sleep_seconds: Settings.release.base_sleep_seconds, max_sleep_seconds: Settings.release.max_sleep_seconds) do |_attempt|
           Dor::Config.workflow.client.create_workflow_by_name(druid, 'releaseWF')
         end
       end

@@ -7,7 +7,7 @@ class SdrIngestService
   # @return [void] Create the Moab/bag manifests for new version, export data to BagIt bag, kick off the SDR preservation workflow
   def self.transfer(dor_item)
     druid = dor_item.pid
-    workspace = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
+    workspace = DruidTools::Druid.new(druid, Settings.sdr.local_workspace_root)
     signature_catalog = get_signature_catalog(druid)
     new_version_id = signature_catalog.version_id + 1
     metadata_dir = extract_datastreams(dor_item, workspace)
@@ -24,7 +24,7 @@ class SdrIngestService
     content_group = version_inventory.group('content')
     signature_catalog.normalize_group_signatures(content_group, content_dir) unless content_group.nil? || content_group.files.empty?
     # export the bag (in tar format)
-    bag_dir = Pathname(Dor::Config.sdr.local_export_home).join(druid.sub('druid:', ''))
+    bag_dir = Pathname(Settings.sdr.local_export_home).join(druid.sub('druid:', ''))
     bagger = Moab::Bagger.new(version_inventory, signature_catalog, bag_dir)
     bagger.reset_bag
     bagger.create_bag_inventory(:depositor)

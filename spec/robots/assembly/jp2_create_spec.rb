@@ -49,7 +49,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     before do
       clone_test_input TMP_ROOT_DIR
       # Ensure the files we modifiy are in tmp/
-      allow(Dor::Config.assembly).to receive(:root_dir).and_return(TMP_ROOT_DIR)
+      allow(Settings.assembly).to receive(:root_dir).and_return(TMP_ROOT_DIR)
     end
 
     let(:item) do
@@ -108,7 +108,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       let(:druid) { 'gg111bb2222' }
 
       before do
-        item.cm_file_name = item.path_to_metadata_file(Dor::Config.assembly.cm_file_name)
+        item.cm_file_name = item.path_to_metadata_file(Settings.assembly.cm_file_name)
         allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
 
         # These files needs to create
@@ -170,7 +170,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
       context 'and overwrite is false' do
         before do
-          Dor::Config.assembly.overwrite_jp2 = false
+          Settings.assembly.overwrite_jp2 = false
 
           allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
           out1 = 'tmp/test_input/ff/222/cc/3333/image114.jp2'
@@ -203,7 +203,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
       context 'and overwrite is true' do
         before do
-          Dor::Config.assembly.overwrite_jp2 = true
+          Settings.assembly.overwrite_jp2 = true
 
           allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
           out1 = 'tmp/test_input/ff/222/cc/3333/image114.jp2'
@@ -248,7 +248,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       end
 
       before do
-        Dor::Config.assembly.overwrite_jp2 = false
+        Settings.assembly.overwrite_jp2 = false
 
         allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
 
@@ -274,7 +274,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
       context 'and overwrite is false' do
         before do
-          Dor::Config.assembly.overwrite_dpg_jp2 = false
+          Settings.assembly.overwrite_dpg_jp2 = false
         end
 
         it 'does not overwrite existing jp2s' do
@@ -301,7 +301,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
         let(:out2) { 'tmp/test_input/hh/222/cc/3333/hh222cc3333_00_001.jp2' }
 
         before do
-          Dor::Config.assembly.overwrite_dpg_jp2 = true
+          Settings.assembly.overwrite_dpg_jp2 = true
           allow(source1).to receive(:create_jp2).and_return(instance_double(Assembly::Image, path: out2))
           allow(source2).to receive(:create_jp2).and_return(instance_double(Assembly::Image, path: out2))
         end

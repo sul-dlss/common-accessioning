@@ -6,10 +6,10 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem 'activesupport', '~> 5.2'
 gem 'config', '~> 1.7'
 gem 'dor-fetcher', '~> 1.3'
-gem 'dor-services', '~> 7.2'
+gem 'dor-services', '~> 8.0'
 gem 'dor-services-client', '~> 2.0'
 gem 'dor-workflow-client', '~> 3.7'
-gem 'lyber-core', '~> 5.0'
+gem 'lyber-core', '~> 5.1'
 gem 'marc' # for etd_submit/submit_marc
 gem 'jhove-service', '>=1.1.5'
 gem 'moab-versioning', '~> 4.0'

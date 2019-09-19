@@ -119,7 +119,7 @@ class TechnicalMetadataService
   def self.get_new_technical_metadata(druid, new_files)
     return nil if new_files.nil? || new_files.empty?
 
-    workspace = DruidTools::Druid.new(druid, Dor::Config.sdr.local_workspace_root)
+    workspace = DruidTools::Druid.new(druid, Settings.sdr.local_workspace_root)
     content_dir = workspace.find_filelist_parent('content', new_files)
     temp_dir = workspace.temp_dir
     jhove_service = ::JhoveService.new(temp_dir)

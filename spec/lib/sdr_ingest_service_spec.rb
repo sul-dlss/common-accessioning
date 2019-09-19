@@ -6,12 +6,10 @@ require 'fileutils'
 RSpec.describe SdrIngestService do
   before do
     @fixtures = fixtures = Pathname(File.dirname(__FILE__)).join('../fixtures')
-    Dor::Config.push! do
-      sdr.local_workspace_root fixtures.join('workspace').to_s
-      sdr.local_export_home    fixtures.join('export').to_s
-    end
+    allow(Settings.sdr).to receive_messages(local_workspace_root: fixtures.join('workspace').to_s,
+                                            local_export_home: fixtures.join('export').to_s)
 
-    @export_dir = Pathname(Dor::Config.sdr.local_export_home)
+    @export_dir = Pathname(Settings.sdr.local_export_home)
     @export_dir.rmtree if @export_dir.exist? && @export_dir.basename.to_s == 'export'
     @export_dir.mkdir
     @druid        = 'druid:aa123bb4567'
@@ -19,19 +17,18 @@ RSpec.describe SdrIngestService do
   end
 
   after do
-    Dor::Config.pop!
     @export_dir.rmtree if @export_dir.exist? && @export_dir.basename.to_s == 'export'
   end
 
   it 'can access configuration settings' do
-    sdr = Dor::Config.sdr
+    sdr = Settings.sdr
     expect(sdr.local_workspace_root).to eq @fixtures.join('workspace').to_s
     expect(sdr.local_export_home).to eq @fixtures.join('export').to_s
   end
 
   it 'can find the fixtures workspace and export folders' do
-    expect(File).to be_directory(Dor::Config.sdr.local_workspace_root)
-    expect(File).to be_directory(Dor::Config.sdr.local_export_home)
+    expect(File).to be_directory(Settings.sdr.local_workspace_root)
+    expect(File).to be_directory(Settings.sdr.local_export_home)
   end
 
   describe 'datastream_content' do
