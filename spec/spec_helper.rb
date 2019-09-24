@@ -26,6 +26,10 @@ require 'support/foxml_helper'
 
 TMP_ROOT_DIR = 'tmp/test_input'
 
+RSpec.configure do |config|
+  config.order = :random
+end
+
 # Use rsync to create a copy of the test_input directory that we can modify.
 def clone_test_input(destination)
   source = 'spec/test_input'
