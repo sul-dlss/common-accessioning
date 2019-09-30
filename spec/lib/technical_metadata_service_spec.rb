@@ -63,6 +63,7 @@ RSpec.describe TechnicalMetadataService do
         described_class.add_update_technical_metadata(dor_item)
       end
     end
+
     specify 'when it cannot save the datastream' do
       object_ids.each do |id|
         dor_item = double(Dor::Item)
@@ -272,6 +273,7 @@ RSpec.describe TechnicalMetadataService do
         end
       end
     end
+
     specify 'when files are missing from existing technical metadata' do
       id = 'dd116zh0343'
       old_techmd = Pathname(druid_tool[id].metadata_dir).join('technicalMetadata-bad.xml').read

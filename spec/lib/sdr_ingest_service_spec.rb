@@ -55,6 +55,7 @@ RSpec.describe SdrIngestService do
       it 'returns nil if datastream was optional' do
         expect(described_class.datastream_content(@mock_item, 'dummy', false)).to be_nil
       end
+
       it 'raises exception if datastream was required' do
         expect { described_class.datastream_content(@mock_item, 'dummy', true) }.to raise_exception(RuntimeError)
       end
