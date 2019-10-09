@@ -188,7 +188,7 @@ GEM
     ice_nine (0.11.2)
     iso-639 (0.2.8)
     jaro_winkler (1.5.3)
-    jhove-service (1.2.0)
+    jhove-service (1.3.0)
       nokogiri (>= 1.4.3.1)
     json (2.2.0)
     link_header (0.0.8)
