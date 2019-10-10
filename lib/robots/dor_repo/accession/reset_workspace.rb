@@ -9,14 +9,8 @@ module Robots
         end
 
         def perform(druid)
-          druid_obj = Dor.find(druid)
-          version = druid_obj.current_version
-
-          workspace_root = Dor::Config.stacks.local_workspace_root
-          export_home = Settings.sdr.local_export_home
-
-          ResetWorkspaceService.reset_workspace_druid_tree(druid, version, workspace_root)
-          ResetWorkspaceService.reset_export_bag(druid, version, export_home)
+          client = Dor::Services::Client.object(druid)
+          client.workspace.reset
         end
       end
     end
