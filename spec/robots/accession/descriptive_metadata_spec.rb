@@ -27,28 +27,33 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
         allow(Dor).to receive(:find).and_return(object)
       end
 
-      let!(:object) { Dor::Item.create!(pid: druid, catkey: '12345') }
-
-      it 'builds a datastream from the remote service call' do
-        allow(object).to receive(:reload)
-        allow(object.descMetadata).to receive(:mods_title).and_return('anything')
-        perform
-        expect(object_client).to have_received(:refresh_metadata)
+      let(:desc_md) do
+        instance_double(Dor::DescMetadataDS, mods_title: nil, dsid: 'descMetadata', new?: true, save: true)
       end
 
-      it 'raises error if descMetadata mods has no <title>' do
-        allow(object).to receive(:descMetadata).and_return(Dor::DescMetadataDS.new)
-        allow(Dor).to receive(:find).and_return(object)
-
-        expect { perform }.to raise_error(RuntimeError, "#{druid} descMetadata missing required fields (<title>)")
+      let!(:object) do
+        instance_double(Dor::Item, pid: druid, catkey: '12345', reload: true, descMetadata: desc_md)
       end
 
-      it 'does not raise error if descMetadata has a mods_title value' do
-        mock_desc_md_ds = instance_double(Dor::DescMetadataDS, dsid: 'descMetadata', new?: false, content: '', save: true, mods_title: 'anything')
-        allow(object).to receive(:descMetadata).and_return(mock_desc_md_ds)
-        allow(Dor).to receive(:find).and_return(object)
+      context 'when descMetadata mods has no <title>' do
+        it 'raises error' do
+          expect { perform }.to raise_error(RuntimeError, "#{druid} descMetadata missing required fields (<title>)")
+        end
+      end
 
-        expect { perform }.not_to raise_error
+      context 'when descMetadata has a mods_title value' do
+        let(:desc_md) do
+          instance_double(Dor::DescMetadataDS, mods_title: 'anything', dsid: 'descMetadata', new?: true, save: true)
+        end
+
+        it 'does not raise error' do
+          expect { perform }.not_to raise_error
+        end
+
+        it 'builds a datastream from the remote service call' do
+          perform
+          expect(object_client).to have_received(:refresh_metadata)
+        end
       end
 
       it 'reloads the Dor object' do
