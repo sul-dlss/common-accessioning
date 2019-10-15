@@ -55,7 +55,12 @@ class DatastreamBuilder
   end
 
   def file_newer_than_datastream?
-    filename && (!datastream_date || file_date > datastream_date)
+    return unless filename
+
+    # Doing an experiment to see if this code path is used by anything other than contentMetadata
+    # see https://github.com/sul-dlss/common-accessioning/issues/417
+    Honeybadger.notify("Found a file #{filename} to be attached by DatastreamBuilder.") unless datastream_name == 'contentMetadata'
+    (!datastream_date || file_date > datastream_date)
   end
 
   def file_date

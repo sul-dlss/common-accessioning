@@ -32,6 +32,7 @@ RSpec.describe DatastreamBuilder do
         let(:time) { Time.now.utc }
 
         before do
+          allow(Honeybadger).to receive(:notify)
           allow_any_instance_of(described_class).to receive(:find_metadata_file).and_return(dm_filename)
         end
 
@@ -44,6 +45,7 @@ RSpec.describe DatastreamBuilder do
           it 'reads content from file' do
             expect { build }.to change { EquivalentXml.equivalent?(item.technicalMetadata.ng_xml, dm_fixture_xml) }
               .from(false).to(true)
+            expect(Honeybadger).to have_received(:notify)
           end
         end
 
@@ -59,6 +61,7 @@ RSpec.describe DatastreamBuilder do
           it 'file older than datastream: should use the builder' do
             expect { build }.to change { EquivalentXml.equivalent?(item.technicalMetadata.ng_xml, dm_builder_xml) }
               .from(false).to(true)
+            expect(Honeybadger).to have_received(:notify)
           end
         end
       end
