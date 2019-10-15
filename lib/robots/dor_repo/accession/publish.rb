@@ -11,10 +11,10 @@ module Robots
         end
 
         def perform(druid)
-          obj = Dor.find(druid)
-          return unless obj.is_a?(Dor::Set) || obj.is_a?(Dor::Item)
+          object_client = Dor::Services::Client.object(druid)
+          obj = object_client.find
 
-          Dor::Services::Client.object(druid).publish
+          object_client.publish unless obj.is_a?(Cocina::Models::AdminPolicy)
         end
       end
     end
