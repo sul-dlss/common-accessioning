@@ -39,13 +39,26 @@ RSpec.describe DatastreamBuilder do
         context 'when the file is newer than datastream' do
           before do
             allow(File).to receive(:mtime).and_return(time)
-            allow(item.technicalMetadata).to receive(:createDate).and_return(time - 99)
+            allow(ds).to receive(:createDate).and_return(time - 99)
           end
 
-          it 'reads content from file' do
-            expect { build }.to change { EquivalentXml.equivalent?(item.technicalMetadata.ng_xml, dm_fixture_xml) }
-              .from(false).to(true)
-            expect(Honeybadger).to have_received(:notify)
+          context 'when the file is technicalMetadata' do
+            it 'reads content from file' do
+              expect { build }.to change { EquivalentXml.equivalent?(item.technicalMetadata.ng_xml, dm_fixture_xml) }
+                .from(false).to(true)
+              expect(Honeybadger).not_to have_received(:notify)
+            end
+          end
+
+          context 'when it is an unexpected datastream' do
+            # This code path should eventually be removed.  It's just an experiment to see if this path is ever used in prod.
+            let(:ds) { item.descMetadata }
+
+            it 'notifies honeybadger' do
+              expect { build }.to change { EquivalentXml.equivalent?(item.descMetadata.ng_xml, dm_fixture_xml) }
+                .from(false).to(true)
+              expect(Honeybadger).to have_received(:notify)
+            end
           end
         end
 
@@ -61,7 +74,6 @@ RSpec.describe DatastreamBuilder do
           it 'file older than datastream: should use the builder' do
             expect { build }.to change { EquivalentXml.equivalent?(item.technicalMetadata.ng_xml, dm_builder_xml) }
               .from(false).to(true)
-            expect(Honeybadger).to have_received(:notify)
           end
         end
       end
