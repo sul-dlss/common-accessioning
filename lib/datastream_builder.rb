@@ -28,7 +28,15 @@ class DatastreamBuilder
   # if no file exists it calls the provided block and passes the datastream to be built.
   def build
     # See if datastream exists as a file and if the file's timestamp is newer than datastream's timestamp.
-    if file_newer_than_datastream?
+    if %w[contentMetadata technicalMetadata].include?(datastream_name) && file_newer_than_datastream?
+      create_from_file(filename)
+    elsif file_newer_than_datastream?
+      # This is probably a dead code path.
+
+      # Doing an experiment to see if this code path is used by anything
+      # see https://github.com/sul-dlss/common-accessioning/issues/417
+      Honeybadger.notify("Found a file #{filename} to be attached by DatastreamBuilder.")
+
       create_from_file(filename)
     elsif force || empty_datastream?
       yield(datastream)
@@ -57,9 +65,6 @@ class DatastreamBuilder
   def file_newer_than_datastream?
     return unless filename
 
-    # Doing an experiment to see if this code path is used by anything other than contentMetadata
-    # see https://github.com/sul-dlss/common-accessioning/issues/417
-    Honeybadger.notify("Found a file #{filename} to be attached by DatastreamBuilder.") unless datastream_name == 'contentMetadata'
     (!datastream_date || file_date > datastream_date)
   end
 
