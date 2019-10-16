@@ -27,7 +27,3 @@ A simple "rake" should do everything you need
 ## Deployment
 
 See `Capfile` for deployment instructions
-
-## Development
-
-Run `docker-compose` to bring up Redis which is a dependency of Resque.
