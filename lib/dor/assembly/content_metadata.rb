@@ -77,6 +77,8 @@ module Dor
       def create_basic_content_metadata
         raise "Content metadata file #{Settings.assembly.cm_file_name} exists already for #{druid.id}" if content_metadata_exists?
 
+        Honeybadger.notify("How are we getting here? Shouldn't pre-assembly have generated contentMetadata.xml (#{druid.id}) already?")
+
         LyberCore::Log.info("Creating basic content metadata for #{druid.id}")
 
         # get a list of files in content folder recursively and sort them
