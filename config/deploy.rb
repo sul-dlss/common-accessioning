@@ -46,4 +46,4 @@ set :resque_server_roles, :app
 # update shared_configs before restarting app
 before 'deploy:publishing', 'shared_configs:update'
 
-after 'deploy:publishing', 'resque:pool:full_restart'
+after 'deploy:publishing', 'resque:pool:hot_swap'
