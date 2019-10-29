@@ -203,9 +203,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
       context 'and overwrite is true' do
         before do
-          Settings.assembly.overwrite_jp2 = true
-          Settings.assembly.overwrite_dpg_jp2 = false
-
+          allow(Settings.assembly).to receive_messages(overwrite_jp2: true, overwrite_dpg_jp2: false)
           allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
           out1 = 'tmp/test_input/ff/222/cc/3333/image114.jp2'
           d1 = instance_double(Assembly::Image, path: out1)
