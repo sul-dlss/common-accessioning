@@ -10,14 +10,10 @@ module Robots
         end
 
         def perform(druid)
-          obj = Dor.find(druid)
-          # TODO: Use Dor::Services::Client::ObjectClient#find to determine the type.
-          #       Currently we can't until #find can differentiate between DRO and Collection
-          #       https://github.com/sul-dlss/dor-services-client/issues/106
-          return unless obj.is_a?(Dor::Item)
+          object_client = Dor::Services::Client.object(druid)
+          obj = object_client.find
 
-          client = Dor::Services::Client.object(druid)
-          client.shelve
+          object_client.shelve if obj.is_a?(Cocina::Models::DRO)
         end
       end
     end

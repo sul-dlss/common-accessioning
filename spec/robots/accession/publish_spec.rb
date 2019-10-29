@@ -5,11 +5,7 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::Accession::Publish do
   let(:druid) { 'druid:oo000oo0001' }
   let(:robot) { described_class.new }
-  let(:object_client) { instance_double(Dor::Services::Client::Object, publish: true) }
-
-  before do
-    expect(Dor).to receive(:find).with(druid).and_return(object)
-  end
+  let(:object_client) { instance_double(Dor::Services::Client::Object, publish: true, find: object) }
 
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }
@@ -20,7 +16,12 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
     end
 
     context 'when called on a Collection' do
-      let(:object) { Dor::Collection.new }
+      let(:object) do
+        Cocina::Models::Collection.new(externalIdentifier: '123',
+                                       type: Cocina::Models::Collection::TYPES.first,
+                                       label: 'my collection',
+                                       version: 1)
+      end
 
       it 'publishes metadata' do
         expect(object_client).to have_received(:publish)
@@ -28,7 +29,12 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
     end
 
     context 'when called on an Item' do
-      let(:object) { Dor::Item.new }
+      let(:object) do
+        Cocina::Models::DRO.new(externalIdentifier: '123',
+                                type: Cocina::Models::DRO::TYPES.first,
+                                label: 'my repository object',
+                                version: 1)
+      end
 
       it 'publishes metadata' do
         expect(object_client).to have_received(:publish)
@@ -36,7 +42,12 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
     end
 
     context 'when called on an APO' do
-      let(:object) { Dor::AdminPolicyObject.new }
+      let(:object) do
+        Cocina::Models::AdminPolicy.new(externalIdentifier: '123',
+                                        type: Cocina::Models::AdminPolicy::TYPES.first,
+                                        label: 'my admin policy',
+                                        version: 1)
+      end
 
       it 'does not publish metadata' do
         expect(object_client).not_to have_received(:publish)
