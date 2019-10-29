@@ -11,8 +11,7 @@ module Robots
         end
 
         def perform(druid)
-          obj = Dor.find(druid)
-          obj.upgrade! if obj.respond_to? :upgrade!
+          # nop
         end
       end
     end
