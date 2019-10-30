@@ -17,7 +17,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     subject(:perform) { robot.perform(@assembly_item) }
 
     before do
-      setup_assembly_item(druid, type)
+      @assembly_item = setup_assembly_item(druid, type)
     end
 
     let(:druid) { 'aa222cc3333' }
@@ -26,7 +26,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       let(:type) { :item }
 
       it 'creates jp2 for type=item' do
-        expect(@assembly_item).to receive(:item?)
+        expect(@assembly_item).to receive(:item?).and_call_original
         expect(@assembly_item).to receive(:load_content_metadata)
         expect(robot).to receive(:create_jp2s).with(@assembly_item)
         perform

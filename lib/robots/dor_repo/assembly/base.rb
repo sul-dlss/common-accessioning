@@ -8,7 +8,6 @@ module Robots
 
         def with_item(druid)
           ai = item(druid)
-
           if !ai.item?
             LyberCore::Log.info("Skipping #{@step_name} for #{druid} since it is not an item")
           else
