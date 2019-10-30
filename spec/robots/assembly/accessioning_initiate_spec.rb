@@ -18,7 +18,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
 
   context 'when the type is item' do
     before do
-      setup_assembly_item(druid, :item)
+      @assembly_item = setup_assembly_item(druid, :item)
     end
 
     it 'initiates accessioning' do
@@ -32,7 +32,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
 
   context 'when the type is set' do
     before do
-      setup_assembly_item(druid, :set)
+      @assembly_item = setup_assembly_item(druid, :set)
     end
 
     it 'initiates accessioning, but does not initialize the workspace' do

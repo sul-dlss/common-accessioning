@@ -71,15 +71,14 @@ def fixture_dir
 end
 
 def setup_assembly_item(druid, obj_type = :item)
-  @assembly_item = Dor::Assembly::Item.new(druid: druid)
-  allow(@assembly_item).to receive('druid').and_return(DruidTools::Druid.new(druid))
-  allow(@assembly_item).to receive('id').and_return(druid)
-  if obj_type == :item
-    allow(@assembly_item).to receive(:object_type).and_return('item')
-    allow(@assembly_item).to receive(:item?).and_return(true)
-  else
-    allow(@assembly_item).to receive(:object_type).and_return(obj_type.to_s)
-    allow(@assembly_item).to receive(:item?).and_return(false)
-  end
-  allow(Dor::Assembly::Item).to receive(:new).and_return(@assembly_item)
+  assembly_item = Dor::Assembly::Item.new(druid: druid)
+  allow(assembly_item).to receive('druid').and_return(DruidTools::Druid.new(druid))
+  allow(assembly_item).to receive('id').and_return(druid)
+  # have to disable this check, because OM is doing odd metaprogramming
+  # rubocop:disable RSpec/VerifiedDoubles
+  identity_metadata = double(Dor::IdentityMetadataDS, objectType: [obj_type.to_s])
+  # rubocop:enable RSpec/VerifiedDoubles
+  allow(Dor).to receive(:find).and_return(instance_double(Dor::Item, identityMetadata: identity_metadata))
+  allow(Dor::Assembly::Item).to receive(:new).and_return(assembly_item)
+  assembly_item
 end
