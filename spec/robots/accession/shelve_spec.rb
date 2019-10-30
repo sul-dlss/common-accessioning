@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::Accession::Shelve do
   let(:druid) { 'druid:oo000oo0001' }
   let(:robot) { described_class.new }
-  let(:object_client) { instance_double(Dor::Services::Client::Object, shelve: nil, find: object) }
 
   before do
     allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
@@ -14,46 +13,41 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }
 
-    before do
-      perform
-    end
+    context 'when called on a Collection or APO' do
+      let(:object_client) { instance_double(Dor::Services::Client::Object) }
 
-    context 'when called on a Collection' do
-      let(:object) do
-        Cocina::Models::Collection.new(externalIdentifier: '123',
-                                       type: Cocina::Models::Collection::TYPES.first,
-                                       label: 'my collection',
-                                       version: 1)
+      before do
+        allow(object_client).to receive(:shelve).and_raise(Dor::Services::Client::UnexpectedResponse)
       end
 
-      it 'does not shelve' do
-        expect(object_client).not_to have_received(:shelve)
+      it 'does not raise an error' do
+        expect(perform).to be_nil
       end
     end
 
     context 'when called on an Item' do
-      let(:object) do
-        Cocina::Models::DRO.new(externalIdentifier: '123',
-                                type: Cocina::Models::DRO::TYPES.first,
-                                label: 'my repository object',
-                                version: 1)
+      let(:object_client) { instance_double(Dor::Services::Client::Object, shelve: 'http://dor-services/background-job/123') }
+
+      before do
+        allow(Dor::Services::Client::AsyncResult).to receive(:new).and_return(result)
       end
 
-      it 'shelves the item' do
-        expect(object_client).to have_received(:shelve)
-      end
-    end
+      context "when it's successful" do
+        let(:result) { instance_double(Dor::Services::Client::AsyncResult, wait_until_complete: true) }
 
-    context 'when called on an APO' do
-      let(:object) do
-        Cocina::Models::AdminPolicy.new(externalIdentifier: '123',
-                                        type: Cocina::Models::AdminPolicy::TYPES.first,
-                                        label: 'my admin policy',
-                                        version: 1)
+        it 'shelves the item' do
+          perform
+          expect(object_client).to have_received(:shelve)
+        end
       end
 
-      it 'does not shelve' do
-        expect(object_client).not_to have_received(:shelve)
+      context 'when there is an error' do
+        let(:result) { instance_double(Dor::Services::Client::AsyncResult, wait_until_complete: false, errors: ['bad time']) }
+
+        it 'raises the error item' do
+          expect { perform }.to raise_error('Job errors from http://dor-services/background-job/123: ["bad time"]')
+          expect(object_client).to have_received(:shelve)
+        end
       end
     end
   end

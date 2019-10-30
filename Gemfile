@@ -7,7 +7,7 @@ gem 'activesupport', '~> 5.2'
 gem 'config', '~> 1.7'
 gem 'dor-fetcher', '~> 1.3'
 gem 'dor-services', '~> 8.0'
-gem 'dor-services-client', '~> 3.3'
+gem 'dor-services-client', '~> 3.5'
 gem 'dor-workflow-client', '~> 3.7'
 gem 'lyber-core', '~> 5.1'
 gem 'marc' # for etd_submit/submit_marc

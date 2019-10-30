@@ -10,10 +10,14 @@ module Robots
         end
 
         def perform(druid)
-          object_client = Dor::Services::Client.object(druid)
-          obj = object_client.find
+          background_result_url = Dor::Services::Client.object(druid).shelve
+          result = Dor::Services::Client::AsyncResult.new(url: background_result_url)
 
-          object_client.shelve if obj.is_a?(Cocina::Models::DRO)
+          raise "Job errors from #{background_result_url}: #{result.errors.inspect}" unless result.wait_until_complete
+          # rubocop:disable Lint/HandleExceptions
+        rescue Dor::Services::Client::UnexpectedResponse
+          # nop - this object wasn't an item.
+          # rubocop:enable Lint/HandleExceptions
         end
       end
     end
