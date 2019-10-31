@@ -5,7 +5,13 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::Accession::Publish do
   let(:druid) { 'druid:oo000oo0001' }
   let(:robot) { described_class.new }
-  let(:object_client) { instance_double(Dor::Services::Client::Object, publish: true, find: object) }
+  let(:object_client) do
+    instance_double(Dor::Services::Client::Object,
+                    publish: 'http://dor-services/background-job/123',
+                    find: object,
+                    async_result: result)
+  end
+  let(:result) { instance_double(Dor::Services::Client::AsyncResult, wait_until_complete: true) }
 
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }
