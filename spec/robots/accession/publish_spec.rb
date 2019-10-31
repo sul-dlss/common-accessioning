@@ -8,10 +8,8 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
   let(:object_client) do
     instance_double(Dor::Services::Client::Object,
                     publish: 'http://dor-services/background-job/123',
-                    find: object,
-                    async_result: result)
+                    find: object)
   end
-  let(:result) { instance_double(Dor::Services::Client::AsyncResult, wait_until_complete: true) }
 
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }

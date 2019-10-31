@@ -28,24 +28,9 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
     context 'when called on an Item' do
       let(:object_client) { instance_double(Dor::Services::Client::Object, shelve: 'http://dor-services/background-job/123') }
 
-      before do
-        allow(Dor::Services::Client::AsyncResult).to receive(:new).and_return(result)
-      end
-
       context "when it's successful" do
-        let(:result) { instance_double(Dor::Services::Client::AsyncResult, wait_until_complete: true) }
-
         it 'shelves the item' do
           perform
-          expect(object_client).to have_received(:shelve)
-        end
-      end
-
-      context 'when there is an error' do
-        let(:result) { instance_double(Dor::Services::Client::AsyncResult, wait_until_complete: false, errors: ['bad time']) }
-
-        it 'raises the error item' do
-          expect { perform }.to raise_error('Job errors from http://dor-services/background-job/123: ["bad time"]')
           expect(object_client).to have_received(:shelve)
         end
       end

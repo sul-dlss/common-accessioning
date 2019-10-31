@@ -16,10 +16,8 @@ module Robots
 
           return if obj.is_a?(Cocina::Models::AdminPolicy)
 
-          background_result_url = object_client.publish
-          result = object_client.async_result(url: background_result_url)
-          seconds = 2 * 60 * 60 # 2 hours of seconds
-          raise "Job errors from #{background_result_url}: #{result.errors.inspect}" unless result.wait_until_complete(timeout_in_seconds: seconds)
+          # This is an async result and it will have a callback.
+          object_client.publish
         end
       end
     end
