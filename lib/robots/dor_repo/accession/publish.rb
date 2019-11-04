@@ -17,7 +17,7 @@ module Robots
           return if obj.is_a?(Cocina::Models::AdminPolicy)
 
           # This is an async result and it will have a callback.
-          object_client.publish
+          object_client.publish(workflow: 'accessionWF')
         end
       end
     end
