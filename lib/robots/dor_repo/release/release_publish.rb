@@ -16,7 +16,8 @@ module Robots
         # @param [String] druid -- the Druid identifier for the object to process
         def perform(druid)
           LyberCore::Log.debug "release-publish working on #{druid}"
-          Dor::Services::Client.object(druid).publish
+          # This is an async result and it will have a callback.
+          Dor::Services::Client.object(druid).publish(workflow: 'releaseWF')
         end
       end
     end
