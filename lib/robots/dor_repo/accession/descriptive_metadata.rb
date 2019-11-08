@@ -13,8 +13,7 @@ module Robots
 
         def perform(druid)
           obj = Dor.find(druid)
-          builder = DatastreamBuilder.new(object: obj,
-                                          datastream: obj.descMetadata)
+          builder = DatastreamBuilder.new(datastream: obj.descMetadata)
           builder.build do |_ds|
             # If there's no file on disk that's newer than the datastream and
             # the datastream has never been populated, use Symphony:

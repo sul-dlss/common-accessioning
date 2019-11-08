@@ -28,11 +28,11 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
       end
 
       let(:desc_md) do
-        instance_double(Dor::DescMetadataDS, mods_title: nil, dsid: 'descMetadata', new?: true, save: true)
+        instance_double(Dor::DescMetadataDS, pid: druid, mods_title: nil, dsid: 'descMetadata', new?: true, save: true)
       end
 
       let!(:object) do
-        instance_double(Dor::Item, pid: druid, catkey: '12345', reload: true, descMetadata: desc_md)
+        instance_double(Dor::Item, catkey: '12345', reload: true, descMetadata: desc_md)
       end
 
       context 'when descMetadata mods has no <title>' do
@@ -43,7 +43,7 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
 
       context 'when descMetadata has a mods_title value' do
         let(:desc_md) do
-          instance_double(Dor::DescMetadataDS, mods_title: 'anything', dsid: 'descMetadata', new?: true, save: true)
+          instance_double(Dor::DescMetadataDS, pid: druid, mods_title: 'anything', dsid: 'descMetadata', new?: true, save: true)
         end
 
         it 'does not raise error' do
