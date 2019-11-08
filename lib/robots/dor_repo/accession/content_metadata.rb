@@ -14,8 +14,7 @@ module Robots
           return unless obj.is_a?(Dor::Item)
 
           builder = DatastreamBuilder.new(object: obj,
-                                          datastream: obj.contentMetadata,
-                                          force: true)
+                                          datastream: obj.contentMetadata)
           builder.build do |ds|
             # No-op
           end
