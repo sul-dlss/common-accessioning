@@ -4,10 +4,9 @@ require 'spec_helper'
 
 RSpec.describe DatastreamBuilder do
   subject(:builder) do
-    described_class.new(object: item, datastream: ds, force: true, required: required)
+    described_class.new(object: item, datastream: ds, force: true)
   end
 
-  let(:required) { false }
   let(:ds) { item.technicalMetadata }
 
   describe '#build' do
@@ -89,17 +88,6 @@ RSpec.describe DatastreamBuilder do
         it 'uses the datastream method builder' do
           expect { build }.to change { EquivalentXml.equivalent?(item.technicalMetadata.ng_xml, dm_builder_xml) }
             .from(false).to(true)
-        end
-
-        context 'when the datastream is required and not generated' do
-          subject(:build) { builder.build { |ds| } }
-
-          let(:required) { true }
-          # fails because the block doesn't build the datastream
-
-          it 'raises an exception' do
-            expect { build }.to raise_error(RuntimeError, 'Required datastream technicalMetadata was not populated for druid:ab123cd4567')
-          end
         end
       end
 
