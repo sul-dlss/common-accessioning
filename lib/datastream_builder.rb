@@ -14,14 +14,11 @@ class DatastreamBuilder
   # @param [ActiveFedora::Base] object The object that contains the datastream
   # @param [ActiveFedora::Datastream] datastream The datastream object
   # @param [Boolean] force Should we overwrite existing datastream?
-  # @param [Boolean] required If set to true, raise an error if we can't build the datastream
   # @return [ActiveFedora::Datastream]
-  def initialize(object:, datastream:, force: false, required: false)
+  def initialize(object:, datastream:, force: false)
     @object = object
     @datastream = datastream
     @force = force
-    @required = required
-    raise "Datastream required, but none provided for #{object.pid}" if required && !datastream
   end
 
   # Populates the datastream from the file if the file is newer than the datastream.
@@ -45,13 +42,11 @@ class DatastreamBuilder
     # OM::XML::Terminology::BadPointerError:
     #   This Terminology does not have a root term defined that corresponds to ":save!"
     raise "Problem saving ActiveFedora::Datastream #{datastream_name} for #{object.pid}" unless datastream.save
-
-    raise "Required datastream #{datastream_name} was not populated for #{object.pid}" if required && empty_datastream?
   end
 
   private
 
-  attr_reader :datastream, :force, :object, :required
+  attr_reader :datastream, :force, :object
 
   def filename
     @filename ||= find_metadata_file
