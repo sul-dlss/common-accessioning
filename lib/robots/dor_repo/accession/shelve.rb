@@ -10,12 +10,22 @@ module Robots
         end
 
         def perform(druid)
-          # This is an async result and it will have a callback.
-          Dor::Services::Client.object(druid).shelve
-          # rubocop:disable Lint/HandleExceptions
-        rescue Dor::Services::Client::UnexpectedResponse
-          # nop - this object wasn't an item.
-          # rubocop:enable Lint/HandleExceptions
+          object_client = Dor::Services::Client.object(druid)
+          obj = object_client.find
+
+          # non-items don't shelve anything
+          if obj.is_a?(Cocina::Models::DRO)
+            # This is an async result and it will have a callback.
+            Dor::Services::Client.object(druid).shelve
+          else
+            # Just set the callback step as complete
+            workflow_service.update_status(druid: druid,
+                                           workflow: 'accessionWF',
+                                           process: 'shelve-complete',
+                                           status: 'completed',
+                                           elapsed: 1,
+                                           note: 'Non-item, nothing to do')
+          end
         end
       end
     end
