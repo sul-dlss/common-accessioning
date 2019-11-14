@@ -13,9 +13,7 @@ module Robots
           obj = Dor.find(druid)
           return unless obj.is_a?(Dor::Item)
 
-          builder = DatastreamBuilder.new(object: obj,
-                                          datastream: obj.contentMetadata)
-          builder.build do |ds|
+          DatastreamBuilder.new(datastream: obj.contentMetadata).build do |ds|
             # No-op
           end
         end

@@ -13,8 +13,7 @@ module Robots
           obj = Dor.find(druid)
           return unless obj.is_a?(Dor::Item)
 
-          builder = DatastreamBuilder.new(object: obj,
-                                          datastream: obj.technicalMetadata,
+          builder = DatastreamBuilder.new(datastream: obj.technicalMetadata,
                                           force: true)
           builder.build do |_datastream|
             TechnicalMetadataService.add_update_technical_metadata(obj)

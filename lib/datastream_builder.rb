@@ -11,12 +11,10 @@
 # exists and is newer than the object's current datastream (see above); otherwise,
 # builds the datastream by calling build_fooMetadata_datastream.
 class DatastreamBuilder
-  # @param [ActiveFedora::Base] object The object that contains the datastream
   # @param [ActiveFedora::Datastream] datastream The datastream object
   # @param [Boolean] force Should we overwrite existing datastream?
   # @return [ActiveFedora::Datastream]
-  def initialize(object:, datastream:, force: false)
-    @object = object
+  def initialize(datastream:, force: false)
     @datastream = datastream
     @force = force
   end
@@ -41,12 +39,12 @@ class DatastreamBuilder
     # NOTE: can't use save! because this is an ActiveFedora::Datastream, so we get
     # OM::XML::Terminology::BadPointerError:
     #   This Terminology does not have a root term defined that corresponds to ":save!"
-    raise "Problem saving ActiveFedora::Datastream #{datastream_name} for #{object.pid}" unless datastream.save
+    raise "Problem saving ActiveFedora::Datastream #{datastream_name} for #{datastream.pid}" unless datastream.save
   end
 
   private
 
-  attr_reader :datastream, :force, :object
+  attr_reader :datastream, :force
 
   def filename
     @filename ||= find_metadata_file
@@ -80,7 +78,7 @@ class DatastreamBuilder
   # Tries to find a file for the datastream.
   # @return [String, nil] path to datastream or nil
   def find_metadata_file
-    druid = DruidTools::Druid.new(object.pid, Dor::Config.stacks.local_workspace_root)
+    druid = DruidTools::Druid.new(datastream.pid, Dor::Config.stacks.local_workspace_root)
     druid.find_metadata("#{datastream_name}.xml")
   end
 

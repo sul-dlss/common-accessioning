@@ -20,8 +20,8 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
 
       it 'builds a datastream' do
         expect(DatastreamBuilder).to receive(:new)
-          .with(datastream: Dor::ContentMetadataDS,
-                object: object).and_return(builder)
+          .with(datastream: Dor::ContentMetadataDS)
+          .and_return(builder)
         expect(builder).to receive(:build)
         perform
       end

@@ -11,8 +11,7 @@ module Robots
 
         def perform(druid)
           obj = Dor.find(druid)
-          builder = DatastreamBuilder.new(object: obj,
-                                          datastream: obj.rightsMetadata)
+          builder = DatastreamBuilder.new(datastream: obj.rightsMetadata)
 
           builder.build do |datastream|
             build_datastream(obj, datastream)
