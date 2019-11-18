@@ -219,7 +219,7 @@ GEM
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
     minitest (5.13.0)
-    moab-versioning (4.2.2)
+    moab-versioning (4.3.0)
       confstruct
       druid-tools (>= 1.0.0)
       json
@@ -253,7 +253,7 @@ GEM
       activesupport
       nokogiri (>= 1.4.2)
       solrizer (~> 3.3)
-    parallel (1.18.0)
+    parallel (1.19.0)
     parser (2.6.5.0)
       ast (~> 2.4.0)
     pony (1.13.1)
@@ -369,7 +369,7 @@ GEM
       mods (~> 2.2)
     stanford-mods-normalizer (0.1.0)
       nokogiri (~> 1.8)
-    stomp (1.4.8)
+    stomp (1.4.9)
     systemu (2.6.5)
     temple (0.8.2)
     term-ansicolor (1.7.1)
@@ -377,7 +377,7 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.10)
-    tins (1.22.0)
+    tins (1.22.2)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     uber (0.0.15)
