@@ -34,14 +34,13 @@ module Robots
 
           #========= check the symphonystatus and update it with any changes ==========#
 
-          etd_accession_wf = Nokogiri::XML(workflow_service.workflow_xml('dor', druid, 'etdSubmitWF'))
-          status = etd_accession_wf.search('//process[@name = "catalog-status"]').first
-
           #========= if current_location = home_location, return true to advance workflow ==========#
           return true if current_location.content == home_location.content
 
+          status = workflow_service.workflow_status(druid: druid, workflow: 'etdSubmitWF', process: 'catalog-status')
+
           #========= if status != current_location, update the ds ==========#
-          return if status['status'] == current_location.content
+          return if status == current_location.content
 
           @status = current_location.content
           nil
