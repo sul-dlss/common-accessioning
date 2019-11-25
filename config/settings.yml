@@ -21,7 +21,6 @@ release:
 
 sdr:
   local_workspace_root: /dor/workspace
-  local_export_home: /dor/export
 
 preservation_catalog:
   url: 'https://example.org/prescat'
