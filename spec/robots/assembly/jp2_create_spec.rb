@@ -6,7 +6,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
   let(:robot) { described_class.new(druid: druid) }
 
   def get_filenames(item)
-    item.file_nodes.map { |fn| item.path_to_content_file fn['id'] }
+    item.file_nodes.map { |fn| item.path_finder.path_to_content_file fn['id'] }
   end
 
   def count_file_types(files, extension)
@@ -64,7 +64,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       end
 
       let(:jp2s) { tifs.map { |t| t.sub(/\.tif$/, '.jp2') } }
-      let(:tifs) { item.file_nodes.map { |fn| item.path_to_content_file fn['id'] } }
+      let(:tifs) { item.file_nodes.map { |fn| item.path_finder.path_to_content_file fn['id'] } }
 
       it 'does not create any jp2 files' do
         item.load_content_metadata
@@ -108,7 +108,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       let(:druid) { 'gg111bb2222' }
 
       before do
-        item.cm_file_name = item.path_to_metadata_file(Settings.assembly.cm_file_name)
+        item.cm_file_name = item.path_finder.path_to_metadata_file(Settings.assembly.cm_file_name)
         allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
 
         # These files needs to create
