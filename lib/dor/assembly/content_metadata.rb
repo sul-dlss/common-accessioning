@@ -30,12 +30,14 @@ module Dor
         File.exist?(stub_cm_file_name)
       end
 
+      # rubocop:disable Naming/MemoizedInstanceVariableName
       def load_content_metadata
         # Loads content metadata XML into a Nokogiri document.
         raise "Content metadata file #{Settings.assembly.cm_file_name} not found for #{druid.id} in any of the root directories: #{@root_dir.join(',')}" unless content_metadata_exists?
 
-        @cm = Nokogiri.XML(File.open(cm_file_name)) { |conf| conf.default_xml.noblanks }
+        @cm ||= Nokogiri.XML(File.open(cm_file_name)) { |conf| conf.default_xml.noblanks }
       end
+      # rubocop:enable Naming/MemoizedInstanceVariableName
 
       def load_stub_content_metadata
         # Loads stub content metadata XML into a Nokogiri document.
