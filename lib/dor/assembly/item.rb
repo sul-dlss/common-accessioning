@@ -6,7 +6,6 @@ module Dor
       include Dor::Assembly::ContentMetadata
       include Dor::Assembly::Checksumable
       include Dor::Assembly::Findable
-      include Dor::Assembly::Identifiable
 
       def initialize(params = {})
         # Takes a druid, either as a string or as a Druid object.
@@ -24,6 +23,15 @@ module Dor
 
       def check_for_path
         raise "Path to object #{@druid.id} not found in any of the root directories: #{@root_dir.join(',')}" if path_to_object.nil?
+      end
+
+      def object_type
+        obj_type = object.identityMetadata.objectType
+        (obj_type.nil? ? 'unknown' : obj_type.first)
+      end
+
+      def item?
+        object_type.downcase.strip == 'item'
       end
     end
   end
