@@ -3,6 +3,9 @@
 module Robots
   module DorRepo
     module Assembly
+      # This creates a symlink in /dor/workspace to the files in /dor/assembly
+      # (i.e. /dor//workspace/xw/754/sd/7436/xw754sd7436 -> /dor/assembly/xw/754/sd/7436/xw754sd7436)
+      # and then triggers the accessioningWF
       class AccessioningInitiate < Robots::DorRepo::Assembly::Base
         def initialize(opts = {})
           super('dor', 'assemblyWF', 'accessioning-initiate', opts)
