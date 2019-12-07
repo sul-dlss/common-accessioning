@@ -19,6 +19,7 @@ gem 'moab-versioning', '~> 4.0'
 gem 'net-sftp', '~> 2.1' # for binder_batch_transfer
 gem 'nokogiri'
 gem 'pony' # send email, for etd_submit/build_symphony_marc
+gem 'preservation-client'
 gem 'pry'
 gem 'pry-byebug', :platform => [:ruby_20, :ruby_21]
 gem 'rake'
