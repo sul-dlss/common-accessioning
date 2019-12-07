@@ -4,7 +4,6 @@ module Dor
   module Assembly
     class Item
       include Dor::Assembly::ContentMetadata
-      include Dor::Assembly::Checksumable
       include Dor::Assembly::Findable
 
       def initialize(params = {})
