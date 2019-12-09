@@ -13,56 +13,43 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
     subject(:perform) { robot.perform(druid) }
 
     let(:druid) { 'druid:ab123cd4567' }
+    let(:object_client) do
+      instance_double(Dor::Services::Client::Object, refresh_metadata: true, metadata: metadata_client)
+    end
+    let(:metadata_client) do
+      instance_double(Dor::Services::Client::Metadata, legacy_update: true)
+    end
 
-    context 'on an item' do
-      let(:object_client) { instance_double(Dor::Services::Client::Object, refresh_metadata: true) }
+    before do
+      allow(Dor::Services::Client).to receive(:object).and_return(object_client)
+    end
 
-      before do
-        stub_request(:get, 'https://example.com/workflow/objects/druid:ab123cd4567/workflows')
-          .to_return(status: 200, body: '', headers: {})
-        stub_request(:get, 'https://example.com/workflow/dor/objects/druid:ab123cd4567/lifecycle')
-          .to_return(status: 200, body: '', headers: {})
-
-        allow(Dor::Services::Client).to receive(:object).and_return(object_client)
-        allow(Dor).to receive(:find).and_return(object)
-      end
-
-      let(:desc_md) do
-        instance_double(Dor::DescMetadataDS, pid: druid, mods_title: nil, dsid: 'descMetadata', new?: true, save: true)
-      end
-
-      let!(:object) do
-        instance_double(Dor::Item, catkey: '12345', reload: true, descMetadata: desc_md)
-      end
-
-      context 'when descMetadata mods has no <title>' do
-        it 'raises error' do
-          expect { perform }.to raise_error(RuntimeError, "#{druid} descMetadata missing required fields (<title>)")
-        end
-      end
-
-      context 'when descMetadata has a mods_title value' do
-        let(:desc_md) do
-          instance_double(Dor::DescMetadataDS, pid: druid, mods_title: 'anything', dsid: 'descMetadata', new?: true, save: true)
-        end
-
-        it 'does not raise error' do
-          expect { perform }.not_to raise_error
-        end
-
-        it 'builds a datastream from the remote service call' do
-          perform
-          expect(object_client).to have_received(:refresh_metadata)
-        end
-      end
-
-      it 'reloads the Dor object' do
-        allow(object.descMetadata).to receive(:mods_title).and_return('anything')
-        allow(object).to receive(:reload)
+    context 'when no descMetadata file is found' do
+      it 'builds a datastream from the remote service call' do
         perform
         expect(object_client).to have_received(:refresh_metadata)
-        expect(object).to have_received(:reload)
       end
+    end
+
+    context 'when descMetadata file is found' do
+      let(:path) { 'spec/fixtures/ab123cd4567_descMetadata.xml' }
+      let(:finder) { instance_double(DruidTools::Druid, find_metadata: 'spec/fixtures/ab123cd4567_descMetadata.xml') }
+
+      before do
+        allow(DruidTools::Druid).to receive(:new).and_return(finder)
+      end
+
+      # rubocop:disable RSpec/ExampleLength
+      it 'reads the file in' do
+        perform
+        expect(metadata_client).to have_received(:legacy_update).with(
+          descriptive: {
+            updated: Time,
+            content: /first book in Latin/
+          }
+        )
+      end
+      # rubocop:enable RSpec/ExampleLength
     end
   end
 end

@@ -12,22 +12,20 @@ module Robots
         end
 
         def perform(druid)
-          obj = Dor.find(druid)
-          builder = DatastreamBuilder.new(datastream: obj.descMetadata)
-          builder.build do |_ds|
-            # If there's no file on disk that's newer than the datastream and
-            # the datastream has never been populated, use Symphony:
-            Dor::Services::Client.object(druid).refresh_metadata
+          object = DruidTools::Druid.new(druid, Dor::Config.stacks.local_workspace_root)
+          path = object.find_metadata('descMetadata.xml')
+          object_client = Dor::Services::Client.object(druid)
+
+          if path
+            object_client.metadata.legacy_update(
+              descriptive: {
+                updated: File.mtime(path),
+                content: File.read(path)
+              }
+            )
+          else
+            object_client.refresh_metadata
           end
-
-          obj.reload # get latest content before check
-          raise "#{druid} descMetadata missing required fields (<title>)" if missing_required_fields?(obj.descMetadata)
-        end
-
-        private
-
-        def missing_required_fields?(desc_md_ds)
-          desc_md_ds.mods_title.blank?
         end
       end
     end
