@@ -22,7 +22,7 @@ module Robots
         private
 
         def initialize_workspace
-          Dor::Services::Client.object(@ai.druid.druid).workspace.create(source: @ai.path_to_object)
+          Dor::Services::Client.object(@ai.druid.druid).workspace.create(source: @ai.path_finder.path_to_object)
         end
 
         def start_accession_workflow

@@ -24,7 +24,7 @@ module Robots
           # Process each <file> node in the content metadata.
           assembly_item.file_nodes.each do |fn|
             # Compute checksums.
-            obj = ::Assembly::ObjectFile.new(assembly_item.path_to_content_file(fn['id']))
+            obj = ::Assembly::ObjectFile.new(assembly_item.path_finder.path_to_content_file(fn['id']))
 
             # compute checksums
             checksums = { md5: obj.md5, sha1: obj.sha1 }
