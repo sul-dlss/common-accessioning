@@ -47,19 +47,18 @@ RSpec.describe TechnicalMetadataService do
     end
   end
 
-  describe '#add_update_technical_metadata' do
+  describe '.add_update_technical_metadata' do
     context 'when old technical metadata is nil' do
-      # Old technical metadata is nil because technicalMetadata is new and because SDR returns nothing.
+      # Old technical metadata is nil because technicalMetadata is new and because Preservation returns nothing.
       let(:technicalMetadata) { instance_double(Dor::TechnicalMetadataDS, new?: true, :dsLabel= => true, :content= => true, save: true) }
       let(:dor_item) { instance_double(Dor::Item, pid: druid, contentMetadata: contentMetadata, datastreams: { 'technicalMetadata' => technicalMetadata }) }
       let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: '') }
-      let(:object_client) { instance_double(Dor::Services::Client::Object, sdr: sdr_client) }
-      let(:sdr_client) { instance_double(Dor::Services::Client::SDR, content_diff: inventory_diff, metadata: '') }
       let(:inventory_diff) { instance_double(Moab::FileInventoryDifference, group_difference: file_group_diff) }
       let(:file_group_diff) { instance_double(Moab::FileGroupDifference, file_deltas: { added: [], modified: [] }) }
 
       before do
-        allow(Dor::Services::Client).to receive(:object).and_return(object_client)
+        allow(Preservation::Client.objects).to receive(:metadata)
+        allow(Preservation::Client.objects).to receive(:content_inventory_diff).and_return(inventory_diff)
       end
 
       it 'stores' do
@@ -112,36 +111,31 @@ RSpec.describe TechnicalMetadataService do
   describe '#content_group_diff' do
     subject(:content_group_diff) { instance.send(:content_group_diff) }
 
-    before do
-      allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
+    context 'with contentMetadata' do
+      let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: 'foo') }
+      let(:object_id) { 'dd116zh0343' }
+      let(:druid) { "druid:#{object_id}" }
+      let(:group_diff) { @inventory_differences[object_id] }
+      let(:dor_item) { instance_double(Dor::Item, contentMetadata: contentMetadata, pid: druid) }
+      let(:inventory_diff) do
+        Moab::FileInventoryDifference.new(
+          digital_object_id: druid,
+          basis: 'old_content_metadata',
+          other: 'new_content_metadata',
+          report_datetime: Time.now.utc.to_s
+        ).tap { |diff| diff.group_differences << group_diff }
+      end
+
+      before do
+        allow(Preservation::Client.objects).to receive(:content_inventory_diff).and_return(inventory_diff)
+      end
+
+      it 'calculates the difference' do
+        expect(content_group_diff.to_xml).to eq(group_diff.to_xml)
+      end
     end
 
-    let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: 'foo') }
-    let(:object_client) { instance_double(Dor::Services::Client::Object, sdr: sdr_client) }
-    let(:sdr_client) { instance_double(Dor::Services::Client::SDR, content_diff: inventory_diff) }
-    let(:object_id) { 'dd116zh0343' }
-    let(:druid) { "druid:#{object_id}" }
-    let(:group_diff) { @inventory_differences[object_id] }
-    let(:dor_item) { instance_double(Dor::Item, contentMetadata: contentMetadata, pid: druid) }
-
-    let(:inventory_diff) do
-      Moab::FileInventoryDifference.new(
-        digital_object_id: druid,
-        basis: 'old_content_metadata',
-        other: 'new_content_metadata',
-        report_datetime: Time.now.utc.to_s
-      ).tap { |diff| diff.group_differences << group_diff }
-    end
-
-    it 'calculates the difference' do
-      expect(content_group_diff.to_xml).to eq(group_diff.to_xml)
-    end
-  end
-
-  describe '#content_group_diff' do
     context 'without contentMetadata' do
-      subject(:content_group_diff) { instance.send(:content_group_diff) }
-
       let(:dor_item) { instance_double(Dor::Item, contentMetadata: nil) }
 
       it 'has no difference' do
@@ -159,7 +153,7 @@ RSpec.describe TechnicalMetadataService do
     druid = 'druid:dd116zh0343'
     allow(dor_item).to receive(:pid).and_return(druid)
     tech_md = '<technicalMetadata/>'
-    expect(instance).to receive(:sdr_technical_metadata).and_return(tech_md, nil)
+    expect(instance).to receive(:preservation_technical_metadata).and_return(tech_md, nil)
     old_techmd = instance.send(:old_technical_metadata)
     expect(old_techmd).to eq(tech_md)
     expect(instance).to receive(:dor_technical_metadata).and_return(tech_md)
@@ -167,15 +161,13 @@ RSpec.describe TechnicalMetadataService do
     expect(old_techmd).to eq(tech_md)
   end
 
-  describe '#sdr_technical_metadata' do
-    subject(:sdr_techmd) { instance.send(:sdr_technical_metadata) }
+  describe '#preservation_technical_metadata' do
+    subject { instance.send(:preservation_technical_metadata) }
 
-    let(:object_client) { instance_double(Dor::Services::Client::Object, sdr: sdr_client) }
-    let(:sdr_client) { instance_double(Dor::Services::Client::SDR, metadata: metadata) }
     let(:druid) { 'druid:du000ps9999' }
 
     before do
-      allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
+      allow(Preservation::Client.objects).to receive(:metadata).and_return(metadata)
     end
 
     context 'when metadata is nil' do

@@ -19,7 +19,9 @@ release:
   max_sleep_seconds: 1  # max sleep seconds between tries
   base_sleep_seconds: 1 # base sleep seconds between tries
 
-
 sdr:
   local_workspace_root: /dor/workspace
   local_export_home: /dor/export
+
+preservation_catalog:
+  url: 'https://example.org/prescat'

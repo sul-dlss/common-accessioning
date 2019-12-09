@@ -54,6 +54,8 @@ end
 
 CommonAccessioning.connect_dor_services_app
 
+Preservation::Client.configure(url: Settings.preservation_catalog.url)
+
 # Load Resque configuration and controller
 begin
   if defined? REDIS_TIMEOUT

@@ -5,7 +5,7 @@ require 'jhove_service'
 
 # Extracts technical metadata from files using JHOVE
 # If this is a new version it gets the old technicalMetadata datastream by
-# making an API call to sdr-services-app (via dor-services-app) and
+# making an API call to preservation-catalog (via preservation-client) and
 # only overwrites/adds parts for the files that were changed or added.
 # This allows us to avoid re-staging files that have not changed.
 # Switching to a more granular data model that has file metadata separate from
@@ -57,9 +57,8 @@ class TechnicalMetadataService
     return Moab::FileGroupDifference.new if dor_item.contentMetadata.nil?
     raise Dor::ParameterError, 'Missing Dor::Config.stacks.local_workspace_root' if Dor::Config.stacks.local_workspace_root.nil?
 
-    client = Dor::Services::Client.object(dor_item.pid).sdr
     current_content = dor_item.contentMetadata.content
-    inventory_diff = client.content_diff(current_content: current_content)
+    inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: dor_item.pid, content_metadata: current_content)
     inventory_diff.group_difference('content')
   end
 
@@ -71,18 +70,18 @@ class TechnicalMetadataService
 
   # @return [String] The technicalMetadata datastream from the previous version of the digital object
   def old_technical_metadata
-    sdr_techmd = sdr_technical_metadata
-    return sdr_techmd unless sdr_techmd.nil?
+    pres_techmd = preservation_technical_metadata
+    return pres_techmd unless pres_techmd.nil?
 
     dor_technical_metadata
   end
 
-  # @return [String] The technicalMetadata datastream from the previous version of the digital object (fetched from SDR storage)
+  # @return [String] The technicalMetadata datastream from the previous version of the digital object (fetched from preeservation)
   #   The data is updated to the latest format.
-  def sdr_technical_metadata
-    sdr_techmd = sdr_metadata('technicalMetadata')
-    return sdr_techmd if sdr_techmd =~ /<technicalMetadata/
-    return ::JhoveService.new.upgrade_technical_metadata(sdr_techmd) if sdr_techmd =~ /<jhove/
+  def preservation_technical_metadata
+    pres_techmd = preservation_metadata('technicalMetadata')
+    return pres_techmd if pres_techmd =~ /<technicalMetadata/
+    return ::JhoveService.new.upgrade_technical_metadata(pres_techmd) if pres_techmd =~ /<jhove/
 
     nil
   end
@@ -101,9 +100,9 @@ class TechnicalMetadataService
   end
 
   # @param [String] dsname The identifier of the metadata datastream
-  # @return [String] The datastream contents from the previous version of the digital object (fetched from SDR storage)
-  def sdr_metadata(dsname)
-    Dor::Services::Client.object(dor_item.pid).sdr.metadata(datastream: dsname)
+  # @return [String] The datastream contents from the previous version of the digital object (fetched from preservation)
+  def preservation_metadata(dsname)
+    Preservation::Client.objects.metadata(druid: dor_item.pid, filepath: "#{dsname}.xml")
   end
 
   # @param [Hash<Symbol,Array>] deltas Sets of filenames grouped by change type for use in performing file or metadata operations
