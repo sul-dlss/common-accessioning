@@ -26,7 +26,9 @@ module Robots
         end
 
         def start_accession_workflow
-          Dor::Config.workflow.client.create_workflow_by_name(@ai.druid.druid, 'accessionWF')
+          object_client = Dor::Services::Client.object(@ai.druid.druid)
+          current_version = object_client.version.current
+          Dor::Config.workflow.client.create_workflow_by_name(@ai.druid.druid, 'accessionWF', version: current_version)
         end
       end
     end

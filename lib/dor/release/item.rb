@@ -75,15 +75,6 @@ module Dor
           Dor::Services::Client.object(@druid).update_marc_record
         end
       end
-
-      def self.create_release_workflow(druid)
-        LyberCore::Log.debug "...adding workflow releaseWF for #{druid}"
-
-        # initiate workflow by making workflow service call
-        with_retries(max_tries: Settings.release.max_tries, base_sleep_seconds: Settings.release.base_sleep_seconds, max_sleep_seconds: Settings.release.max_sleep_seconds) do |_attempt|
-          Dor::Config.workflow.client.create_workflow_by_name(druid, 'releaseWF')
-        end
-      end
     end
   end
 end
