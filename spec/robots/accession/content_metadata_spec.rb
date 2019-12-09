@@ -8,31 +8,53 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
   describe '.perform' do
     subject(:perform) { robot.perform(druid) }
 
+    let(:object_client) do
+      instance_double(Dor::Services::Client::Object, metadata: metadata_client, find: object)
+    end
+    let(:metadata_client) do
+      instance_double(Dor::Services::Client::Metadata, legacy_update: true)
+    end
+    let(:druid) { 'druid:ab123cd4567' }
+    let(:finder) { instance_double(DruidTools::Druid, find_metadata: 'spec/fixtures/workspace/ab/123/cd/4567/content_metadata.xml') }
+
     before do
-      allow(Dor).to receive(:find).and_return(object)
+      allow(Dor::Services::Client).to receive(:object).and_return(object_client)
+      allow(DruidTools::Druid).to receive(:new).and_return(finder)
     end
 
-    let(:druid) { 'druid:bd185gs2259' }
-    let(:builder) { instance_double(DatastreamBuilder, build: true) }
-
     context 'on an item' do
-      let(:object) { Dor::Item.new(pid: druid) }
-
-      it 'builds a datastream' do
-        expect(DatastreamBuilder).to receive(:new)
-          .with(datastream: Dor::ContentMetadataDS)
-          .and_return(builder)
-        expect(builder).to receive(:build)
-        perform
+      let(:object) do
+        Cocina::Models::DRO.new(externalIdentifier: '123',
+                                type: Cocina::Models::DRO::TYPES.first,
+                                label: 'my repository object',
+                                version: 1)
       end
+
+      # rubocop:disable RSpec/ExampleLength
+      it 'builds a datastream' do
+        perform
+
+        expect(metadata_client).to have_received(:legacy_update).with(
+          content: {
+            updated: Time,
+            content: /<contentMetadata/
+          }
+        )
+      end
+      # rubocop:enable RSpec/ExampleLength
     end
 
     context 'on a collection' do
-      let(:object) { Dor::Collection.new(pid: druid) }
+      let(:object) do
+        Cocina::Models::Collection.new(externalIdentifier: '123',
+                                       type: Cocina::Models::Collection::TYPES.first,
+                                       label: 'my collection',
+                                       version: 1)
+      end
 
       it "doesn't make a datastream" do
-        expect(DatastreamBuilder).not_to receive(:new)
         perform
+        expect(object_client).not_to have_received(:metadata)
       end
     end
   end
