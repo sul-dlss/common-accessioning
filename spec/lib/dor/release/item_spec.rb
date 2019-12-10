@@ -52,18 +52,6 @@ RSpec.describe Dor::Release::Item do
     expect(@item.sub_collections).to eq @response['sets'] + @response['collections']
   end
 
-  it 'creates the workflow for a collection' do
-    expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).with(@druid, 'releaseWF').once
-
-    described_class.create_release_workflow(@druid)
-  end
-
-  it 'creates the workflow for an item' do
-    expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).with(@druid, 'releaseWF').once
-
-    described_class.create_release_workflow(@druid)
-  end
-
   it 'makes a webservice call for updating_marc_records' do
     stub_request(:post, 'https://dor-services-test.stanford.test/v1/objects/oo000oo0001/update_marc_record')
       .to_return(status: 201, body: '', headers: {})

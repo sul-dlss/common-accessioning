@@ -47,7 +47,7 @@ module Robots
           if item.item_members # if there are any members, iterate through and add item workflows (which includes setting the first step to completed)
 
             item.item_members.each do |item_member|
-              Dor::Release::Item.create_release_workflow(item_member['druid'])
+              create_release_workflow(item_member['druid'])
             end
           else # no members found
             LyberCore::Log.debug "...no members found in #{item.object_type}"
@@ -56,9 +56,18 @@ module Robots
 
         def add_workflow_to_sub_collections(item)
           item.sub_collections&.each do |sub_collection|
-            with_retries(max_tries: Settings.release.max_tries, base_sleep_seconds: Settings.release.base_sleep_seconds, max_sleep_seconds: Settings.release.max_sleep_seconds) do |_attempt|
-              Dor::Release::Item.create_release_workflow(sub_collection['druid'])
-            end
+            create_release_workflow(sub_collection['druid'])
+          end
+        end
+
+        def create_release_workflow(druid)
+          LyberCore::Log.debug "...adding workflow releaseWF for #{druid}"
+          object_client = Dor::Services::Client.object(druid)
+
+          # initiate workflow by making workflow service call
+          with_retries(max_tries: Settings.release.max_tries, base_sleep_seconds: Settings.release.base_sleep_seconds, max_sleep_seconds: Settings.release.max_sleep_seconds) do |_attempt|
+            current_version = object_client.version.current
+            Dor::Config.workflow.client.create_workflow_by_name(druid, 'releaseWF', version: current_version)
           end
         end
       end

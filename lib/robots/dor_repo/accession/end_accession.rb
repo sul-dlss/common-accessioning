@@ -9,20 +9,22 @@ module Robots
         end
 
         def perform(druid)
-          druid_obj = Dor.find(druid)
+          object_client = Dor::Services::Client.object(druid)
+          current_version = object_client.version.current
 
           # Search for the specialized workflow
-          next_dissemination_wf = special_dissemination_wf(druid_obj)
-          Dor::Config.workflow.client.create_workflow_by_name(druid, next_dissemination_wf) if next_dissemination_wf.present?
+          next_dissemination_wf = special_dissemination_wf(druid)
+          Dor::Config.workflow.client.create_workflow_by_name(druid, next_dissemination_wf, version: current_version) if next_dissemination_wf.present?
 
           # Call the default disseminationWF in all cases
-          Dor::Config.workflow.client.create_workflow_by_name(druid, 'disseminationWF')
+          Dor::Config.workflow.client.create_workflow_by_name(druid, 'disseminationWF', version: current_version)
         end
 
         private
 
         # This returns any optional workflow such as wasDisseminationWF
-        def special_dissemination_wf(druid_obj)
+        def special_dissemination_wf(druid)
+          druid_obj = Dor.find(druid)
           apo = druid_obj.admin_policy_object
           raise "#{druid_obj.id} doesn't have a valid apo" if apo.nil?
 

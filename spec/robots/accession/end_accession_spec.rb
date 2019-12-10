@@ -9,10 +9,13 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   let(:apo) { Dor::AdminPolicyObject.new }
   let(:druid) { 'druid:oo000oo0001' }
   let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil) }
+  let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client) }
+  let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
 
   before do
     allow(Dor).to receive(:find).with(druid).and_return(object)
     allow(Dor::Config.workflow).to receive(:client).and_return(workflow_client)
+    allow(Dor::Services::Client).to receive(:object).and_return(object_client)
   end
 
   describe '#perform' do
@@ -21,7 +24,8 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
     context 'when there is no special dissemniation workflow' do
       it 'kicks off dissemination' do
         perform
-        expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'disseminationWF')
+        expect(workflow_client).to have_received(:create_workflow_by_name)
+          .with(druid, 'disseminationWF', version: '1')
       end
     end
 
@@ -42,8 +46,10 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
       it 'kicks off both dissemination workflows' do
         perform
-        expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'wasDisseminationWF')
-        expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'disseminationWF')
+        expect(workflow_client).to have_received(:create_workflow_by_name)
+          .with(druid, 'wasDisseminationWF', version: '1')
+        expect(workflow_client).to have_received(:create_workflow_by_name)
+          .with(druid, 'disseminationWF', version: '1')
       end
     end
   end
