@@ -18,14 +18,20 @@ begin
   require 'rubocop/rake_task'
   RuboCop::RakeTask.new
 rescue LoadError
+  # should only get here from production
   desc 'Run rubocop'
   task :rubocop do
     abort 'Please install the rubocop gem to run rubocop.'
   end
 end
 
-require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec)
+begin
+  require 'rspec/core/rake_task'
+  RSpec::Core::RakeTask.new(:spec)
+rescue LoadError
+  # should only get here from production or dev environments
+  puts 'no rspec found;  hopefully this is a production environment'
+end
 
 desc 'Get application version'
 task :app_version do
