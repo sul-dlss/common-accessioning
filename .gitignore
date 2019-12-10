@@ -13,6 +13,7 @@ config/certs
 .DS_Store
 .ruby-version
 .ruby-gemset
+.pry_history
 
 /tmp/*
 !/tmp/.keep
