@@ -103,6 +103,11 @@ class TechnicalMetadataService
   # @return [String] The datastream contents from the previous version of the digital object (fetched from preservation)
   def preservation_metadata(dsname)
     Preservation::Client.objects.metadata(druid: dor_item.pid, filepath: "#{dsname}.xml")
+  rescue Preservation::Client::UnexpectedResponseError => e
+    # return nil if not found
+    return if e.message.match?('404 .* Not Found')
+
+    raise
   end
 
   # @param [Hash<Symbol,Array>] deltas Sets of filenames grouped by change type for use in performing file or metadata operations

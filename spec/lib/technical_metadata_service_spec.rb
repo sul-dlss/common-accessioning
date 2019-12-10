@@ -162,35 +162,54 @@ RSpec.describe TechnicalMetadataService do
   end
 
   describe '#preservation_technical_metadata' do
-    subject { instance.send(:preservation_technical_metadata) }
-
     let(:druid) { 'druid:du000ps9999' }
 
-    before do
-      allow(Preservation::Client.objects).to receive(:metadata).and_return(metadata)
-    end
-
-    context 'when metadata is nil' do
-      let(:metadata) { nil }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'when metadata is techmd' do
-      let(:metadata) { '<technicalMetadata/>' }
-
-      it { is_expected.to eq '<technicalMetadata/>' }
-    end
-
-    context 'when metadata is jhove' do
-      let(:metadata) { '<jhove/>' }
+    context 'when Preservation::Client does not get 404 from API' do
+      subject { instance.send(:preservation_technical_metadata) }
 
       before do
-        jhove_service = instance_double(JhoveService, upgrade_technical_metadata: 'upgraded techmd')
-        allow(JhoveService).to receive(:new).and_return(jhove_service)
+        allow(Preservation::Client.objects).to receive(:metadata).and_return(metadata)
       end
 
-      it { is_expected.to eq 'upgraded techmd' }
+      context 'when preservation metadata returned is nil' do
+        let(:metadata) { nil }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when preservation metadata has technicalMetadata outer tag' do
+        let(:metadata) { '<technicalMetadata/>' }
+
+        it { is_expected.to eq '<technicalMetadata/>' }
+      end
+
+      context 'when preservation metadata has jhove outer tag' do
+        let(:metadata) { '<jhove/>' }
+
+        before do
+          jhove_service = instance_double(JhoveService, upgrade_technical_metadata: 'upgraded techmd')
+          allow(JhoveService).to receive(:new).and_return(jhove_service)
+        end
+
+        it 'gets metadata from jhove service' do
+          expect(instance.send(:preservation_technical_metadata)).to eq 'upgraded techmd'
+          expect(JhoveService).to have_received(:new)
+        end
+      end
+    end
+
+    context 'when Preservation::Client gets 404 from API' do
+      before do
+        errmsg = "Preservation::Client.metadata for #{druid} got 404 File Not Found (404) from Preservation ..."
+        allow(Preservation::Client.objects).to receive(:metadata)
+          .and_raise(Preservation::Client::UnexpectedResponseError, errmsg)
+        allow(JhoveService).to receive(:new)
+      end
+
+      it 'returns nil and does not call JhoveService' do
+        expect(instance.send(:preservation_technical_metadata)).to eq nil
+        expect(JhoveService).not_to have_received(:new)
+      end
     end
   end
 
