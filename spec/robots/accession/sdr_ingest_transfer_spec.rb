@@ -6,19 +6,17 @@ RSpec.describe Robots::DorRepo::Accession::SdrIngestTransfer do
   subject(:robot) { described_class.new }
 
   let(:druid) { 'druid:aa222cc3333' }
-  let(:object_client) do
-    instance_double(Dor::Services::Client::Object,
-                    preserve: 'http://dor-services/background-job/123')
-  end
+  let(:object) { instance_double(Dor::Item) }
 
   describe '#perform' do
     before do
-      allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
+      allow(Dor).to receive(:find).with(druid).and_return(object)
+      allow(SdrIngestService).to receive(:transfer)
     end
 
     it 'is successful' do
       robot.perform(druid)
-      expect(object_client).to have_received(:preserve)
+      expect(SdrIngestService).to have_received(:transfer).with(object)
     end
   end
 end
