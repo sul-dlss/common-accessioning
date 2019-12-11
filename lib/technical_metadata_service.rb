@@ -103,9 +103,10 @@ class TechnicalMetadataService
   # @return [String] The datastream contents from the previous version of the digital object (fetched from preservation)
   def preservation_metadata(dsname)
     Preservation::Client.objects.metadata(druid: dor_item.pid, filepath: "#{dsname}.xml")
-  rescue Preservation::Client::UnexpectedResponseError => e
+  rescue Preservation::Client::Error => e
+    # preservation-client *should* throw Preservation::Client::NotFoundError but ... dunno.  See #16 in that repo
     # return nil if not found
-    return if e.message.match?('404 .* Not Found')
+    return if e.message.match?(/Not Found.*404/im)
 
     raise
   end

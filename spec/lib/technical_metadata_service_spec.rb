@@ -200,9 +200,9 @@ RSpec.describe TechnicalMetadataService do
 
     context 'when Preservation::Client gets 404 from API' do
       before do
-        errmsg = "Preservation::Client.metadata for #{druid} got 404 File Not Found (404) from Preservation ..."
+        errmsg = "Preservation::Client.file for #{druid} got Not Found (404) from Preservation ... 404 Not Found ..."
         allow(Preservation::Client.objects).to receive(:metadata)
-          .and_raise(Preservation::Client::UnexpectedResponseError, errmsg)
+          .and_raise(Preservation::Client::NotFoundError, errmsg)
         allow(JhoveService).to receive(:new)
       end
 
