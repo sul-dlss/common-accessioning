@@ -9,8 +9,7 @@ module Robots
         end
 
         def perform(druid)
-          obj = Dor.find(druid)
-          SdrIngestService.transfer(obj)
+          Dor::Services::Client.object(druid).preserve
         end
       end
     end
