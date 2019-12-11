@@ -76,7 +76,7 @@ class TechnicalMetadataService
     dor_technical_metadata
   end
 
-  # @return [String] The technicalMetadata datastream from the previous version of the digital object (fetched from preeservation)
+  # @return [String] The technicalMetadata datastream from the previous version of the digital object (fetched from preservation)
   #   The data is updated to the latest format.
   def preservation_technical_metadata
     pres_techmd = preservation_metadata('technicalMetadata')
@@ -100,15 +100,12 @@ class TechnicalMetadataService
   end
 
   # @param [String] dsname The identifier of the metadata datastream
-  # @return [String] The datastream contents from the previous version of the digital object (fetched from preservation)
+  # @return [String] The datastream contents from the previous version of the digital object (fetched from preservation),
+  #   or nil if there is no such datastream (e.g. object not yet in preservation)
   def preservation_metadata(dsname)
     Preservation::Client.objects.metadata(druid: dor_item.pid, filepath: "#{dsname}.xml")
-  rescue Preservation::Client::Error => e
-    # preservation-client *should* throw Preservation::Client::NotFoundError but ... dunno.  See #16 in that repo
-    # return nil if not found
-    return if e.message.match?(/Not Found.*404/im)
-
-    raise
+  rescue Preservation::Client::NotFoundError
+    nil
   end
 
   # @param [Hash<Symbol,Array>] deltas Sets of filenames grouped by change type for use in performing file or metadata operations
