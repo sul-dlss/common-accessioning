@@ -23,9 +23,15 @@ module Robots
                 content: File.read(path)
               }
             )
-          else
+          elsif !has_descriptive_metadata?(druid)
             object_client.refresh_metadata
           end
+        end
+
+        # TODO: for now we're looking for the presence of the datastream, but eventually
+        # we need to do this without involving Fedora 3 concepts
+        def has_descriptive_metadata?(druid)
+          Dor.find(druid).full_title.present?
         end
       end
     end

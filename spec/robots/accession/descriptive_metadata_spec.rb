@@ -25,9 +25,26 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
     end
 
     context 'when no descMetadata file is found' do
-      it 'builds a datastream from the remote service call' do
-        perform
-        expect(object_client).to have_received(:refresh_metadata)
+      before do
+        allow(Dor).to receive(:find).and_return(fedora_obj)
+      end
+
+      context "when descMetadata doesn't exist" do
+        let(:fedora_obj) { instance_double(Dor::Item, full_title: nil) }
+
+        it 'builds a datastream from the remote service call' do
+          perform
+          expect(object_client).to have_received(:refresh_metadata)
+        end
+      end
+
+      context 'when descMetadata exists' do
+        let(:fedora_obj) { instance_double(Dor::Item, full_title: 'Exstant title') }
+
+        it 'does nothing' do
+          perform
+          expect(object_client).not_to have_received(:refresh_metadata)
+        end
       end
     end
 
