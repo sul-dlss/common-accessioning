@@ -14,6 +14,7 @@ RSpec.describe SdrIngestService do
     @export_dir.mkdir
     @druid        = 'druid:aa123bb4567'
     @agreement_id = 'druid:xx098yy7654'
+    @fixture_sig_cat = Moab::SignatureCatalog.parse(File.open(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests/signatureCatalog.xml')).read)
   end
 
   after do
@@ -63,15 +64,12 @@ RSpec.describe SdrIngestService do
   end
 
   describe '.transfer' do
-    let(:object_client) { instance_double(Dor::Services::Client::Object, sdr: sdr_client) }
-    let(:sdr_client) { instance_double(Dor::Services::Client::SDR, signature_catalog: signature_catalog) }
-    let(:signature_catalog) { Moab::SignatureCatalog.read_xml_file(@fixtures.join('sdr_repo/dd116zh0343/v0001/manifests')) }
     let(:druid) { 'druid:dd116zh0343' }
     let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: true) }
 
     before do
       allow(Dor::Config.workflow).to receive(:client).and_return(workflow_client)
-      allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
+      allow(Preservation::Client.objects).to receive(:signature_catalog).and_return(@fixture_sig_cat)
       @dor_item = double('dor_item')
       allow(@dor_item).to receive(:pid).and_return(druid)
       @metadata_dir = @fixtures.join('workspace/dd/116/zh/0343/dd116zh0343/metadata')
@@ -138,6 +136,39 @@ RSpec.describe SdrIngestService do
                                   'export/dd116zh0343/versionInventory.xml'
                                 ])
       expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'preservationIngestWF')
+    end
+  end
+
+  describe '.signature_catalog_from_preservation' do
+    let(:druid) { 'druid:dd116zh0343' }
+    let(:dor_item) { instance_double(Dor::Item, pid: druid) }
+
+    context 'when signature_catalog exists in preservation' do
+      before do
+        allow(Preservation::Client.objects).to receive(:signature_catalog).and_return(@fixture_sig_cat)
+      end
+
+      it 'retrieves it as a Moab::SignatureCatalog object' do
+        sig_cat = described_class.signature_catalog_from_preservation(dor_item.pid)
+        expect(sig_cat).to be_an_instance_of(Moab::SignatureCatalog)
+        expect(sig_cat.digital_object_id).to eq dor_item.pid
+        expect(sig_cat.version_id).to eq 1
+        expect(sig_cat.entries.size).to eq 19
+      end
+    end
+
+    context 'when signature_catalog does not exist in preservation' do
+      before do
+        allow(Preservation::Client.objects).to receive(:signature_catalog).and_raise(Preservation::Client::NotFoundError)
+      end
+
+      it 'returns a Moab::SignatureCatalog object for version 0' do
+        sig_cat = described_class.signature_catalog_from_preservation(dor_item.pid)
+        expect(sig_cat).to be_an_instance_of(Moab::SignatureCatalog)
+        expect(sig_cat.digital_object_id).to eq dor_item.pid
+        expect(sig_cat.version_id).to eq 0
+        expect(sig_cat.entries).to eq []
+      end
     end
   end
 
