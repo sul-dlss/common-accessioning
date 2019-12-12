@@ -1,3 +1,4 @@
+
 inherit_from: .rubocop_todo.yml
 require: rubocop-rspec
 
@@ -8,3 +9,7 @@ Metrics/BlockLength:
   Exclude:
     - spec/**/*_spec.rb
     - config/environments/*.rb
+
+Naming/PredicateName:
+  ForbiddenPrefixes:
+    - is_
