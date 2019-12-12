@@ -8,7 +8,7 @@ class SdrIngestService
   def self.transfer(dor_item)
     druid = dor_item.pid
     workspace = DruidTools::Druid.new(druid, Settings.sdr.local_workspace_root)
-    signature_catalog = get_signature_catalog(druid)
+    signature_catalog = signature_catalog_from_preservation(druid)
     new_version_id = signature_catalog.version_id + 1
     metadata_dir = extract_datastreams(dor_item, workspace)
     verify_version_metadata(metadata_dir, new_version_id)
@@ -39,10 +39,12 @@ class SdrIngestService
 
   # Note: the following methods should probably all be private
 
-  # @param [String] druid The object identifier
-  # @return [Moab::SignatureCatalog] the catalog of all files previously ingested
-  def self.get_signature_catalog(druid)
-    Dor::Services::Client.object(druid).sdr.signature_catalog
+  # @return [Moab::SignatureCatalog] the manifest of all files previously ingested,
+  #   or if there is none, a SignatureCatalog object for version 0.
+  def self.signature_catalog_from_preservation(druid)
+    Preservation::Client.objects.signature_catalog(druid)
+  rescue Preservation::Client::NotFoundError
+    Moab::SignatureCatalog.new(digital_object_id: druid, version_id: 0)
   end
 
   # @param [Dor::Item] dor_item The representation of the digital object
