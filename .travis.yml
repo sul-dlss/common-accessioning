@@ -12,9 +12,7 @@ cache: bundler
 
 before_install:
   # Update rubygems so that bundler will work (for ruby 2.5.3)
-  - gem update --system
-  # Install bundler 2.0
-  - gem install bundler
+  - yes | gem update --system
 
 rvm:
   - 2.5.3 # deployed
