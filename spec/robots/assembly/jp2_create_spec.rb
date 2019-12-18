@@ -14,32 +14,50 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
   end
 
   describe '#perform' do
-    subject(:perform) { robot.perform(@assembly_item) }
+    subject(:perform) { robot.perform(druid) }
+
+    ``
+    let(:assembly_item) { Dor::Assembly::Item.new(druid: druid) }
+
+    let(:object_client) do
+      instance_double(Dor::Services::Client::Object, find: object)
+    end
 
     before do
-      @assembly_item = setup_assembly_item(druid, type)
+      allow(robot).to receive(:item).and_return(assembly_item)
+      allow(Dor::Services::Client).to receive(:object).and_return(object_client)
     end
 
     let(:druid) { 'aa222cc3333' }
 
     context 'for an item' do
-      let(:type) { :item }
+      let(:object) do
+        Cocina::Models::DRO.new(externalIdentifier: '123',
+                                type: Cocina::Models::DRO::TYPES.first,
+                                label: 'my dro',
+                                version: 1)
+      end
 
-      it 'creates jp2 for type=item' do
-        expect(@assembly_item).to receive(:item?).and_call_original
-        expect(@assembly_item).to receive(:load_content_metadata)
-        expect(robot).to receive(:create_jp2s).with(@assembly_item)
+      it 'creates jp2' do
+        expect(assembly_item).to receive(:item?).and_call_original
+        expect(assembly_item).to receive(:load_content_metadata)
+        expect(robot).to receive(:create_jp2s).with(assembly_item)
         perform
       end
     end
 
-    context 'for a set' do
-      let(:type) { :set }
+    context 'for a collection' do
+      let(:object) do
+        Cocina::Models::Collection.new(externalIdentifier: '123',
+                                       type: Cocina::Models::Collection::TYPES.first,
+                                       label: 'my collection',
+                                       version: 1)
+      end
 
-      it 'does not create jp2 for type=set' do
-        expect(@assembly_item).to receive(:item?)
-        expect(@assembly_item).not_to receive(:load_content_metadata)
-        expect(robot).not_to receive(:create_jp2s).with(@assembly_item)
+      it 'does not create jp2' do
+        expect(assembly_item).to receive(:item?)
+        expect(assembly_item).not_to receive(:load_content_metadata)
+        expect(robot).not_to receive(:create_jp2s).with(assembly_item)
         perform
       end
     end

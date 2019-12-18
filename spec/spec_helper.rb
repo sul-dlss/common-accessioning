@@ -69,16 +69,3 @@ end
 def fixture_dir
   @fixture_dir ||= File.join(File.dirname(__FILE__), 'fixtures')
 end
-
-def setup_assembly_item(druid, obj_type = :item)
-  assembly_item = Dor::Assembly::Item.new(druid: druid)
-  allow(assembly_item).to receive('druid').and_return(DruidTools::Druid.new(druid))
-  allow(assembly_item).to receive('id').and_return(druid)
-  # have to disable this check, because OM is doing odd metaprogramming
-  # rubocop:disable RSpec/VerifiedDoubles
-  identity_metadata = double(Dor::IdentityMetadataDS, objectType: [obj_type.to_s])
-  # rubocop:enable RSpec/VerifiedDoubles
-  allow(Dor).to receive(:find).and_return(instance_double(Dor::Item, identityMetadata: identity_metadata))
-  allow(Dor::Assembly::Item).to receive(:new).and_return(assembly_item)
-  assembly_item
-end
