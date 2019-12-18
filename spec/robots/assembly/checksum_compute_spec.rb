@@ -5,13 +5,27 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
   let(:robot) { described_class.new(druid: druid) }
   let(:druid) { 'aa222cc3333' }
+  let(:object_client) do
+    instance_double(Dor::Services::Client::Object, find: object)
+  end
 
-  context 'when type=item' do
-    let(:assembly_item) { setup_assembly_item(druid, :item) }
+  before do
+    allow(Dor::Services::Client).to receive(:object).and_return(object_client)
+  end
+
+  context 'when the item is a DRO' do
+    let(:assembly_item) { Dor::Assembly::Item.new(druid: druid) }
+    let(:object) do
+      Cocina::Models::DRO.new(externalIdentifier: '123',
+                              type: Cocina::Models::DRO::TYPES.first,
+                              label: 'my dro',
+                              version: 1)
+    end
 
     before do
       # Need to load_content_metadata before we can set up expectations on the file_nodes
       assembly_item.load_content_metadata
+      allow(robot).to receive(:item).and_return(assembly_item)
     end
 
     it 'computes checksums' do
@@ -23,18 +37,21 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
       expect(assembly_item.file_nodes[1]).not_to receive(:add_child)
       expect(assembly_item.file_nodes[2]).to receive(:add_child).twice
 
-      robot.perform(assembly_item)
+      robot.perform(druid)
     end
   end
 
-  context 'when type=set' do
-    let(:assembly_item) { setup_assembly_item(druid, :set) }
+  context 'when not a DRO' do
+    let(:object) do
+      Cocina::Models::Collection.new(externalIdentifier: '123',
+                                     type: Cocina::Models::Collection::TYPES.first,
+                                     label: 'my collection',
+                                     version: 1)
+    end
 
     it 'does not compute checksums' do
-      expect(assembly_item).not_to be_item
-      expect(assembly_item).not_to receive(:load_content_metadata)
       expect(robot).not_to receive(:compute_checksums)
-      robot.perform(assembly_item)
+      robot.perform(druid)
     end
   end
 end

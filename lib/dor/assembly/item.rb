@@ -14,17 +14,12 @@ module Dor
         @path_finder.check_for_path
       end
 
-      def object
-        @object ||= Dor.find(@druid.druid)
-      end
-
-      def object_type
-        obj_type = object.identityMetadata.objectType
-        (obj_type.nil? ? 'unknown' : obj_type.first)
+      def cocina_model
+        @cocina_model ||= Dor::Services::Client.object(druid.druid).find
       end
 
       def item?
-        object_type.downcase.strip == 'item'
+        cocina_model.is_a?(Cocina::Models::DRO)
       end
 
       attr_reader :path_finder
