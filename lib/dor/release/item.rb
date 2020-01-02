@@ -46,12 +46,6 @@ module Dor
         end
         @obj_type.downcase.strip
       end
-
-      def update_marc_record
-        with_retries(max_tries: Settings.release.max_tries, base_sleep_seconds: Settings.release.base_sleep_seconds, max_sleep_seconds: Settings.release.max_sleep_seconds) do |_attempt|
-          Dor::Services::Client.object(@druid).update_marc_record
-        end
-      end
     end
   end
 end

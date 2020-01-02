@@ -48,12 +48,6 @@ RSpec.describe Dor::Release::Item do
     expect(@item.sub_collections).to eq @response['sets'] + @response['collections']
   end
 
-  it 'makes a webservice call for updating_marc_records' do
-    stub_request(:post, 'https://dor-services-test.stanford.test/v1/objects/oo000oo0001/update_marc_record')
-      .to_return(status: 201, body: '', headers: {})
-    expect(@item.update_marc_record).to be true
-  end
-
   describe 'object_type' do
     subject { @item.object_type }
 
