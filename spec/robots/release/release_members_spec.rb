@@ -3,16 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
-  subject(:perform) { robot.perform(work_item) }
+  subject(:perform) { robot.perform(druid) }
 
   let(:robot) { described_class.new }
   let(:druid) { 'druid:aa222cc3333' }
   let(:work_item) { instance_double(Dor::Item) }
   let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
+  let(:fetcher) { instance_double(DorFetcher::Client, get_collection: members) }
+  let(:members) { {} }
 
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
+    allow(DorFetcher::Client).to receive(:new).and_return(fetcher)
   end
 
   it 'runs the robot' do
@@ -44,9 +47,6 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     it 'runs for a collection but never add workflow or ask for item members' do
-      expect(@release_item.item_members).to eq([])
-      expect(@release_item.sub_collections).to eq(members['sets'])
-      expect(@release_item).not_to receive(:item_members)
       expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).once # one workflow added for the sub-collection
       perform
     end
@@ -69,9 +69,6 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     it 'runs for a collection but never adds workflow or ask for item members' do
-      expect(@release_item.item_members).to eq([])
-      expect(@release_item.sub_collections).to eq(members['collections'])
-      expect(@release_item).not_to receive(:item_members)
       expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).once # one workflow added for the sub-collection
       perform
     end
@@ -97,8 +94,6 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     it 'runs for a collection and execute the item_members method' do
-      expect(@release_item.item_members).to eq(members['items'])
-      expect(@release_item.sub_collections).to eq([])
       expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).exactly(4).times # four workflows added, one for each item
 
       perform
@@ -125,7 +120,6 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     it 'runs for a collection and execute the item_members method' do
-      expect(@release_item.item_members).to eq(members['items'])
       expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).exactly(4).times # four workflows added, one for each item
       perform
     end
@@ -141,27 +135,27 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
 
     context 'with only collections' do
       before do
-        setup_release_item(druid, :collection, 'collections' => collections)
+        setup_release_item(druid, :collection, members)
         allow(Dor::ReleaseTagService).to receive(:for).with(@dor_item).and_return(tag_service)
       end
 
+      let(:members) { { 'collections' => collections } }
+
       it 'runs for a collection and execute the sub_collection method' do
-        expect(@release_item.item_members).to eq([])
-        expect(@release_item.sub_collections).to eq(collections)
         expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).twice # two workflows added, one for each collection
         perform
       end
     end
 
     context 'with collections and itself' do
+      let(:members) { { 'collections' => collections + [{ 'druid' => druid }] } }
+
       before do
         setup_release_item(druid, :collection, 'collections' => collections + [{ 'druid' => druid }])
         allow(Dor::ReleaseTagService).to receive(:for).with(@dor_item).and_return(tag_service)
       end
 
       it 'runs for a collection and execute the sub_collection method but not add a workflow for the collection itself' do
-        expect(@release_item.item_members).to eq([])
-        expect(@release_item.sub_collections).to eq(collections) # it has removed itself and is back to the original list
         expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).twice # two workflows added, one for each collection
         perform
       end
