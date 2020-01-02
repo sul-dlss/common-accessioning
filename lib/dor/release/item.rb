@@ -47,13 +47,6 @@ module Dor
         @obj_type.downcase.strip
       end
 
-      def republish_needed?
-        # TODO: implement logic here, presumably by calling a method on dor-services-gem
-        false
-
-        # LyberCore::Log.debug "republishing metadata for #{@druid}"
-      end
-
       def item?
         object_type.casecmp('item').zero?
       end
