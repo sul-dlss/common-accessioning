@@ -47,22 +47,6 @@ module Dor
         @obj_type.downcase.strip
       end
 
-      def item?
-        object_type.casecmp('item').zero?
-      end
-
-      def collection?
-        object_type.casecmp('collection').zero?
-      end
-
-      def set?
-        object_type.casecmp('set').zero?
-      end
-
-      def apo?
-        object_type.casecmp('adminpolicy').zero?
-      end
-
       def update_marc_record
         with_retries(max_tries: Settings.release.max_tries, base_sleep_seconds: Settings.release.base_sleep_seconds, max_sleep_seconds: Settings.release.max_sleep_seconds) do |_attempt|
           Dor::Services::Client.object(@druid).update_marc_record

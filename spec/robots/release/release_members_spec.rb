@@ -23,7 +23,6 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
   it 'runs the robot for an item or an apo and do nothing as a result' do
     %w[:item :apo].each do |item_type|
       setup_release_item(druid, item_type, nil)
-      expect(@release_item.collection?).to be false # definitely not a collection
       expect(robot).not_to receive(:item_members) # we won't bother looking for item members if this is an item
       perform
     end
@@ -45,7 +44,6 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     it 'runs for a collection but never add workflow or ask for item members' do
-      expect(@release_item.collection?).to be true
       expect(@release_item.item_members).to eq([])
       expect(@release_item.sub_collections).to eq(members['sets'])
       expect(@release_item).not_to receive(:item_members)
@@ -71,7 +69,6 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     it 'runs for a collection but never adds workflow or ask for item members' do
-      expect(@release_item.collection?).to be true
       expect(@release_item.item_members).to eq([])
       expect(@release_item.sub_collections).to eq(members['collections'])
       expect(@release_item).not_to receive(:item_members)
@@ -100,7 +97,6 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     it 'runs for a collection and execute the item_members method' do
-      expect(@release_item.collection?).to be true
       expect(@release_item.item_members).to eq(members['items'])
       expect(@release_item.sub_collections).to eq([])
       expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).exactly(4).times # four workflows added, one for each item
@@ -129,7 +125,6 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     it 'runs for a collection and execute the item_members method' do
-      expect(@release_item.collection?).to be true
       expect(@release_item.item_members).to eq(members['items'])
       expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).exactly(4).times # four workflows added, one for each item
       perform
@@ -151,7 +146,6 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       end
 
       it 'runs for a collection and execute the sub_collection method' do
-        expect(@release_item.collection?).to be true
         expect(@release_item.item_members).to eq([])
         expect(@release_item.sub_collections).to eq(collections)
         expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).twice # two workflows added, one for each collection
@@ -166,7 +160,6 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       end
 
       it 'runs for a collection and execute the sub_collection method but not add a workflow for the collection itself' do
-        expect(@release_item.collection?).to be true
         expect(@release_item.item_members).to eq([])
         expect(@release_item.sub_collections).to eq(collections) # it has removed itself and is back to the original list
         expect(Dor::Config.workflow.client).to receive(:create_workflow_by_name).twice # two workflows added, one for each collection
