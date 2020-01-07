@@ -32,10 +32,6 @@ RSpec.describe Dor::Release::Item do
     end
   end
 
-  it 'returns false for republish_needed' do
-    expect(@item).not_to be_republish_needed
-  end
-
   it 'calls dor-fetcher-client to get the members, but only once' do
     expect(@item.fetcher).to receive(:get_collection).once
     while @n < 3
