@@ -39,9 +39,6 @@ group :test do
 end
 
 group :development do
-  if File.exists?(mygems = File.join(ENV['HOME'], '.gemfile'))
-    instance_eval(File.read(mygems))
-  end
   gem 'capistrano', '~> 3.0'
   gem 'capistrano-bundler', '~> 1.1'
   gem 'capistrano-resque-pool'
