@@ -54,35 +54,35 @@ RSpec.describe Dor::Release::Item do
     expect(@item.update_marc_record).to be true
   end
 
-  it 'returns correct object types for an item' do
-    allow(@dor_object).to receive(:identityMetadata).and_return(Dor::IdentityMetadataDS.from_xml('<identityMetadata><objectType>item</objectType></identityMetadata>'))
-    expect(@item).to be_item
-    expect(@item).not_to be_collection
-    expect(@item).not_to be_set
-    expect(@item).not_to be_apo
-  end
+  describe 'object_type' do
+    subject { @item.object_type }
 
-  it 'returns correct object types for a set' do
-    allow(@dor_object).to receive(:identityMetadata).and_return(Dor::IdentityMetadataDS.from_xml('<identityMetadata><objectType>set</objectType></identityMetadata>'))
-    expect(@item).not_to be_item
-    expect(@item).not_to be_collection
-    expect(@item).to be_set
-    expect(@item).not_to be_apo
-  end
+    before do
+      allow(@dor_object).to receive(:identityMetadata).and_return(Dor::IdentityMetadataDS.from_xml("<identityMetadata><objectType>#{object_type}</objectType></identityMetadata>"))
+    end
 
-  it 'returns correct object types for a collection' do
-    allow(@dor_object).to receive(:identityMetadata).and_return(Dor::IdentityMetadataDS.from_xml('<identityMetadata><objectType>collection</objectType></identityMetadata>'))
-    expect(@item).not_to be_item
-    expect(@item).to be_collection
-    expect(@item).not_to be_set
-    expect(@item).not_to be_apo
-  end
+    context 'when object_type is item' do
+      let(:object_type) { 'item' }
 
-  it 'returns correct object types for an apo' do
-    allow(@dor_object).to receive(:identityMetadata).and_return(Dor::IdentityMetadataDS.from_xml('<identityMetadata><objectType>adminPolicy</objectType></identityMetadata>'))
-    expect(@item).not_to be_item
-    expect(@item).not_to be_collection
-    expect(@item).not_to be_set
-    expect(@item).to be_apo
+      it { is_expected.to eq 'item' }
+    end
+
+    context 'when object_type is set' do
+      let(:object_type) { 'set' }
+
+      it { is_expected.to eq 'set' }
+    end
+
+    context 'when object_type is collection' do
+      let(:object_type) { 'collection' }
+
+      it { is_expected.to eq 'collection' }
+    end
+
+    context 'when object_type is adminPolicy' do
+      let(:object_type) { 'adminPolicy' }
+
+      it { is_expected.to eq 'adminpolicy' }
+    end
   end
 end
