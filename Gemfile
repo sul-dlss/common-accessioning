@@ -23,7 +23,7 @@ gem 'preservation-client', '~> 2.0'
 gem 'pry'
 gem 'pry-byebug', :platform => [:ruby_20, :ruby_21]
 gem 'rake'
-gem 'resque'
+gem 'resque', '~> 2.0' # bundler used 1.x otherwise
 gem 'resque-pool'
 gem 'slop'
 gem 'systemu', '~> 2.6'
@@ -34,14 +34,11 @@ gem 'zeitwerk', '~> 2.1'
 group :test do
   gem 'coveralls', require: false
   gem 'rspec', '~> 3.0'
-  gem 'simplecov'
+  gem 'simplecov' # simplecov 0.17 puts coveralls at 0.7 release (was 0.8); shrug
   gem 'webmock'
 end
 
 group :development do
-  if File.exists?(mygems = File.join(ENV['HOME'], '.gemfile'))
-    instance_eval(File.read(mygems))
-  end
   gem 'capistrano', '~> 3.0'
   gem 'capistrano-bundler', '~> 1.1'
   gem 'capistrano-resque-pool'
