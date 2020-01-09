@@ -2,16 +2,13 @@
 
 require 'spec_helper'
 
-describe Robots::DorRepo::Release::UpdateMarc do
-  before do
-    @druid = 'aa222cc3333'
-    @work_item = instance_double(Dor::Item)
-    @r = described_class.new
-  end
+RSpec.describe Robots::DorRepo::Release::UpdateMarc do
+  let(:druid) { 'aa222cc3333' }
+  let(:robot) { described_class.new }
 
-  it 'calls the update marc record method' do
-    setup_release_item(@druid, :item, nil)
-    expect(@release_item).to receive(:update_marc_record)
-    @r.perform(@work_item)
+  it 'posts to the update marc record api' do
+    stub_request(:post, 'https://dor-services-test.stanford.test/v1/objects/aa222cc3333/update_marc_record')
+      .to_return(status: 201, body: '', headers: {})
+    robot.perform(druid)
   end
 end
