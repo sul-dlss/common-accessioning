@@ -5,15 +5,11 @@ require 'spec_helper'
 RSpec.describe Dor::Release::Item do
   before do
     @druid = 'oo000oo0001'
-    @item = described_class.new(druid: @druid, skip_heartbeat: true) # skip heartbeat check for dor-fetcher
+    @item = described_class.new(druid: @druid)
     @n = 0
 
     # setup doubles and mocks so we can stub out methods and not make actual dor, webservice or workflow calls
-    @client = instance_double(DorFetcher::Client)
     @response = { 'items' => ['returned_members'], 'sets' => ['returned_sets'], 'collections' => ['returned_collections'] }
-    allow(@client).to receive(:get_collection).and_return(@response)
-    @item.fetcher = @client
-
     @dor_object = instance_double(Dor::Item)
     allow(Dor).to receive(:find).and_return(@dor_object)
 
@@ -30,22 +26,6 @@ RSpec.describe Dor::Release::Item do
       expect(@item.object).to eq @dor_object
       @n += 1
     end
-  end
-
-  it 'calls dor-fetcher-client to get the members, but only once' do
-    expect(@item.fetcher).to receive(:get_collection).once
-    while @n < 3
-      expect(@item.members).to eq @response
-      @n += 1
-    end
-  end
-
-  it 'gets the right value for item_members' do
-    expect(@item.item_members).to eq @response['items']
-  end
-
-  it 'gets the right value for sub_collections' do
-    expect(@item.sub_collections).to eq @response['sets'] + @response['collections']
   end
 
   describe 'object_type' do

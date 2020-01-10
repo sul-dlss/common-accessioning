@@ -37,7 +37,7 @@ def clone_test_input(destination)
 end
 
 def setup_release_item(druid, obj_type, members)
-  @release_item = Dor::Release::Item.new(druid: druid, skip_heartbeat: true)
+  @release_item = Dor::Release::Item.new(druid: druid)
   @dor_item = instance_double(Dor::Item)
   allow(@dor_item).to receive_messages(
     id: druid
