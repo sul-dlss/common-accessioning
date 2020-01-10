@@ -48,7 +48,7 @@ module Robots
             LyberCore::Log.warn(message)
           else
             tmp_folder = Settings.assembly.tmp_folder
-            jp2       = img.create_jp2(overwrite: Settings.assembly.overwrite_jp2, tmp_folder: tmp_folder)
+            jp2 = img.create_jp2(overwrite: Settings.assembly.overwrite_jp2, tmp_folder: tmp_folder)
             # generate new filename for jp2 file node in content metadata by replacing filename in base file node with new jp2 filename
             file_name = file_node['id'].gsub(File.basename(img.path), File.basename(jp2.path))
             add_jp2_file_node file_node.parent, file_name
