@@ -29,7 +29,7 @@ class TechnicalMetadataService
     # this is version 1 or previous technical metadata was not saved
     return store(new_techmd) if old_techmd.nil?
 
-    return true if diff.difference_count == 0
+    return true if diff.difference_count.zero?
 
     merged_nodes = merge_file_nodes(old_techmd, new_techmd, deltas)
     final_techmd = build_technical_metadata(merged_nodes)
@@ -184,9 +184,9 @@ class TechnicalMetadataService
     technical_metadata.each_line do |line|
       if line =~ /^\s*<file.*["'](.*?)["']/
         current_file << line
-        path = $1
+        path = Regexp.last_match(1)
         in_file = true
-      elsif line =~ /^\s*<\/file>/
+      elsif line =~ %r{^\s*</file>}
         current_file << line
         file_hash[path] = current_file.join
         current_file = []

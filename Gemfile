@@ -21,7 +21,7 @@ gem 'nokogiri'
 gem 'pony' # send email, for etd_submit/build_symphony_marc
 gem 'preservation-client', '~> 2.0'
 gem 'pry'
-gem 'pry-byebug', :platform => [:ruby_20, :ruby_21]
+gem 'pry-byebug', platform: %i[ruby_20 ruby_21]
 gem 'rake'
 gem 'resque', '~> 2.0' # bundler used 1.x otherwise
 gem 'resque-pool'
