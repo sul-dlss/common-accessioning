@@ -14,15 +14,6 @@ Bundler/OrderedGems:
   Exclude:
     - 'Gemfile'
 
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment.
-Layout/SpaceAroundOperators:
-  Exclude:
-    - 'lib/robots/dor_repo/assembly/jp2_create.rb'
-    - 'spec/lib/sdr_ingest_service_spec.rb'
-    - 'spec/lib/technical_metadata_service_spec.rb'
-
 # Offense count: 1
 Lint/AmbiguousBlockAssociation:
   Exclude:

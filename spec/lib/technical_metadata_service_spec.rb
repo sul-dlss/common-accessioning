@@ -15,8 +15,8 @@ RSpec.describe TechnicalMetadataService do
     allow(Settings.sdr).to receive_messages(local_workspace_root: wsfixtures)
     @sdr_repo = fixtures.join('sdr_repo')
     @inventory_differences = {}
-    @deltas      = {}
-    @new_files   = {}
+    @deltas = {}
+    @new_files = {}
     @repo_techmd = {}
     @new_file_techmd = {}
     @expected_techmd = {}
