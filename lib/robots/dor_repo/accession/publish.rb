@@ -14,7 +14,11 @@ module Robots
           object_client = Dor::Services::Client.object(druid)
           obj = object_client.find
 
-          return if obj.is_a?(Cocina::Models::AdminPolicy)
+          # Since not being published, need to set publish-complete so that will proceed with wf.
+          if obj.is_a?(Cocina::Models::AdminPolicy)
+            workflow_service.update_status(druid: druid, workflow: @workflow_name, process: 'publish-complete', status: 'completed', elapsed: 1, note: 'APOs are not published, so marking completed.')
+            return
+          end
 
           # This is an async result and it will have a callback.
           object_client.publish(workflow: 'accessionWF')

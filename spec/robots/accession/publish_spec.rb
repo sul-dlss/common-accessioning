@@ -16,6 +16,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
 
     before do
       allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
+      allow(Dor::Config.workflow.client).to receive(:update_status)
       perform
     end
 
@@ -55,6 +56,10 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
 
       it 'does not publish metadata' do
         expect(object_client).not_to have_received(:publish)
+      end
+
+      it 'sets publish-complete to completed' do
+        expect(Dor::Config.workflow.client).to have_received(:update_status).with(druid: druid, workflow: 'accessionWF', process: 'publish-complete', status: 'completed', elapsed: 1, note: 'APOs are not published, so marking completed.')
       end
     end
   end
