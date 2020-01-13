@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Make sure specs run with the definitions from test.rb
-environment = ENV['ROBOT_ENVIRONMENT'] = 'test'
+ENV['ROBOT_ENVIRONMENT'] = 'test'
 
 require 'simplecov'
 require 'coveralls'
