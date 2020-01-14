@@ -22,7 +22,7 @@ set :log_level, :info
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w{config/honeybadger.yml}
+set :linked_files, %w[config/honeybadger.yml]
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
@@ -33,11 +33,11 @@ set :linked_files, %w{config/honeybadger.yml}
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
-set :stages, %w(dev staging production)
+set :stages, %w[dev staging production]
 
 # resque-pool writes it's pidfile to tmp/pids, so link it or we'll start a new
 # pool of workers with each deploy.
-set :linked_dirs, %w(log run config/environments config/settings config/certs tmp/pids)
+set :linked_dirs, %w[log run config/environments config/settings config/certs tmp/pids]
 
 set :honeybadger_env, fetch(:stage)
 

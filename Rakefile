@@ -11,7 +11,7 @@ task default: %i[rubocop spec]
 
 task :clean do
   puts 'Cleaning old coverage.data'
-  FileUtils.rm('coverage.data') if (File.exists? 'coverage.data')
+  FileUtils.rm('coverage.data') if File.exists? 'coverage.data'
 end
 
 begin
@@ -35,7 +35,7 @@ end
 
 desc 'Get application version'
 task :app_version do
-  puts File.read(File.expand_path('../VERSION', __FILE__)).chomp
+  puts File.read(File.expand_path('VERSION', __dir__)).chomp
 end
 
 # Set up resque-pool

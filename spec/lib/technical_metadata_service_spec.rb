@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe TechnicalMetadataService do
-  let(:object_ids) { %w(dd116zh0343 du000ps9999 jq937jp0017) }
+  let(:object_ids) { %w[dd116zh0343 du000ps9999 jq937jp0017] }
   let(:druid_tool) { {} }
   let(:instance) { described_class.new(dor_item) }
   let(:dor_item) { instance_double(Dor::Item, pid: druid) }
@@ -256,7 +256,7 @@ RSpec.describe TechnicalMetadataService do
       temp_dir = druid_tool[id].temp_dir
       new_files = @new_files[id]
       filename = instance.send(:write_fileset, temp_dir, new_files)
-      if new_files.size > 0
+      if !new_files.empty?
         expect(Pathname(filename).read).to eq(new_files.join("\n") + "\n")
       else
         expect(Pathname(filename).read).to eq('')
@@ -407,8 +407,8 @@ RSpec.describe TechnicalMetadataService do
 
       # the final and expected_techmd need to be scrubbed of dates in a couple spots for the comparison to match since these will vary from test run to test run
       # "druid:#{id}",
-      final_techmd = instance.send(:build_technical_metadata, merged_nodes).gsub(/datetime=["'].*?["']/, '').gsub(/<jhove:lastModified>.*?<\/jhove:lastModified>/, '')
-      expected_techmd = @expected_techmd[id].gsub(/datetime=["'].*?["']/, '').gsub(/<jhove:lastModified>.*?<\/jhove:lastModified>/, '')
+      final_techmd = instance.send(:build_technical_metadata, merged_nodes).gsub(/datetime=["'].*?["']/, '').gsub(%r{<jhove:lastModified>.*?</jhove:lastModified>}, '')
+      expected_techmd = @expected_techmd[id].gsub(/datetime=["'].*?["']/, '').gsub(%r{<jhove:lastModified>.*?</jhove:lastModified>}, '')
       expect(final_techmd).to be_equivalent_to expected_techmd
     end
   end

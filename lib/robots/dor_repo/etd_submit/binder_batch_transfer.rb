@@ -124,7 +124,7 @@ module Robots
             LyberCore::Log.info('Building and sending CSV report')
             # Using the same connection, build and send the report of successfully sent ETDs
             CSV.open("#{ROBOT_ROOT}/log/report.csv", 'w') do |csv|
-              csv << ['file-name', 'student-name', 'dissertation-title']
+              csv << %w[file-name student-name dissertation-title]
               successful.each { |etd| csv << [etd.file_name, etd.student_name, etd.title] }
             end
 

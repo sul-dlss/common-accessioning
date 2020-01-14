@@ -29,8 +29,8 @@ module Robots
           LyberCore::Log.info("***** Querying solr: #{query}")
           solr = Dor::SearchService.query(query, 'rows' => '5000', 'fl' => 'id')
 
-          num_found = solr['response']['numFound']
-          if num_found == 0
+          num_found = solr['response']['numFound'].to_i
+          if num_found.zero?
             LyberCore::Log.info('No objects to process')
             return
           end

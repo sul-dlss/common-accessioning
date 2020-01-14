@@ -14,9 +14,9 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
     require File.expand_path(File.dirname(__FILE__) + '/../../../lib/robots/dor_repo/accession/embargo_release')
   end
 
-  let(:embargo_release_date) { Time.now.utc - 100000 }
+  let(:embargo_release_date) { Time.now.utc - 100_000 }
 
-  let(:release_access) {
+  let(:release_access) do
     <<-EOXML
     <releaseAccess>
       <access type="discover">
@@ -31,9 +31,9 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
       </access>
     </releaseAccess>
     EOXML
-  }
+  end
 
-  let(:rights_xml) {
+  let(:rights_xml) do
     <<-EOXML
     <rightsMetadata objectId="druid:rt923jk342">
       <access type="discover">
@@ -49,11 +49,11 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
       </access>
     </rightsMetadata>
     EOXML
-  }
+  end
 
   # TODO: #release_embargo is a method on Dor::Item (dor-services). The test should be moved there.
   describe '#release_embargo' do
-    let(:embargo_xml) {
+    let(:embargo_xml) do
       <<-EOXML
       <embargoMetadata>
         <status>embargoed</status>
@@ -63,8 +63,8 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
         #{release_access}
       </embargoMetadata>
       EOXML
-    }
-    let(:item) {
+    end
+    let(:item) do
       i = Dor::Item.new
       rds = Dor::RightsMetadataDS.new
       rds.content = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }.to_s
@@ -73,7 +73,7 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
       eds.content = Nokogiri::XML(embargo_xml) { |config| config.default_xml.noblanks }.to_s
       i.datastreams['embargoMetadata'] = eds
       i
-    }
+    end
 
     it 'rights metadata has no embargo after Dor::Item.release_embargo' do
       expect(item.rightsMetadata.ng_xml.at_xpath('//embargoReleaseDate')).not_to be_nil
@@ -92,7 +92,7 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
 
   # TODO: #release_embargo is a method on Dor::Item (dor-services). The test should be moved there.
   context 'release_20_pct_vis_embargo' do
-    let(:embargo_twenty_pct_xml) {
+    let(:embargo_twenty_pct_xml) do
       <<-EOXML
       <embargoMetadata>
         <status>embargoed</status>
@@ -102,8 +102,8 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
         #{release_access}
       </embargoMetadata>
       EOXML
-    }
-    let(:item) {
+    end
+    let(:item) do
       i = Dor::Item.new
       rds = Dor::RightsMetadataDS.new
       rds.content = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }.to_s
@@ -112,7 +112,7 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
       eds.content = Nokogiri::XML(embargo_twenty_pct_xml) { |config| config.default_xml.noblanks }.to_s
       i.datastreams['embargoMetadata'] = eds
       i
-    }
+    end
 
     it 'rights metadata has no embargo after Dor::Item.release_20_pct_vis_embargo' do
       expect(item.rightsMetadata.ng_xml.at_xpath('//embargoReleaseDate')).not_to be_nil
@@ -164,7 +164,7 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
     end
 
     context 'when the object is in fedora' do
-      let(:item) {
+      let(:item) do
         i = Dor::Item.new
         rds = Dor::RightsMetadataDS.new
         rds.content = Nokogiri::XML(rights_xml) { |config| config.default_xml.noblanks }.to_s
@@ -173,9 +173,9 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
         eds.content = Nokogiri::XML(embargo_xml) { |config| config.default_xml.noblanks }.to_s
         i.datastreams['embargoMetadata'] = eds
         i
-      }
+      end
 
-      let(:embargo_xml) {
+      let(:embargo_xml) do
         <<-EOXML
         <embargoMetadata>
           <status>embargoed</status>
@@ -185,7 +185,7 @@ RSpec.describe 'Robots::DorRepo::Accession::EmbargoRelease' do
           #{release_access}
         </embargoMetadata>
         EOXML
-      }
+      end
 
       before do
         allow(Dor).to receive(:find).and_return(item)
