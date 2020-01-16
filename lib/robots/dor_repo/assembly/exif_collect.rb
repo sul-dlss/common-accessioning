@@ -20,17 +20,18 @@ module Robots
           LyberCore::Log.info("Collecting exif info for #{assembly_item.druid}")
 
           # fn is a Nokogiri::XML::Element representing a file node
-          # obj is a Assembly::ObjectFile
-          assembly_item.fnode_tuples.each do |fn, obj|
-            # always add certain attributes to file node regardless of type
-            add_data_to_file_node fn, obj
+          # object_file is a Assembly::ObjectFile
+          assembly_item.fnode_tuples.each do |fn, object_file|
+            file_node = Dor::Assembly::FileNode.new(xml_node: fn)
+            assign_exif_to_file(file_node: file_node,
+                                filesize: object_file.filesize,
+                                mimetype: object_file.mimetype)
 
             # now depending on the type of object in the file node (i.e. image vs pdf) add other attributes to resource content metadata
-            case obj.object_type
+            case object_file.object_type
 
             when :image # when the object file type is an image
-              fn.add_child(image_data_xml(obj.exif)) if fn.css('imageData').empty?
-
+              file_node.add_image_data(object_file.exif)
             else # all other object file types will force resource type to not be an image
               set_node_type fn.parent, 'file' # set the resource type to 'file' if it's not currently defined
             end
@@ -43,27 +44,17 @@ module Robots
           assembly_item.persist_content_metadata
         end
 
+        # TODO: It would be great if we could avoid this step if the file node already
+        # had size, mimetype and defaults. This can be slow because it runs file
+        # and or exiftool on each file
+        def assign_exif_to_file(file_node:, filesize:, mimetype:)
+          file_node.size = filesize
+          file_node.mimetype = mimetype
+          file_node.add_defaults(mimetype)
+        end
+
         def set_node_type(node, node_type, overwrite = false)
           node['type'] = node_type if node['type'].blank? || overwrite # only set the node if it's not empty, unless we allow overwrite
-        end
-
-        # @param [Nokogiri::XML::Element] node
-        # @param [Assembly::ObjectFile] file
-        def add_data_to_file_node(node, file)
-          node['mimetype'] = file.mimetype unless node['mimetype']
-          node['size'] = file.filesize.to_s unless node['size']
-          defaults = Dor::Assembly::Item.default_file_attributes(file.mimetype)
-          # add publish/preserve/shelve attributes based on mimetype,
-          # unless they already exist in content metadata (use defaults if mimetype not found in mapping)
-          %w[preserve publish shelve].each do |attribute|
-            node[attribute] = defaults[attribute.to_sym] unless node[attribute]
-          end
-        end
-
-        def image_data_xml(exif)
-          w = exif.image_width
-          h = exif.image_height
-          %(<imageData width="#{w}" height="#{h}"/>)
         end
       end
     end
