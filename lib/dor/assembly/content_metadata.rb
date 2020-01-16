@@ -105,7 +105,7 @@ module Dor
             obj_file = ::Assembly::ObjectFile.new(File.join(path_finder.path_to_content_folder, filename(file)))
             # set the default file attributes here (instead of in the create_content_metadata step in the gem below)
             #  so they can overridden/added to by values coming from the stub content metadata
-            obj_file.file_attributes = default_file_attributes(obj_file).merge(stub_file_attributes(file))
+            obj_file.file_attributes = Dor::Assembly::Item.default_file_attributes(obj_file.mimetype).merge(stub_file_attributes(file))
             obj_file.label = resource_label(resource)
             obj_file
           end
@@ -114,11 +114,6 @@ module Dor
         xml = ::Assembly::ContentMetadata.create_content_metadata(druid: @druid.druid, style: gem_content_metadata_style, objects: cm_resources, bundle: :prebundled, add_file_attributes: true)
         @cm = Nokogiri.XML(xml)
         xml
-      end
-
-      # pass in an Assembly::ObjectFile object, get the default file attributes hash
-      def default_file_attributes(obj_file)
-        ::Assembly::FILE_ATTRIBUTES[obj_file.mimetype] || ::Assembly::FILE_ATTRIBUTES['default']
       end
     end
   end

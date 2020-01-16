@@ -23,7 +23,7 @@ module Robots
           # obj is a Assembly::ObjectFile
           assembly_item.fnode_tuples.each do |fn, obj|
             # always add certain attributes to file node regardless of type
-            add_data_to_file_node fn, obj, assembly_item.default_file_attributes(obj)
+            add_data_to_file_node fn, obj
 
             # now depending on the type of object in the file node (i.e. image vs pdf) add other attributes to resource content metadata
             case obj.object_type
@@ -33,7 +33,6 @@ module Robots
 
             else # all other object file types will force resource type to not be an image
               set_node_type fn.parent, 'file' # set the resource type to 'file' if it's not currently defined
-
             end
           end
 
@@ -48,12 +47,17 @@ module Robots
           node['type'] = node_type if node['type'].blank? || overwrite # only set the node if it's not empty, unless we allow overwrite
         end
 
-        def add_data_to_file_node(node, file, file_attributes)
+        # @param [Nokogiri::XML::Element] node
+        # @param [Assembly::ObjectFile] file
+        def add_data_to_file_node(node, file)
           node['mimetype'] = file.mimetype unless node['mimetype']
           node['size'] = file.filesize.to_s unless node['size']
-
-          # add publish/preserve/shelve attributes based on mimetype, unless they already exist in content metadata (use defaults if mimetype not found in mapping)
-          %w[preserve publish shelve].each { |attribute| node[attribute] = file_attributes[attribute.to_sym] unless node[attribute] }
+          defaults = Dor::Assembly::Item.default_file_attributes(file.mimetype)
+          # add publish/preserve/shelve attributes based on mimetype,
+          # unless they already exist in content metadata (use defaults if mimetype not found in mapping)
+          %w[preserve publish shelve].each do |attribute|
+            node[attribute] = defaults[attribute.to_sym] unless node[attribute]
+          end
         end
 
         def image_data_xml(exif)
