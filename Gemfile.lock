@@ -1,3 +1,14 @@
+GIT
+  remote: https://github.com/sul-dlss/preservation-client.git
+  revision: 39de52282fa0b0e562d78fd4f8602ad841da1cc1
+  branch: pass-jwt-token
+  specs:
+    preservation-client (2.1.0)
+      activesupport (>= 4.2, < 7)
+      faraday (~> 0.15)
+      moab-versioning (~> 4.3)
+      zeitwerk (~> 2.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -258,11 +269,6 @@ GEM
       ast (~> 2.4.0)
     pony (1.13.1)
       mail (>= 2.0)
-    preservation-client (2.1.0)
-      activesupport (>= 4.2, < 7)
-      faraday (~> 0.15)
-      moab-versioning (~> 4.3)
-      zeitwerk (~> 2.1)
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -431,7 +437,7 @@ DEPENDENCIES
   net-sftp (~> 2.1)
   nokogiri
   pony
-  preservation-client (~> 2.0)
+  preservation-client!
   pry
   pry-byebug
   rake

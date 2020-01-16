@@ -54,7 +54,7 @@ end
 
 CommonAccessioning.connect_dor_services_app
 
-Preservation::Client.configure(url: Settings.preservation_catalog.url)
+Preservation::Client.configure(url: Settings.preservation_catalog.url, token: Settings.preservation_catalog.token)
 
 # Load Resque configuration and controller
 begin
