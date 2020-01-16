@@ -405,11 +405,19 @@ RSpec.describe TechnicalMetadataService do
       deltas = @deltas[id]
       merged_nodes = instance.send(:merge_file_nodes, old_techmd, new_techmd, deltas)
 
-      # the final and expected_techmd need to be scrubbed of dates in a couple spots for the comparison to match since these will vary from test run to test run
-      # "druid:#{id}",
-      final_techmd = instance.send(:build_technical_metadata, merged_nodes).gsub(/datetime=["'].*?["']/, '').gsub(%r{<jhove:lastModified>.*?</jhove:lastModified>}, '')
-      expected_techmd = @expected_techmd[id].gsub(/datetime=["'].*?["']/, '').gsub(%r{<jhove:lastModified>.*?</jhove:lastModified>}, '')
+      final_techmd = scrub_techmd(instance.send(:build_technical_metadata, merged_nodes))
+      expected_techmd = scrub_techmd(@expected_techmd[id])
       expect(final_techmd).to be_equivalent_to expected_techmd
     end
+  end
+
+  def scrub_techmd(techmd)
+    # the final and expected_techmd need to be scrubbed of dates in a couple spots for the comparison to match since these will vary from test run to test run
+    # "druid:#{id}",
+    # Also, need to scrub reporting module versions.
+    techmd
+      .gsub(/datetime=["'].*?["']/, '')
+      .gsub(%r{<jhove:lastModified>.*?</jhove:lastModified>}, '')
+      .gsub(/<jhove:reportingModule release='\d+\.\d+(\.\d+)*' date='20\d\d-\d\d-\d\d'>/, "<jhove:reportingModule release='X.X' date='20XX-XX-XX'>")
   end
 end

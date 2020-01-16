@@ -12,7 +12,7 @@ gem 'dor-services', '~> 8.0'
 gem 'dor-services-client', '~> 4.0'
 gem 'dor-workflow-client', '~> 3.11'
 gem 'honeybadger'
-gem 'jhove-service', '~> 1.3'
+gem 'jhove-service', '~> 1.4'
 gem 'lyber-core', '~> 5.4'
 gem 'marc' # for etd_submit/submit_marc
 gem 'moab-versioning', '~> 4.0'
