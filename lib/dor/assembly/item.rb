@@ -22,6 +22,12 @@ module Dor
         cocina_model.is_a?(Cocina::Models::DRO)
       end
 
+      # @param [String] the mimetype of the file
+      # @return [Hash<Symbol,String>] the default file attributes hash
+      def self.default_file_attributes(mimetype)
+        ::Assembly::FILE_ATTRIBUTES.fetch(mimetype) { ::Assembly::FILE_ATTRIBUTES.fetch('default') }
+      end
+
       attr_reader :path_finder
     end
   end
