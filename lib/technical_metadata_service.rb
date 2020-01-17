@@ -22,6 +22,9 @@ class TechnicalMetadataService
   end
 
   def add_update_technical_metadata
+    # This is an experiment to determine whether files are always staged when updating tech md. It will be removed.
+    check_all_files_staged
+
     diff = content_group_diff
     deltas = diff.file_deltas
     old_techmd = old_technical_metadata
@@ -39,6 +42,21 @@ class TechnicalMetadataService
   private
 
   attr_reader :dor_item
+
+  def check_all_files_staged
+    content_metadata = dor_item.contentMetadata
+    return unless content_metadata
+
+    ng_doc = Nokogiri::XML(content_metadata.content)
+    files = ng_doc.xpath('//file/@id').map(&:content)
+    workspace = DruidTools::Druid.new(dor_item.pid, Settings.sdr.local_workspace_root)
+    # This will raise an error if any of the files are missing.
+    begin
+      workspace.find_filelist_parent('content', files)
+    rescue StandardError => e
+      Honeybadger.notify("Not all files staged for #{dor_item.pid} when extracting tech md: #{e}")
+    end
+  end
 
   def store(final_techmd)
     ds = dor_item.datastreams['technicalMetadata']
