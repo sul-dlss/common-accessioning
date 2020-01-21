@@ -12,8 +12,6 @@ RSpec.describe Dor::Release::Item do
     @response = { 'items' => ['returned_members'], 'sets' => ['returned_sets'], 'collections' => ['returned_collections'] }
     @dor_object = instance_double(Dor::Item)
     allow(Dor).to receive(:find).and_return(@dor_object)
-
-    allow(Dor::WorkflowObject).to receive(:initial_repo).with('releaseWF').and_return(true)
   end
 
   it 'initializes' do
