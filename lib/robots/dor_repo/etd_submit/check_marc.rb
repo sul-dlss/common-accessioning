@@ -5,7 +5,7 @@ require 'timeout'
 module Robots
   module DorRepo
     module EtdSubmit
-      class CheckMarc < Robots::DorRepo::EtdSubmit::Base
+      class CheckMarc < Robots::DorRepo::Base
         include ::EtdSubmit::RobotCronBase
 
         def initialize(opts = {})

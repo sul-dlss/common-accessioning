@@ -4,7 +4,7 @@
 module Robots
   module DorRepo
     module EtdSubmit
-      class CatalogStatus < Robots::DorRepo::EtdSubmit::Base
+      class CatalogStatus < Robots::DorRepo::Base
         include ::EtdSubmit::RobotCronBase
 
         def initialize(opts = {})

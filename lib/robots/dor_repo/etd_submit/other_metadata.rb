@@ -6,7 +6,7 @@ require 'fileutils'
 module Robots
   module DorRepo
     module EtdSubmit
-      class OtherMetadata < Robots::DorRepo::EtdSubmit::Base
+      class OtherMetadata < Robots::DorRepo::Base
         def initialize(opts = {})
           super('dor', 'etdSubmitWF', 'other-metadata', opts)
         end

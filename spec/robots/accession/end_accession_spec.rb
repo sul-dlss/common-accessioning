@@ -8,7 +8,8 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   let(:object) { instance_double(Dor::Item, admin_policy_object: apo) }
   let(:apo) { Dor::AdminPolicyObject.new }
   let(:druid) { 'druid:oo000oo0001' }
-  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil) }
+  let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
+  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process: process) }
   let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
 
@@ -25,7 +26,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
       it 'kicks off dissemination' do
         perform
         expect(workflow_client).to have_received(:create_workflow_by_name)
-          .with(druid, 'disseminationWF', version: '1')
+          .with(druid, 'disseminationWF', version: '1', lane_id: 'default')
       end
     end
 
@@ -47,9 +48,9 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
       it 'kicks off both dissemination workflows' do
         perform
         expect(workflow_client).to have_received(:create_workflow_by_name)
-          .with(druid, 'wasDisseminationWF', version: '1')
+          .with(druid, 'wasDisseminationWF', version: '1', lane_id: 'default')
         expect(workflow_client).to have_received(:create_workflow_by_name)
-          .with(druid, 'disseminationWF', version: '1')
+          .with(druid, 'disseminationWF', version: '1', lane_id: 'default')
       end
     end
   end

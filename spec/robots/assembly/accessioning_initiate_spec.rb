@@ -8,7 +8,8 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
   let(:base_url) { 'http://dor-services.example.edu' }
   let(:druid) { 'aa222cc3333' }
   let(:namespaced_druid) { "druid:#{druid}" }
-  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil) }
+  let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
+  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process: process) }
   let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, create: nil) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
   let(:object_client) do
@@ -33,7 +34,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
       expect(workspace_client).to have_received(:create)
         .with(source: 'spec/test_input2/aa/222/cc/3333')
       expect(workflow_client).to have_received(:create_workflow_by_name)
-        .with(namespaced_druid, 'accessionWF', version: '1')
+        .with(namespaced_druid, 'accessionWF', version: '1', lane_id: 'default')
     end
   end
 
@@ -49,7 +50,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
       robot.perform(druid)
       expect(workspace_client).not_to have_received(:create)
       expect(workflow_client).to have_received(:create_workflow_by_name)
-        .with(namespaced_druid, 'accessionWF', version: '1')
+        .with(namespaced_druid, 'accessionWF', version: '1', lane_id: 'default')
     end
   end
 end
