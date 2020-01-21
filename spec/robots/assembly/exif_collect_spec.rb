@@ -57,14 +57,6 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
     end
   end
 
-  describe '#image_data_xml' do
-    subject(:image_data_xml) { robot.send(:image_data_xml,  exif) }
-
-    let(:exif) { double 'image_width' => 55, 'image_height' => 66 }
-
-    it { is_expected.to eq('<imageData width="55" height="66"/>') }
-  end
-
   describe '#collect_exif_info' do
     subject(:result) { robot.send(:collect_exif_info, item) }
 
