@@ -6,7 +6,7 @@ require 'fileutils'
 module Robots
   module DorRepo
     module EtdSubmit
-      class SubmitMarc < Robots::DorRepo::EtdSubmit::Base
+      class SubmitMarc < Robots::DorRepo::Base
         include ::EtdSubmit::RobotCronBase
 
         attr_reader :day_working_dir

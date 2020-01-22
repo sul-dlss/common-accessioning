@@ -14,10 +14,10 @@ module Robots
 
           # Search for the specialized workflow
           next_dissemination_wf = special_dissemination_wf(druid)
-          Dor::Config.workflow.client.create_workflow_by_name(druid, next_dissemination_wf, version: current_version) if next_dissemination_wf.present?
+          Dor::Config.workflow.client.create_workflow_by_name(druid, next_dissemination_wf, version: current_version, lane_id: lane_id(druid)) if next_dissemination_wf.present?
 
           # Call the default disseminationWF in all cases
-          Dor::Config.workflow.client.create_workflow_by_name(druid, 'disseminationWF', version: current_version)
+          Dor::Config.workflow.client.create_workflow_by_name(druid, 'disseminationWF', version: current_version, lane_id: lane_id(druid))
         end
 
         private
