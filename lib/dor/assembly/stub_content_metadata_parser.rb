@@ -2,7 +2,10 @@
 
 module Dor
   module Assembly
-    # methods to help parse the stub content metadata file
+    # Parses the stub content metadata file
+    # stubContentMetadata.xml is created by Goobi with a skeleton of what will
+    # eventually be the contentMetadata.xml. It contains just enough information
+    # before our robots fill in the rest.
     module StubContentMetadataParser
       # this maps types coming from the stub content metadata (e.g. as produced by goobi) into the contentMetadata types allowed by the Assembly::Objectfile gem for CM generation
       def gem_content_metadata_style
