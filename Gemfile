@@ -13,7 +13,7 @@ gem 'dor-services-client', '~> 4.0'
 gem 'dor-workflow-client', '~> 3.17'
 gem 'honeybadger'
 gem 'jhove-service', '~> 1.4'
-gem 'lyber-core', '~> 5.4'
+gem 'lyber-core', '~> 5.5'
 gem 'marc' # for etd_submit/submit_marc
 gem 'moab-versioning', '~> 4.0'
 gem 'net-sftp', '~> 2.1' # for binder_batch_transfer
