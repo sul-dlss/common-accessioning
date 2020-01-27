@@ -15,8 +15,6 @@ module Robots
   module DorRepo
     module Accession
       class EmbargoRelease
-        # Turn off active_fedora updates of solr
-        ENABLE_SOLR_UPDATES = false
         LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, 'log', 'embargo_release.log'))
         # Finds druids from solr based on the passed in query
         # It will then load each item from Dor, and call the block with the item

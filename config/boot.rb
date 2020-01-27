@@ -50,9 +50,21 @@ module CommonAccessioning
     Dor::Services::Client.configure(url: Settings.dor_services.url,
                                     token: Settings.dor_services.token)
   end
+
+  # Disable Solr updates (by defaualt ActiveFedora updates Solr automatically).
+  # We let activemq messages from Fedora which are received by dor-indexing-app handle this
+  # Cannot just do:
+  #   ::ENABLE_SOLR_UPDATES = false
+  # Because "warning: already initialized constant ENABLE_SOLR_UPDATES".
+  # ActiveFedora assigns a default (if unassigned) and we cannot pre-empt it from here.
+  def self.disable_solr_updates
+    Object.send(:remove_const, 'ENABLE_SOLR_UPDATES') if self.class.const_defined?('ENABLE_SOLR_UPDATES')
+    Object.const_set('ENABLE_SOLR_UPDATES', false)
+  end
 end
 
 CommonAccessioning.connect_dor_services_app
+CommonAccessioning.disable_solr_updates
 
 Preservation::Client.configure(url: Settings.preservation_catalog.url, token: Settings.preservation_catalog.token)
 
