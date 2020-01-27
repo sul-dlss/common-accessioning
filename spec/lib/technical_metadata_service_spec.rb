@@ -210,6 +210,57 @@ RSpec.describe TechnicalMetadataService do
       end
     end
 
+    # Note: This test is for an experiment and will be removed.
+    context 'when no files are staged' do
+      let(:druid) { 'druid:bb648mk7250' }
+      let(:technicalMetadata) { instance_double(Dor::TechnicalMetadataDS, new?: true, :dsLabel= => true, :content= => true, save: true) }
+      let(:dor_item) { instance_double(Dor::Item, pid: druid, contentMetadata: contentMetadata, datastreams: { 'technicalMetadata' => technicalMetadata }) }
+      let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: contentMetadataContent) }
+      let(:contentMetadataContent) do
+        <<~EOF
+          <?xml version="1.0"?>
+          <contentMetadata type="sample" objectId="druid:bb648mk7250">
+            <resource sequence="1" type="folder" id="folder1PuSu">
+              <file shelve="yes" publish="yes" size="7888" preserve="yes" datetime="2012-06-15T22:57:43Z" id="folder1PuSu/story1u.txt">
+                <checksum type="MD5">e2837b9f02e0b0b76f526eeb81c7aa7b</checksum>
+                <checksum type="SHA-1">61dfac472b7904e1413e0cbf4de432bda2a97627</checksum>
+              </file>
+              <file shelve="yes" publish="yes" size="5983" preserve="yes" datetime="2012-06-15T22:58:56Z" id="folder1PuSu/story2rr.txt">
+                <checksum type="MD5">dc2be64ae43f1c1db4a068603465955d</checksum>
+                <checksum type="SHA-1">b8a672c1848fc3d13b5f380e15835690e24600e0</checksum>
+              </file>
+              <file shelve="yes" publish="yes" size="5951" preserve="yes" datetime="2012-06-15T23:00:43Z" id="folder1PuSu/story3m.txt">
+                <checksum type="MD5">3d67f52e032e36b641d0cad40816f048</checksum>
+                <checksum type="SHA-1">548f349c79928b6d0996b7ff45990bdce5ee9753</checksum>
+              </file>
+              <file shelve="yes" publish="yes" size="6307" preserve="yes" datetime="2012-06-15T23:02:22Z" id="folder1PuSu/story5a.txt">
+                <checksum type="MD5">34f3f646523b0a8504f216483a57bce4</checksum>
+                <checksum type="SHA-1">d498b513add5bb138ed4f6205453a063a2434dc4</checksum>
+              </file>
+            </resource>
+          </contentMetadata>
+        EOF
+      end
+      let(:inventory_diff) { instance_double(Moab::FileInventoryDifference, group_difference: file_group_diff) }
+      let(:file_group_diff) { instance_double(Moab::FileGroupDifference, file_deltas: { added: [], modified: [] }) }
+
+      before do
+        allow(Preservation::Client.objects).to receive(:metadata)
+        allow(Preservation::Client.objects).to receive(:content_inventory_diff).and_return(inventory_diff)
+        allow(Honeybadger).to receive(:notify)
+        FileUtils.mkdir_p('spec/fixtures/sdr_repo/bb648mk7250/v0001/data/content')
+      end
+
+      after do
+        FileUtils.rm_rf('spec/fixtures/sdr_repo/bb648mk7250/v0001/data/content')
+      end
+
+      it 'does not notify Honeybadger' do
+        instance.add_update_technical_metadata
+        expect(Honeybadger).not_to have_received(:notify)
+      end
+    end
+
     context 'when old technical metadata is nil' do
       # Old technical metadata is nil because technicalMetadata is new and because Preservation returns nothing.
       let(:technicalMetadata) { instance_double(Dor::TechnicalMetadataDS, new?: true, :dsLabel= => true, :content= => true, save: true) }

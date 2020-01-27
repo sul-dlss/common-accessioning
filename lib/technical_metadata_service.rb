@@ -50,11 +50,16 @@ class TechnicalMetadataService
     ng_doc = Nokogiri::XML(content_metadata.content)
     files = ng_doc.xpath('//file/@id').map(&:content)
     workspace = DruidTools::Druid.new(dor_item.pid, Settings.sdr.local_workspace_root)
+
+    content_dir = workspace.content_dir(false)
+    return unless Dir.exist?(content_dir) && !Dir.empty?(content_dir)
+
     # This will raise an error if any of the files are missing.
     begin
       workspace.find_filelist_parent('content', files)
     rescue StandardError => e
-      Honeybadger.notify("Not all files staged for #{dor_item.pid} when extracting tech md: #{e}")
+      Honeybadger.notify("Not all files staged for #{dor_item.pid} when extracting tech md: #{e}. This is part of an " \
+        'experiment.')
     end
   end
 
