@@ -18,12 +18,9 @@ module Robots
 
           item = Dor::Release::Item.new druid: druid
 
-          case item.object_type
-          when 'collection', 'set' # this is a collection or set
-            publish_collection(druid, item)
-          else # this is not a collection of set
-            LyberCore::Log.debug "...this is a #{item.object_type}, NOOP"
-          end
+          return unless item.collection?
+
+          publish_collection(druid, item)
         end
 
         private
@@ -35,24 +32,17 @@ module Robots
           #   if at least one of the targets is *not* what=self, we will do it
           tag_service = Dor::ReleaseTagService.for(item.object)
           release_tags = tag_service.newest_release_tag(tag_service.release_tags) # get the latest release tag for each target
-          if release_tags.collect { |_k, v| v['what'] == 'self' }.include?(false) # if there are any *non* what=self release tags in any targets, go ahead and add the workflow to the items
-            add_workflow_to_members(member_service, item.object_type)
-          else # all of the latest release tags are what=self or there are no release tags, so skip
-            LyberCore::Log.debug "...all release tags are what=self for #{item.object_type}; skipping member workflows"
-          end
+          # if there are any *non* what=self release tags in any targets, go ahead and add the workflow to the items
+          add_workflow_to_members(member_service) if release_tags.collect { |_k, v| v['what'] == 'self' }.include?(false)
 
           add_workflow_to_sub_collections(member_service)
         end
 
-        def add_workflow_to_members(member_service, object_type)
-          LyberCore::Log.debug "...fetching members of #{object_type}"
-          if member_service.item_members # if there are any members, iterate through and add item workflows (which includes setting the first step to completed)
+        def add_workflow_to_members(member_service)
+          return unless member_service.item_members # if there are any members, iterate through and add item workflows (which includes setting the first step to completed)
 
-            member_service.item_members.each do |item_member|
-              create_release_workflow(item_member['druid'])
-            end
-          else # no members found
-            LyberCore::Log.debug "...no members found in #{object_type}"
+          member_service.item_members.each do |item_member|
+            create_release_workflow(item_member['druid'])
           end
         end
 

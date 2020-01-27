@@ -17,12 +17,12 @@ module Dor
         @object ||= Dor.find(@druid)
       end
 
-      def object_type
-        unless @obj_type
-          obj_type = object.identityMetadata.objectType
-          @obj_type = (obj_type.nil? ? 'unknown' : obj_type.first)
-        end
-        @obj_type.downcase.strip
+      def cocina_model
+        @cocina_model ||= Dor::Services::Client.object(@druid).find
+      end
+
+      def collection?
+        cocina_model.is_a?(Cocina::Models::Collection)
       end
     end
   end
