@@ -26,35 +26,31 @@ RSpec.describe Dor::Release::Item do
     end
   end
 
-  describe 'object_type' do
-    subject { @item.object_type }
+  describe 'collection?' do
+    subject { @item.collection? }
+
+    let(:object_client) { instance_double(Dor::Services::Client::Object, find: object_type.allocate) }
 
     before do
-      allow(@dor_object).to receive(:identityMetadata).and_return(Dor::IdentityMetadataDS.from_xml("<identityMetadata><objectType>#{object_type}</objectType></identityMetadata>"))
+      allow(Dor::Services::Client).to receive(:object).and_return(object_client)
     end
 
     context 'when object_type is item' do
-      let(:object_type) { 'item' }
+      let(:object_type) { Cocina::Models::DRO }
 
-      it { is_expected.to eq 'item' }
-    end
-
-    context 'when object_type is set' do
-      let(:object_type) { 'set' }
-
-      it { is_expected.to eq 'set' }
+      it { is_expected.to be false }
     end
 
     context 'when object_type is collection' do
-      let(:object_type) { 'collection' }
+      let(:object_type) { Cocina::Models::Collection }
 
-      it { is_expected.to eq 'collection' }
+      it { is_expected.to be true }
     end
 
     context 'when object_type is adminPolicy' do
-      let(:object_type) { 'adminPolicy' }
+      let(:object_type) { Cocina::Models::AdminPolicy }
 
-      it { is_expected.to eq 'adminpolicy' }
+      it { is_expected.to be false }
     end
   end
 end

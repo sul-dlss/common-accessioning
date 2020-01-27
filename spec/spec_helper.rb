@@ -36,20 +36,6 @@ def clone_test_input(destination)
   system "rsync -rqOlt --delete #{source}/ #{destination}/"
 end
 
-def setup_release_item(druid, obj_type, members)
-  @release_item = Dor::Release::Item.new(druid: druid)
-  @dor_item = instance_double(Dor::Item)
-  allow(@dor_item).to receive_messages(
-    id: druid
-  )
-  allow(@release_item).to receive_messages(
-    object: @dor_item,
-    object_type: obj_type.to_s.downcase,
-    members: members
-  )
-  allow(Dor::Release::Item).to receive_messages(new: @release_item)
-end
-
 def instantiate_fixture(druid, klass = ActiveFedora::Base)
   mask = File.join(fixture_dir, "*_#{druid.sub(/:/, '_')}.xml")
   fname = Dir[mask].first
