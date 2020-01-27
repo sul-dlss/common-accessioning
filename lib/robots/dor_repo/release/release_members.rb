@@ -16,21 +16,21 @@ module Robots
         def perform(druid)
           LyberCore::Log.debug "release-members working on #{druid}"
 
-          item = Dor::Release::Item.new druid: druid
+          cocina_model = Dor::Services::Client.object(@druid).find
 
-          return unless item.collection?
+          return unless cocina_model.is_a?(Cocina::Models::Collection)
 
-          publish_collection(druid, item)
+          publish_collection(druid)
         end
 
         private
 
-        def publish_collection(druid, item)
+        def publish_collection(druid)
           member_service = Dor::Release::MemberService.new(druid: druid)
 
           # check to see if all of the release tags for all targets are what=self, if so, we can skip adding workflow for all the members
           #   if at least one of the targets is *not* what=self, we will do it
-          tag_service = Dor::ReleaseTagService.for(item.object)
+          tag_service = Dor::ReleaseTagService.for(Dor.find(druid))
           release_tags = tag_service.newest_release_tag(tag_service.release_tags) # get the latest release tag for each target
           # if there are any *non* what=self release tags in any targets, go ahead and add the workflow to the items
           add_workflow_to_members(member_service) if release_tags.collect { |_k, v| v['what'] == 'self' }.include?(false)
