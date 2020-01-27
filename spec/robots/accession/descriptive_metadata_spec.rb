@@ -49,7 +49,6 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
     end
 
     context 'when descMetadata file is found' do
-      let(:path) { 'spec/fixtures/ab123cd4567_descMetadata.xml' }
       let(:finder) { instance_double(DruidTools::Druid, find_metadata: 'spec/fixtures/ab123cd4567_descMetadata.xml') }
 
       before do
