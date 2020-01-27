@@ -4,6 +4,7 @@ module Dor
   module Assembly
     class Item
       include Dor::Assembly::ContentMetadata
+      include Dor::Assembly::StubContentMetadataParser
 
       def initialize(params = {})
         # Takes a druid, either as a string or as a Druid object.

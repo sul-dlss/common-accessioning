@@ -126,7 +126,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       let(:druid) { 'gg111bb2222' }
 
       before do
-        item.cm_file_name = item.path_finder.path_to_metadata_file(Settings.assembly.cm_file_name)
+        allow(item).to receive(:cm_file_name).and_return(item.path_finder.path_to_metadata_file(Settings.assembly.cm_file_name))
         allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
 
         # These files needs to create
