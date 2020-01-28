@@ -9,34 +9,32 @@ module Robots
         end
 
         def perform(druid)
-          obj = Dor.find(druid)
-          build_datastream(obj, 'accessionWF', 'DOR Common Accessioning completed')
+          workflow_provenance = create_workflow_provenance(druid)
+          object_client = Dor::Services::Client.object(druid)
+          object_client.metadata.legacy_update(
+            provenance: {
+              updated: Time.now,
+              content: workflow_provenance
+            }
+          )
         end
 
         private
 
-        def build_datastream(obj, workflow_id, event_text)
-          workflow_provenance = create_workflow_provenance(obj.pid, workflow_id, event_text)
-          ds = obj.provenanceMetadata
-          ds.label ||= 'Provenance Metadata'
-          ds.ng_xml = workflow_provenance
-          ds.save
-        end
-
-        # @return [Nokogiri::Document]
-        def create_workflow_provenance(druid, workflow_id, event_text)
+        # @return [String]
+        def create_workflow_provenance(druid, time: Time.new.iso8601)
           builder = Nokogiri::XML::Builder.new do |xml|
             xml.provenanceMetadata(objectId: druid) do
               xml.agent(name: 'DOR') do
                 xml.what(object: druid) do
-                  xml.event(who: "DOR-#{workflow_id}", when: Time.new.iso8601) do
-                    xml.text(event_text)
+                  xml.event(who: 'DOR-accessionWF', when: time) do
+                    xml.text('DOR Common Accessioning completed')
                   end
                 end
               end
             end
           end
-          builder.doc
+          builder.doc.to_s
         end
       end
     end
