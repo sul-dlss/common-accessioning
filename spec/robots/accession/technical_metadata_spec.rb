@@ -13,7 +13,6 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
     end
 
     let(:druid) { 'druid:bd185gs2259' }
-    let(:builder) { instance_double(DatastreamBuilder, build: true) }
 
     context 'on an item' do
       let(:object) { Dor::Item.new(pid: druid) }
@@ -72,7 +71,6 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
       let(:object) { Dor::Collection.new(pid: druid) }
 
       it "doesn't make a datastream" do
-        expect(DatastreamBuilder).not_to receive(:new)
         perform
       end
     end
