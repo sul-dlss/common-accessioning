@@ -11,15 +11,15 @@ require 'jhove_service'
 # Switching to a more granular data model that has file metadata separate from
 # the Work metadata will allow us to simplify this greatly.
 class TechnicalMetadataService
-  # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
-  # @param [String,NilClass] tech_metadata The xml tech metadata from DOR or nil if there is none
+  # @param [String] content_metadata The xml representation of the content metadata from DOR
+  # @param [String] tech_metadata The xml representation of tech metadata from DOR or nil if there is none
   # @return [String,NilClass] The finalized technicalMetadata datastream contents for the new object version, or nil if no changes.
-  def self.add_update_technical_metadata(dor_item, pid:, tech_metadata:)
-    new(dor_item, pid: pid, tech_metadata: tech_metadata).add_update_technical_metadata
+  def self.add_update_technical_metadata(content_metadata:, pid:, tech_metadata:)
+    new(content_metadata: content_metadata, pid: pid, tech_metadata: tech_metadata).add_update_technical_metadata
   end
 
-  def initialize(dor_item, pid:, tech_metadata:)
-    @dor_item = dor_item
+  def initialize(content_metadata:, pid:, tech_metadata:)
+    @content_metadata = content_metadata
     @pid = pid
     @dor_techmd = tech_metadata
   end
@@ -43,13 +43,10 @@ class TechnicalMetadataService
 
   private
 
-  attr_reader :dor_item, :pid, :dor_techmd
+  attr_reader :content_metadata, :pid, :dor_techmd
 
   def check_all_files_staged
-    content_metadata = dor_item.contentMetadata
-    return unless content_metadata
-
-    ng_doc = Nokogiri::XML(content_metadata.content)
+    ng_doc = Nokogiri::XML(content_metadata)
     files = ng_doc.xpath('//file/@id').map(&:content)
     workspace = DruidTools::Druid.new(pid, Settings.sdr.local_workspace_root)
 
@@ -67,11 +64,9 @@ class TechnicalMetadataService
 
   # @return [FileGroupDifference] The differences between two versions of a group of files
   def content_group_diff
-    return Moab::FileGroupDifference.new if dor_item.contentMetadata.nil?
     raise Dor::ParameterError, 'Missing Dor::Config.stacks.local_workspace_root' if Dor::Config.stacks.local_workspace_root.nil?
 
-    current_content = dor_item.contentMetadata.content
-    inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: pid, content_metadata: current_content)
+    inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: pid, content_metadata: content_metadata)
     inventory_diff.group_difference('content')
   end
 
