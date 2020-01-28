@@ -11,14 +11,17 @@ require 'jhove_service'
 # Switching to a more granular data model that has file metadata separate from
 # the Work metadata will allow us to simplify this greatly.
 class TechnicalMetadataService
-  # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
+  # @param [String] content_metadata The xml representation of the content metadata from DOR
+  # @param [String] tech_metadata The xml representation of tech metadata from DOR or nil if there is none
   # @return [String,NilClass] The finalized technicalMetadata datastream contents for the new object version, or nil if no changes.
-  def self.add_update_technical_metadata(dor_item)
-    new(dor_item).add_update_technical_metadata
+  def self.add_update_technical_metadata(content_metadata:, pid:, tech_metadata:)
+    new(content_metadata: content_metadata, pid: pid, tech_metadata: tech_metadata).add_update_technical_metadata
   end
 
-  def initialize(dor_item)
-    @dor_item = dor_item
+  def initialize(content_metadata:, pid:, tech_metadata:)
+    @content_metadata = content_metadata
+    @pid = pid
+    @dor_techmd = tech_metadata
   end
 
   def add_update_technical_metadata
@@ -40,15 +43,12 @@ class TechnicalMetadataService
 
   private
 
-  attr_reader :dor_item
+  attr_reader :content_metadata, :pid, :dor_techmd
 
   def check_all_files_staged
-    content_metadata = dor_item.contentMetadata
-    return unless content_metadata
-
-    ng_doc = Nokogiri::XML(content_metadata.content)
+    ng_doc = Nokogiri::XML(content_metadata)
     files = ng_doc.xpath('//file/@id').map(&:content)
-    workspace = DruidTools::Druid.new(dor_item.pid, Settings.sdr.local_workspace_root)
+    workspace = DruidTools::Druid.new(pid, Settings.sdr.local_workspace_root)
 
     content_dir = workspace.content_dir(false)
     return unless Dir.exist?(content_dir) && !Dir.empty?(content_dir)
@@ -57,18 +57,16 @@ class TechnicalMetadataService
     begin
       workspace.find_filelist_parent('content', files)
     rescue StandardError => e
-      Honeybadger.notify("Not all files staged for #{dor_item.pid} when extracting tech md: #{e}. This is part of an " \
+      Honeybadger.notify("Not all files staged for #{pid} when extracting tech md: #{e}. This is part of an " \
         'experiment.')
     end
   end
 
   # @return [FileGroupDifference] The differences between two versions of a group of files
   def content_group_diff
-    return Moab::FileGroupDifference.new if dor_item.contentMetadata.nil?
     raise Dor::ParameterError, 'Missing Dor::Config.stacks.local_workspace_root' if Dor::Config.stacks.local_workspace_root.nil?
 
-    current_content = dor_item.contentMetadata.content
-    inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: dor_item.pid, content_metadata: current_content)
+    inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: pid, content_metadata: content_metadata)
     inventory_diff.group_difference('content')
   end
 
@@ -99,10 +97,6 @@ class TechnicalMetadataService
   # @return [String] The technicalMetadata datastream from the previous version of the digital object (fetched from DOR fedora).
   #   The data is updated to the latest format.
   def dor_technical_metadata
-    ds = 'technicalMetadata'
-    return nil unless dor_item.datastreams.key?(ds) && !dor_item.datastreams[ds].new?
-
-    dor_techmd = dor_item.datastreams[ds].content
     return dor_techmd if dor_techmd =~ /<technicalMetadata/
     return ::JhoveService.new.upgrade_technical_metadata(dor_techmd) if dor_techmd =~ /<jhove/
 
@@ -113,7 +107,7 @@ class TechnicalMetadataService
   # @return [String] The datastream contents from the previous version of the digital object (fetched from preservation),
   #   or nil if there is no such datastream (e.g. object not yet in preservation)
   def preservation_metadata(dsname)
-    Preservation::Client.objects.metadata(druid: dor_item.pid, filepath: "#{dsname}.xml")
+    Preservation::Client.objects.metadata(druid: pid, filepath: "#{dsname}.xml")
   rescue Preservation::Client::NotFoundError
     nil
   end
@@ -125,11 +119,11 @@ class TechnicalMetadataService
 
     return nil if new_files.nil? || new_files.empty?
 
-    workspace = DruidTools::Druid.new(dor_item.pid, Settings.sdr.local_workspace_root)
+    workspace = DruidTools::Druid.new(pid, Settings.sdr.local_workspace_root)
     content_dir = workspace.find_filelist_parent('content', new_files)
     temp_dir = workspace.temp_dir
     jhove_service = ::JhoveService.new(temp_dir)
-    jhove_service.digital_object_id = dor_item.pid
+    jhove_service.digital_object_id = pid
     fileset_file = write_fileset(temp_dir, new_files)
     jhove_output_file = jhove_service.run_jhove(content_dir, fileset_file)
     tech_md_file = jhove_service.create_technical_metadata(jhove_output_file)
@@ -213,7 +207,7 @@ class TechnicalMetadataService
   # @return [String] The finalized technicalMetadata datastream contents for the new object version
   def build_technical_metadata(merged_nodes)
     techmd_root = +<<~EOF
-      <technicalMetadata objectId='#{dor_item.pid}' datetime='#{Time.now.utc.iso8601}'
+      <technicalMetadata objectId='#{pid}' datetime='#{Time.now.utc.iso8601}'
           xmlns:jhove='http://hul.harvard.edu/ois/xml/ns/jhove'
           xmlns:mix='http://www.loc.gov/mix/v10'
           xmlns:textmd='info:lc/xmlns/textMD-v3'>

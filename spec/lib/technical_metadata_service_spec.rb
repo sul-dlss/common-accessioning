@@ -5,8 +5,9 @@ require 'spec_helper'
 RSpec.describe TechnicalMetadataService do
   let(:object_ids) { %w[dd116zh0343 du000ps9999 jq937jp0017] }
   let(:druid_tool) { {} }
-  let(:instance) { described_class.new(dor_item) }
-  let(:dor_item) { instance_double(Dor::Item, pid: druid, contentMetadata: nil) }
+  let(:tech_metadata) { nil }
+  let(:content_metadata) { '' }
+  let(:instance) { described_class.new(content_metadata: content_metadata, pid: druid, tech_metadata: tech_metadata) }
   let(:druid) { 'druid:dd116zh0343' }
 
   before do
@@ -23,7 +24,7 @@ RSpec.describe TechnicalMetadataService do
 
     object_ids.each do |id|
       druid = "druid:#{id}"
-      instance = described_class.new(instance_double(Dor::Item, pid: druid))
+      instance = described_class.new(content_metadata: '', pid: druid, tech_metadata: nil)
       druid_tool[id] = DruidTools::Druid.new(druid, Pathname(wsfixtures).to_s)
       repo_content_pathname = fixtures.join('sdr_repo', id, 'v0001', 'data', 'content')
       work_content_pathname = Pathname(druid_tool[id].content_dir)
@@ -50,10 +51,7 @@ RSpec.describe TechnicalMetadataService do
   describe '.add_update_technical_metadata' do
     # Note: This test is for an experiment and will be removed.
     context 'when all files are not staged' do
-      let(:technicalMetadata) { instance_double(Dor::TechnicalMetadataDS, new?: true, :dsLabel= => true, :content= => true) }
-      let(:dor_item) { instance_double(Dor::Item, pid: druid, contentMetadata: contentMetadata, datastreams: { 'technicalMetadata' => technicalMetadata }) }
-      let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: contentMetadataContent) }
-      let(:contentMetadataContent) do
+      let(:content_metadata) do
         <<~EOF
           <?xml version="1.0"?>
           <contentMetadata type="sample" objectId="druid:dd116zh0343">
@@ -131,10 +129,7 @@ RSpec.describe TechnicalMetadataService do
 
     # Note: This test is for an experiment and will be removed.
     context 'when all files are staged' do
-      let(:technicalMetadata) { instance_double(Dor::TechnicalMetadataDS, new?: true, :dsLabel= => true, :content= => true, save: true) }
-      let(:dor_item) { instance_double(Dor::Item, pid: druid, contentMetadata: contentMetadata, datastreams: { 'technicalMetadata' => technicalMetadata }) }
-      let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: contentMetadataContent) }
-      let(:contentMetadataContent) do
+      let(:content_metadata) do
         <<~EOF
           <?xml version="1.0"?>
           <contentMetadata type="sample" objectId="druid:dd116zh0343">
@@ -213,10 +208,7 @@ RSpec.describe TechnicalMetadataService do
     # Note: This test is for an experiment and will be removed.
     context 'when no files are staged' do
       let(:druid) { 'druid:bb648mk7250' }
-      let(:technicalMetadata) { instance_double(Dor::TechnicalMetadataDS, new?: true, :dsLabel= => true, :content= => true) }
-      let(:dor_item) { instance_double(Dor::Item, pid: druid, contentMetadata: contentMetadata, datastreams: { 'technicalMetadata' => technicalMetadata }) }
-      let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: contentMetadataContent) }
-      let(:contentMetadataContent) do
+      let(:content_metadata) do
         <<~EOF
           <?xml version="1.0"?>
           <contentMetadata type="sample" objectId="druid:bb648mk7250">
@@ -266,11 +258,10 @@ RSpec.describe TechnicalMetadataService do
     subject(:content_group_diff) { instance.send(:content_group_diff) }
 
     context 'with contentMetadata' do
-      let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: 'foo') }
+      let(:content_metadata) { 'foo' }
       let(:object_id) { 'dd116zh0343' }
       let(:druid) { "druid:#{object_id}" }
       let(:group_diff) { @inventory_differences[object_id] }
-      let(:dor_item) { instance_double(Dor::Item, contentMetadata: contentMetadata, pid: druid) }
       let(:inventory_diff) do
         Moab::FileInventoryDifference.new(
           digital_object_id: druid,
@@ -288,14 +279,6 @@ RSpec.describe TechnicalMetadataService do
         expect(content_group_diff.to_xml).to eq(group_diff.to_xml)
       end
     end
-
-    context 'without contentMetadata' do
-      let(:dor_item) { instance_double(Dor::Item, contentMetadata: nil) }
-
-      it 'has no difference' do
-        expect(content_group_diff.difference_count).to be_zero
-      end
-    end
   end
 
   specify '#new_files' do
@@ -304,8 +287,6 @@ RSpec.describe TechnicalMetadataService do
   end
 
   specify '#old_technical_metadata' do
-    druid = 'druid:dd116zh0343'
-    allow(dor_item).to receive(:pid).and_return(druid)
     tech_md = '<technicalMetadata/>'
     expect(instance).to receive(:preservation_technical_metadata).and_return(tech_md, nil)
     old_techmd = instance.send(:old_technical_metadata)
@@ -367,31 +348,41 @@ RSpec.describe TechnicalMetadataService do
     end
   end
 
-  specify '#dor_technical_metadata' do
-    tech_ds = instance_double(Dor::TechnicalMetadataDS)
-    allow(tech_ds).to receive(:content).and_return('<technicalMetadata/>')
-    datastreams = { 'technicalMetadata' => tech_ds }
-    allow(dor_item).to receive(:datastreams).and_return(datastreams)
+  describe '#dor_technical_metadata' do
+    context 'when the tech_metadata is nil' do
+      it 'processes the metadata' do
+        dor_techmd = instance.send(:dor_technical_metadata)
+        expect(dor_techmd).to be_nil
+      end
+    end
 
-    allow(tech_ds).to receive(:new?).and_return(true)
-    dor_techmd = instance.send(:dor_technical_metadata)
-    expect(dor_techmd).to be_nil
+    context 'when the tech_metadata has <technicalMetadata>' do
+      let(:tech_metadata) { '<technicalMetadata/>' }
 
-    allow(tech_ds).to receive(:new?).and_return(false)
-    dor_techmd = instance.send(:dor_technical_metadata)
-    expect(dor_techmd).to eq('<technicalMetadata/>')
+      it 'processes the metadata' do
+        dor_techmd = instance.send(:dor_technical_metadata)
+        expect(dor_techmd).to eq('<technicalMetadata/>')
+      end
+    end
 
-    allow(tech_ds).to receive(:content).and_return('<jhove/>')
-    jhove_service = double(JhoveService)
-    allow(JhoveService).to receive(:new).and_return(jhove_service)
-    allow(jhove_service).to receive(:upgrade_technical_metadata).and_return('upgraded techmd')
-    dor_techmd = instance.send(:dor_technical_metadata)
-    expect(dor_techmd).to eq('upgraded techmd')
+    context 'when the tech_metadata has <jhove>' do
+      let(:tech_metadata) { '<jhove/>' }
+      let(:jhove_service) { instance_double(JhoveService, upgrade_technical_metadata: 'upgraded techmd') }
+
+      before do
+        allow(JhoveService).to receive(:new).and_return(jhove_service)
+      end
+
+      it 'processes the metadata' do
+        dor_techmd = instance.send(:dor_technical_metadata)
+        expect(dor_techmd).to eq('upgraded techmd')
+      end
+    end
   end
 
   specify '#new_technical_metadata' do
     object_ids.each do |id|
-      allow(dor_item).to receive(:pid).and_return("druid:#{id}")
+      allow(instance).to receive(:pid).and_return("druid:#{id}")
       new_techmd = instance.send(:new_technical_metadata, @deltas[id])
       file_nodes = Nokogiri::XML(new_techmd).xpath('//file')
       case id
@@ -553,7 +544,7 @@ RSpec.describe TechnicalMetadataService do
 
   specify '#build_technical_metadata' do
     object_ids.each do |id|
-      instance = described_class.new(instance_double(Dor::Item, pid: "druid:#{id}"))
+      instance = described_class.new(content_metadata: '', pid: "druid:#{id}", tech_metadata: nil)
       old_techmd = @repo_techmd[id]
       new_techmd = @new_file_techmd[id]
       deltas = @deltas[id]

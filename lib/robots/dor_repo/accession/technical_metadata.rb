@@ -27,7 +27,7 @@ module Robots
             )
           else
             # Otherwise (re)generate technical metadata
-            tech_md = TechnicalMetadataService.add_update_technical_metadata(obj)
+            tech_md = generate_technical_metadata(obj, druid)
             if tech_md
               object_client.metadata.legacy_update(
                 technical: {
@@ -37,6 +37,14 @@ module Robots
               )
             end
           end
+        end
+
+        private
+
+        def generate_technical_metadata(obj, druid)
+          tech_xml = obj.technicalMetadata.content unless obj.technicalMetadata.new?
+          content_xml = obj.contentMetadata.content
+          TechnicalMetadataService.add_update_technical_metadata(content_metadata: content_xml, pid: druid, tech_metadata: tech_xml)
         end
       end
     end
