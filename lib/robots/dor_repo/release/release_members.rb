@@ -16,9 +16,8 @@ module Robots
         def perform(druid)
           LyberCore::Log.debug "release-members working on #{druid}"
 
-          cocina_model = Dor::Services::Client.object(@druid).find
-
-          return unless cocina_model.is_a?(Cocina::Models::Collection)
+          # `#find` returns an instance of a model from the cocina-models gem
+          return unless Dor::Services::Client.object(@druid).find.collection?
 
           publish_collection(druid)
         end

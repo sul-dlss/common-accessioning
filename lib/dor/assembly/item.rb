@@ -16,11 +16,12 @@ module Dor
       end
 
       def cocina_model
+        # `#find` returns an instance of a model from the cocina-models gem
         @cocina_model ||= Dor::Services::Client.object(druid.druid).find
       end
 
       def item?
-        cocina_model.is_a?(Cocina::Models::DRO)
+        cocina_model.dro?
       end
 
       # @param [String] the mimetype of the file

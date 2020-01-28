@@ -21,7 +21,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
   end
 
   context 'when the model is an item' do
-    let(:cocina_model) { instance_double(Cocina::Models::DRO) }
+    let(:cocina_model) { instance_double(Cocina::Models::DRO, collection?: false) }
 
     it 'does nothing' do
       expect(robot).not_to receive(:item_members) # we won't bother looking for item members if this is an item
@@ -31,7 +31,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
   end
 
   context 'when the model is an apo' do
-    let(:cocina_model) { instance_double(Cocina::Models::AdminPolicy) }
+    let(:cocina_model) { instance_double(Cocina::Models::AdminPolicy, collection?: false) }
 
     it 'does nothing' do
       expect(robot).not_to receive(:item_members) # we won't bother looking for item members if this is an item

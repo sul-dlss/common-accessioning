@@ -37,7 +37,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                 process: 'shelve-complete',
                 status: 'completed',
                 elapsed: 1,
-                note: 'Non-item, nothing to do')
+                note: 'Not an item/DRO, nothing to do')
       end
     end
 
