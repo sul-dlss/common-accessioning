@@ -64,8 +64,6 @@ class TechnicalMetadataService
 
   # @return [FileGroupDifference] The differences between two versions of a group of files
   def content_group_diff
-    raise Dor::ParameterError, 'Missing Dor::Config.stacks.local_workspace_root' if Dor::Config.stacks.local_workspace_root.nil?
-
     inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: pid, content_metadata: content_metadata)
     inventory_diff.group_difference('content')
   end
