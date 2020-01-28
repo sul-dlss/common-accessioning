@@ -27,7 +27,8 @@ module Robots
             )
           else
             # Otherwise (re)generate technical metadata
-            tech_md = TechnicalMetadataService.add_update_technical_metadata(obj)
+            xml = obj.technicalMetadata.content unless obj.technicalMetadata.new?
+            tech_md = TechnicalMetadataService.add_update_technical_metadata(obj, tech_metadata: xml)
             if tech_md
               object_client.metadata.legacy_update(
                 technical: {

@@ -12,13 +12,15 @@ require 'jhove_service'
 # the Work metadata will allow us to simplify this greatly.
 class TechnicalMetadataService
   # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
+  # @param [String,NilClass] tech_metadata The xml tech metadata from DOR or nil if there is none
   # @return [String,NilClass] The finalized technicalMetadata datastream contents for the new object version, or nil if no changes.
-  def self.add_update_technical_metadata(dor_item)
-    new(dor_item).add_update_technical_metadata
+  def self.add_update_technical_metadata(dor_item, tech_metadata:)
+    new(dor_item, tech_metadata: tech_metadata).add_update_technical_metadata
   end
 
-  def initialize(dor_item)
+  def initialize(dor_item, tech_metadata:)
     @dor_item = dor_item
+    @dor_techmd = tech_metadata
   end
 
   def add_update_technical_metadata
@@ -40,7 +42,7 @@ class TechnicalMetadataService
 
   private
 
-  attr_reader :dor_item
+  attr_reader :dor_item, :dor_techmd
 
   def check_all_files_staged
     content_metadata = dor_item.contentMetadata
@@ -99,10 +101,6 @@ class TechnicalMetadataService
   # @return [String] The technicalMetadata datastream from the previous version of the digital object (fetched from DOR fedora).
   #   The data is updated to the latest format.
   def dor_technical_metadata
-    ds = 'technicalMetadata'
-    return nil unless dor_item.datastreams.key?(ds) && !dor_item.datastreams[ds].new?
-
-    dor_techmd = dor_item.datastreams[ds].content
     return dor_techmd if dor_techmd =~ /<technicalMetadata/
     return ::JhoveService.new.upgrade_technical_metadata(dor_techmd) if dor_techmd =~ /<jhove/
 
