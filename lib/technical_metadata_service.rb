@@ -14,12 +14,13 @@ class TechnicalMetadataService
   # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
   # @param [String,NilClass] tech_metadata The xml tech metadata from DOR or nil if there is none
   # @return [String,NilClass] The finalized technicalMetadata datastream contents for the new object version, or nil if no changes.
-  def self.add_update_technical_metadata(dor_item, tech_metadata:)
-    new(dor_item, tech_metadata: tech_metadata).add_update_technical_metadata
+  def self.add_update_technical_metadata(dor_item, pid:, tech_metadata:)
+    new(dor_item, pid: pid, tech_metadata: tech_metadata).add_update_technical_metadata
   end
 
-  def initialize(dor_item, tech_metadata:)
+  def initialize(dor_item, pid:, tech_metadata:)
     @dor_item = dor_item
+    @pid = pid
     @dor_techmd = tech_metadata
   end
 
@@ -42,7 +43,7 @@ class TechnicalMetadataService
 
   private
 
-  attr_reader :dor_item, :dor_techmd
+  attr_reader :dor_item, :pid, :dor_techmd
 
   def check_all_files_staged
     content_metadata = dor_item.contentMetadata
@@ -50,7 +51,7 @@ class TechnicalMetadataService
 
     ng_doc = Nokogiri::XML(content_metadata.content)
     files = ng_doc.xpath('//file/@id').map(&:content)
-    workspace = DruidTools::Druid.new(dor_item.pid, Settings.sdr.local_workspace_root)
+    workspace = DruidTools::Druid.new(pid, Settings.sdr.local_workspace_root)
 
     content_dir = workspace.content_dir(false)
     return unless Dir.exist?(content_dir) && !Dir.empty?(content_dir)
@@ -59,7 +60,7 @@ class TechnicalMetadataService
     begin
       workspace.find_filelist_parent('content', files)
     rescue StandardError => e
-      Honeybadger.notify("Not all files staged for #{dor_item.pid} when extracting tech md: #{e}. This is part of an " \
+      Honeybadger.notify("Not all files staged for #{pid} when extracting tech md: #{e}. This is part of an " \
         'experiment.')
     end
   end
@@ -70,7 +71,7 @@ class TechnicalMetadataService
     raise Dor::ParameterError, 'Missing Dor::Config.stacks.local_workspace_root' if Dor::Config.stacks.local_workspace_root.nil?
 
     current_content = dor_item.contentMetadata.content
-    inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: dor_item.pid, content_metadata: current_content)
+    inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: pid, content_metadata: current_content)
     inventory_diff.group_difference('content')
   end
 
@@ -111,7 +112,7 @@ class TechnicalMetadataService
   # @return [String] The datastream contents from the previous version of the digital object (fetched from preservation),
   #   or nil if there is no such datastream (e.g. object not yet in preservation)
   def preservation_metadata(dsname)
-    Preservation::Client.objects.metadata(druid: dor_item.pid, filepath: "#{dsname}.xml")
+    Preservation::Client.objects.metadata(druid: pid, filepath: "#{dsname}.xml")
   rescue Preservation::Client::NotFoundError
     nil
   end
@@ -123,11 +124,11 @@ class TechnicalMetadataService
 
     return nil if new_files.nil? || new_files.empty?
 
-    workspace = DruidTools::Druid.new(dor_item.pid, Settings.sdr.local_workspace_root)
+    workspace = DruidTools::Druid.new(pid, Settings.sdr.local_workspace_root)
     content_dir = workspace.find_filelist_parent('content', new_files)
     temp_dir = workspace.temp_dir
     jhove_service = ::JhoveService.new(temp_dir)
-    jhove_service.digital_object_id = dor_item.pid
+    jhove_service.digital_object_id = pid
     fileset_file = write_fileset(temp_dir, new_files)
     jhove_output_file = jhove_service.run_jhove(content_dir, fileset_file)
     tech_md_file = jhove_service.create_technical_metadata(jhove_output_file)
@@ -211,7 +212,7 @@ class TechnicalMetadataService
   # @return [String] The finalized technicalMetadata datastream contents for the new object version
   def build_technical_metadata(merged_nodes)
     techmd_root = +<<~EOF
-      <technicalMetadata objectId='#{dor_item.pid}' datetime='#{Time.now.utc.iso8601}'
+      <technicalMetadata objectId='#{pid}' datetime='#{Time.now.utc.iso8601}'
           xmlns:jhove='http://hul.harvard.edu/ois/xml/ns/jhove'
           xmlns:mix='http://www.loc.gov/mix/v10'
           xmlns:textmd='info:lc/xmlns/textMD-v3'>

@@ -6,8 +6,8 @@ RSpec.describe TechnicalMetadataService do
   let(:object_ids) { %w[dd116zh0343 du000ps9999 jq937jp0017] }
   let(:druid_tool) { {} }
   let(:tech_metadata) { nil }
-  let(:instance) { described_class.new(dor_item, tech_metadata: tech_metadata) }
-  let(:dor_item) { instance_double(Dor::Item, pid: druid, contentMetadata: nil) }
+  let(:instance) { described_class.new(dor_item, pid: druid, tech_metadata: tech_metadata) }
+  let(:dor_item) { instance_double(Dor::Item, contentMetadata: nil) }
   let(:druid) { 'druid:dd116zh0343' }
 
   before do
@@ -24,7 +24,7 @@ RSpec.describe TechnicalMetadataService do
 
     object_ids.each do |id|
       druid = "druid:#{id}"
-      instance = described_class.new(instance_double(Dor::Item, pid: druid), tech_metadata: nil)
+      instance = described_class.new(instance_double(Dor::Item), pid: druid, tech_metadata: nil)
       druid_tool[id] = DruidTools::Druid.new(druid, Pathname(wsfixtures).to_s)
       repo_content_pathname = fixtures.join('sdr_repo', id, 'v0001', 'data', 'content')
       work_content_pathname = Pathname(druid_tool[id].content_dir)
@@ -401,7 +401,7 @@ RSpec.describe TechnicalMetadataService do
 
   specify '#new_technical_metadata' do
     object_ids.each do |id|
-      allow(dor_item).to receive(:pid).and_return("druid:#{id}")
+      allow(instance).to receive(:pid).and_return("druid:#{id}")
       new_techmd = instance.send(:new_technical_metadata, @deltas[id])
       file_nodes = Nokogiri::XML(new_techmd).xpath('//file')
       case id
@@ -563,7 +563,7 @@ RSpec.describe TechnicalMetadataService do
 
   specify '#build_technical_metadata' do
     object_ids.each do |id|
-      instance = described_class.new(instance_double(Dor::Item, pid: "druid:#{id}"), tech_metadata: nil)
+      instance = described_class.new(instance_double(Dor::Item), pid: "druid:#{id}", tech_metadata: nil)
       old_techmd = @repo_techmd[id]
       new_techmd = @new_file_techmd[id]
       deltas = @deltas[id]
