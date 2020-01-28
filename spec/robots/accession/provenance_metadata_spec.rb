@@ -4,58 +4,46 @@ require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Accession::ProvenanceMetadata do
   let(:robot) { described_class.new }
+  let(:druid) { 'druid:aa123bb4567' }
 
-  it 'includes behavior from LyberCore::Robot' do
-    expect(robot.methods).to include(:work)
-  end
+  describe '#perform' do
+    subject(:perform) { robot.perform(druid) }
 
-  it 'has a ROBOT_ROOT' do
-    guessed_robot_root = File.expand_path(File.dirname(__FILE__) + '/../../..')
-    expect(ROBOT_ROOT).to eql(guessed_robot_root)
-  end
-
-  describe 'build_datastream' do
-    subject(:build) { robot.send(:build_datastream, item, workflow_id, event_text) }
-
-    let(:workflow_id) { 'accessionWF' }
-    let(:event_text) { 'DOR Common Accessioning' }
-
-    context 'on an existing object' do
-      let(:item) { instantiate_fixture('druid:ab123cd4567', Dor::Item) }
-
-      it 'builds the provenanceMetadata datastream' do
-        expect(item.datastreams['provenanceMetadata'].ng_xml.to_s).to be_equivalent_to('<xml/>')
-        build
-        expect(item.datastreams['provenanceMetadata'].ng_xml.to_s).not_to be_equivalent_to('<xml/>')
-      end
+    let(:object_client) do
+      instance_double(Dor::Services::Client::Object, refresh_metadata: true, metadata: metadata_client)
+    end
+    let(:metadata_client) do
+      instance_double(Dor::Services::Client::Metadata, legacy_update: true)
     end
 
-    context 'on a new object' do
-      let(:item) { Dor::Item.new(pid: druid) }
-      let(:druid) { 'druid:aa123bb4567' }
+    before do
+      allow(Dor::Services::Client).to receive(:object).and_return(object_client)
+      allow(robot).to receive(:create_workflow_provenance).and_return('<provenance/>')
+    end
 
-      before do
-        # stub fedora
-        allow(item.inner_object).to receive(:repository).and_return(double('frepo').as_null_object)
-      end
+    it 'generates provenance' do
+      perform
+      expect(metadata_client).to have_received(:legacy_update).with(
+        provenance: {
+          updated: Time,
+          content: '<provenance/>'
+        }
+      )
+    end
+  end
 
-      it 'generates workflow provenance' do
-        build
-        wp_xml = item.datastreams['provenanceMetadata'].ng_xml
-        expect(wp_xml).to be_instance_of(Nokogiri::XML::Document)
-        expect(wp_xml.root.name).to eql('provenanceMetadata')
-        expect(wp_xml.root[:objectId]).to eql(druid)
-        agent = wp_xml.xpath('/provenanceMetadata/agent').first
-        expect(agent.name).to eql('agent')
-        expect(agent[:name]).to eql('DOR')
-        what = agent.first_element_child
-        expect(what.name).to eql('what')
-        expect(what[:object]).to eql(druid)
-        event = what.first_element_child
-        expect(event.name).to eql('event')
-        expect(event[:who]).to eql("DOR-#{workflow_id}")
-        expect(event.content).to eql(event_text)
-      end
+  describe '#create_workflow_provenance' do
+    subject(:build) { robot.send(:create_workflow_provenance, druid, time: '2020-01-28T11:24:26-06:00') }
+
+    it 'make the xml' do
+      expect(build).to be_equivalent_to '<?xml version="1.0"?>
+       <provenanceMetadata objectId="druid:aa123bb4567">
+         <agent name="DOR">
+           <what object="druid:aa123bb4567">
+             <event who="DOR-accessionWF" when="2020-01-28T11:24:26-06:00">DOR Common Accessioning completed</event>
+           </what>
+         </agent>
+       </provenanceMetadata>'
     end
   end
 end
