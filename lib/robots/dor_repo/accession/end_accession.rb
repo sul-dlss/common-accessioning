@@ -13,7 +13,7 @@ module Robots
           current_version = object_client.version.current
 
           # Search for the specialized workflow
-          next_dissemination_wf = special_dissemination_wf(druid)
+          next_dissemination_wf = special_dissemination_wf(object_client)
           Dor::Config.workflow.client.create_workflow_by_name(druid, next_dissemination_wf, version: current_version, lane_id: lane_id(druid)) if next_dissemination_wf.present?
 
           # Call the default disseminationWF in all cases
@@ -23,17 +23,15 @@ module Robots
         private
 
         # This returns any optional workflow such as wasDisseminationWF
-        def special_dissemination_wf(druid)
-          druid_obj = Dor.find(druid)
-          apo = druid_obj.admin_policy_object
-          raise "#{druid_obj.id} doesn't have a valid apo" if apo.nil?
+        def special_dissemination_wf(object_client)
+          druid_obj = object_client.find
+          apo_id = druid_obj.administrative.hasAdminPolicy
+          raise "#{druid_obj.externalIdentifier} doesn't have a valid apo" if apo_id.nil?
 
-          adminMetadata = apo.datastreams['administrativeMetadata'].content
-          adminMetadata_xml = Nokogiri::XML(adminMetadata)
-          wf = adminMetadata_xml.xpath('//administrativeMetadata/dissemination/workflow/@id').text
-          return nil if wf == 'disseminationWF'
+          apo = Dor::Services::Client.object(apo_id).find
 
-          wf
+          wf = apo.administrative.registration_workflow
+          return wf unless wf == 'disseminationWF'
         end
       end
     end
