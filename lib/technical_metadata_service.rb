@@ -12,7 +12,7 @@ require 'jhove_service'
 # the Work metadata will allow us to simplify this greatly.
 class TechnicalMetadataService
   # @param [Dor::Item] dor_item The DOR item being processed by the technical metadata robot
-  # @return [Boolean] True if technical metadata is correctly added or updated
+  # @return [String,NilClass] The finalized technicalMetadata datastream contents for the new object version, or nil if no changes.
   def self.add_update_technical_metadata(dor_item)
     new(dor_item).add_update_technical_metadata
   end
@@ -30,13 +30,12 @@ class TechnicalMetadataService
     old_techmd = old_technical_metadata
     new_techmd = new_technical_metadata(deltas)
     # this is version 1 or previous technical metadata was not saved
-    return store(new_techmd) if old_techmd.nil?
+    return new_techmd if old_techmd.nil?
 
-    return true if diff.difference_count.zero?
+    return if diff.difference_count.zero?
 
     merged_nodes = merge_file_nodes(old_techmd, new_techmd, deltas)
-    final_techmd = build_technical_metadata(merged_nodes)
-    store(final_techmd)
+    build_technical_metadata(merged_nodes)
   end
 
   private
@@ -61,18 +60,6 @@ class TechnicalMetadataService
       Honeybadger.notify("Not all files staged for #{dor_item.pid} when extracting tech md: #{e}. This is part of an " \
         'experiment.')
     end
-  end
-
-  def store(final_techmd)
-    ds = dor_item.datastreams['technicalMetadata']
-    ds.dsLabel = 'Technical Metadata'
-    ds.content = final_techmd
-    # NOTE: can't use save! because this is an ActiveFedora::Datastream, so we get
-    # OM::XML::Terminology::BadPointerError:
-    #   This Terminology does not have a root term defined that corresponds to ":save!"
-    raise "problem saving ActiveFedora::Datastream technicalMetadata for #{dor_item.pid}" unless ds.save
-
-    true
   end
 
   # @return [FileGroupDifference] The differences between two versions of a group of files

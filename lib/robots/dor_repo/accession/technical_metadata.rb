@@ -13,10 +13,29 @@ module Robots
           obj = Dor.find(druid)
           return unless obj.is_a?(Dor::Item)
 
-          builder = DatastreamBuilder.new(datastream: obj.technicalMetadata,
-                                          force: true)
-          builder.build do |_datastream|
-            TechnicalMetadataService.add_update_technical_metadata(obj)
+          object = DruidTools::Druid.new(druid, Dor::Config.stacks.local_workspace_root)
+          path = object.find_metadata('technicalMetadata.xml')
+          object_client = Dor::Services::Client.object(druid)
+
+          if path
+            # When the technicalMetadata.xml file is found on the disk, use that
+            object_client.metadata.legacy_update(
+              technical: {
+                updated: File.mtime(path),
+                content: File.read(path)
+              }
+            )
+          else
+            # Otherwise (re)generate technical metadata
+            tech_md = TechnicalMetadataService.add_update_technical_metadata(obj)
+            if tech_md
+              object_client.metadata.legacy_update(
+                technical: {
+                  updated: Time.now,
+                  content: tech_md
+                }
+              )
+            end
           end
         end
       end

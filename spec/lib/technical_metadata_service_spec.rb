@@ -50,7 +50,7 @@ RSpec.describe TechnicalMetadataService do
   describe '.add_update_technical_metadata' do
     # Note: This test is for an experiment and will be removed.
     context 'when all files are not staged' do
-      let(:technicalMetadata) { instance_double(Dor::TechnicalMetadataDS, new?: true, :dsLabel= => true, :content= => true, save: true) }
+      let(:technicalMetadata) { instance_double(Dor::TechnicalMetadataDS, new?: true, :dsLabel= => true, :content= => true) }
       let(:dor_item) { instance_double(Dor::Item, pid: druid, contentMetadata: contentMetadata, datastreams: { 'technicalMetadata' => technicalMetadata }) }
       let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: contentMetadataContent) }
       let(:contentMetadataContent) do
@@ -213,7 +213,7 @@ RSpec.describe TechnicalMetadataService do
     # Note: This test is for an experiment and will be removed.
     context 'when no files are staged' do
       let(:druid) { 'druid:bb648mk7250' }
-      let(:technicalMetadata) { instance_double(Dor::TechnicalMetadataDS, new?: true, :dsLabel= => true, :content= => true, save: true) }
+      let(:technicalMetadata) { instance_double(Dor::TechnicalMetadataDS, new?: true, :dsLabel= => true, :content= => true) }
       let(:dor_item) { instance_double(Dor::Item, pid: druid, contentMetadata: contentMetadata, datastreams: { 'technicalMetadata' => technicalMetadata }) }
       let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: contentMetadataContent) }
       let(:contentMetadataContent) do
@@ -258,65 +258,6 @@ RSpec.describe TechnicalMetadataService do
       it 'does not notify Honeybadger' do
         instance.add_update_technical_metadata
         expect(Honeybadger).not_to have_received(:notify)
-      end
-    end
-
-    context 'when old technical metadata is nil' do
-      # Old technical metadata is nil because technicalMetadata is new and because Preservation returns nothing.
-      let(:technicalMetadata) { instance_double(Dor::TechnicalMetadataDS, new?: true, :dsLabel= => true, :content= => true, save: true) }
-      let(:dor_item) { instance_double(Dor::Item, pid: druid, contentMetadata: contentMetadata, datastreams: { 'technicalMetadata' => technicalMetadata }) }
-      let(:contentMetadata) { instance_double(Dor::ContentMetadataDS, content: '') }
-      let(:inventory_diff) { instance_double(Moab::FileInventoryDifference, group_difference: file_group_diff) }
-      let(:file_group_diff) { instance_double(Moab::FileGroupDifference, file_deltas: { added: [], modified: [] }) }
-
-      before do
-        allow(Preservation::Client.objects).to receive(:metadata)
-        allow(Preservation::Client.objects).to receive(:content_inventory_diff).and_return(inventory_diff)
-      end
-
-      it 'stores' do
-        instance.add_update_technical_metadata
-        expect(technicalMetadata).to have_received(:save)
-      end
-    end
-
-    specify 'when save is successful' do
-      object_ids.each do |id|
-        instance = described_class.new(dor_item)
-        allow(dor_item).to receive(:pid).and_return("druid:#{id}")
-        expect(instance).to receive(:content_group_diff).and_return(@inventory_differences[id])
-        expect(@inventory_differences[id]).to receive(:file_deltas).and_return(@deltas[id])
-        expect(instance).to receive(:old_technical_metadata).and_return(@repo_techmd[id])
-        expect(instance).to receive(:new_technical_metadata).with(Hash).and_return(@new_file_techmd[id])
-        mock_datastream = instance_double(Dor::TechnicalMetadataDS, save: true)
-        ds_hash = { 'technicalMetadata' => mock_datastream }
-        allow(dor_item).to receive(:datastreams).and_return(ds_hash)
-        unless @inventory_differences[id].difference_count == 0
-          expect(mock_datastream).to receive(:dsLabel=).with('Technical Metadata')
-          expect(mock_datastream).to receive(:content=).with(/<technicalMetadata/)
-          expect(mock_datastream).to receive(:save)
-        end
-        instance.add_update_technical_metadata
-      end
-    end
-
-    specify 'when it cannot save the datastream' do
-      object_ids.each do |id|
-        allow(dor_item).to receive(:pid).and_return("druid:#{id}")
-        expect(instance).to receive(:content_group_diff).and_return(@inventory_differences[id])
-        expect(@inventory_differences[id]).to receive(:file_deltas).and_return(@deltas[id])
-        expect(instance).to receive(:old_technical_metadata).and_return(@repo_techmd[id])
-        expect(instance).to receive(:new_technical_metadata).with(Hash).and_return(@new_file_techmd[id])
-        mock_datastream = double('datastream', save: false)
-        ds_hash = { 'technicalMetadata' => mock_datastream }
-        allow(dor_item).to receive(:datastreams).and_return(ds_hash)
-        unless @inventory_differences[id].difference_count == 0
-          expect(mock_datastream).to receive(:dsLabel=).with('Technical Metadata')
-          expect(mock_datastream).to receive(:content=).with(/<technicalMetadata/)
-          expect(mock_datastream).to receive(:save)
-        end
-        err_regex = /problem saving ActiveFedora::Datastream technicalMetadata for druid:#{id}/
-        expect { instance.add_update_technical_metadata }.to raise_error(RuntimeError, err_regex)
       end
     end
   end

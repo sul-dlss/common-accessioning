@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe DatastreamBuilder do
   subject(:builder) do
-    described_class.new(datastream: ds, force: true)
+    described_class.new(datastream: ds)
   end
 
   let(:ds) { item.technicalMetadata }
