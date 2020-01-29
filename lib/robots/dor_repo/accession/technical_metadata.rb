@@ -47,7 +47,22 @@ module Robots
           obj = Dor.find(druid)
           tech_xml = obj.technicalMetadata.content unless obj.technicalMetadata.new?
           content_xml = obj.contentMetadata.content
-          TechnicalMetadataService.add_update_technical_metadata(content_metadata: content_xml, pid: druid, tech_metadata: tech_xml)
+          inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: druid, content_metadata: content_xml)
+
+          files = obj.contentMetadata.ng_xml.xpath('//file/@id').map(&:content)
+          TechnicalMetadataService.add_update_technical_metadata(files: files,
+                                                                 pid: druid,
+                                                                 tech_metadata: tech_xml,
+                                                                 preservation_technical_metadata: preservation_technical_metadata(druid),
+                                                                 content_group_diff: inventory_diff.group_difference('content'))
+        end
+
+        # @return [String] The datastream contents from the previous version of the digital object (fetched from preservation),
+        #   or nil if there is no such datastream (e.g. object not yet in preservation)
+        def preservation_technical_metadata(pid)
+          Preservation::Client.objects.metadata(druid: pid, filepath: 'technicalMetadata.xml')
+        rescue Preservation::Client::NotFoundError
+          nil
         end
       end
     end
