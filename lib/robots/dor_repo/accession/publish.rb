@@ -12,10 +12,12 @@ module Robots
 
         def perform(druid)
           object_client = Dor::Services::Client.object(druid)
-          obj = object_client.find
 
-          # Since not being published, need to set publish-complete so that will proceed with wf.
-          if obj.is_a?(Cocina::Models::AdminPolicy)
+          # `#find` returns an instance of a model from the cocina-models gem
+          if object_client.find.admin_policy?
+            # Since admin policies are not published, we need to manually set
+            # the publish-complete step to completed so that the workflow will
+            # proceed.
             workflow_service.update_status(druid: druid, workflow: @workflow_name, process: 'publish-complete', status: 'completed', elapsed: 1, note: 'APOs are not published, so marking completed.')
             return
           end
