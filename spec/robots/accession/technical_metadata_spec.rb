@@ -23,12 +23,16 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
 
     context 'on an item' do
       let(:dor_object) { Dor::Item.new(pid: druid) }
+      let(:contains) { [] }
 
       let(:object) do
         Cocina::Models::DRO.new(externalIdentifier: '123',
-                                type: Cocina::Models::DRO::TYPES.first,
+                                type: Cocina::Models::Vocab.object,
                                 label: 'my repository object',
-                                version: 1)
+                                version: 1,
+                                structural: {
+                                  contains: contains
+                                })
       end
 
       before do
@@ -47,53 +51,70 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
           allow(TechnicalMetadataService).to receive(:add_update_technical_metadata).and_return('tech md')
         end
 
-        context 'when preservation client returns metadata' do
-          let(:preservation_technical_metadata) { double }
+        context 'when the DRO has files' do
+          let(:file_set) do
+            Cocina::Models::FileSet.new(externalIdentifier: '222',
+                                        type: Cocina::Models::Vocab.fileset,
+                                        label: 'my repository object',
+                                        version: 1)
+          end
+          let(:contains) { [file_set] }
 
-          before do
-            allow(Preservation::Client.objects).to receive(:metadata).and_return(preservation_technical_metadata)
+          context 'when preservation client returns metadata' do
+            let(:preservation_technical_metadata) { double }
+
+            before do
+              allow(Preservation::Client.objects).to receive(:metadata).and_return(preservation_technical_metadata)
+            end
+
+            # rubocop:disable RSpec/ExampleLength
+            it 'creates new metadata' do
+              perform
+              expect(metadata_client).to have_received(:legacy_update).with(
+                technical: {
+                  updated: Time,
+                  content: /tech md/
+                }
+              )
+              expect(TechnicalMetadataService).to have_received(:add_update_technical_metadata)
+                .with(pid: 'druid:bd185gs2259',
+                      content_group_diff: file_group_diff,
+                      files: [],
+                      tech_metadata: dor_technical_metadata,
+                      preservation_technical_metadata: preservation_technical_metadata)
+            end
+            # rubocop:enable RSpec/ExampleLength
           end
 
-          # rubocop:disable RSpec/ExampleLength
-          it 'creates new metadata' do
-            perform
-            expect(metadata_client).to have_received(:legacy_update).with(
-              technical: {
-                updated: Time,
-                content: /tech md/
-              }
-            )
-            expect(TechnicalMetadataService).to have_received(:add_update_technical_metadata)
-              .with(pid: 'druid:bd185gs2259',
-                    content_group_diff: file_group_diff,
-                    files: [],
-                    tech_metadata: dor_technical_metadata,
-                    preservation_technical_metadata: preservation_technical_metadata)
+          context 'when Preservation::Client gets 404 from API' do
+            before do
+              allow(Preservation::Client.objects).to receive(:metadata)
+                .and_raise(Preservation::Client::NotFoundError)
+            end
+
+            # rubocop:disable RSpec/ExampleLength
+            it 'runs the technical metadata service and passes nil for the preservation_technical_metadata' do
+              perform
+              expect(metadata_client).to have_received(:legacy_update).with(
+                technical: {
+                  updated: Time,
+                  content: /tech md/
+                }
+              )
+              expect(TechnicalMetadataService).to have_received(:add_update_technical_metadata)
+                .with(pid: 'druid:bd185gs2259',
+                      content_group_diff: file_group_diff,
+                      files: [],
+                      tech_metadata: dor_technical_metadata,
+                      preservation_technical_metadata: nil)
+            end
           end
-          # rubocop:enable RSpec/ExampleLength
         end
 
-        context 'when Preservation::Client gets 404 from API' do
-          before do
-            allow(Preservation::Client.objects).to receive(:metadata)
-              .and_raise(Preservation::Client::NotFoundError)
-          end
-
-          # rubocop:disable RSpec/ExampleLength
-          it 'runs the technical metadata service and passes nil for the preservation_technical_metadata' do
+        context 'when the DRO has no files' do
+          it 'does not run technical metadata' do
             perform
-            expect(metadata_client).to have_received(:legacy_update).with(
-              technical: {
-                updated: Time,
-                content: /tech md/
-              }
-            )
-            expect(TechnicalMetadataService).to have_received(:add_update_technical_metadata)
-              .with(pid: 'druid:bd185gs2259',
-                    content_group_diff: file_group_diff,
-                    files: [],
-                    tech_metadata: dor_technical_metadata,
-                    preservation_technical_metadata: nil)
+            expect(metadata_client).not_to have_received(:legacy_update)
           end
         end
       end
