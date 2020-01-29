@@ -23,12 +23,14 @@ module Robots
           elsif has_no_rights_metadata?(druid)
             Honeybadger.notify("I don't think this ever happens because rights is created when registering. This is an experiment")
 
-            # TODO: Fetch admin_policy_object without involving Fedora 3 concepts
-            apo = Dor.find(druid).admin_policy_object
+            object = Dor::Services::Client.object(druid).find
+            apo_id = object.administrative.hasAdminPolicy
+            apo = Dor::Services::Client.object(apo_id).find
+
             object_client.metadata.legacy_update(
               rights: {
                 updated: Time.now,
-                content: apo.defaultObjectRights.content
+                content: apo.administrative.default_object_rights
               }
             )
           end
