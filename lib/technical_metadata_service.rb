@@ -11,31 +11,40 @@ require 'jhove_service'
 # Switching to a more granular data model that has file metadata separate from
 # the Work metadata will allow us to simplify this greatly.
 class TechnicalMetadataService
-  # @param [String] content_metadata The xml representation of the content metadata from DOR
+  # @param [Array] files the list of files according to contentMetadata
+  # @param [String] pid object identifier
   # @param [String] tech_metadata The xml representation of tech metadata from DOR or nil if there is none
+  # @param [String] preservation_technical_metadata The technicalMetadata contents from the previous version of the digital object
+  # @param [Moab::FileGroupDifference] content_group_diff the difference between contentMetadata in preservation and what is in the workspace
   # @return [String,NilClass] The finalized technicalMetadata datastream contents for the new object version, or nil if no changes.
-  def self.add_update_technical_metadata(content_metadata:, pid:, tech_metadata:)
-    new(content_metadata: content_metadata, pid: pid, tech_metadata: tech_metadata).add_update_technical_metadata
+  def self.add_update_technical_metadata(files:, pid:, tech_metadata:, preservation_technical_metadata:, content_group_diff:)
+    new(files: files,
+        pid: pid,
+        tech_metadata: tech_metadata,
+        preservation_technical_metadata: preservation_technical_metadata,
+        content_group_diff: content_group_diff)
+      .add_update_technical_metadata
   end
 
-  def initialize(content_metadata:, pid:, tech_metadata:)
-    @content_metadata = content_metadata
+  def initialize(files:, pid:, tech_metadata:, preservation_technical_metadata:, content_group_diff:)
+    @files = files
     @pid = pid
     @dor_techmd = tech_metadata
+    @preservation_technical_metadata = preservation_technical_metadata
+    @content_group_diff = content_group_diff
   end
 
   def add_update_technical_metadata
     # This is an experiment to determine whether files are always staged when updating tech md. It will be removed.
     check_all_files_staged
 
-    diff = content_group_diff
-    deltas = diff.file_deltas
+    deltas = content_group_diff.file_deltas
     old_techmd = old_technical_metadata
     new_techmd = new_technical_metadata(deltas)
     # this is version 1 or previous technical metadata was not saved
     return new_techmd if old_techmd.nil?
 
-    return if diff.difference_count.zero?
+    return if content_group_diff.difference_count.zero?
 
     merged_nodes = merge_file_nodes(old_techmd, new_techmd, deltas)
     build_technical_metadata(merged_nodes)
@@ -43,11 +52,9 @@ class TechnicalMetadataService
 
   private
 
-  attr_reader :content_metadata, :pid, :dor_techmd
+  attr_reader :files, :pid, :dor_techmd, :content_group_diff, :preservation_technical_metadata
 
   def check_all_files_staged
-    ng_doc = Nokogiri::XML(content_metadata)
-    files = ng_doc.xpath('//file/@id').map(&:content)
     workspace = DruidTools::Druid.new(pid, Settings.sdr.local_workspace_root)
 
     content_dir = workspace.content_dir(false)
@@ -62,12 +69,6 @@ class TechnicalMetadataService
     end
   end
 
-  # @return [FileGroupDifference] The differences between two versions of a group of files
-  def content_group_diff
-    inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: pid, content_metadata: content_metadata)
-    inventory_diff.group_difference('content')
-  end
-
   # @param [Hash<Symbol,Array>] deltas Sets of filenames grouped by change type for use in performing file or metadata operations
   # @return [Array<String>] The list of filenames for files that are either added or modifed since the previous version
   def new_files(deltas)
@@ -76,7 +77,7 @@ class TechnicalMetadataService
 
   # @return [String] The technicalMetadata datastream from the previous version of the digital object
   def old_technical_metadata
-    pres_techmd = preservation_technical_metadata
+    pres_techmd = upgraded_preservation_technical_metadata
     return pres_techmd unless pres_techmd.nil?
 
     dor_technical_metadata
@@ -84,8 +85,8 @@ class TechnicalMetadataService
 
   # @return [String] The technicalMetadata datastream from the previous version of the digital object (fetched from preservation)
   #   The data is updated to the latest format.
-  def preservation_technical_metadata
-    pres_techmd = preservation_metadata('technicalMetadata')
+  def upgraded_preservation_technical_metadata
+    pres_techmd = preservation_technical_metadata
     return pres_techmd if pres_techmd =~ /<technicalMetadata/
     return ::JhoveService.new.upgrade_technical_metadata(pres_techmd) if pres_techmd =~ /<jhove/
 
@@ -98,15 +99,6 @@ class TechnicalMetadataService
     return dor_techmd if dor_techmd =~ /<technicalMetadata/
     return ::JhoveService.new.upgrade_technical_metadata(dor_techmd) if dor_techmd =~ /<jhove/
 
-    nil
-  end
-
-  # @param [String] dsname The identifier of the metadata datastream
-  # @return [String] The datastream contents from the previous version of the digital object (fetched from preservation),
-  #   or nil if there is no such datastream (e.g. object not yet in preservation)
-  def preservation_metadata(dsname)
-    Preservation::Client.objects.metadata(druid: pid, filepath: "#{dsname}.xml")
-  rescue Preservation::Client::NotFoundError
     nil
   end
 

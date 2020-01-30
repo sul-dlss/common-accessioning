@@ -35,22 +35,67 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
         allow(Dor).to receive(:find).and_return(dor_object)
       end
 
-      context 'when no technicalMetadata file is found' do
+      context 'when no technicalMetadata.xml file is found' do
+        let(:file_group_diff) { instance_double(Moab::FileGroupDifference, file_deltas: { added: [], modified: [] }) }
+        let(:inventory_diff) { instance_double(Moab::FileInventoryDifference, group_difference: file_group_diff) }
+        let(:technical_metadata_ds) { instance_double(Dor::TechnicalMetadataDS, new?: false, content: dor_technical_metadata) }
+        let(:dor_technical_metadata) { double }
+
         before do
+          allow(dor_object).to receive(:technicalMetadata).and_return(technical_metadata_ds)
+          allow(Preservation::Client.objects).to receive(:content_inventory_diff).and_return(inventory_diff)
           allow(TechnicalMetadataService).to receive(:add_update_technical_metadata).and_return('tech md')
         end
 
-        # rubocop:disable RSpec/ExampleLength
-        it 'creates new metadata' do
-          perform
-          expect(metadata_client).to have_received(:legacy_update).with(
-            technical: {
-              updated: Time,
-              content: /tech md/
-            }
-          )
+        context 'when preservation client returns metadata' do
+          let(:preservation_technical_metadata) { double }
+
+          before do
+            allow(Preservation::Client.objects).to receive(:metadata).and_return(preservation_technical_metadata)
+          end
+
+          # rubocop:disable RSpec/ExampleLength
+          it 'creates new metadata' do
+            perform
+            expect(metadata_client).to have_received(:legacy_update).with(
+              technical: {
+                updated: Time,
+                content: /tech md/
+              }
+            )
+            expect(TechnicalMetadataService).to have_received(:add_update_technical_metadata)
+              .with(pid: 'druid:bd185gs2259',
+                    content_group_diff: file_group_diff,
+                    files: [],
+                    tech_metadata: dor_technical_metadata,
+                    preservation_technical_metadata: preservation_technical_metadata)
+          end
+          # rubocop:enable RSpec/ExampleLength
         end
-        # rubocop:enable RSpec/ExampleLength
+
+        context 'when Preservation::Client gets 404 from API' do
+          before do
+            allow(Preservation::Client.objects).to receive(:metadata)
+              .and_raise(Preservation::Client::NotFoundError)
+          end
+
+          # rubocop:disable RSpec/ExampleLength
+          it 'runs the technical metadata service and passes nil for the preservation_technical_metadata' do
+            perform
+            expect(metadata_client).to have_received(:legacy_update).with(
+              technical: {
+                updated: Time,
+                content: /tech md/
+              }
+            )
+            expect(TechnicalMetadataService).to have_received(:add_update_technical_metadata)
+              .with(pid: 'druid:bd185gs2259',
+                    content_group_diff: file_group_diff,
+                    files: [],
+                    tech_metadata: dor_technical_metadata,
+                    preservation_technical_metadata: nil)
+          end
+        end
       end
 
       context 'when technicalMetadata file is found' do
@@ -60,7 +105,6 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
           allow(DruidTools::Druid).to receive(:new).and_return(finder)
         end
 
-        # rubocop:disable RSpec/ExampleLength
         it 'creates new metadata' do
           perform
           expect(metadata_client).to have_received(:legacy_update).with(

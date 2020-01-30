@@ -6,8 +6,17 @@ RSpec.describe TechnicalMetadataService do
   let(:object_ids) { %w[dd116zh0343 du000ps9999 jq937jp0017] }
   let(:druid_tool) { {} }
   let(:tech_metadata) { nil }
-  let(:content_metadata) { '' }
-  let(:instance) { described_class.new(content_metadata: content_metadata, pid: druid, tech_metadata: tech_metadata) }
+  let(:files) { [] }
+  let(:content_group_diff) { instance_double(Moab::FileGroupDifference) }
+  let(:preservation_technical_metadata) { nil }
+  let(:instance) do
+    described_class.new(files: files,
+                        pid: druid,
+                        tech_metadata: tech_metadata,
+                        preservation_technical_metadata: preservation_technical_metadata,
+                        content_group_diff: content_group_diff)
+  end
+
   let(:druid) { 'druid:dd116zh0343' }
 
   before do
@@ -24,7 +33,11 @@ RSpec.describe TechnicalMetadataService do
 
     object_ids.each do |id|
       druid = "druid:#{id}"
-      instance = described_class.new(content_metadata: '', pid: druid, tech_metadata: nil)
+      instance = described_class.new(files: [],
+                                     pid: druid,
+                                     tech_metadata: nil,
+                                     preservation_technical_metadata: nil,
+                                     content_group_diff: content_group_diff)
       druid_tool[id] = DruidTools::Druid.new(druid, Pathname(wsfixtures).to_s)
       repo_content_pathname = fixtures.join('sdr_repo', id, 'v0001', 'data', 'content')
       work_content_pathname = Pathname(druid_tool[id].content_dir)
@@ -51,73 +64,12 @@ RSpec.describe TechnicalMetadataService do
   describe '.add_update_technical_metadata' do
     # Note: This test is for an experiment and will be removed.
     context 'when all files are not staged' do
-      let(:content_metadata) do
-        <<~EOF
-          <?xml version="1.0"?>
-          <contentMetadata type="sample" objectId="druid:dd116zh0343">
-            <resource sequence="1" type="folder" id="folder1PuSu">
-              <file shelve="yes" publish="yes" size="7888" preserve="yes" datetime="2012-06-15T22:57:43Z" id="folder1PuSu/story1u.txt">
-                <checksum type="MD5">e2837b9f02e0b0b76f526eeb81c7aa7b</checksum>
-                <checksum type="SHA-1">61dfac472b7904e1413e0cbf4de432bda2a97627</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="5983" preserve="yes" datetime="2012-06-15T22:58:56Z" id="folder1PuSu/story2r.txt">
-                <checksum type="MD5">dc2be64ae43f1c1db4a068603465955d</checksum>
-                <checksum type="SHA-1">b8a672c1848fc3d13b5f380e15835690e24600e0</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="5951" preserve="yes" datetime="2012-06-15T23:00:43Z" id="folder1PuSu/story3m.txt">
-                <checksum type="MD5">3d67f52e032e36b641d0cad40816f048</checksum>
-                <checksum type="SHA-1">548f349c79928b6d0996b7ff45990bdce5ee9753</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="6307" preserve="yes" datetime="2012-06-15T23:02:22Z" id="folder1PuSu/story4d.txt">
-                <checksum type="MD5">34f3f646523b0a8504f216483a57bce4</checksum>
-                <checksum type="SHA-1">d498b513add5bb138ed4f6205453a063a2434dc4</checksum>
-              </file>
-            </resource>
-            <resource sequence="2" type="folder" id="folder2PdSa">
-              <file shelve="no" publish="yes" size="2534" preserve="yes" datetime="2012-06-15T23:05:03Z" id="folder2PdSa/story6u.txt">
-                <checksum type="MD5">1f15cc786bfe832b2fa1e6f047c500ba</checksum>
-                <checksum type="SHA-1">bf3af01de2afa15719d8c42a4141e3b43d06fef6</checksum>
-              </file>
-              <file shelve="no" publish="yes" size="17074" preserve="yes" datetime="2012-06-15T23:08:35Z" id="folder2PdSa/story7r.txt">
-                <checksum type="MD5">205271287477c2309512eb664eff9130</checksum>
-                <checksum type="SHA-1">b23aa592ab673030ace6178e29fad3cf6a45bd32</checksum>
-              </file>
-              <file shelve="no" publish="yes" size="5643" preserve="yes" datetime="2012-06-15T23:09:26Z" id="folder2PdSa/story8m.txt">
-                <checksum type="MD5">ce474f4c512953f20a8c4c5b92405cf7</checksum>
-                <checksum type="SHA-1">af9cbf5ab4f020a8bb17b180fbd5c41598d89b37</checksum>
-              </file>
-              <file shelve="no" publish="yes" size="19599" preserve="yes" datetime="2012-06-15T23:14:32Z" id="folder2PdSa/story9d.txt">
-                <checksum type="MD5">135cb2db6a35afac590687f452053baf</checksum>
-                <checksum type="SHA-1">e74274d7bc06ef44a408a008f5160b3756cb2ab0</checksum>
-              </file>
-            </resource>
-            <resource sequence="3" type="folder" id="folder3PaSd">
-              <file shelve="yes" publish="yes" size="14964" preserve="no" datetime="2012-06-17T11:42:52Z" id="folder3PaSd/storyBu.txt">
-                <checksum type="MD5">8f0a828f3e63cd18232c191ab0c5805c</checksum>
-                <checksum type="SHA-1">b6cb7aa60dd07b4dcc6ab709437e574912f25f30</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="23485" preserve="no" datetime="2012-06-17T11:44:14Z" id="folder3PaSd/storyCr.txt">
-                <checksum type="MD5">3486492e40b4c342b25ae4f9c64f06ee</checksum>
-                <checksum type="SHA-1">a1654e9d3cf80242cc3669f89fb41b2ec5e62cb7</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="25336" preserve="no" datetime="2012-06-17T11:45:56Z" id="folder3PaSd/storyDm.txt">
-                <checksum type="MD5">233228c7e1f473dad1d2c673157dd809</checksum>
-                <checksum type="SHA-1">83c57f595aa6a72f80d47900cc0d10e589f31ea5</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="41765" preserve="no" datetime="2012-06-17T11:49:53Z" id="folder3PaSd/storyEd.txt">
-                <checksum type="MD5">0e57176032451fd6d0509b6172790b8f</checksum>
-                <checksum type="SHA-1">b191e11dc1768c47852e6d2a235094843be358ff</checksum>
-              </file>
-            </resource>
-          </contentMetadata>
-        EOF
+      let(:content_group_diff) { instance_double(Moab::FileGroupDifference, file_deltas: { added: [], modified: [] }) }
+      let(:files) do
+        ['folder1PuSu/story1u.txt', 'folder1PuSu/story2r.txt', 'folder1PuSu/story3m.txt', 'folder1PuSu/story4d.txt', 'folder2PdSa/story6u.txt', 'folder2PdSa/story7r.txt', 'folder2PdSa/story8m.txt', 'folder2PdSa/story9d.txt', 'folder3PaSd/storyBu.txt', 'folder3PaSd/storyCr.txt', 'folder3PaSd/storyDm.txt', 'folder3PaSd/storyEd.txt']
       end
-      let(:inventory_diff) { instance_double(Moab::FileInventoryDifference, group_difference: file_group_diff) }
-      let(:file_group_diff) { instance_double(Moab::FileGroupDifference, file_deltas: { added: [], modified: [] }) }
 
       before do
-        allow(Preservation::Client.objects).to receive(:metadata)
-        allow(Preservation::Client.objects).to receive(:content_inventory_diff).and_return(inventory_diff)
         allow(Honeybadger).to receive(:notify)
       end
 
@@ -129,73 +81,12 @@ RSpec.describe TechnicalMetadataService do
 
     # Note: This test is for an experiment and will be removed.
     context 'when all files are staged' do
-      let(:content_metadata) do
-        <<~EOF
-          <?xml version="1.0"?>
-          <contentMetadata type="sample" objectId="druid:dd116zh0343">
-            <resource sequence="1" type="folder" id="folder1PuSu">
-              <file shelve="yes" publish="yes" size="7888" preserve="yes" datetime="2012-06-15T22:57:43Z" id="folder1PuSu/story1u.txt">
-                <checksum type="MD5">e2837b9f02e0b0b76f526eeb81c7aa7b</checksum>
-                <checksum type="SHA-1">61dfac472b7904e1413e0cbf4de432bda2a97627</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="5983" preserve="yes" datetime="2012-06-15T22:58:56Z" id="folder1PuSu/story2rr.txt">
-                <checksum type="MD5">dc2be64ae43f1c1db4a068603465955d</checksum>
-                <checksum type="SHA-1">b8a672c1848fc3d13b5f380e15835690e24600e0</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="5951" preserve="yes" datetime="2012-06-15T23:00:43Z" id="folder1PuSu/story3m.txt">
-                <checksum type="MD5">3d67f52e032e36b641d0cad40816f048</checksum>
-                <checksum type="SHA-1">548f349c79928b6d0996b7ff45990bdce5ee9753</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="6307" preserve="yes" datetime="2012-06-15T23:02:22Z" id="folder1PuSu/story5a.txt">
-                <checksum type="MD5">34f3f646523b0a8504f216483a57bce4</checksum>
-                <checksum type="SHA-1">d498b513add5bb138ed4f6205453a063a2434dc4</checksum>
-              </file>
-            </resource>
-            <resource sequence="2" type="folder" id="folder2PdSa">
-              <file shelve="no" publish="yes" size="2534" preserve="yes" datetime="2012-06-15T23:05:03Z" id="folder2PdSa/story6u.txt">
-                <checksum type="MD5">1f15cc786bfe832b2fa1e6f047c500ba</checksum>
-                <checksum type="SHA-1">bf3af01de2afa15719d8c42a4141e3b43d06fef6</checksum>
-              </file>
-              <file shelve="no" publish="yes" size="17074" preserve="yes" datetime="2012-06-15T23:08:35Z" id="folder2PdSa/story7rr.txt">
-                <checksum type="MD5">205271287477c2309512eb664eff9130</checksum>
-                <checksum type="SHA-1">b23aa592ab673030ace6178e29fad3cf6a45bd32</checksum>
-              </file>
-              <file shelve="no" publish="yes" size="5643" preserve="yes" datetime="2012-06-15T23:09:26Z" id="folder2PdSa/story8m.txt">
-                <checksum type="MD5">ce474f4c512953f20a8c4c5b92405cf7</checksum>
-                <checksum type="SHA-1">af9cbf5ab4f020a8bb17b180fbd5c41598d89b37</checksum>
-              </file>
-              <file shelve="no" publish="yes" size="19599" preserve="yes" datetime="2012-06-15T23:14:32Z" id="folder2PdSa/storyAa.txt">
-                <checksum type="MD5">135cb2db6a35afac590687f452053baf</checksum>
-                <checksum type="SHA-1">e74274d7bc06ef44a408a008f5160b3756cb2ab0</checksum>
-              </file>
-            </resource>
-            <resource sequence="3" type="folder" id="folder3PaSd">
-              <file shelve="yes" publish="yes" size="14964" preserve="no" datetime="2012-06-17T11:42:52Z" id="folder3PaSd/storyBu.txt">
-                <checksum type="MD5">8f0a828f3e63cd18232c191ab0c5805c</checksum>
-                <checksum type="SHA-1">b6cb7aa60dd07b4dcc6ab709437e574912f25f30</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="23485" preserve="no" datetime="2012-06-17T11:44:14Z" id="folder3PaSd/storyCrr.txt">
-                <checksum type="MD5">3486492e40b4c342b25ae4f9c64f06ee</checksum>
-                <checksum type="SHA-1">a1654e9d3cf80242cc3669f89fb41b2ec5e62cb7</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="25336" preserve="no" datetime="2012-06-17T11:45:56Z" id="folder3PaSd/storyDm.txt">
-                <checksum type="MD5">233228c7e1f473dad1d2c673157dd809</checksum>
-                <checksum type="SHA-1">83c57f595aa6a72f80d47900cc0d10e589f31ea5</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="41765" preserve="no" datetime="2012-06-17T11:49:53Z" id="folder3PaSd/storyFa.txt">
-                <checksum type="MD5">0e57176032451fd6d0509b6172790b8f</checksum>
-                <checksum type="SHA-1">b191e11dc1768c47852e6d2a235094843be358ff</checksum>
-              </file>
-            </resource>
-          </contentMetadata>
-        EOF
+      let(:files) do
+        ['folder1PuSu/story1u.txt', 'folder1PuSu/story2rr.txt', 'folder1PuSu/story3m.txt', 'folder1PuSu/story5a.txt', 'folder2PdSa/story6u.txt', 'folder2PdSa/story7rr.txt', 'folder2PdSa/story8m.txt', 'folder2PdSa/storyAa.txt', 'folder3PaSd/storyBu.txt', 'folder3PaSd/storyCrr.txt', 'folder3PaSd/storyDm.txt', 'folder3PaSd/storyFa.txt']
       end
-      let(:inventory_diff) { instance_double(Moab::FileInventoryDifference, group_difference: file_group_diff) }
-      let(:file_group_diff) { instance_double(Moab::FileGroupDifference, file_deltas: { added: [], modified: [] }) }
+      let(:content_group_diff) { instance_double(Moab::FileGroupDifference, file_deltas: { added: [], modified: [] }) }
 
       before do
-        allow(Preservation::Client.objects).to receive(:metadata)
-        allow(Preservation::Client.objects).to receive(:content_inventory_diff).and_return(inventory_diff)
         allow(Honeybadger).to receive(:notify)
       end
 
@@ -208,37 +99,12 @@ RSpec.describe TechnicalMetadataService do
     # Note: This test is for an experiment and will be removed.
     context 'when no files are staged' do
       let(:druid) { 'druid:bb648mk7250' }
-      let(:content_metadata) do
-        <<~EOF
-          <?xml version="1.0"?>
-          <contentMetadata type="sample" objectId="druid:bb648mk7250">
-            <resource sequence="1" type="folder" id="folder1PuSu">
-              <file shelve="yes" publish="yes" size="7888" preserve="yes" datetime="2012-06-15T22:57:43Z" id="folder1PuSu/story1u.txt">
-                <checksum type="MD5">e2837b9f02e0b0b76f526eeb81c7aa7b</checksum>
-                <checksum type="SHA-1">61dfac472b7904e1413e0cbf4de432bda2a97627</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="5983" preserve="yes" datetime="2012-06-15T22:58:56Z" id="folder1PuSu/story2rr.txt">
-                <checksum type="MD5">dc2be64ae43f1c1db4a068603465955d</checksum>
-                <checksum type="SHA-1">b8a672c1848fc3d13b5f380e15835690e24600e0</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="5951" preserve="yes" datetime="2012-06-15T23:00:43Z" id="folder1PuSu/story3m.txt">
-                <checksum type="MD5">3d67f52e032e36b641d0cad40816f048</checksum>
-                <checksum type="SHA-1">548f349c79928b6d0996b7ff45990bdce5ee9753</checksum>
-              </file>
-              <file shelve="yes" publish="yes" size="6307" preserve="yes" datetime="2012-06-15T23:02:22Z" id="folder1PuSu/story5a.txt">
-                <checksum type="MD5">34f3f646523b0a8504f216483a57bce4</checksum>
-                <checksum type="SHA-1">d498b513add5bb138ed4f6205453a063a2434dc4</checksum>
-              </file>
-            </resource>
-          </contentMetadata>
-        EOF
+      let(:files) do
+        ['folder1PuSu/story1u.txt', 'folder1PuSu/story2rr.txt', 'folder1PuSu/story3m.txt', 'folder1PuSu/story5a.txt']
       end
-      let(:inventory_diff) { instance_double(Moab::FileInventoryDifference, group_difference: file_group_diff) }
-      let(:file_group_diff) { instance_double(Moab::FileGroupDifference, file_deltas: { added: [], modified: [] }) }
+      let(:content_group_diff) { instance_double(Moab::FileGroupDifference, file_deltas: { added: [], modified: [] }) }
 
       before do
-        allow(Preservation::Client.objects).to receive(:metadata)
-        allow(Preservation::Client.objects).to receive(:content_inventory_diff).and_return(inventory_diff)
         allow(Honeybadger).to receive(:notify)
         FileUtils.mkdir_p('spec/fixtures/sdr_repo/bb648mk7250/v0001/data/content')
       end
@@ -250,33 +116,6 @@ RSpec.describe TechnicalMetadataService do
       it 'does not notify Honeybadger' do
         instance.add_update_technical_metadata
         expect(Honeybadger).not_to have_received(:notify)
-      end
-    end
-  end
-
-  describe '#content_group_diff' do
-    subject(:content_group_diff) { instance.send(:content_group_diff) }
-
-    context 'with contentMetadata' do
-      let(:content_metadata) { 'foo' }
-      let(:object_id) { 'dd116zh0343' }
-      let(:druid) { "druid:#{object_id}" }
-      let(:group_diff) { @inventory_differences[object_id] }
-      let(:inventory_diff) do
-        Moab::FileInventoryDifference.new(
-          digital_object_id: druid,
-          basis: 'old_content_metadata',
-          other: 'new_content_metadata',
-          report_datetime: Time.now.utc.to_s
-        ).tap { |diff| diff.group_differences << group_diff }
-      end
-
-      before do
-        allow(Preservation::Client.objects).to receive(:content_inventory_diff).and_return(inventory_diff)
-      end
-
-      it 'calculates the difference' do
-        expect(content_group_diff.to_xml).to eq(group_diff.to_xml)
       end
     end
   end
@@ -296,54 +135,34 @@ RSpec.describe TechnicalMetadataService do
     expect(old_techmd).to eq(tech_md)
   end
 
-  describe '#preservation_technical_metadata' do
+  describe '#upgraded_preservation_technical_metadata' do
+    subject { instance.send(:upgraded_preservation_technical_metadata) }
+
     let(:druid) { 'druid:du000ps9999' }
 
-    context 'when Preservation::Client does not get 404 from API' do
-      subject { instance.send(:preservation_technical_metadata) }
+    context 'when preservation metadata returned is nil' do
+      let(:preservation_technical_metadata) { nil }
 
-      before do
-        allow(Preservation::Client.objects).to receive(:metadata).and_return(metadata)
-      end
-
-      context 'when preservation metadata returned is nil' do
-        let(:metadata) { nil }
-
-        it { is_expected.to be_nil }
-      end
-
-      context 'when preservation metadata has technicalMetadata outer tag' do
-        let(:metadata) { '<technicalMetadata/>' }
-
-        it { is_expected.to eq '<technicalMetadata/>' }
-      end
-
-      context 'when preservation metadata has jhove outer tag' do
-        let(:metadata) { '<jhove/>' }
-
-        before do
-          jhove_service = instance_double(JhoveService, upgrade_technical_metadata: 'upgraded techmd')
-          allow(JhoveService).to receive(:new).and_return(jhove_service)
-        end
-
-        it 'gets metadata from jhove service' do
-          expect(instance.send(:preservation_technical_metadata)).to eq 'upgraded techmd'
-          expect(JhoveService).to have_received(:new)
-        end
-      end
+      it { is_expected.to be_nil }
     end
 
-    context 'when Preservation::Client gets 404 from API' do
+    context 'when preservation metadata has technicalMetadata outer tag' do
+      let(:preservation_technical_metadata) { '<technicalMetadata/>' }
+
+      it { is_expected.to eq '<technicalMetadata/>' }
+    end
+
+    context 'when preservation metadata has jhove outer tag' do
+      let(:preservation_technical_metadata) { '<jhove/>' }
+
       before do
-        errmsg = "Preservation::Client.file for #{druid} got Not Found (404) from Preservation ... 404 Not Found ..."
-        allow(Preservation::Client.objects).to receive(:metadata)
-          .and_raise(Preservation::Client::NotFoundError, errmsg)
-        allow(JhoveService).to receive(:new)
+        jhove_service = instance_double(JhoveService, upgrade_technical_metadata: 'upgraded techmd')
+        allow(JhoveService).to receive(:new).and_return(jhove_service)
       end
 
-      it 'returns nil and does not call JhoveService' do
-        expect(instance.send(:preservation_technical_metadata)).to eq nil
-        expect(JhoveService).not_to have_received(:new)
+      it 'gets metadata from jhove service' do
+        expect(instance.send(:upgraded_preservation_technical_metadata)).to eq 'upgraded techmd'
+        expect(JhoveService).to have_received(:new)
       end
     end
   end
@@ -544,7 +363,11 @@ RSpec.describe TechnicalMetadataService do
 
   specify '#build_technical_metadata' do
     object_ids.each do |id|
-      instance = described_class.new(content_metadata: '', pid: "druid:#{id}", tech_metadata: nil)
+      instance = described_class.new(files: [],
+                                     pid: "druid:#{id}",
+                                     tech_metadata: nil,
+                                     preservation_technical_metadata: nil,
+                                     content_group_diff: content_group_diff)
       old_techmd = @repo_techmd[id]
       new_techmd = @new_file_techmd[id]
       deltas = @deltas[id]
