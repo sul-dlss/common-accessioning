@@ -23,8 +23,10 @@ module Robots
           elsif has_no_rights_metadata?(druid)
             Honeybadger.notify("I don't think this ever happens because rights is created when registering. This is an experiment")
 
-            object = Dor::Services::Client.object(druid).find
-            apo_id = object.administrative.hasAdminPolicy
+            cocina_model = object_client.find
+            apo_id = cocina_model.administrative.hasAdminPolicy
+            raise 'No apo for druid' unless apo_id
+
             apo = Dor::Services::Client.object(apo_id).find
 
             object_client.metadata.legacy_update(
