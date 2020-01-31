@@ -17,24 +17,28 @@ module Robots
           LyberCore::Log.debug "release-members working on #{druid}"
 
           # `#find` returns an instance of a model from the cocina-models gem
-          return unless Dor::Services::Client.object(druid).find.collection?
+          obj = Dor::Services::Client.object(druid).find
+          return unless obj.collection?
 
-          publish_collection(druid)
+          publish_collection(druid: druid, object: obj)
         end
 
         private
 
-        def publish_collection(druid)
+        def publish_collection(druid:, object:)
           member_service = Dor::Release::MemberService.new(druid: druid)
-
-          # check to see if all of the release tags for all targets are what=self, if so, we can skip adding workflow for all the members
-          #   if at least one of the targets is *not* what=self, we will do it
-          tag_service = Dor::ReleaseTagService.for(Dor.find(druid))
-          release_tags = tag_service.newest_release_tag(tag_service.release_tags) # get the latest release tag for each target
-          # if there are any *non* what=self release tags in any targets, go ahead and add the workflow to the items
-          add_workflow_to_members(member_service) if release_tags.collect { |_k, v| v['what'] == 'self' }.include?(false)
-
+          add_workflow_to_members(member_service) if add_wf_to_members?(object)
           add_workflow_to_sub_collections(member_service)
+        end
+
+        # Here's an example of the kinds of tags we're dealing with:
+        #   https://argo.stanford.edu/view/druid:fh138mm2023
+        # @return [boolean] returns true if the most recent releaseTags for any target is "collection"
+        def add_wf_to_members?(object)
+          object.administrative.releaseTags
+                .group_by(&:to)
+                .each_with_object({}) { |(key, v), out| out[key] = v.max(&:date) }
+                .values.map(&:what).any? { |x| x == 'collection' }
         end
 
         def add_workflow_to_members(member_service)
