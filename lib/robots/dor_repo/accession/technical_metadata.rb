@@ -14,31 +14,32 @@ module Robots
           obj = object_client.find
 
           # non-items don't generate contentMetadata
-          return unless obj.dro?
+          return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'object is not an item') unless obj.dro?
 
           object = DruidTools::Druid.new(druid, Dor::Config.stacks.local_workspace_root)
           path = object.find_metadata('technicalMetadata.xml')
-
           if path
             # When the technicalMetadata.xml file is found on the disk, use that
-            object_client.metadata.legacy_update(
+            return object_client.metadata.legacy_update(
               technical: {
                 updated: File.mtime(path),
                 content: File.read(path)
               }
             )
-          else
-            # Otherwise (re)generate technical metadata
-            tech_md = generate_technical_metadata(druid)
-            if tech_md
-              object_client.metadata.legacy_update(
-                technical: {
-                  updated: Time.now,
-                  content: tech_md
-                }
-              )
-            end
           end
+
+          return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'object has no files') if obj.structural.contains.blank?
+
+          # Otherwise (re)generate technical metadata
+          tech_md = generate_technical_metadata(druid)
+          return unless tech_md
+
+          object_client.metadata.legacy_update(
+            technical: {
+              updated: Time.now,
+              content: tech_md
+            }
+          )
         end
 
         private
