@@ -2,13 +2,6 @@
 
 set :output, '/opt/app/lyberadmin/common-accessioning/current/log/crondebug.log'
 
-every :day, at: '2:16am' do
-  command 'cd /opt/app/lyberadmin/common-accessioning/current/ && ' \
-          'BUNDLE_GEMFILE=/opt/app/lyberadmin/common-accessioning/current/Gemfile ' \
-          "ROBOT_ENVIRONMENT=#{environment} /usr/local/rvm/wrappers/default/ruby " \
-          '/opt/app/lyberadmin/common-accessioning/current/lib/robots/dor_repo/accession/embargo_release.rb'
-end
-
 set :environment_variable, 'ROBOT_ENVIRONMENT'
 job_type :robot_cron, 'cd :path && :environment_variable=:environment :bundle_command bin/run_robot_cron :task :output'
 
