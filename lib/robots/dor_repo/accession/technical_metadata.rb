@@ -47,17 +47,26 @@ module Robots
         def generate_technical_metadata(druid)
           obj = Dor.find(druid)
           tech_xml = obj.technicalMetadata.content unless obj.technicalMetadata.new?
-          content_xml = obj.contentMetadata.content
-          inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: druid, content_metadata: content_xml)
 
           files = obj.contentMetadata.ng_xml.xpath('//file/@id').map(&:content)
           TechnicalMetadataService.add_update_technical_metadata(files: files,
                                                                  pid: druid,
                                                                  tech_metadata: tech_xml,
                                                                  preservation_technical_metadata: preservation_technical_metadata(druid),
-                                                                 content_group_diff: inventory_diff.group_difference('content'))
+                                                                 content_group_diff: content_group_diff(obj))
         end
 
+        # TODO: This operation should move to a dor-services-app call.
+        #       This will reduce the coupling to Fedora 3 and remove the dependency on Preservation::Client
+        # @return [Moab::FileGroupDifference] the difference between contentMetadata in preservation and what is in the workspace
+        def content_group_diff(obj)
+          content_xml = obj.contentMetadata.content
+          inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: obj.pid, content_metadata: content_xml)
+          inventory_diff.group_difference('content')
+        end
+
+        # TODO: This operation should move to a dor-services-app call.
+        #       This will reduce remove the dependency on Preservation::Client
         # @return [String] The datastream contents from the previous version of the digital object (fetched from preservation),
         #   or nil if there is no such datastream (e.g. object not yet in preservation)
         def preservation_technical_metadata(pid)
