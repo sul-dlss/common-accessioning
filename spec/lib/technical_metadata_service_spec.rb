@@ -125,13 +125,13 @@ RSpec.describe TechnicalMetadataService do
     expect(new_files).to eq(['page-2.jpg', 'page-1.jpg'])
   end
 
-  specify '#old_technical_metadata' do
+  specify '#preserved_or_dor_technical_metadata' do
     tech_md = '<technicalMetadata/>'
     expect(instance).to receive(:preservation_technical_metadata).and_return(tech_md, nil)
-    old_techmd = instance.send(:old_technical_metadata)
+    old_techmd = instance.send(:preserved_or_dor_technical_metadata)
     expect(old_techmd).to eq(tech_md)
     expect(instance).to receive(:dor_technical_metadata).and_return(tech_md)
-    old_techmd = instance.send(:old_technical_metadata)
+    old_techmd = instance.send(:preserved_or_dor_technical_metadata)
     expect(old_techmd).to eq(tech_md)
   end
 

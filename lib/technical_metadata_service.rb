@@ -39,7 +39,7 @@ class TechnicalMetadataService
     check_all_files_staged
 
     deltas = content_group_diff.file_deltas
-    old_techmd = old_technical_metadata
+    old_techmd = preserved_or_dor_technical_metadata
     new_techmd = new_technical_metadata(deltas)
     # this is version 1 or previous technical metadata was not saved
     return new_techmd if old_techmd.nil?
@@ -76,11 +76,8 @@ class TechnicalMetadataService
   end
 
   # @return [String] The technicalMetadata datastream from the previous version of the digital object
-  def old_technical_metadata
-    pres_techmd = upgraded_preservation_technical_metadata
-    return pres_techmd unless pres_techmd.nil?
-
-    dor_technical_metadata
+  def preserved_or_dor_technical_metadata
+    upgraded_preservation_technical_metadata.presence || dor_technical_metadata
   end
 
   # @return [String] The technicalMetadata datastream from the previous version of the digital object (fetched from preservation)
