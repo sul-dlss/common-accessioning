@@ -24,6 +24,7 @@ module Robots
               }
             )
           elsif !has_descriptive_metadata?(druid)
+            Honeybadger.notify("I don't think this should ever happen because descMetadata should be created when registering. This is an experiment")
             object_client.refresh_metadata
           end
         end
