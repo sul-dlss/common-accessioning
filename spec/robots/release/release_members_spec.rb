@@ -41,25 +41,25 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
   end
 
   context 'when the model is a collection' do
-    let(:cocina_model) { Cocina::Models::Collection.allocate }
-    let(:work_item) { instance_double(Dor::Item) }
+    let(:releaseTags) { [] }
 
-    before do
-      allow(Dor).to receive(:find).and_return(work_item)
+    let(:administrative) do
+      Cocina::Models::Collection::Administrative.new(releaseTags: releaseTags)
+    end
+    let(:cocina_model) do
+      Cocina::Models::Collection.new(externalIdentifier: '123',
+                                     type: Cocina::Models::Vocab.collection,
+                                     label: 'my collection',
+                                     version: 1,
+                                     administrative: administrative)
     end
 
     context 'when the collection is released to self only' do
-      let(:tag_service) do
-        instance_double(Dor::ReleaseTagService, newest_release_tag: { 'SearchWorks' => { 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' } },
-                                                release_tags: { 'SearchWorks' => [{ 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' }] })
-      end
+      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
+      let(:releaseTags) { [release_tag1] }
 
       let(:members) do
         { 'sets' => [{ 'druid' => 'druid:bb001zc5754', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'French Grand Prix and 12 Hour Rheims: 1954', 'catkey' => '3051728' }] }
-      end
-
-      before do
-        allow(Dor::ReleaseTagService).to receive(:for).with(work_item).and_return(tag_service)
       end
 
       it 'runs for a collection but never add workflow or ask for item members' do
@@ -69,18 +69,12 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'when there are multiple targets but they are all released to self only' do
-      let(:tag_service) do
-        instance_double(Dor::ReleaseTagService, newest_release_tag: { 'SearchWorks' => { 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' },
-                                                                      'Revs' => { 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'petucket' } },
-                                                release_tags: { 'SearchWorks' => [{ 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' },
-                                                                                  'Revs' => { 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'petucket' }] })
-      end
+      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
+      let(:release_tag2) { Cocina::Models::ReleaseTag.new(to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket') }
+      let(:releaseTags) { [release_tag1, release_tag2] }
+
       let(:members) do
         { 'collections' => [{ 'druid' => 'druid:bb001zc5754', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'French Grand Prix and 12 Hour Rheims: 1954', 'catkey' => '3051728' }] }
-      end
-
-      before do
-        allow(Dor::ReleaseTagService).to receive(:for).with(work_item).and_return(tag_service)
       end
 
       it 'runs for a collection but never adds workflow or ask for item members' do
@@ -90,21 +84,14 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'when the collection is not released to self' do
-      let(:tag_service) do
-        instance_double(Dor::ReleaseTagService,
-                        newest_release_tag: { 'SearchWorks' => { 'release' => true, 'what' => 'collection', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' } },
-                        release_tags: { 'SearchWorks' => [{ 'release' => true, 'what' => 'collection', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' }] })
-      end
+      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
+      let(:releaseTags) { [release_tag1] }
 
       let(:members) do
         { 'items' => [{ 'druid' => 'druid:bb001zc5754', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'French Grand Prix and 12 Hour Rheims: 1954', 'catkey' => '3051728' },
                       { 'druid' => 'druid:bb023nj3137', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'Snetterton Vanwall Trophy: 1958', 'catkey' => '3051732' },
                       { 'druid' => 'druid:bb027yn4436', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'Crystal Palace BARC: 1954', 'catkey' => '3051733' },
                       { 'druid' => 'druid:bb048rn5648', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => '', 'catkey' => '3051734' }] }
-      end
-
-      before do
-        allow(Dor::ReleaseTagService).to receive(:for).with(work_item).and_return(tag_service)
       end
 
       it 'runs for a collection and execute the item_members method' do
@@ -114,22 +101,16 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       end
     end
 
-    context 'when there are multiple targets and at least one of the release tagets is not released to self' do
-      let(:tag_service) do
-        instance_double(Dor::ReleaseTagService, newest_release_tag: { 'SearchWorks' => { 'release' => true, 'what' => 'collection', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' },
-                                                                      'Revs' => { 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'petucket' } },
-                                                release_tags: { 'SearchWorks' => [{ 'release' => true, 'what' => 'collection', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' },
-                                                                                  'Revs' => { 'release' => true, 'what' => 'self', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'petucket' }] })
-      end
+    context 'when there are multiple targets and at least one of the release targets is not released to self' do
+      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
+      let(:release_tag2) { Cocina::Models::ReleaseTag.new(to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket') }
+      let(:releaseTags) { [release_tag1, release_tag2] }
+
       let(:members) do
         { 'items' => [{ 'druid' => 'druid:bb001zc5754', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'French Grand Prix and 12 Hour Rheims: 1954', 'catkey' => '3051728' },
                       { 'druid' => 'druid:bb023nj3137', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'Snetterton Vanwall Trophy: 1958', 'catkey' => '3051732' },
                       { 'druid' => 'druid:bb027yn4436', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'Crystal Palace BARC: 1954', 'catkey' => '3051733' },
                       { 'druid' => 'druid:bb048rn5648', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => '', 'catkey' => '3051734' }] }
-      end
-
-      before do
-        allow(Dor::ReleaseTagService).to receive(:for).with(work_item).and_return(tag_service)
       end
 
       it 'runs for a collection and execute the item_members method' do
@@ -139,18 +120,12 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'with sub collections' do
-      let(:tag_service) do
-        instance_double(Dor::ReleaseTagService, newest_release_tag: { 'SearchWorks' => { 'release' => true, 'what' => 'collection', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' } },
-                                                release_tags: { 'SearchWorks' => [{ 'release' => true, 'what' => 'collection', 'when' => '2016-10-07 19:34:43 UTC', 'who' => 'lmcrae' }] })
-      end
+      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
+      let(:releaseTags) { [release_tag1] }
 
       let(:collections) { [{ 'druid' => 'druid:bb001zc5754' }, { 'druid' => 'druid:bb023nj3137' }] }
 
       context 'with only collections' do
-        before do
-          allow(Dor::ReleaseTagService).to receive(:for).with(work_item).and_return(tag_service)
-        end
-
         let(:members) { { 'collections' => collections } }
 
         it 'runs for a collection and execute the sub_collection method' do
@@ -161,10 +136,6 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
 
       context 'with collections and itself' do
         let(:members) { { 'collections' => collections + [{ 'druid' => druid }] } }
-
-        before do
-          allow(Dor::ReleaseTagService).to receive(:for).with(work_item).and_return(tag_service)
-        end
 
         it 'runs for a collection and execute the sub_collection method but not add a workflow for the collection itself' do
           expect(workflow_client).to receive(:create_workflow_by_name).twice # two workflows added, one for each collection
