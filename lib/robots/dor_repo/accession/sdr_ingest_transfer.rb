@@ -5,7 +5,7 @@ module Robots
     module Accession
       class SdrIngestTransfer < Robots::DorRepo::Base
         def initialize
-          super('dor', 'accessionWF', 'sdr-ingest-transfer')
+          super('accessionWF', 'sdr-ingest-transfer')
         end
 
         def perform(druid)

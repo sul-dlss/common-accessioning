@@ -12,7 +12,7 @@ module Robots
         attr_reader :day_working_dir
 
         def initialize(opts = {})
-          super('dor', 'etdSubmitWF', 'submit-marc', opts)
+          super('etdSubmitWF', 'submit-marc', opts)
 
           FileUtils.mkdir(ROBOT_ROOT + '/tmp') unless File.exist?(ROBOT_ROOT + '/tmp')
           @day_working_dir = File.join(ROBOT_ROOT, 'tmp', Time.now.strftime('%Y%m%d'))

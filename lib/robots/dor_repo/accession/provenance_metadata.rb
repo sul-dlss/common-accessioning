@@ -5,7 +5,7 @@ module Robots
     module Accession
       class ProvenanceMetadata < Robots::DorRepo::Base
         def initialize
-          super('dor', 'accessionWF', 'provenance-metadata')
+          super('accessionWF', 'provenance-metadata')
         end
 
         def perform(druid)

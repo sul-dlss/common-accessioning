@@ -6,7 +6,7 @@ module Robots
       # Creates the rightsMetadata datastream
       class RightsMetadata < Robots::DorRepo::Base
         def initialize
-          super('dor', 'accessionWF', 'rights-metadata')
+          super('accessionWF', 'rights-metadata')
         end
 
         def perform(druid)

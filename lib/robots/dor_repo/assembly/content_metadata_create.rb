@@ -5,7 +5,7 @@ module Robots
     module Assembly
       class ContentMetadataCreate < Robots::DorRepo::Assembly::Base
         def initialize(opts = {})
-          super('dor', 'assemblyWF', 'content-metadata-create', opts)
+          super('assemblyWF', 'content-metadata-create', opts)
         end
 
         # generate the content metadata for this object based on some logic of whether
@@ -23,7 +23,7 @@ module Robots
           # if stub exists, create metadata from the stub, else create basic content metadata
           obj.stub_content_metadata_exists? ? obj.convert_stub_content_metadata : obj.create_basic_content_metadata
           obj.persist_content_metadata
-          LyberCore::Robot::ReturnState.COMPLETED
+          LyberCore::Robot::ReturnState.new(status: 'completed')
         end
       end
     end

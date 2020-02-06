@@ -5,7 +5,7 @@ module Robots
     module Release
       class UpdateMarc < Robots::DorRepo::Base
         def initialize
-          super('dor', 'releaseWF', 'update-marc', check_queued_status: true) # init LyberCore::Robot
+          super('releaseWF', 'update-marc', check_queued_status: true) # init LyberCore::Robot
         end
 
         # `perform` is the main entry point for the robot. This is where

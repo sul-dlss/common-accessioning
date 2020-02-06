@@ -6,7 +6,7 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
   subject(:result) { robot.perform(druid) }
 
   let(:druid) { 'aa111bb2222' }
-  let(:robot) { described_class.new(druid: druid) }
+  let(:robot) { described_class.new }
   let(:type) { 'item' }
 
   let(:item) do

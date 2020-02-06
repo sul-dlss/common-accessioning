@@ -8,7 +8,7 @@ module Robots
     module EtdSubmit
       class OtherMetadata < Robots::DorRepo::Base
         def initialize(opts = {})
-          super('dor', 'etdSubmitWF', 'other-metadata', opts)
+          super('etdSubmitWF', 'other-metadata', opts)
         end
 
         # create metadata datastreams for the work item

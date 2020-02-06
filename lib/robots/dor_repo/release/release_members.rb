@@ -6,7 +6,7 @@ module Robots
     module Release
       class ReleaseMembers < Robots::DorRepo::Base
         def initialize
-          super('dor', 'releaseWF', 'release-members', check_queued_status: true) # init LyberCore::Robot
+          super('releaseWF', 'release-members', check_queued_status: true) # init LyberCore::Robot
         end
 
         # `perform` is the main entry point for the robot. This is where
