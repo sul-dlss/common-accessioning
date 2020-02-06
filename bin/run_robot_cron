@@ -7,14 +7,11 @@
 # Assumes robot suite was intalled with capistrano with bundler running in deployment mode
 #
 # From cron
-# 0 * * * * bash -l -c 'cd /path/to/robot_root && ROBOT_ENVIRONMENT=lyberservices-dev ruby ./bin/run_robot_cron etdSubmitWF:submit-marc' > /home/deploy/crondebug.log 2>&1
+# 0 * * * * bash -l -c 'cd /path/to/robot_root && ROBOT_ENVIRONMENT=lyberservices-dev ruby ./bin/run_robot_cron EtdSubmit::SubmitMarc' > /home/deploy/crondebug.log 2>&1
 
 require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
 
-robot = ARGV.shift
-
-# Parse the module and robot file name from the command line
-robot_name = LyberCore::Robot.step_to_classname robot
+robot_name = ARGV.shift
 
 # See if the robot is already running
 procs_running = `ps -ef | grep #{robot_name} | grep -v 'grep' | wc -l`.strip.to_i
@@ -25,6 +22,6 @@ end
 
 # Instantiate the robot class and start it
 puts "Trying to load #{robot_name}"
-klazz = robot_name.split('::').inject(Object) { |o, c| o.const_get c }
+klazz = robot_name.split('::').inject(Robots::DorRepo) { |o, c| o.const_get c }
 robot = klazz.new check_queued_status: false
 robot.start
