@@ -15,7 +15,7 @@ The following workflows are supported by this repository:
 * Dissemination - cleans up the workspace after accessioning
 * Release - Moves files to PURL and updates the marc record in the ILS
 * Goobi notify - informs goobi there are new items
-* ETD Submit - Starts accessioning for ETD objects and updates the ILS 
+* ETD Submit - Starts accessioning for ETD objects and updates the ILS
 
 ## For developers
 It's possible to invoke the jobs manually or have an interactive shell:
@@ -29,7 +29,7 @@ $ ROBOT_ENVIRONMENT=production ./bin/console
 
 Running a single robot step manually (without checking current workflow status):
 ```console
-$ ./bin/run_robot --druid druid:12345 --environment production dor:accessionWF:publish
+$ ./bin/run_robot --druid druid:12345 --environment production Accession::Publish
 ```
 
 ## Running tests
