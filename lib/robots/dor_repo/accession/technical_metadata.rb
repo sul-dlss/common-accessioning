@@ -6,7 +6,7 @@ module Robots
       # Creates the technicalMetadata datastream
       class TechnicalMetadata < Robots::DorRepo::Base
         def initialize
-          super('dor', 'accessionWF', 'technical-metadata')
+          super('accessionWF', 'technical-metadata')
         end
 
         def perform(druid)

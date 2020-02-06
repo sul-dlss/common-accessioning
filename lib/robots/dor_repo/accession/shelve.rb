@@ -6,7 +6,7 @@ module Robots
       # Push file changes for shelve-able files into stacks
       class Shelve < Robots::DorRepo::Base
         def initialize
-          super('dor', 'accessionWF', 'shelve')
+          super('accessionWF', 'shelve')
         end
 
         def perform(druid)

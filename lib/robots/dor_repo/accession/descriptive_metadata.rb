@@ -8,7 +8,7 @@ module Robots
       # otherwise if the datastream hasn't alredy been populated it calls Symphony
       class DescriptiveMetadata < Robots::DorRepo::Base
         def initialize
-          super('dor', 'accessionWF', 'descriptive-metadata')
+          super('accessionWF', 'descriptive-metadata')
         end
 
         def perform(druid)

@@ -6,7 +6,7 @@ module Robots
       # Creates the contentMetadata datastream
       class ContentMetadata < Robots::DorRepo::Base
         def initialize
-          super('dor', 'accessionWF', 'content-metadata')
+          super('accessionWF', 'content-metadata')
         end
 
         def perform(druid)

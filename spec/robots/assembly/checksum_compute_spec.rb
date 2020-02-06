@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
-  let(:robot) { described_class.new(druid: druid) }
+  let(:robot) { described_class.new }
   let(:druid) { 'aa222cc3333' }
   let(:object_client) do
     instance_double(Dor::Services::Client::Object, find: object)

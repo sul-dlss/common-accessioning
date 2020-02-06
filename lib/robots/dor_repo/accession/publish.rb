@@ -7,7 +7,7 @@ module Robots
       # to PURL again with updates to identityMetadata
       class Publish < Robots::DorRepo::Base
         def initialize
-          super('dor', 'accessionWF', 'publish')
+          super('accessionWF', 'publish')
         end
 
         def perform(druid)

@@ -8,7 +8,7 @@ module Robots
     module EtdSubmit
       class StartAccession < Robots::DorRepo::Base
         def initialize(opts = {})
-          super('dor', 'etdSubmitWF', 'start-accession', opts)
+          super('etdSubmitWF', 'start-accession', opts)
         end
 
         def perform(druid)

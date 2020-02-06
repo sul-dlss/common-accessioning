@@ -8,7 +8,7 @@ module Robots
         include ::EtdSubmit::RobotCronBase
 
         def initialize(opts = {})
-          super('dor', 'etdSubmitWF', 'catalog-status', opts)
+          super('etdSubmitWF', 'catalog-status', opts)
           @prerequisites = ['dor:etdSubmitWF:check-marc']
         end
 
@@ -30,7 +30,7 @@ module Robots
           home_location = symphony_xml.search('/titles/record[home="INTERNET"]/home').first
 
           #========= if these nodes are empty, the workflow is not advanced ==========#
-          return LyberCore::Robot::ReturnState.WAITING if current_location.nil? || home_location.nil?
+          return LyberCore::Robot::ReturnState.new(status: 'waiting') if current_location.nil? || home_location.nil?
 
           #========= check the symphonystatus and update it with any changes ==========#
 

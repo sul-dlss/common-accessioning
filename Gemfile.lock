@@ -201,10 +201,7 @@ GEM
       nokogiri (>= 1.4.3.1)
     json (2.3.0)
     link_header (0.0.8)
-    lyber-core (5.5.1)
-      activesupport
-      dor-services (>= 7.0.0, < 9)
-      dor-workflow-client (~> 3.11)
+    lyber-core (6.0.0)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     marc (1.0.4)
@@ -423,7 +420,7 @@ DEPENDENCIES
   dor-workflow-client (~> 3.18)
   honeybadger
   jhove-service (~> 1.4)
-  lyber-core (~> 5.5)
+  lyber-core (~> 6.0)
   marc
   moab-versioning (~> 4.0)
   net-sftp (~> 2.1)

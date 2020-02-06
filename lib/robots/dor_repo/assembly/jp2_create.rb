@@ -5,7 +5,7 @@ module Robots
     module Assembly
       class Jp2Create < Robots::DorRepo::Assembly::Base
         def initialize(opts = {})
-          super('dor', 'assemblyWF', 'jp2-create', opts)
+          super('assemblyWF', 'jp2-create', opts)
         end
 
         def perform(druid)

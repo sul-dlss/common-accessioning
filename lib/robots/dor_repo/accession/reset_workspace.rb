@@ -7,7 +7,7 @@ module Robots
       # (i.e. /dor/assembly/xw/754/sd/7436/xw754sd7436/ -> /dor/assembly/xw/754/sd/7436/xw754sd7436_v2/)
       class ResetWorkspace < Robots::DorRepo::Base
         def initialize
-          super('dor', 'accessionWF', 'reset-workspace')
+          super('accessionWF', 'reset-workspace')
         end
 
         def perform(druid)

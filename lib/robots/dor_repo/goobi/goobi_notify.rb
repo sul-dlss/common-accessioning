@@ -6,7 +6,7 @@ module Robots
       # Robot class to run under multiplexing infrastructure
       class GoobiNotify < Robots::DorRepo::Base
         def initialize
-          super('dor', 'goobiWF', 'goobi-notify', check_queued_status: true) # init LyberCore::Robot
+          super('goobiWF', 'goobi-notify', check_queued_status: true) # init LyberCore::Robot
         end
 
         # `perform` is the main entry point for the robot. This is where

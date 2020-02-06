@@ -5,7 +5,7 @@ module Robots
     module Assembly
       class ChecksumCompute < Robots::DorRepo::Assembly::Base
         def initialize(opts = {})
-          super('dor', 'assemblyWF', 'checksum-compute', opts)
+          super('assemblyWF', 'checksum-compute', opts)
         end
 
         def perform(druid)

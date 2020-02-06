@@ -5,7 +5,7 @@ module Robots
     module Dissemination
       class Cleanup < Robots::DorRepo::Base
         def initialize
-          super('dor', 'disseminationWF', 'cleanup')
+          super('disseminationWF', 'cleanup')
         end
 
         def perform(druid)

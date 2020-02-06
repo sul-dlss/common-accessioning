@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
-  subject(:robot) { described_class.new(druid: druid) }
+  subject(:robot) { described_class.new }
 
   let(:base_url) { 'http://dor-services.example.edu' }
   let(:druid) { 'aa222cc3333' }

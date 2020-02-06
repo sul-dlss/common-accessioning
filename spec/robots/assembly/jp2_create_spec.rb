@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
-  let(:robot) { described_class.new(druid: druid) }
+  let(:robot) { described_class.new }
 
   def get_filenames(item)
     item.file_nodes.map { |fn| item.path_finder.path_to_content_file fn['id'] }

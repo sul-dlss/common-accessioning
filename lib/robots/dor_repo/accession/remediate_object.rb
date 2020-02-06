@@ -7,7 +7,7 @@ module Robots
     module Accession
       class RemediateObject < Robots::DorRepo::Base
         def initialize
-          super('dor', 'accessionWF', 'remediate-object')
+          super('accessionWF', 'remediate-object')
         end
 
         def perform(druid)

@@ -5,7 +5,7 @@ module Robots
     module Accession
       class EndAccession < Robots::DorRepo::Base
         def initialize
-          super('dor', 'accessionWF', 'end-accession')
+          super('accessionWF', 'end-accession')
         end
 
         def perform(druid)

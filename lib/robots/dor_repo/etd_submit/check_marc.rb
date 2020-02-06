@@ -9,7 +9,7 @@ module Robots
         include ::EtdSubmit::RobotCronBase
 
         def initialize(opts = {})
-          super('dor', 'etdSubmitWF', 'check-marc', opts)
+          super('etdSubmitWF', 'check-marc', opts)
           @prerequisites = ['dor:etdSubmitWF:submit-marc']
         end
 
