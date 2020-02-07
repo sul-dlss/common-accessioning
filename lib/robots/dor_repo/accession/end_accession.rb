@@ -16,8 +16,9 @@ module Robots
           next_dissemination_wf = special_dissemination_wf(object_client)
           Dor::Config.workflow.client.create_workflow_by_name(druid, next_dissemination_wf, version: current_version, lane_id: lane_id(druid)) if next_dissemination_wf.present?
 
-          # Call the default disseminationWF in all cases
-          Dor::Config.workflow.client.create_workflow_by_name(druid, 'disseminationWF', version: current_version, lane_id: lane_id(druid))
+          # Call cleanup
+          # Note that this used to be handled by the disseminationWF, which is no longer used.
+          Dor::Services::Client.object(druid).workspace.cleanup
         end
 
         private

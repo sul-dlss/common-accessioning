@@ -24,9 +24,10 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   let(:apo_id) { 'druid:mx121xx1234' }
   let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
   let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process: process) }
-  let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: object) }
+  let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: object, workspace: workspace_client) }
   let(:apo_object_client) { instance_double(Dor::Services::Client::Object, find: apo) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
+  let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, cleanup: true) }
 
   before do
     allow(Dor).to receive(:find).with(druid).and_return(object)
@@ -39,10 +40,9 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
     subject(:perform) { robot.perform(druid) }
 
     context 'when there is no special dissemniation workflow' do
-      it 'kicks off dissemination' do
+      it 'cleans up' do
         perform
-        expect(workflow_client).to have_received(:create_workflow_by_name)
-          .with(druid, 'disseminationWF', version: '1', lane_id: 'default')
+        expect(workspace_client).to have_received(:cleanup)
       end
     end
 
@@ -55,12 +55,11 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
                                         administrative: { registration_workflow: 'wasDisseminationWF' })
       end
 
-      it 'kicks off both dissemination workflows' do
+      it 'kicks off that workflow' do
         perform
         expect(workflow_client).to have_received(:create_workflow_by_name)
           .with(druid, 'wasDisseminationWF', version: '1', lane_id: 'default')
-        expect(workflow_client).to have_received(:create_workflow_by_name)
-          .with(druid, 'disseminationWF', version: '1', lane_id: 'default')
+        expect(workspace_client).to have_received(:cleanup)
       end
     end
   end
