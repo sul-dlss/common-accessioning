@@ -37,7 +37,7 @@ set :stages, %w[dev staging production]
 
 # resque-pool writes it's pidfile to tmp/pids, so link it or we'll start a new
 # pool of workers with each deploy.
-set :linked_dirs, %w[log run config/environments config/settings config/certs tmp/pids]
+set :linked_dirs, %w[log run config/settings config/certs tmp/pids]
 
 set :honeybadger_env, fetch(:stage)
 
