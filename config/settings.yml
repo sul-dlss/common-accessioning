@@ -25,3 +25,52 @@ sdr:
 preservation_catalog:
   url: 'https://example.org/prescat'
   token: 'mint-token-with-target-preservation-catalog-rake-generate-token'
+
+
+
+fedora:
+  url: ~
+
+ssl:
+  cert_file: ~
+  key_file: ~
+  key_pass: ~
+
+suri:
+  mint_ids: true
+  id_namespace: 'druid'
+  url: ~
+  user: ~
+  pass: ~
+
+# Used by Dor::DigitalStacksService, Dor::PublishMetadataService, and Dor::ShelvingService
+stacks:
+  document_cache_host: ~
+  local_workspace_root: ~
+  local_stacks_root: ~
+
+solr:
+  url: ~
+
+workflow:
+  url: ~
+  logfile: 'log/workflow_service.log'
+  shift_age: 'weekly'
+
+redis:
+  url: ~
+
+etd:
+  workspace: ~
+
+symphony:
+  # hostname where symphony resides
+  url: ~
+
+# location where marc output will be dumped
+marc_output_directory: ~
+
+binder_dropbox:
+  host: ~
+  user: ~
+  storage_root: ~
