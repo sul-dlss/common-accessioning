@@ -37,7 +37,7 @@ module Robots
         def add_wf_to_members?(object)
           object.administrative.releaseTags
                 .group_by(&:to)
-                .each_with_object({}) { |(key, v), out| out[key] = v.max(&:date) }
+                .each_with_object({}) { |(key, v), out| out[key] = v.max_by(&:date) }
                 .values.map(&:what).any? { |x| x == 'collection' }
         end
 
