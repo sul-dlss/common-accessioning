@@ -28,37 +28,9 @@ RSpec.describe Robots::DorRepo::Accession::RightsMetadata do
   end
 
   context 'when no rightsMetadata file is found' do
-    let(:apo_object_client) { instance_double(Dor::Services::Client::Object, find: apo) }
-    let(:apo) do
-      Cocina::Models::AdminPolicy.new(externalIdentifier: '123',
-                                      type: Cocina::Models::AdminPolicy::TYPES.first,
-                                      label: 'my apo object',
-                                      version: 1,
-                                      administrative: {})
-    end
-    let(:fedora_obj) { instance_double(Dor::Item, rightsMetadata: datastream) }
-
-    before do
-      allow(Dor).to receive(:find).and_return(fedora_obj)
-      allow(Dor::Services::Client).to receive(:object).with(apo_id).and_return(apo_object_client)
-    end
-
-    context "when rightsMetadata doesn't exist" do
-      let(:datastream) { instance_double(Dor::RightsMetadataDS, new?: true) }
-
-      it 'builds a datastream from the remote service call' do
-        perform
-        expect(metadata_client).to have_received(:legacy_update)
-      end
-    end
-
-    context 'when rightsMetadata exists' do
-      let(:datastream) { instance_double(Dor::RightsMetadataDS, new?: false) }
-
-      it 'does nothing' do
-        perform
-        expect(metadata_client).not_to have_received(:legacy_update)
-      end
+    it 'skips the step' do
+      expect(perform.status).to eq 'skipped'
+      expect(metadata_client).not_to have_received(:legacy_update)
     end
   end
 
