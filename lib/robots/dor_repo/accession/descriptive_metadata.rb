@@ -4,8 +4,7 @@ module Robots
   module DorRepo
     module Accession
       # Creates or updates the descMetadata datastream
-      # it first looks for a file on disk if it's newer than the datastream.
-      # otherwise if the datastream hasn't alredy been populated it calls Symphony
+      # it looks for a file on disk that is newer than the datastream.
       class DescriptiveMetadata < Robots::DorRepo::Base
         def initialize
           super('accessionWF', 'descriptive-metadata')
@@ -14,25 +13,15 @@ module Robots
         def perform(druid)
           object = DruidTools::Druid.new(druid, Dor::Config.stacks.local_workspace_root)
           path = object.find_metadata('descMetadata.xml')
+          return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'No descMetadata.xml was provided') unless path
+
           object_client = Dor::Services::Client.object(druid)
-
-          if path
-            object_client.metadata.legacy_update(
-              descriptive: {
-                updated: File.mtime(path),
-                content: File.read(path)
-              }
-            )
-          elsif !has_descriptive_metadata?(druid)
-            Honeybadger.notify("I don't think this should ever happen because descMetadata should be created when registering. This is an experiment")
-            object_client.refresh_metadata
-          end
-        end
-
-        # TODO: for now we're looking for the presence of the datastream, but eventually
-        # we need to do this without involving Fedora 3 concepts
-        def has_descriptive_metadata?(druid)
-          Dor.find(druid).full_title.present?
+          object_client.metadata.legacy_update(
+            descriptive: {
+              updated: File.mtime(path),
+              content: File.read(path)
+            }
+          )
         end
       end
     end
