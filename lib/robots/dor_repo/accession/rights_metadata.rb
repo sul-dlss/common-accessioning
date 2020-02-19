@@ -12,9 +12,9 @@ module Robots
         def perform(druid)
           object = DruidTools::Druid.new(druid, Dor::Config.stacks.local_workspace_root)
           path = object.find_metadata('rightsMetadata.xml')
-          object_client = Dor::Services::Client.object(druid)
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'No rightsMetadata.xml was provided') unless path
 
+          object_client = Dor::Services::Client.object(druid)
           object_client.metadata.legacy_update(
             rights: {
               updated: File.mtime(path),
