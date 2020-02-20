@@ -8,135 +8,109 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
   describe '.perform' do
     subject(:perform) { robot.perform(druid) }
 
-    let(:druid) { 'druid:bd185gs2259' }
+    let(:druid) { 'druid:dd116zh0343' }
 
     let(:object_client) do
-      instance_double(Dor::Services::Client::Object, find: object, metadata: metadata_client)
-    end
-    let(:metadata_client) do
-      instance_double(Dor::Services::Client::Metadata, legacy_update: true)
+      instance_double(Dor::Services::Client::Object, find: object)
     end
 
     before do
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
     end
 
-    context 'on an item' do
-      let(:dor_object) { Dor::Item.new(pid: druid) }
-      let(:contains) { [] }
+    context 'when a DRO with files' do
+      let(:workspace) { File.absolute_path('spec/fixtures/workspace') }
 
       let(:object) do
-        Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
+        Cocina::Models::DRO.new(externalIdentifier: 'druid:dd116zh0343',
                                 type: Cocina::Models::Vocab.object,
                                 label: 'my repository object',
                                 version: 1,
                                 access: {},
                                 structural: {
-                                  contains: contains
+                                  contains: [{
+                                    externalIdentifier: '222',
+                                    type: Cocina::Models::Vocab.fileset,
+                                    label: 'my repository object',
+                                    version: 1,
+                                    structural: {
+                                      contains: [
+                                        {
+                                          externalIdentifier: '222-1',
+                                          label: 'folder1PuSu/story1u.txt',
+                                          type: Cocina::Models::Vocab.file,
+                                          version: 1,
+                                          access: {},
+                                          administrative: { sdrPreserve: true, shelve: true },
+                                          hasMessageDigests: []
+                                        }
+                                      ]
+                                    }
+                                  }]
                                 })
       end
 
       before do
-        allow(Dor).to receive(:find).and_return(dor_object)
+        # For File URIs, need to use absolute paths
+        allow(Settings.sdr).to receive(:local_workspace_root).and_return(workspace)
       end
 
-      context 'when no technicalMetadata.xml file is found' do
-        let(:file_group_diff) { instance_double(Moab::FileGroupDifference, file_deltas: { added: [], modified: [] }) }
-        let(:inventory_diff) { instance_double(Moab::FileInventoryDifference, group_difference: file_group_diff) }
-        let(:technical_metadata_ds) { instance_double(Dor::TechnicalMetadataDS, new?: false, content: dor_technical_metadata) }
-        let(:dor_technical_metadata) { double }
-
+      context 'when call to techmd service succeeds' do
         before do
-          allow(dor_object).to receive(:technicalMetadata).and_return(technical_metadata_ds)
-          allow(Preservation::Client.objects).to receive(:content_inventory_diff).and_return(inventory_diff)
-          allow(TechnicalMetadataService).to receive(:add_update_technical_metadata).and_return('tech md')
+          stub_request(:post, 'https://dor-techmd-test.stanford.test/v1/technical-metadata')
+            .with(
+              body: "{\"druid\":\"druid:dd116zh0343\",\"files\":[\"file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story1u.txt\"]}",
+              headers: {
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer rake-generate-token-me'
+              }
+            )
+            .to_return(status: 200, body: '', headers: {})
         end
 
-        context 'when the DRO has files' do
-          let(:file_set) do
-            { externalIdentifier: 'druid:bc123df4567',
-              type: Cocina::Models::Vocab.fileset,
-              label: 'my repository object',
-              version: 1 }
-          end
-          let(:contains) { [file_set] }
-
-          context 'when preservation client returns metadata' do
-            let(:preservation_technical_metadata) { double }
-
-            before do
-              allow(Preservation::Client.objects).to receive(:metadata).and_return(preservation_technical_metadata)
-            end
-
-            # rubocop:disable RSpec/ExampleLength
-            it 'creates new metadata' do
-              perform
-              expect(metadata_client).to have_received(:legacy_update).with(
-                technical: {
-                  updated: Time,
-                  content: /tech md/
-                }
-              )
-              expect(TechnicalMetadataService).to have_received(:add_update_technical_metadata)
-                .with(pid: 'druid:bd185gs2259',
-                      content_group_diff: file_group_diff,
-                      files: [],
-                      tech_metadata: dor_technical_metadata,
-                      preservation_technical_metadata: preservation_technical_metadata)
-            end
-            # rubocop:enable RSpec/ExampleLength
-          end
-
-          context 'when Preservation::Client gets 404 from API' do
-            before do
-              allow(Preservation::Client.objects).to receive(:metadata)
-                .and_raise(Preservation::Client::NotFoundError)
-            end
-
-            # rubocop:disable RSpec/ExampleLength
-            it 'runs the technical metadata service and passes nil for the preservation_technical_metadata' do
-              perform
-              expect(metadata_client).to have_received(:legacy_update).with(
-                technical: {
-                  updated: Time,
-                  content: /tech md/
-                }
-              )
-              expect(TechnicalMetadataService).to have_received(:add_update_technical_metadata)
-                .with(pid: 'druid:bd185gs2259',
-                      content_group_diff: file_group_diff,
-                      files: [],
-                      tech_metadata: dor_technical_metadata,
-                      preservation_technical_metadata: nil)
-            end
-          end
-        end
-
-        context 'when the DRO has no files' do
-          it 'does not run technical metadata' do
-            perform
-            expect(metadata_client).not_to have_received(:legacy_update)
-          end
+        it 'invokes techmd service' do
+          expect(perform.status).to eq('noop')
         end
       end
 
-      context 'when technicalMetadata file is found' do
-        let(:finder) { instance_double(DruidTools::Druid, find_metadata: 'spec/fixtures/ab123cd4567_descMetadata.xml') }
-
+      context 'when call to techmd service fails' do
         before do
-          allow(DruidTools::Druid).to receive(:new).and_return(finder)
+          stub_request(:post, 'https://dor-techmd-test.stanford.test/v1/technical-metadata')
+            .with(
+              body: "{\"druid\":\"druid:dd116zh0343\",\"files\":[\"file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story1u.txt\"]}",
+              headers: {
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer rake-generate-token-me'
+              }
+            )
+            .to_return(status: 500, body: '', headers: {})
         end
 
-        it 'creates new metadata' do
-          perform
-          expect(metadata_client).to have_received(:legacy_update).with(
-            technical: {
-              updated: Time,
-              content: /first book in Latin/
-            }
-          )
+        it 'raises' do
+          expect { perform }.to raise_error(/Technical-metadata-service returned 500/)
         end
-        # rubocop:enable RSpec/ExampleLength
+      end
+
+      context 'when the DRO has no files' do
+        let(:object) do
+          Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
+                                  type: Cocina::Models::Vocab.object,
+                                  label: 'my repository object',
+                                  version: 1,
+                                  access: {})
+        end
+
+        it 'does not run technical metadata' do
+          expect(perform.status).to eq('skipped')
+        end
+      end
+
+      context 'when metadata-only change' do
+        let(:workspace) { File.absolute_path('spec/fixtures/workspace2') }
+
+        it 'does not run technical metadata' do
+          expect(perform.status).to eq('skipped')
+        end
       end
     end
 
@@ -149,9 +123,8 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                        version: 1)
       end
 
-      it "doesn't make a datastream" do
-        perform
-        expect(metadata_client).not_to have_received(:legacy_update)
+      it 'skips' do
+        expect(perform.status).to eq('skipped')
       end
     end
   end

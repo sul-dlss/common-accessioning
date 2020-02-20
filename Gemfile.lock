@@ -197,8 +197,6 @@ GEM
     ice_nine (0.11.2)
     iso-639 (0.3.5)
     jaro_winkler (1.5.4)
-    jhove-service (1.4.0)
-      nokogiri (>= 1.4.3.1)
     json (2.3.0)
     link_header (0.0.8)
     lyber-core (6.1.1)
@@ -426,8 +424,7 @@ DEPENDENCIES
   dor-workflow-client (~> 3.18)
   druid-tools (~> 2.1)
   honeybadger
-  jhove-service (~> 1.4)
-  lyber-core (~> 6.0)
+  lyber-core (~> 6.1)
   marc
   moab-versioning (~> 4.0)
   net-sftp (~> 2.1)

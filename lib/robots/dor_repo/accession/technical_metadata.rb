@@ -10,69 +10,44 @@ module Robots
         end
 
         def perform(druid)
-          object_client = Dor::Services::Client.object(druid)
-          obj = object_client.find
+          obj = Dor::Services::Client.object(druid).find
 
           # non-items don't generate contentMetadata
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'object is not an item') unless obj.dro?
 
-          object = DruidTools::Druid.new(druid, Dor::Config.stacks.local_workspace_root)
-          path = object.find_metadata('technicalMetadata.xml')
-          if path
-            # When the technicalMetadata.xml file is found on the disk, use that
-            return object_client.metadata.legacy_update(
-              technical: {
-                updated: File.mtime(path),
-                content: File.read(path)
-              }
-            )
-          end
+          # skip if no files
+          return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'object has no files') if obj.structural.nil? || obj.structural.contains.blank?
 
-          return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'object has no files') if obj.structural.contains.blank?
+          file_uris = FileUris.new(druid, obj)
 
-          # Otherwise (re)generate technical metadata
-          tech_md = generate_technical_metadata(druid)
-          return unless tech_md
+          # skip if metadata-only change
+          return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'change is metadata-only') if metadata_only?(file_uris.filepaths)
 
-          object_client.metadata.legacy_update(
-            technical: {
-              updated: Time.now,
-              content: tech_md
-            }
-          )
+          verify_files_exist(druid, file_uris.filepaths)
+
+          invoke_techmd_service(druid, file_uris.uris)
+
+          LyberCore::Robot::ReturnState.new(status: :noop, note: 'Initiated technical metadata generation from technical-metadata-service.')
         end
 
         private
 
-        def generate_technical_metadata(druid)
-          obj = Dor.find(druid)
-          tech_xml = obj.technicalMetadata.content unless obj.technicalMetadata.new?
-
-          files = obj.contentMetadata.ng_xml.xpath('//file/@id').map(&:content)
-          TechnicalMetadataService.add_update_technical_metadata(files: files,
-                                                                 pid: druid,
-                                                                 tech_metadata: tech_xml,
-                                                                 preservation_technical_metadata: preservation_technical_metadata(druid),
-                                                                 content_group_diff: content_group_diff(obj))
+        def invoke_techmd_service(druid, file_uris)
+          req = JSON.generate(druid: druid, files: file_uris)
+          resp = Faraday.post("#{Settings.tech_md_service.url}/v1/technical-metadata", req,
+                              'Content-Type' => 'application/json',
+                              'Authorization' => "Bearer #{Settings.tech_md_service.token}")
+          raise "Technical-metadata-service returned #{resp.status} when requesting techmd for #{druid}: #{resp.body}" unless resp.status == 200
         end
 
-        # TODO: This operation should move to a dor-services-app call.
-        #       This will reduce the coupling to Fedora 3 and remove the dependency on Preservation::Client
-        # @return [Moab::FileGroupDifference] the difference between contentMetadata in preservation and what is in the workspace
-        def content_group_diff(obj)
-          content_xml = obj.contentMetadata.content
-          inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: obj.pid, content_metadata: content_xml)
-          inventory_diff.group_difference('content')
+        def metadata_only?(filepaths)
+          # Assume metadata only if no files exist
+          filepaths.all? { |filepath| !File.exist?(filepath) }
         end
 
-        # TODO: This operation should move to a dor-services-app call.
-        #       This will reduce remove the dependency on Preservation::Client
-        # @return [String] The datastream contents from the previous version of the digital object (fetched from preservation),
-        #   or nil if there is no such datastream (e.g. object not yet in preservation)
-        def preservation_technical_metadata(pid)
-          Preservation::Client.objects.metadata(druid: pid, filepath: 'technicalMetadata.xml')
-        rescue Preservation::Client::NotFoundError
-          nil
+        def verify_files_exist(druid, filepaths)
+          missing_filepaths = filepaths.filter { |filepath| !File.exist?(filepath) }
+          raise "#{druid} is missing the following files: #{filepaths}" unless missing_filepaths.empty?
         end
       end
     end
