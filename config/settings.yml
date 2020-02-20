@@ -20,6 +20,10 @@ preservation_catalog:
   url: 'https://example.org/prescat'
   token: 'mint-token-with-target-preservation-catalog-rake-generate-token'
 
+tech_md_service:
+  url: 'https://dor-techmd-test.stanford.test'
+  token: 'rake-generate-token-me'
+
 fedora:
   url: ~
 

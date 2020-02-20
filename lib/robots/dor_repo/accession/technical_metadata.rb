@@ -10,69 +10,55 @@ module Robots
         end
 
         def perform(druid)
-          object_client = Dor::Services::Client.object(druid)
-          obj = object_client.find
+          obj = Dor::Services::Client.object(druid).find
 
           # non-items don't generate contentMetadata
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'object is not an item') unless obj.dro?
 
-          object = DruidTools::Druid.new(druid, Dor::Config.stacks.local_workspace_root)
-          path = object.find_metadata('technicalMetadata.xml')
-          if path
-            # When the technicalMetadata.xml file is found on the disk, use that
-            return object_client.metadata.legacy_update(
-              technical: {
-                updated: File.mtime(path),
-                content: File.read(path)
-              }
-            )
-          end
-
+          # skip if no files
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'object has no files') if obj.structural.contains.blank?
 
-          # Otherwise (re)generate technical metadata
-          tech_md = generate_technical_metadata(druid)
-          return unless tech_md
+          file_uris = extract_file_uris(druid, obj)
+          invoke_techmd_service(druid, file_uris)
 
-          object_client.metadata.legacy_update(
-            technical: {
-              updated: Time.now,
-              content: tech_md
-            }
-          )
+          LyberCore::Robot::ReturnState.new(status: :noop, note: 'Initiated technical metadata generation from technical-metadata-service.')
         end
 
         private
 
-        def generate_technical_metadata(druid)
-          obj = Dor.find(druid)
-          tech_xml = obj.technicalMetadata.content unless obj.technicalMetadata.new?
-
-          files = obj.contentMetadata.ng_xml.xpath('//file/@id').map(&:content)
-          TechnicalMetadataService.add_update_technical_metadata(files: files,
-                                                                 pid: druid,
-                                                                 tech_metadata: tech_xml,
-                                                                 preservation_technical_metadata: preservation_technical_metadata(druid),
-                                                                 content_group_diff: content_group_diff(obj))
+        def object_for_druid
+          Dor::Services::Client.object(druid).find
         end
 
-        # TODO: This operation should move to a dor-services-app call.
-        #       This will reduce the coupling to Fedora 3 and remove the dependency on Preservation::Client
-        # @return [Moab::FileGroupDifference] the difference between contentMetadata in preservation and what is in the workspace
-        def content_group_diff(obj)
-          content_xml = obj.contentMetadata.content
-          inventory_diff = Preservation::Client.objects.content_inventory_diff(druid: obj.pid, content_metadata: content_xml)
-          inventory_diff.group_difference('content')
+        def extract_filenames(obj)
+          filenames = []
+          obj.structural.contains.each do |fileset|
+            next if fileset.structural.contains.blank?
+
+            fileset.structural.contains.each do |file|
+              filenames << file.label
+            end
+          end
+          filenames
         end
 
-        # TODO: This operation should move to a dor-services-app call.
-        #       This will reduce remove the dependency on Preservation::Client
-        # @return [String] The datastream contents from the previous version of the digital object (fetched from preservation),
-        #   or nil if there is no such datastream (e.g. object not yet in preservation)
-        def preservation_technical_metadata(pid)
-          Preservation::Client.objects.metadata(druid: pid, filepath: 'technicalMetadata.xml')
-        rescue Preservation::Client::NotFoundError
-          nil
+        def extract_file_uris(druid, obj)
+          filenames = extract_filenames(obj)
+
+          workspace = DruidTools::Druid.new(druid, File.absolute_path(Settings.sdr.local_workspace_root))
+          content_dir = workspace.find_filelist_parent('content', filenames)
+
+          # In future Ruby's, this could be: filenames.map { |filename| URI::File.build(path: File.join(content_dir, filename)).to_s }
+          # However, in 2.5.3, URI::File does not exist.
+          filenames.map { |filename| "file://#{File.join(content_dir, filename)}" }
+        end
+
+        def invoke_techmd_service(druid, file_uris)
+          req = JSON.generate(druid: druid, files: file_uris)
+          resp = Faraday.post("#{Settings.tech_md_service.url}/v1/technical-metadata", req,
+                              'Content-Type' => 'application/json',
+                              'Authorization' => "Bearer #{Settings.tech_md_service.token}")
+          raise "Technical-metadata-service returned #{resp.status} when requesting techmd for #{druid}: #{resp.body}" unless resp.status == 200
         end
       end
     end
