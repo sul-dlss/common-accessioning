@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'retries'
 require 'dor-fetcher'
 
 module Dor
@@ -35,9 +34,7 @@ module Dor
       end
 
       def members
-        @members || with_retries(max_tries: Settings.release.max_tries, base_sleep_seconds: Settings.release.base_sleep_seconds, max_sleep_seconds: Settings.release.max_sleep_seconds) do |_attempt|
-          @members = fetcher.get_collection(druid) # cache members in an instance variable
-        end
+        @members ||= fetcher.get_collection(druid) # cache members in an instance variable
       end
     end
   end

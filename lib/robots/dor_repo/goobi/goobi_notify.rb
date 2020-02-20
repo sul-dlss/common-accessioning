@@ -14,11 +14,7 @@ module Robots
         #
         # @param [String] druid -- the Druid identifier for the object to process
         def perform(druid)
-          LyberCore::Log.debug "goobi-notify working on #{druid}"
-
-          with_retries(max_tries: 5, base_sleep_seconds: 10, max_sleep_seconds: 120) do |_attempt|
-            Dor::Services::Client.object(druid).notify_goobi
-          end
+          Dor::Services::Client.object(druid).notify_goobi
         end
       end
     end
