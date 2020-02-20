@@ -60,10 +60,8 @@ module Robots
           object_client = Dor::Services::Client.object(druid)
 
           # initiate workflow by making workflow service call
-          with_retries(max_tries: Settings.release.max_tries, base_sleep_seconds: Settings.release.base_sleep_seconds, max_sleep_seconds: Settings.release.max_sleep_seconds) do |_attempt|
-            current_version = object_client.version.current
-            Dor::Config.workflow.client.create_workflow_by_name(druid, 'releaseWF', version: current_version, lane_id: lane_id(druid))
-          end
+          current_version = object_client.version.current
+          Dor::Config.workflow.client.create_workflow_by_name(druid, 'releaseWF', version: current_version, lane_id: lane_id(druid))
         end
       end
     end

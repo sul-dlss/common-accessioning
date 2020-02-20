@@ -14,11 +14,7 @@ module Robots
         # @param [String] druid -- the Druid identifier for the object to process
         def perform(druid)
           LyberCore::Log.debug "update_marc working on #{druid}"
-          with_retries(max_tries: Settings.release.max_tries,
-                       base_sleep_seconds: Settings.release.base_sleep_seconds,
-                       max_sleep_seconds: Settings.release.max_sleep_seconds) do |_attempt|
-            Dor::Services::Client.object(druid).update_marc_record
-          end
+          Dor::Services::Client.object(druid).update_marc_record
         end
       end
     end
