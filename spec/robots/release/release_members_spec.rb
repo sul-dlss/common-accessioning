@@ -7,16 +7,14 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
 
   let(:robot) { described_class.new }
   let(:druid) { 'druid:aa222cc3333' }
-  let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: cocina_model) }
+  let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: cocina_model, members: members) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
-  let(:fetcher) { instance_double(DorFetcher::Client, get_collection: members) }
-  let(:members) { {} }
+  let(:members) { [] }
   let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
   let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process: process) }
 
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
-    allow(DorFetcher::Client).to receive(:new).and_return(fetcher)
     allow(WorkflowClientFactory).to receive(:build).and_return(workflow_client)
   end
 
@@ -59,7 +57,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       let(:releaseTags) { [release_tag1] }
 
       let(:members) do
-        { 'sets' => [{ 'druid' => 'druid:bb001zc5754', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'French Grand Prix and 12 Hour Rheims: 1954', 'catkey' => '3051728' }] }
+        [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'collection')]
       end
 
       it 'runs for a collection but never add workflow or ask for item members' do
@@ -72,9 +70,8 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
       let(:release_tag2) { Cocina::Models::ReleaseTag.new(to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket') }
       let(:releaseTags) { [release_tag1, release_tag2] }
-
       let(:members) do
-        { 'collections' => [{ 'druid' => 'druid:bb001zc5754', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'French Grand Prix and 12 Hour Rheims: 1954', 'catkey' => '3051728' }] }
+        [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'collection')]
       end
 
       it 'runs for a collection but never adds workflow or ask for item members' do
@@ -87,9 +84,8 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'self', date: '2019-03-09 19:34:43 UTC', who: 'hfrost ') }
       let(:release_tag2) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: false, what: 'self', date: '2020-02-07 19:34:43 UTC', who: 'jkalchik') }
       let(:releaseTags) { [release_tag1, release_tag2] }
-
       let(:members) do
-        { 'collections' => [{ 'druid' => 'druid:bb001zc5754', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'French Grand Prix and 12 Hour Rheims: 1954', 'catkey' => '3051728' }] }
+        [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'collection')]
       end
 
       it 'runs for a collection but never adds workflow or ask for item members' do
@@ -101,12 +97,13 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     context 'when the collection is not released to self' do
       let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
       let(:releaseTags) { [release_tag1] }
-
       let(:members) do
-        { 'items' => [{ 'druid' => 'druid:bb001zc5754', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'French Grand Prix and 12 Hour Rheims: 1954', 'catkey' => '3051728' },
-                      { 'druid' => 'druid:bb023nj3137', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'Snetterton Vanwall Trophy: 1958', 'catkey' => '3051732' },
-                      { 'druid' => 'druid:bb027yn4436', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'Crystal Palace BARC: 1954', 'catkey' => '3051733' },
-                      { 'druid' => 'druid:bb048rn5648', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => '', 'catkey' => '3051734' }] }
+        [
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'item'),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb023nj3137', type: 'item'),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb027yn4436', type: 'item'),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb048rn5648', type: 'item')
+        ]
       end
 
       it 'runs for a collection and execute the item_members method' do
@@ -120,12 +117,13 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
       let(:release_tag2) { Cocina::Models::ReleaseTag.new(to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket') }
       let(:releaseTags) { [release_tag1, release_tag2] }
-
       let(:members) do
-        { 'items' => [{ 'druid' => 'druid:bb001zc5754', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'French Grand Prix and 12 Hour Rheims: 1954', 'catkey' => '3051728' },
-                      { 'druid' => 'druid:bb023nj3137', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'Snetterton Vanwall Trophy: 1958', 'catkey' => '3051732' },
-                      { 'druid' => 'druid:bb027yn4436', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => 'Crystal Palace BARC: 1954', 'catkey' => '3051733' },
-                      { 'druid' => 'druid:bb048rn5648', 'latest_change' => '2014-06-06T05:06:06Z', 'title' => '', 'catkey' => '3051734' }] }
+        [
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'item'),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb023nj3137', type: 'item'),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb027yn4436', type: 'item'),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb048rn5648', type: 'item')
+        ]
       end
 
       it 'runs for a collection and execute the item_members method' do
@@ -138,21 +136,15 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
       let(:releaseTags) { [release_tag1] }
 
-      let(:collections) { [{ 'druid' => 'druid:bb001zc5754' }, { 'druid' => 'druid:bb023nj3137' }] }
-
       context 'with only collections' do
-        let(:members) { { 'collections' => collections } }
+        let(:members) do
+          [
+            Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'collection'),
+            Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb023nj3137', type: 'collection')
+          ]
+        end
 
         it 'runs for a collection and execute the sub_collection method' do
-          expect(workflow_client).to receive(:create_workflow_by_name).twice # two workflows added, one for each collection
-          perform
-        end
-      end
-
-      context 'with collections and itself' do
-        let(:members) { { 'collections' => collections + [{ 'druid' => druid }] } }
-
-        it 'runs for a collection and execute the sub_collection method but not add a workflow for the collection itself' do
           expect(workflow_client).to receive(:create_workflow_by_name).twice # two workflows added, one for each collection
           perform
         end

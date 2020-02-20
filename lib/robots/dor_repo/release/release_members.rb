@@ -27,8 +27,8 @@ module Robots
 
         def publish_collection(druid:, object:)
           member_service = Dor::Release::MemberService.new(druid: druid)
-          add_workflow_to_members(member_service) if add_wf_to_members?(object)
-          add_workflow_to_sub_collections(member_service)
+          add_workflow_to_members(member_service.items) if add_wf_to_members?(object)
+          add_workflow_to_members(member_service.sub_collections)
         end
 
         # Here's an example of the kinds of tags we're dealing with:
@@ -41,11 +41,10 @@ module Robots
                 .values.map(&:what).any? { |x| x == 'collection' }
         end
 
-        def add_workflow_to_members(member_service)
-          return unless member_service.item_members # if there are any members, iterate through and add item workflows (which includes setting the first step to completed)
-
-          member_service.item_members.each do |item_member|
-            create_release_workflow(item_member['druid'])
+        # iterate through any item members and add workflows
+        def add_workflow_to_members(members)
+          members.each do |member|
+            create_release_workflow(member.externalIdentifier)
           end
         end
 
