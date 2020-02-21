@@ -10,13 +10,13 @@ notifications:
 
 cache: bundler
 
-before_install:
-  # Update rubygems so that bundler will work (for ruby 2.5.3)
-  - yes | gem update --system
-
 rvm:
-  - 2.5.3 # deployed
-  - 2.6.4 # latest
+  - 2.6.5 # deployed
+  - 2.7.0 # latest
+
+jobs:
+  allow_failures:
+  - rvm: 2.7.0
 
 env:
   global:
