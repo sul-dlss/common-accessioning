@@ -61,7 +61,7 @@ module Robots
 
           # initiate workflow by making workflow service call
           current_version = object_client.version.current
-          Dor::Config.workflow.client.create_workflow_by_name(druid, 'releaseWF', version: current_version, lane_id: lane_id(druid))
+          workflow_service.create_workflow_by_name(druid, 'releaseWF', version: current_version, lane_id: lane_id(druid))
         end
       end
     end

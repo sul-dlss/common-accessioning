@@ -133,7 +133,7 @@ module Robots
         end
 
         def workflow_service
-          Dor::Config.workflow.client
+          WorkflowClientFactory.build
         end
 
         def workflow_success(druid)

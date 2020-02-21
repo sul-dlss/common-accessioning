@@ -28,7 +28,7 @@ module Robots
         def start_accession_workflow(druid)
           object_client = Dor::Services::Client.object(@ai.druid.druid)
           current_version = object_client.version.current
-          Dor::Config.workflow.client.create_workflow_by_name(@ai.druid.druid, 'accessionWF', version: current_version, lane_id: lane_id(druid))
+          workflow_service.create_workflow_by_name(@ai.druid.druid, 'accessionWF', version: current_version, lane_id: lane_id(druid))
         end
       end
     end

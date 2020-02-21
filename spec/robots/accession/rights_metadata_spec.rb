@@ -8,16 +8,9 @@ RSpec.describe Robots::DorRepo::Accession::RightsMetadata do
   let(:robot) { described_class.new }
   let(:druid) { 'druid:ab123cd4567' }
   let(:apo_id) { 'druid:mx121xx1234' }
-  let(:object) do
-    Cocina::Models::DRO.new(externalIdentifier: '123',
-                            type: Cocina::Models::DRO::TYPES.first,
-                            label: 'my repository object',
-                            version: 1,
-                            administrative: { hasAdminPolicy: apo_id })
-  end
 
   let(:object_client) do
-    instance_double(Dor::Services::Client::Object, refresh_metadata: true, metadata: metadata_client, find: object)
+    instance_double(Dor::Services::Client::Object, refresh_metadata: true, metadata: metadata_client)
   end
   let(:metadata_client) do
     instance_double(Dor::Services::Client::Metadata, legacy_update: true)
@@ -32,25 +25,25 @@ RSpec.describe Robots::DorRepo::Accession::RightsMetadata do
       expect(perform.status).to eq 'skipped'
       expect(metadata_client).not_to have_received(:legacy_update)
     end
-  end
 
-  context 'when rightsMetadata file is found' do
-    let(:finder) { instance_double(DruidTools::Druid, find_metadata: 'spec/fixtures/ab123cd4567_descMetadata.xml') }
+    context 'when rightsMetadata file is found' do
+      let(:finder) { instance_double(DruidTools::Druid, find_metadata: 'spec/fixtures/ab123cd4567_descMetadata.xml') }
 
-    before do
-      allow(DruidTools::Druid).to receive(:new).and_return(finder)
+      before do
+        allow(DruidTools::Druid).to receive(:new).and_return(finder)
+      end
+
+      # rubocop:disable RSpec/ExampleLength
+      it 'reads the file in' do
+        perform
+        expect(metadata_client).to have_received(:legacy_update).with(
+          rights: {
+            updated: Time,
+            content: /first book in Latin/
+          }
+        )
+      end
+      # rubocop:enable RSpec/ExampleLength
     end
-
-    # rubocop:disable RSpec/ExampleLength
-    it 'reads the file in' do
-      perform
-      expect(metadata_client).to have_received(:legacy_update).with(
-        rights: {
-          updated: Time,
-          content: /first book in Latin/
-        }
-      )
-    end
-    # rubocop:enable RSpec/ExampleLength
   end
 end

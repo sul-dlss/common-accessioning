@@ -6,7 +6,7 @@ module Robots
       include LyberCore::Robot
 
       def workflow_service
-        Dor::Config.workflow.client
+        @workflow_service ||= WorkflowClientFactory.build
       end
 
       def lane_id(druid)

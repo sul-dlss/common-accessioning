@@ -17,7 +17,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
   end
 
   before do
-    allow(Dor::Config.workflow).to receive(:client).and_return(workflow_client)
+    allow(WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
   end
 

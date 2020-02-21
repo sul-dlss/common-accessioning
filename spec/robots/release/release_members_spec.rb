@@ -17,7 +17,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
     allow(DorFetcher::Client).to receive(:new).and_return(fetcher)
-    allow(Dor::Config.workflow).to receive(:client).and_return(workflow_client)
+    allow(WorkflowClientFactory).to receive(:build).and_return(workflow_client)
   end
 
   context 'when the model is an item' do
