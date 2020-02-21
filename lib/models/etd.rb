@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Etd < Dor::Etd
-  include EtdMetadata
-
   # @param [String] druid the identifier of the object
   # @return [Etd] the object from Fedora
   def self.find(druid)

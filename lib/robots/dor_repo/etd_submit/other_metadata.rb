@@ -33,10 +33,10 @@ module Robots
         # create a datastream in the repository for the given etd object
         def populate_datastream(etd, ds_name)
           metadata = case ds_name
-                     when 'identityMetadata' then etd.generate_identity_metadata_xml
-                     when 'contentMetadata' then etd.generate_content_metadata_xml
+                     when 'identityMetadata' then Dor::Etd::IdentityMetadataGenerator.generate(etd)
+                     when 'contentMetadata' then Dor::Etd::ContentMetadataGenerator.generate(etd)
                      when 'rightsMetadata' then Dor::Etd::RightsMetadataGenerator.generate(etd)
-                     when 'versionMetadata' then etd.generate_version_metadata_xml
+                     when 'versionMetadata' then Dor::Etd::VersionMetadataGenerator.generate(etd.pid)
                      end
           return if metadata.nil?
 
