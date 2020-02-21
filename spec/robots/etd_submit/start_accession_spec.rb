@@ -13,7 +13,7 @@ RSpec.describe Robots::DorRepo::EtdSubmit::StartAccession do
     let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
 
     before do
-      allow(Dor::Config.workflow).to receive(:client).and_return(workflow_client)
+      allow(WorkflowClientFactory).to receive(:build).and_return(workflow_client)
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
     end
 

@@ -16,7 +16,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
 
     before do
       allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
-      allow(Dor::Config.workflow.client).to receive(:update_status)
+      allow(robot.workflow_service).to receive(:update_status)
       perform
     end
 
@@ -59,7 +59,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
       end
 
       it 'sets publish-complete to completed' do
-        expect(Dor::Config.workflow.client).to have_received(:update_status).with(druid: druid, workflow: 'accessionWF', process: 'publish-complete', status: 'completed', elapsed: 1, note: 'APOs are not published, so marking completed.')
+        expect(robot.workflow_service).to have_received(:update_status).with(druid: druid, workflow: 'accessionWF', process: 'publish-complete', status: 'completed', elapsed: 1, note: 'APOs are not published, so marking completed.')
       end
     end
   end

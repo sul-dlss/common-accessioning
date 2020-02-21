@@ -7,10 +7,6 @@ Dor::Config.configure do
     url Settings.fedora.url
   end
 
-  workflow do
-    url Settings.workflow.url
-  end
-
   solr.url Settings.solr.url
 end
 

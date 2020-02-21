@@ -10,7 +10,6 @@ RSpec.describe Etd do
   describe '.find' do
     before do
       allow(Dor::Etd).to receive(:find).and_return(etd)
-      allow(etd.workflows).to receive(:content).and_return('')
       etd.identityMetadata.objectType = 'item'
     end
 

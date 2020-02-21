@@ -14,7 +14,7 @@ module Robots
 
           # Search for the specialized workflow
           next_dissemination_wf = special_dissemination_wf(object_client)
-          Dor::Config.workflow.client.create_workflow_by_name(druid, next_dissemination_wf, version: current_version, lane_id: lane_id(druid)) if next_dissemination_wf.present?
+          workflow_service.create_workflow_by_name(druid, next_dissemination_wf, version: current_version, lane_id: lane_id(druid)) if next_dissemination_wf.present?
 
           # Call cleanup
           # Note that this used to be handled by the disseminationWF, which is no longer used.

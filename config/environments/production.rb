@@ -27,12 +27,6 @@ Dor::Config.configure do
   end
 
   solr.url Settings.solr.url
-
-  workflow do
-    url Settings.workflow.url
-    logfile Settings.workflow.logfile
-    shift_age Settings.workflow.shift_age
-  end
 end
 
 # External application locations

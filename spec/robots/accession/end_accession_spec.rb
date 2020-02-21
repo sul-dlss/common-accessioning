@@ -31,7 +31,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
   before do
     allow(Dor).to receive(:find).with(druid).and_return(object)
-    allow(Dor::Config.workflow).to receive(:client).and_return(workflow_client)
+    allow(WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
     allow(Dor::Services::Client).to receive(:object).with(apo_id).and_return(apo_object_client)
   end
