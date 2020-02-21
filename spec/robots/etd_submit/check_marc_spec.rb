@@ -38,27 +38,38 @@ RSpec.describe Robots::DorRepo::EtdSubmit::CheckMarc do
         XML
       end
 
-      let(:ng) { Nokogiri::XML(object.datastreams['identityMetadata'].content) }
-
-      context 'when it saves the datastream' do
-        before do
-          allow(object).to receive(:save!).and_return(true)
-        end
-
-        it 'adds identityMetadata with the catkey' do
-          expect(perform).to be true
-          expect(ng.xpath('//otherId[@name="catkey"]').first.text).to eq '8379324'
-          expect(object).to have_received(:save!)
-        end
+      let(:object_client) do
+        instance_double(Dor::Services::Client::Object, metadata: metadata_client)
+      end
+      let(:metadata_client) do
+        instance_double(Dor::Services::Client::Metadata, legacy_update: true)
       end
 
-      context 'when it cannot save the datastream' do
+      before do
+        allow(Dor::Services::Client).to receive(:object).and_return(object_client)
+      end
+
+      context 'when it saves the data' do
+        # rubocop:disable RSpec/ExampleLength
+        it 'adds identityMetadata with the catkey' do
+          expect(perform).to be true
+          expect(metadata_client).to have_received(:legacy_update).with(
+            identity: {
+              updated: Time,
+              content: %r{<identityMetadata>.*<otherId name="catkey">8379324</otherId>}m
+            }
+          )
+        end
+        # rubocop:enable RSpec/ExampleLength
+      end
+
+      context 'when it cannot save the data' do
         before do
-          allow(object).to receive(:save!).and_raise(StandardError, 'ActiveFedoraError, actually')
+          allow(metadata_client).to receive(:legacy_update).and_raise(Dor::Services::Client::ConnectionFailed, 'connect problem')
         end
 
         it 'raises an error' do
-          expect { perform }.to raise_error(StandardError, 'ActiveFedoraError, actually')
+          expect { perform }.to raise_error(Dor::Services::Client::ConnectionFailed, 'connect problem')
         end
       end
     end
