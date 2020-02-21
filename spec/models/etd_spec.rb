@@ -19,23 +19,6 @@ RSpec.describe Etd do
     end
   end
 
-  describe '#populate_datastream' do
-    subject(:populate) { etd.populate_datastream(ds_name) }
-
-    context 'when called on rightsMetadata' do
-      let(:ds_name) { 'rightsMetadata' }
-
-      before do
-        allow(Dor::Etd::RightsMetadataGenerator).to receive(:generate)
-      end
-
-      it 'calls the generator' do
-        populate
-        expect(Dor::Etd::RightsMetadataGenerator).to have_received(:generate).with(etd)
-      end
-    end
-  end
-
   describe '#generate_content_metadata_xml' do
     subject(:generate) { etd.generate_content_metadata_xml }
 

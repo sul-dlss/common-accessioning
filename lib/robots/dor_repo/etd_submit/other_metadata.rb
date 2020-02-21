@@ -24,10 +24,38 @@ module Robots
 
           return if etd.nil?
 
-          etd.populate_datastream('contentMetadata')
-          etd.populate_datastream('rightsMetadata')
-          etd.populate_datastream('identityMetadata')
-          etd.populate_datastream('versionMetadata')
+          populate_datastream(etd, 'contentMetadata')
+          populate_datastream(etd, 'rightsMetadata')
+          populate_datastream(etd, 'identityMetadata')
+          populate_datastream(etd, 'versionMetadata')
+        end
+
+        # create a datastream in the repository for the given etd object
+        def populate_datastream(etd, ds_name)
+          metadata = case ds_name
+                     when 'identityMetadata' then etd.generate_identity_metadata_xml
+                     when 'contentMetadata' then etd.generate_content_metadata_xml
+                     when 'rightsMetadata' then Dor::Etd::RightsMetadataGenerator.generate(etd)
+                     when 'versionMetadata' then etd.generate_version_metadata_xml
+                     end
+          return if metadata.nil?
+
+          populate_datastream_in_repository(etd, ds_name, metadata)
+        end
+
+        # create a datastream for the given etd object with the given datastream name, label, and metadata blob
+        def populate_datastream_in_repository(etd, ds_name, metadata)
+          label = case ds_name
+                  when 'identityMetadata' then 'Identity Metadata'
+                  when 'contentMetadata' then 'Content Metadata'
+                  when 'rightsMetadata' then 'Rights Metadata'
+                  when 'versionMetadata' then 'Version Metadata'
+                  else ''
+                  end
+          attrs = { mimeType: 'application/xml', dsLabel: label, content: metadata }
+          datastream = ActiveFedora::Datastream.new(etd.inner_object, ds_name, attrs)
+          datastream.controlGroup = 'M'
+          datastream.save
         end
 
         # This method transfers all the directories using rsync.

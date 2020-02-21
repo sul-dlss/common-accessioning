@@ -5,34 +5,6 @@ require 'uuidtools'
 require 'active_support/core_ext'
 
 module EtdMetadata
-  # create a datastream in the repository for the given etd object
-  def populate_datastream(ds_name)
-    label = case ds_name
-            when 'identityMetadata' then 'Identity Metadata'
-            when 'contentMetadata' then 'Content Metadata'
-            when 'rightsMetadata' then 'Rights Metadata'
-            when 'versionMetadata' then 'Version Metadata'
-            else ''
-            end
-    metadata = case ds_name
-               when 'identityMetadata' then generate_identity_metadata_xml
-               when 'contentMetadata' then generate_content_metadata_xml
-               when 'rightsMetadata' then Dor::Etd::RightsMetadataGenerator.generate(self)
-               when 'versionMetadata' then generate_version_metadata_xml
-               end
-    return if metadata.nil?
-
-    populate_datastream_in_repository(ds_name, label, metadata)
-  end
-
-  # create a datastream for the given etd object with the given datastream name, label, and metadata blob
-  def populate_datastream_in_repository(ds_name, label, metadata)
-    attrs = { mimeType: 'application/xml', dsLabel: label, content: metadata }
-    datastream = ActiveFedora::Datastream.new(inner_object, ds_name, attrs)
-    datastream.controlGroup = 'M'
-    datastream.save
-  end
-
   def content_path
     druid = DruidTools::Druid.new(pid, Settings.sdr.local_workspace_root)
 
