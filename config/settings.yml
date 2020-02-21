@@ -13,9 +13,6 @@ assembly:
   # (e.g. oo000oo0001_00_001.tif and oo000oo0001_05_001.jp2, then a "false" setting here would NOT generate a new jp2 even though there is no filename clash)
   tmp_folder: /tmp # tmp file location for jp2-create and imagemagick
 
-release:
-  fetcher_root: http://localhost:3000/
-
 sdr:
   local_workspace_root: /dor/workspace
 

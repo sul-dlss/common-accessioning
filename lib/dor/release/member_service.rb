@@ -1,40 +1,31 @@
 # frozen_string_literal: true
 
-require 'dor-fetcher'
-
 module Dor
   module Release
     # Retrieves the members of a collection, both items and sub-collections
     class MemberService
-      def initialize(druid:, skip_heartbeat: false)
+      def initialize(druid:)
         @druid = druid
-        @skip_heartbeat = skip_heartbeat
       end
 
-      def item_members
-        members['items'] || []
+      def items
+        members_of_type('item')
       end
 
       def sub_collections
-        unless @sub_collections
-          @sub_collections = []
-          @sub_collections += members['sets'] if members['sets']
-          @sub_collections += members['collections'] if members['collections']
-          @sub_collections.delete_if { |collection| collection['druid'] == druid } # if this is a collection, do not include yourself in the sub-collection list
-        end
-        @sub_collections
+        members_of_type('collection')
       end
 
       private
 
-      attr_reader :druid, :skip_heartbeat
+      attr_reader :druid
 
-      def fetcher
-        @fetcher ||= DorFetcher::Client.new(service_url: Settings.release.fetcher_root, skip_heartbeat: skip_heartbeat)
+      def members_of_type(type)
+        members.filter { |member| member.type == type }
       end
 
       def members
-        @members ||= fetcher.get_collection(druid) # cache members in an instance variable
+        @members ||= Dor::Services::Client.object(druid).members
       end
     end
   end
