@@ -5,6 +5,7 @@ require 'timeout'
 module Robots
   module DorRepo
     module EtdSubmit
+      # This is run as a cron job because it polls symphony for a catkey.
       class CheckMarc < Robots::DorRepo::Base
         include ::EtdSubmit::RobotCronBase
 
@@ -29,6 +30,18 @@ module Robots
           catkey_xml = symphony_xml.search('/titles/record[home="INTERNET"]/catkey').first
           return LyberCore::Robot::ReturnState.WAITING if current_location.nil? || catkey_xml.nil?
 
+          identity_xml = build_identity_xml(etd, catkey_xml)
+
+          object_client = Dor::Services::Client.object(druid)
+          object_client.metadata.legacy_update(
+            identity: {
+              updated: Time.now,
+              content: identity_xml
+            }
+          )
+        end
+
+        def build_identity_xml(etd, catkey_xml)
           #========= Add the identity datastream to dor with ckey  ==========#
           identity_xml = Nokogiri::XML(etd.generate_identity_metadata_xml)
           catkey = identity_xml.search("//otherId[@name = 'catkey']")
@@ -43,12 +56,7 @@ module Robots
             catkey.first.content = catkey_xml.content
           end
 
-          ds = ActiveFedora::Datastream.new(etd.inner_object, 'identityMetadata', dsLabel: 'identityMetadata', controlGroup: 'X')
-          ds.content = identity_xml.to_xml
-          etd.add_datastream(ds)
-          etd.save!
-
-          true
+          identity_xml.to_xml
         end
 
         def query_symphony(flexkey)
