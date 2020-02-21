@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem 'activesupport', '~> 5.2'
 gem 'assembly-image', '~> 1.7'
 gem 'assembly-objectfile', '>=1.6.6'
-gem 'config', '~> 1.7'
+gem 'config', '~> 2.2'
 gem 'dor-fetcher', '~> 1.3'
 gem 'dor-services', '~> 8.0'
 gem 'dor-services-client', '~> 4.6'
