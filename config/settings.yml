@@ -37,7 +37,6 @@ suri:
 
 # Used by Dor::DigitalStacksService, Dor::PublishMetadataService, and Dor::ShelvingService
 stacks:
-  document_cache_host: ~
   local_workspace_root: ~
   local_stacks_root: ~
 
