@@ -11,12 +11,12 @@ module Robots
           super('etdSubmitWF', 'other-metadata', opts)
         end
 
-        # create metadata datastreams for the work item
+        # create metadata for the work item
         def perform(druid)
           etd = Etd.find(druid)
 
-          druid_tools_druid = DruidTools::Druid.new(druid, Settings.sdr.local_workspace_root)
-          content_dir = druid_tools_druid.content_dir
+          object = DruidTools::Druid.new(druid, Settings.sdr.local_workspace_root)
+          content_dir = object.content_dir
 
           # now transfer the pdfs from lyberapps into the workspace parent content directory
           source_dir = File.join(ETD_WORKSPACE, druid)
@@ -24,38 +24,42 @@ module Robots
 
           return if etd.nil?
 
-          populate_datastream(etd, 'contentMetadata')
-          populate_datastream(etd, 'rightsMetadata')
-          populate_datastream(etd, 'identityMetadata')
-          populate_datastream(etd, 'versionMetadata')
+          create_metadata(etd, druid)
         end
 
-        # create a datastream in the repository for the given etd object
-        def populate_datastream(etd, ds_name)
-          metadata = case ds_name
-                     when 'identityMetadata' then Dor::Etd::IdentityMetadataGenerator.generate(etd)
-                     when 'contentMetadata' then Dor::Etd::ContentMetadataGenerator.generate(etd)
-                     when 'rightsMetadata' then Dor::Etd::RightsMetadataGenerator.generate(etd)
-                     when 'versionMetadata' then Dor::Etd::VersionMetadataGenerator.generate(etd.pid)
-                     end
-          return if metadata.nil?
+        private
 
-          populate_datastream_in_repository(etd, ds_name, metadata)
+        # create metadata in the repository for the given etd object
+        def create_metadata(etd, druid)
+          content_md = Dor::Etd::ContentMetadataGenerator.generate(etd)
+          identity_md = Dor::Etd::IdentityMetadataGenerator.generate(etd)
+          rights_md = Dor::Etd::RightsMetadataGenerator.generate(etd)
+          version_md = Dor::Etd::VersionMetadataGenerator.generate(etd.pid)
+          create_legacy_metadata(druid, content_md, identity_md, rights_md, version_md)
         end
 
-        # create a datastream for the given etd object with the given datastream name, label, and metadata blob
-        def populate_datastream_in_repository(etd, ds_name, metadata)
-          label = case ds_name
-                  when 'identityMetadata' then 'Identity Metadata'
-                  when 'contentMetadata' then 'Content Metadata'
-                  when 'rightsMetadata' then 'Rights Metadata'
-                  when 'versionMetadata' then 'Version Metadata'
-                  else ''
-                  end
-          attrs = { mimeType: 'application/xml', dsLabel: label, content: metadata }
-          datastream = ActiveFedora::Datastream.new(etd.inner_object, ds_name, attrs)
-          datastream.controlGroup = 'M'
-          datastream.save
+        def create_legacy_metadata(druid, content_md, identity_md, rights_md, version_md)
+          object_client = Dor::Services::Client.object(druid)
+
+          # legacy_update will create the metadata
+          object_client.metadata.legacy_update(
+            content: {
+              updated: Time.now,
+              content: content_md
+            },
+            identity: {
+              updated: Time.now,
+              content: identity_md
+            },
+            rights: {
+              updated: Time.now,
+              content: rights_md
+            },
+            version: {
+              updated: Time.now,
+              content: version_md
+            }
+          )
         end
 
         # This method transfers all the directories using rsync.
@@ -80,8 +84,6 @@ module Robots
           LyberCore::Log.fatal("Can't create workspace_base #{workspace}: #{e}")
           raise "Can't create workspace_base #{workspace} #{e.message}"
         end
-
-        private
 
         def execute(command)
           status, stdout, stderr = systemu(command)
