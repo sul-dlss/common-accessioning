@@ -28,6 +28,7 @@ TMP_ROOT_DIR = 'tmp/test_input'
 
 RSpec.configure do |config|
   config.order = :random
+  config.default_formatter = 'doc' if config.files_to_run.one?
 end
 
 # Use rsync to create a copy of the test_input directory that we can modify.
