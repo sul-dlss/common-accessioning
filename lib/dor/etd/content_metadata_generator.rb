@@ -12,7 +12,7 @@ module Dor
         @etd = etd
       end
 
-      # create the content metadata xml datastream
+      # create the content metadata xml
       #
       #   <contentMetadata type="etd" objectId="druid:rt923jk342">
       #     <resource id="main" type="main-original" data="content">

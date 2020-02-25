@@ -14,7 +14,7 @@ module Dor
         @etd = etd
       end
 
-      # create the identity metadata xml datastream
+      # create the identity metadata xml
       #
       #   <identityMetadata>
       #     <objectId>druid:rt923jk342</objectId>                                   <-- Fedora PID

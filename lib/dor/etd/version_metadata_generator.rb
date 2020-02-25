@@ -4,7 +4,7 @@ module Dor
   class Etd
     # Create the versionMetadata for etds
     class VersionMetadataGenerator
-      # create the versionMetadata datastream
+      # create the versionMetadata
       def self.generate(pid)
         builder = Nokogiri::XML::Builder.new do |xml|
           xml.versionMetadata(objectId: pid) do

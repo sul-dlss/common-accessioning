@@ -12,7 +12,7 @@ module Dor
         @etd = etd
       end
 
-      # create the rights metadata xml datastream
+      # create the rights metadata xml
       #
       #   <rightsMetadata objectId="druid:rt923jk342">
       #     <copyright>

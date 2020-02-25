@@ -72,7 +72,7 @@ module Robots
           properties = etd.datastreams['properties']
           readers = Nokogiri::XML(etd.datastreams['readers'].content)
 
-          # Set values from properties DS
+          # Set values from properties metadata
           degreeconfyr = properties.degreeconfyr.first
           name = properties.name.first
 
@@ -87,7 +87,7 @@ module Robots
           degree = properties.degree.first
           etd_id = properties.dissertation_id.first
 
-          # Set values needed from readers DS
+          # Set values needed from readers metadata
           primary_advisors = readers.search('//reader[readerrole ="Advisor" or readerrole ="Co-Adv" or readerrole = "Dissertation Co-Advisor" or readerrole = "Co-Adv"]/name')
           advisors = readers.search('//reader[readerrole = "Reader" or readerrole ="Rdr" or readerrole = "Outside Reader" or readerrole = "Engineers Thesis/Project Adv"]/name')
 
