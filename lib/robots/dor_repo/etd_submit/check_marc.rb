@@ -42,7 +42,7 @@ module Robots
         end
 
         def build_identity_xml(etd, catkey_xml)
-          #========= Add the identity datastream to dor with ckey  ==========#
+          #========= Add the identity metadata to dor with ckey  ==========#
           identity_xml = Nokogiri::XML(Etd::IdentityMetadataGenerator.generate(etd))
           catkey = identity_xml.search("//otherId[@name = 'catkey']")
 
