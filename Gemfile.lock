@@ -61,7 +61,7 @@ GEM
       resque-pool
     capistrano-shared_configs (0.2.2)
     chronic (0.10.2)
-    cocina-models (0.22.2)
+    cocina-models (0.25.0)
       dry-struct (~> 1.0)
       dry-types (~> 1.1)
       zeitwerk (~> 2.1)
@@ -109,9 +109,9 @@ GEM
       solrizer (~> 3.0)
       stanford-mods (>= 2.3.1)
       stanford-mods-normalizer (~> 0.1)
-    dor-services-client (4.14.0)
+    dor-services-client (4.15.0)
       activesupport (>= 4.2, < 7)
-      cocina-models (~> 0.22.2)
+      cocina-models (~> 0.25.0)
       deprecation
       faraday (~> 0.15)
       moab-versioning (~> 4.0)
@@ -245,7 +245,7 @@ GEM
       nokogiri (>= 1.4.2)
       solrizer (~> 3.3)
     parallel (1.19.1)
-    parser (2.7.0.2)
+    parser (2.7.0.3)
       ast (~> 2.4.0)
     pony (1.13.1)
       mail (>= 2.0)
@@ -340,10 +340,11 @@ GEM
       rest-client
     safe_yaml (1.0.5)
     scrub_rb (1.0.1)
-    simplecov (0.18.3)
+    simplecov (0.17.1)
       docile (~> 1.1)
-      simplecov-html (~> 0.11)
-    simplecov-html (0.12.1)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.2)
     sinatra (2.0.8.1)
       mustermann (~> 1.0)
       rack (~> 2.0)
@@ -428,7 +429,7 @@ DEPENDENCIES
   rspec (~> 3.0)
   rubocop (~> 0.77.0)
   rubocop-rspec
-  simplecov
+  simplecov (~> 0.17.1)
   slop
   systemu (~> 2.6)
   uuidtools
