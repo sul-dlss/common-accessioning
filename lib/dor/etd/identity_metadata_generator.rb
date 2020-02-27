@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'uuidtools'
+require 'active_support/core_ext/object/blank.rb'
 
 module Dor
   class Etd
@@ -9,6 +10,9 @@ module Dor
       def self.generate(etd)
         new(etd).generate
       end
+
+      attr_reader :etd
+      delegate :pid, to: :etd
 
       def initialize(etd)
         @etd = etd
@@ -51,19 +55,19 @@ module Dor
             end
             xml.otherId(name: 'catkey') do
               unless old_identity_doc.nil?
+                # we expect catkey to be present in previous xml when it exists
                 catkey = old_identity_doc.at_xpath('//catkey')
                 catkey = old_identity_doc.at_xpath("//otherId[@name='catkey']") if catkey.nil?
                 xml.text(catkey.text)
               end
             end
-            # TODO: generate uuid
             xml.otherId(name: 'uuid') do
               if old_identity_doc.nil?
                 xml.text(UUIDTools::UUID.timestamp_create)
               else
                 uuid = old_identity_doc.at_xpath("//otherId[@name='uuid']")
                 # If there's an old UUID, set it as the value, otherwise, create a new one
-                if !uuid.nil? && uuid.text != ''
+                if uuid&.text.present?
                   xml.text(uuid.text)
                 else
                   xml.text(UUIDTools::UUID.timestamp_create)
@@ -85,8 +89,7 @@ module Dor
         builder.to_xml
       end
 
-      attr_reader :etd
-      delegate :pid, to: :etd
+      private
 
       def props_ds
         etd.datastreams['properties']
