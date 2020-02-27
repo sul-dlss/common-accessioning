@@ -33,7 +33,7 @@ gem 'zeitwerk', '~> 2.1'
 group :test do
   gem 'coveralls', require: false
   gem 'rspec', '~> 3.0'
-  gem 'simplecov' # simplecov 0.17 puts coveralls at 0.7 release (was 0.8); shrug
+  gem 'simplecov', '~> 0.17.1' # 0.18 breaks reporting to coveralls `undefined method `coverage' for #<SimpleCov::SourceFile:0x0000561b4563cd18>`
   gem 'webmock'
 end
 
