@@ -2,7 +2,7 @@
 
 module EtdSubmit
   module RobotCronBase
-    attr_reader :repo, :workflow_name, :step_name, :prerequisites
+    attr_reader :prerequisites
 
     def start
       lanes = workflow_service.lane_ids(*qualified_workflow_name.split(/:/))
@@ -22,7 +22,7 @@ module EtdSubmit
     end
 
     def qualified_workflow_name
-      @qualified_workflow_name ||= "#{repo}:#{workflow_name}:#{step_name}"
+      @qualified_workflow_name ||= "dor:#{workflow_name}:#{process}"
     end
   end
 end
