@@ -13,9 +13,10 @@ require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
 
 robot_name = ARGV.shift
 
-# See if the robot is already running
+# See if the robot is already running.
+# This list is going to detect this process.
 procs_running = `ps -ef | grep #{robot_name} | grep -v 'grep' | wc -l`.strip.to_i
-if procs_running.positive?
+if procs_running > 1
   puts "#{robot_name} already running.  Skipping invocation"
   exit
 end
