@@ -17,11 +17,11 @@ timestamp = DateTime.now.strftime('%Y%m%d-%H%M%S')
 
 # See if the robot is already running.
 # This list is going to detect this process.
-procs_running = `ps -ef | grep #{robot_name} | grep -v 'grep' | wc -l`.strip.to_i
-if procs_running > 1
-  puts "#{timestamp}: #{robot_name} already running.  Skipping invocation"
-  exit
-end
+# procs_running = `ps -ef | grep #{robot_name} | grep -v 'grep' | wc -l`.strip.to_i
+# if procs_running > 1
+#   puts "#{timestamp}: #{robot_name} already running.  Skipping invocation"
+#   exit
+# end
 
 # Instantiate the robot class and start it
 puts "#{timestamp}: Trying to load #{robot_name}"
