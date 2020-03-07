@@ -1,3 +1,16 @@
+GIT
+  remote: https://github.com/sul-dlss/dor-services-client.git
+  revision: c6ad07b752a1bb9ccb893dc9a62cbfe7177fd9a6
+  branch: add_identity
+  specs:
+    dor-services-client (4.17.0)
+      activesupport (>= 4.2, < 7)
+      cocina-models (~> 0.26.0)
+      deprecation
+      faraday (>= 0.15, < 2)
+      moab-versioning (~> 4.0)
+      zeitwerk (~> 2.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -61,7 +74,7 @@ GEM
       resque-pool
     capistrano-shared_configs (0.2.2)
     chronic (0.10.2)
-    cocina-models (0.25.0)
+    cocina-models (0.26.0)
       dry-struct (~> 1.0)
       dry-types (~> 1.1)
       zeitwerk (~> 2.1)
@@ -109,13 +122,6 @@ GEM
       solrizer (~> 3.0)
       stanford-mods (>= 2.3.1)
       stanford-mods-normalizer (~> 0.1)
-    dor-services-client (4.16.0)
-      activesupport (>= 4.2, < 7)
-      cocina-models (~> 0.25.0)
-      deprecation
-      faraday (~> 0.15)
-      moab-versioning (~> 4.0)
-      zeitwerk (~> 2.1)
     dor-workflow-client (3.20.1)
       activesupport (>= 3.2.1, < 7)
       deprecation (>= 0.99.0)
@@ -410,7 +416,7 @@ DEPENDENCIES
   coveralls
   dlss-capistrano (~> 3.1)
   dor-services (~> 9.0)
-  dor-services-client (~> 4.14)
+  dor-services-client!
   dor-workflow-client (~> 3.18)
   honeybadger
   jhove-service (~> 1.4)
