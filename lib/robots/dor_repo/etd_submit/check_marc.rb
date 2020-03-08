@@ -28,7 +28,7 @@ module Robots
 
           current_location = symphony_xml.search('/titles/record[home="INTERNET"]/current').first
           catkey_xml = symphony_xml.search('/titles/record[home="INTERNET"]/catkey').first
-          return LyberCore::Robot::ReturnState.WAITING if current_location.nil? || catkey_xml.nil?
+          return LyberCore::Robot::ReturnState.new(status: 'waiting') if current_location.nil? || catkey_xml.nil?
 
           identity_xml = build_identity_xml(etd, catkey_xml)
 
