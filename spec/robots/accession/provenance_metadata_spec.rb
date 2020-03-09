@@ -10,7 +10,7 @@ RSpec.describe Robots::DorRepo::Accession::ProvenanceMetadata do
     subject(:perform) { robot.perform(druid) }
 
     let(:object_client) do
-      instance_double(Dor::Services::Client::Object, refresh_metadata: true, metadata: metadata_client)
+      instance_double(Dor::Services::Client::Object, metadata: metadata_client)
     end
     let(:metadata_client) do
       instance_double(Dor::Services::Client::Metadata, legacy_update: true)

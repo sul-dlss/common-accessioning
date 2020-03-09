@@ -31,16 +31,16 @@ module Robots
 
         # create metadata in the repository for the given etd object
         def create_metadata(etd, druid)
+          object_client = Dor::Services::Client.object(druid)
+          object_client.refresh_metadata
           content_md = Dor::Etd::ContentMetadataGenerator.generate(etd)
           identity_md = Dor::Etd::IdentityMetadataGenerator.generate(etd)
           rights_md = Dor::Etd::RightsMetadataGenerator.generate(etd)
           version_md = Dor::Etd::VersionMetadataGenerator.generate(etd.pid)
-          create_legacy_metadata(druid, content_md, identity_md, rights_md, version_md)
+          create_legacy_metadata(object_client, content_md, identity_md, rights_md, version_md)
         end
 
-        def create_legacy_metadata(druid, content_md, identity_md, rights_md, version_md)
-          object_client = Dor::Services::Client.object(druid)
-
+        def create_legacy_metadata(object_client, content_md, identity_md, rights_md, version_md)
           # legacy_update will create the metadata
           object_client.metadata.legacy_update(
             content: {

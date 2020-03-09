@@ -7,12 +7,10 @@ RSpec.describe Robots::DorRepo::EtdSubmit::OtherMetadata do
 
   let(:druid) { 'druid:mj151qw9093' }
   let(:object) { Etd.new(pid: druid) }
-  let(:obj_client) { instance_double(Dor::Services::Client::Object) }
-  let(:metadata_obj) { instance_double(Dor::Services::Client::Metadata) }
+  let(:obj_client) { instance_double(Dor::Services::Client::Object, metadata: metadata_obj, refresh_metadata: true) }
+  let(:metadata_obj) { instance_double(Dor::Services::Client::Metadata, legacy_update: true) }
 
   before do
-    allow(metadata_obj).to receive(:legacy_update)
-    allow(obj_client).to receive(:metadata).and_return(metadata_obj)
     allow(Dor::Services::Client).to receive(:object).with(druid).and_return(obj_client)
   end
 
