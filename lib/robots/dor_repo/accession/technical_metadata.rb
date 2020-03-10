@@ -30,20 +30,20 @@ module Robots
           Dor::Services::Client.object(druid).find
         end
 
-        def extract_filenames(obj)
+        def extract_preserved_filenames(obj)
           filenames = []
           obj.structural.contains.each do |fileset|
             next if fileset.structural.contains.blank?
 
             fileset.structural.contains.each do |file|
-              filenames << file.label
+              filenames << file.label if file.administrative.sdrPreserve
             end
           end
           filenames
         end
 
         def extract_file_uris(druid, obj)
-          filenames = extract_filenames(obj)
+          filenames = extract_preserved_filenames(obj)
 
           workspace = DruidTools::Druid.new(druid, File.absolute_path(Settings.sdr.local_workspace_root))
           content_dir = workspace.find_filelist_parent('content', filenames)
