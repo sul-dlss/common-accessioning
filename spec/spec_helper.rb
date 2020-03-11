@@ -6,6 +6,7 @@ ENV['ROBOT_ENVIRONMENT'] = 'test'
 require 'simplecov'
 require 'coveralls'
 require 'byebug'
+require 'pry-byebug'
 
 SimpleCov.formatter = Coveralls::SimpleCov::Formatter
 SimpleCov.start do

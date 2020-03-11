@@ -45,7 +45,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'byebug'
+  gem 'pry-byebug'
   gem 'rubocop', '~> 0.77.0'
   gem 'rubocop-rspec'
 end
