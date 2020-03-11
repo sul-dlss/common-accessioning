@@ -22,7 +22,8 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
 
     context 'when a DRO with files' do
       let(:workspace) { File.absolute_path('spec/fixtures/workspace') }
-      let(:expected_file) { "file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story1u.txt" }
+      let(:preserved_file) { "file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story1u.txt" }
+      let(:unpreserved_file) { "file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story2r.txt" }
 
       let(:object) do
         Cocina::Models::DRO.new(externalIdentifier: 'druid:dd116zh0343',
@@ -56,21 +57,6 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                             sdrPreserve: false,
                                             shelve: false
                                           }
-                                        },
-                                        {
-                                          externalIdentifier: '222-3',
-                                          label: 'folder1PuSu/story3m.txt',
-                                          type: Cocina::Models::Vocab.file,
-                                          version: 1,
-                                          administrative: {
-                                            shelve: true
-                                          }
-                                        },
-                                        {
-                                          externalIdentifier: '222-3',
-                                          label: 'folder1PuSu/story4d.txt',
-                                          type: Cocina::Models::Vocab.file,
-                                          version: 1
                                         }
                                       ]
                                     }
@@ -90,7 +76,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
             .with(
               body: {
                 druid: 'druid:dd116zh0343',
-                files: array_including(expected_file)
+                files: array_including(a_string_matching(preserved_file).and(excluding(unpreserved_file)))
               },
               headers: {
                 'Content-Type' => 'application/json',
@@ -111,7 +97,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
             .with(
               body: {
                 druid: 'druid:dd116zh0343',
-                files: array_including(expected_file)
+                files: array_including(a_string_matching(preserved_file).and(excluding(unpreserved_file)))
               },
               headers: {
                 'Content-Type' => 'application/json',
@@ -130,7 +116,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
         before do
           stub_request(:post, 'https://dor-techmd-test.stanford.test/v1/technical-metadata')
             .with(
-              body: hash_including(files: array_including(expected_file)),
+              body: hash_including(files: array_including(preserved_file)),
               headers: {
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer rake-generate-token-me'
@@ -146,53 +132,10 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
 
       context 'when file has false for sdrPreserve' do
         before do
-          unexpected_file = "file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story2r.txt"
           stub_request(:post, 'https://dor-techmd-test.stanford.test/v1/technical-metadata')
             .with(
               body: hash_including(
-                files: array_including(a_string_matching(expected_file).and(excluding(unexpected_file)))
-              ),
-              headers: {
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer rake-generate-token-me'
-              }
-            )
-            .to_return(status: 200, body: '', headers: {})
-        end
-
-        it 'file is NOT sent to techmd service' do
-          expect(perform.status).to eq('noop')
-        end
-      end
-
-      context 'when file has no sdrPreserve setting' do
-        before do
-          unexpected_file = "file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story3m.txt"
-          stub_request(:post, 'https://dor-techmd-test.stanford.test/v1/technical-metadata')
-            .with(
-              body: hash_including(
-                files: array_including(a_string_matching(expected_file).and(excluding(unexpected_file)))
-              ),
-              headers: {
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer rake-generate-token-me'
-              }
-            )
-            .to_return(status: 200, body: '', headers: {})
-        end
-
-        it 'file is NOT sent to techmd service' do
-          expect(perform.status).to eq('noop')
-        end
-      end
-
-      context 'when file has no administrative metadata' do
-        before do
-          unexpected_file = "file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story4d.txt"
-          stub_request(:post, 'https://dor-techmd-test.stanford.test/v1/technical-metadata')
-            .with(
-              body: hash_including(
-                files: array_including(a_string_matching(expected_file).and(excluding(unexpected_file)))
+                files: array_including(a_string_matching(preserved_file).and(excluding(unpreserved_file)))
               ),
               headers: {
                 'Content-Type' => 'application/json',
