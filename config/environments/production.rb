@@ -33,15 +33,6 @@ JHOVE_HOME = File.join(ENV['HOME'], 'jhoveToolkit')
 
 REDIS_URL = Settings.redis.url
 
-# Remote location of ETD content
-ETD_WORKSPACE = Settings.etd.workspace
-
-# hostname where symphony resides
-SYMPHONY_URL = Settings.symphony.url
-
-# location where marc output will be dumped
-MARC_OUTPUT_DIRECTORY = Settings.marc_output_directory
-
 # hostname, location, and credentials of the binder dropbox location
 BINDER_DROPBOX_HOST = Settings.binder_dropbox.host
 BINDER_DROPBOX_USER = Settings.binder_dropbox.user

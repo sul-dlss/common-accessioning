@@ -11,12 +11,3 @@ Dor::Config.configure do
 end
 
 REDIS_URL = Settings.redis.url
-
-# Remote location of ETD content
-ETD_WORKSPACE = Settings.etd.workspace
-
-# hostname where symphony resides
-SYMPHONY_URL = Settings.symphony.url
-
-# location where marc output will be dumped
-MARC_OUTPUT_DIRECTORY = Settings.marc_output_directory

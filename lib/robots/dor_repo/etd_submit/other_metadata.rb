@@ -19,7 +19,7 @@ module Robots
           content_dir = object.content_dir
 
           # now transfer the pdfs from lyberapps into the workspace parent content directory
-          source_dir = File.join(ETD_WORKSPACE, druid)
+          source_dir = File.join(Settings.etd.workspace, druid)
           transfer_object(source_dir, content_dir)
 
           return if etd.nil?

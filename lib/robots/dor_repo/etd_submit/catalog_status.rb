@@ -47,7 +47,7 @@ module Robots
         end
 
         def query_symphony(flexkey)
-          url = URI.parse(SYMPHONY_URL + flexkey)
+          url = URI.parse(Settings.symphony.url + flexkey)
           conn = Faraday.new(url: url)
           res = conn.get do |req|
             req.options.timeout = 20
