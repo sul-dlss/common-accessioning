@@ -70,12 +70,8 @@ module Dor
               props_ds = supplemental_file.datastreams['properties']
               supplemental_file_name = props_ds.file_name.first
               supplemental_file_mimetype = determine_mime_type(supplemental_file_name)
-              supplemental_file_label = props_ds.term_values(:label).first
               supplemental_file_size = props_ds.term_values(:size).first
               xml.resource(id: "#{resource_prefix}_#{resource_index += 1}", type: 'supplement', sequence: sequence + 1, objectId: supplemental_file.pid) do
-                xml.attr(name: 'label') do
-                  xml.text(supplemental_file_label)
-                end
                 xml.file(id: supplemental_file_name, mimetype: supplemental_file_mimetype, size: supplemental_file_size, shelve: 'yes', publish: 'yes', preserve: 'yes') do
                   md5, sha1 = generate_checksums(supplemental_file_name)
                   xml.checksum md5, type: 'md5'
@@ -88,12 +84,8 @@ module Dor
               props_ds = permission_file.datastreams['properties']
               permission_file_name = props_ds.file_name.first
               permission_file_mimetype = determine_mime_type(permission_file_name)
-              permission_file_label = props_ds.term_values(:label).first
               permission_file_size = props_ds.term_values(:size).first
               xml.resource(id: "#{resource_prefix}_#{resource_index += 1}", type: 'permissions', objectId: permission_file.pid) do
-                xml.attr(name: 'label') do
-                  xml.text(permission_file_label)
-                end
                 xml.file(id: permission_file_name, mimetype: permission_file_mimetype, size: permission_file_size, shelve: 'yes', publish: 'no', preserve: 'yes') do
                   md5, sha1 = generate_checksums(permission_file_name)
                   xml.checksum md5, type: 'md5'
