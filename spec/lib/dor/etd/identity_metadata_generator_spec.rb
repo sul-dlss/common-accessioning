@@ -9,13 +9,11 @@ RSpec.describe Dor::Etd::IdentityMetadataGenerator do
   let(:druid) { 'druid:ab123cd4567' }
   let(:new_uuid) { UUIDTools::UUID.timestamp_create }
   let(:old_id_metadata) { instance_double('identityMetadata') }
-  # Can't make this a verified double because it's a ActiveFedora::SimpleDatastream (which does a bunch of method missing stuff)
-  # rubocop:disable RSpec/VerifiedDoubles
-  let(:properties_ds) { double('custom properties', dissertation_id: ['0000005666'], etd_type: ['Dissertation']) }
-  # rubocop:enable RSpec/VerifiedDoubles
 
   before do
-    allow(etd).to receive(:datastreams).and_return('properties' => properties_ds)
+    allow(etd).to receive(:dissertation_id).and_return('0000005666')
+    allow(etd).to receive(:etd_type).and_return('Dissertation')
+
     allow(etd).to receive(:identityMetadata).and_return(old_id_metadata)
     allow(UUIDTools::UUID).to receive(:timestamp_create).and_return(new_uuid)
   end
