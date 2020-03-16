@@ -39,9 +39,8 @@ module Dor
           resource_prefix = pid.sub('druid:', '')
           xml.contentMetadata(type: 'file', objectId: pid) do
             # main pdf
-            props_ds = main_pdf.datastreams['properties']
-            main_pdf_file_name = props_ds.file_name.first
-            main_pdf_file_size = props_ds.term_values(:size).first
+            main_pdf_file_name = main_pdf.file_name
+            main_pdf_file_size = main_pdf.size
             xml.resource(id: "#{resource_prefix}_#{resource_index += 1}", type: 'main-original') do
               xml.attr(name: 'label') do
                 xml.text('Body of dissertation (as submitted)')
@@ -67,10 +66,9 @@ module Dor
             end
             # supplemental files
             supplemental_files.each_with_index do |supplemental_file, sequence|
-              props_ds = supplemental_file.datastreams['properties']
-              supplemental_file_name = props_ds.file_name.first
+              supplemental_file_name = supplemental_file.file_name
               supplemental_file_mimetype = determine_mime_type(supplemental_file_name)
-              supplemental_file_size = props_ds.term_values(:size).first
+              supplemental_file_size = supplemental_file.size
               xml.resource(id: "#{resource_prefix}_#{resource_index += 1}", type: 'supplement', sequence: sequence + 1, objectId: supplemental_file.pid) do
                 xml.file(id: supplemental_file_name, mimetype: supplemental_file_mimetype, size: supplemental_file_size, shelve: 'yes', publish: 'yes', preserve: 'yes') do
                   md5, sha1 = generate_checksums(supplemental_file_name)
@@ -81,10 +79,9 @@ module Dor
             end
             # permission files
             permission_files.each_with_index do |permission_file, _sequence|
-              props_ds = permission_file.datastreams['properties']
-              permission_file_name = props_ds.file_name.first
+              permission_file_name = permission_file.file_name
               permission_file_mimetype = determine_mime_type(permission_file_name)
-              permission_file_size = props_ds.term_values(:size).first
+              permission_file_size = permission_file.size
               xml.resource(id: "#{resource_prefix}_#{resource_index += 1}", type: 'permissions', objectId: permission_file.pid) do
                 xml.file(id: permission_file_name, mimetype: permission_file_mimetype, size: permission_file_size, shelve: 'yes', publish: 'no', preserve: 'yes') do
                   md5, sha1 = generate_checksums(permission_file_name)

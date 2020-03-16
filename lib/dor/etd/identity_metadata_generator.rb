@@ -50,8 +50,7 @@ module Dor
               xml.text('DOR')
             end
             xml.otherId(name: 'dissertationid') do
-              dissertation_id = props_ds.dissertation_id.first
-              xml.text(dissertation_id)
+              xml.text(etd.dissertation_id)
             end
             xml.otherId(name: 'catkey') do
               unless old_identity_doc.nil?
@@ -81,18 +80,11 @@ module Dor
               xml.text('ETDs')
             end
             xml.tag do
-              etd_type = props_ds.etd_type.first
-              xml.text("ETD : #{etd_type}")
+              xml.text("ETD : #{etd.etd_type}")
             end
           end
         end
         builder.to_xml
-      end
-
-      private
-
-      def props_ds
-        etd.datastreams['properties']
       end
     end
   end

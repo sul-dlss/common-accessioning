@@ -6,13 +6,11 @@ RSpec.describe Dor::Etd::ContentMetadataGenerator do
   let(:etd) { Etd.new(pid: druid) }
   let(:druid) { 'druid:ab123cd4567' }
   let(:main_pdf) { Part.new }
-  # Can't make this a verified double because it's a ActiveFedora::SimpleDatastream (which does a bunch of method missing stuff)
-  # rubocop:disable RSpec/VerifiedDoubles
-  let(:properties_ds) { double('custom properties', file_name: ['project.pdf']) }
-  # rubocop:enable RSpec/VerifiedDoubles
 
   before do
-    allow(main_pdf).to receive(:datastreams).and_return('properties' => properties_ds)
+    allow(main_pdf).to receive(:file_name).and_return('project.pdf')
+    allow(main_pdf).to receive(:size).and_return('9')
+
     allow(etd).to receive(:parts).and_return([main_pdf])
   end
 
@@ -25,7 +23,6 @@ RSpec.describe Dor::Etd::ContentMetadataGenerator do
 
     before do
       allow(DruidTools::Druid).to receive(:new).and_return(druid_tool)
-      allow(properties_ds).to receive(:term_values).with(:size).and_return([9])
       allow(Digest::MD5).to receive(:file).with('/foo/bar/project.pdf').and_return(md5_digest)
       allow(Digest::SHA1).to receive(:file).with('/foo/bar/project.pdf').and_return(sha1_digest)
       allow(Digest::MD5).to receive(:file).with('/foo/bar/project-augmented.pdf').and_return(md5_digest)

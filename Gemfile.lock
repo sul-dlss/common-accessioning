@@ -93,12 +93,11 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     dor-rights-auth (1.4.0)
       nokogiri
-    dor-services (9.0.0)
+    dor-services (9.2.0)
       active-fedora (>= 8.7.0, < 9)
       activesupport (~> 5.1)
       deprecation (~> 0)
       dor-rights-auth (~> 1.0, >= 1.2.0)
-      druid-tools (>= 0.4.1)
       json (>= 1.8.1)
       nokogiri (~> 1.6)
       om (~> 3.0)
@@ -409,7 +408,7 @@ DEPENDENCIES
   config (~> 2.2)
   coveralls
   dlss-capistrano (~> 3.1)
-  dor-services (~> 9.0)
+  dor-services (~> 9.1)
   dor-services-client (~> 4.14)
   dor-workflow-client (~> 3.18)
   honeybadger
