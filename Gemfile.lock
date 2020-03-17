@@ -411,6 +411,7 @@ DEPENDENCIES
   dor-services (~> 9.1)
   dor-services-client (~> 4.14)
   dor-workflow-client (~> 3.18)
+  druid-tools (~> 2.1)
   honeybadger
   jhove-service (~> 1.4)
   lyber-core (~> 6.0)
