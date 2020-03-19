@@ -27,7 +27,6 @@ require 'capistrano/bundler'
 # require 'capistrano/rails/migrations'
 
 require 'dlss/capistrano'
-require 'whenever/capistrano'
 require 'capistrano/honeybadger'
 require 'capistrano-resque-pool'
 

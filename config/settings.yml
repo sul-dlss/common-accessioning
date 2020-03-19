@@ -58,16 +58,3 @@ redis:
 
 etd:
   workspace: ~
-
-symphony:
-  # hostname where symphony resides
-  url: ~
-
-# location where marc output will be dumped
-marc_output_directory: ~
-marc_workspace: ~
-
-binder_dropbox:
-  host: ~
-  user: ~
-  storage_root: ~

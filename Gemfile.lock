@@ -60,7 +60,6 @@ GEM
       capistrano
       resque-pool
     capistrano-shared_configs (0.2.2)
-    chronic (0.10.2)
     cocina-models (0.31.1)
       activesupport
       dry-struct (~> 1.0)
@@ -400,8 +399,6 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    whenever (1.0.0)
-      chronic (>= 0.6.3)
     xml-simple (1.1.5)
     zeitwerk (2.3.0)
 
@@ -444,7 +441,6 @@ DEPENDENCIES
   systemu (~> 2.6)
   uuidtools
   webmock
-  whenever
   zeitwerk (~> 2.1)
 
 BUNDLED WITH
