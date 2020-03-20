@@ -30,7 +30,6 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, cleanup: true) }
 
   before do
-    allow(Dor).to receive(:find).with(druid).and_return(object)
     allow(WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
     allow(Dor::Services::Client).to receive(:object).with(apo_id).and_return(apo_object_client)
