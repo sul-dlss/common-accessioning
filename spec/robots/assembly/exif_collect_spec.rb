@@ -67,7 +67,6 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
     let(:exif) { double('result', mimetype: nil, image_width: 7, image_height: 9) }
 
     before do
-      allow(Dor).to receive(:find).and_return(double('Fedora obj'))
       allow(item).to receive(:item?).and_return(true)
       allow(item).to receive(:load_content_metadata)
       allow(item).to receive(:cm).and_return(Nokogiri::XML(xml))
