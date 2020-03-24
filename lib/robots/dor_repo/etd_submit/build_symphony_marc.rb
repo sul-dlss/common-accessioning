@@ -13,7 +13,7 @@ LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, 'log', 'build_symphony_marc.log
 
 filename = File.join(MARC_OUTPUT_DIRECTORY, Time.now.strftime('%Y%m%d-%H%M%S%u'))
 
-marc_files = Dir[File.join(ROBOT_ROOT, 'tmp', Time.now.strftime('%Y%m%d'), '*.marc')]
+marc_files = Dir[File.join(Settings.marc_workspace, Time.now.strftime('%Y%m%d'), '*.marc')]
 if marc_files.empty?
   LyberCore::Log.info('No marc files from today to process')
   exit

@@ -61,6 +61,7 @@ symphony:
 
 # location where marc output will be dumped
 marc_output_directory: ~
+marc_workspace: ~
 
 binder_dropbox:
   host: ~
