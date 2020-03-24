@@ -25,9 +25,9 @@ describe Robots::DorRepo::EtdSubmit::SubmitMarc do
         expect(r).to be_instance_of(described_class)
       end
 
-      it "creates a tmp directory in ROBOT_ROOT if it doesn't exist" do
-        expect(File).to receive(:exist?).with(ROBOT_ROOT + '/tmp').and_return(false)
-        expect(FileUtils).to receive(:mkdir).with(ROBOT_ROOT + '/tmp')
+      it "creates a tmp directory in marc_workspace if it doesn't exist" do
+        expect(File).to receive(:exist?).with(Settings.marc_workspace).and_return(false)
+        expect(FileUtils).to receive(:mkdir).with(Settings.marc_workspace)
 
         described_class.new
       end

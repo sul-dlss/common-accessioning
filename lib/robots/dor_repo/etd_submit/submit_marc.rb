@@ -14,8 +14,8 @@ module Robots
         def initialize(opts = {})
           super('etdSubmitWF', 'submit-marc', opts)
 
-          FileUtils.mkdir(ROBOT_ROOT + '/tmp') unless File.exist?(ROBOT_ROOT + '/tmp')
-          @day_working_dir = File.join(ROBOT_ROOT, 'tmp', Time.now.strftime('%Y%m%d'))
+          FileUtils.mkdir(Settings.marc_workspace) unless File.exist?(Settings.marc_workspace)
+          @day_working_dir = File.join(Settings.marc_workspace, Time.now.strftime('%Y%m%d'))
           @prerequisites = ['dor:etdSubmitWF:registrar-approval']
         end
 
