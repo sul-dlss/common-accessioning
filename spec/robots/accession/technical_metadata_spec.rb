@@ -26,10 +26,11 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
       let(:contains) { [] }
 
       let(:object) do
-        Cocina::Models::DRO.new(externalIdentifier: '123',
+        Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
                                 type: Cocina::Models::Vocab.object,
                                 label: 'my repository object',
                                 version: 1,
+                                access: {},
                                 structural: {
                                   contains: contains
                                 })
@@ -53,10 +54,10 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
 
         context 'when the DRO has files' do
           let(:file_set) do
-            Cocina::Models::FileSet.new(externalIdentifier: '222',
-                                        type: Cocina::Models::Vocab.fileset,
-                                        label: 'my repository object',
-                                        version: 1)
+            { externalIdentifier: 'druid:bc123df4567',
+              type: Cocina::Models::Vocab.fileset,
+              label: 'my repository object',
+              version: 1 }
           end
           let(:contains) { [file_set] }
 
@@ -141,9 +142,10 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
 
     context 'on a collection' do
       let(:object) do
-        Cocina::Models::Collection.new(externalIdentifier: '123',
+        Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
                                        type: Cocina::Models::Collection::TYPES.first,
                                        label: 'my collection',
+                                       access: {},
                                        version: 1)
       end
 

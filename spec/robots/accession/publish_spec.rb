@@ -22,10 +22,11 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
 
     context 'when called on a Collection' do
       let(:object) do
-        Cocina::Models::Collection.new(externalIdentifier: '123',
+        Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
                                        type: Cocina::Models::Collection::TYPES.first,
                                        label: 'my collection',
-                                       version: 1)
+                                       version: 1,
+                                       access: {})
       end
 
       it 'publishes metadata' do
@@ -35,10 +36,11 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
 
     context 'when called on an Item' do
       let(:object) do
-        Cocina::Models::DRO.new(externalIdentifier: '123',
+        Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
                                 type: Cocina::Models::DRO::TYPES.first,
                                 label: 'my repository object',
-                                version: 1)
+                                version: 1,
+                                access: {})
       end
 
       it 'publishes metadata' do
@@ -48,10 +50,11 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
 
     context 'when called on an APO' do
       let(:object) do
-        Cocina::Models::AdminPolicy.new(externalIdentifier: '123',
+        Cocina::Models::AdminPolicy.new(externalIdentifier: 'druid:bc123df4567',
                                         type: Cocina::Models::AdminPolicy::TYPES.first,
                                         label: 'my admin policy',
-                                        version: 1)
+                                        version: 1,
+                                        administrative: {})
       end
 
       it 'does not publish metadata' do
