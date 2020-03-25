@@ -3,7 +3,7 @@
 
 #
 # Reads the day's marc files from the local temporary directory and builds one file
-# in the MARC_OUTPUT_DIRECTORY
+# in the Settings.marc_output_directory
 #
 require File.expand_path(File.dirname(__FILE__) + '/../../../../config/boot')
 require 'pony'
@@ -11,7 +11,7 @@ require 'pony'
 ETD_ALERTS_LIST = 'etd-alerts@lists.stanford.edu'
 LyberCore::Log.set_logfile(File.join(ROBOT_ROOT, 'log', 'build_symphony_marc.log'))
 
-filename = File.join(MARC_OUTPUT_DIRECTORY, Time.now.strftime('%Y%m%d-%H%M%S%u'))
+filename = File.join(Settings.marc_output_directory, Time.now.strftime('%Y%m%d-%H%M%S%u'))
 
 marc_files = Dir[File.join(Settings.marc_workspace, Time.now.strftime('%Y%m%d'), '*.marc')]
 if marc_files.empty?
