@@ -32,10 +32,11 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
     context 'for an item' do
       let(:object) do
-        Cocina::Models::DRO.new(externalIdentifier: '123',
+        Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
                                 type: Cocina::Models::DRO::TYPES.first,
                                 label: 'my dro',
-                                version: 1)
+                                version: 1,
+                                access: {})
       end
 
       it 'creates jp2' do
@@ -48,10 +49,11 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
     context 'for a collection' do
       let(:object) do
-        Cocina::Models::Collection.new(externalIdentifier: '123',
+        Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
                                        type: Cocina::Models::Collection::TYPES.first,
                                        label: 'my collection',
-                                       version: 1)
+                                       version: 1,
+                                       access: {})
       end
 
       it 'does not create jp2' do

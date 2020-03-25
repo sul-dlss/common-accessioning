@@ -6,14 +6,15 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   subject(:robot) { described_class.new }
 
   let(:object) do
-    Cocina::Models::DRO.new(externalIdentifier: '123',
+    Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
                             type: Cocina::Models::DRO::TYPES.first,
                             label: 'my repository object',
                             version: 1,
+                            access: {},
                             administrative: { hasAdminPolicy: apo_id })
   end
   let(:apo) do
-    Cocina::Models::AdminPolicy.new(externalIdentifier: '123',
+    Cocina::Models::AdminPolicy.new(externalIdentifier: 'druid:bc123df4567',
                                     type: Cocina::Models::AdminPolicy::TYPES.first,
                                     label: 'my apo object',
                                     version: 1,
@@ -47,11 +48,11 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
     context 'when there is a special dissemniation workflow' do
       let(:apo) do
-        Cocina::Models::AdminPolicy.new(externalIdentifier: '123',
+        Cocina::Models::AdminPolicy.new(externalIdentifier: 'druid:bc123df4567',
                                         type: Cocina::Models::AdminPolicy::TYPES.first,
                                         label: 'my apo object',
                                         version: 1,
-                                        administrative: { registration_workflow: 'wasDisseminationWF' })
+                                        administrative: { registrationWorkflow: 'wasDisseminationWF' })
       end
 
       it 'kicks off that workflow' do

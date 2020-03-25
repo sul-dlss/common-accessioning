@@ -41,19 +41,17 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
   context 'when the model is a collection' do
     let(:releaseTags) { [] }
 
-    let(:administrative) do
-      Cocina::Models::Collection::Administrative.new(releaseTags: releaseTags)
-    end
     let(:cocina_model) do
-      Cocina::Models::Collection.new(externalIdentifier: '123',
+      Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
                                      type: Cocina::Models::Vocab.collection,
                                      label: 'my collection',
                                      version: 1,
-                                     administrative: administrative)
+                                     access: {},
+                                     administrative: { releaseTags: releaseTags })
     end
 
     context 'when the collection is released to self only' do
-      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
+      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } }
       let(:releaseTags) { [release_tag1] }
 
       let(:members) do
@@ -67,8 +65,8 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'when there are multiple targets but they are all released to self only' do
-      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
-      let(:release_tag2) { Cocina::Models::ReleaseTag.new(to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket') }
+      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } }
+      let(:release_tag2) { { to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket' } }
       let(:releaseTags) { [release_tag1, release_tag2] }
       let(:members) do
         [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'collection')]
@@ -81,8 +79,8 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'with multiple tags for a single target' do
-      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'self', date: '2019-03-09 19:34:43 UTC', who: 'hfrost ') }
-      let(:release_tag2) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: false, what: 'self', date: '2020-02-07 19:34:43 UTC', who: 'jkalchik') }
+      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'self', date: '2019-03-09 19:34:43 UTC', who: 'hfrost ' } }
+      let(:release_tag2) { { to: 'Searchworks', release: false, what: 'self', date: '2020-02-07 19:34:43 UTC', who: 'jkalchik' } }
       let(:releaseTags) { [release_tag1, release_tag2] }
       let(:members) do
         [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'collection')]
@@ -95,7 +93,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'when the collection is not released to self' do
-      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
+      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } }
       let(:releaseTags) { [release_tag1] }
       let(:members) do
         [
@@ -114,8 +112,8 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'when there are multiple targets and at least one of the release targets is not released to self' do
-      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
-      let(:release_tag2) { Cocina::Models::ReleaseTag.new(to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket') }
+      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } }
+      let(:release_tag2) { { to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket' } }
       let(:releaseTags) { [release_tag1, release_tag2] }
       let(:members) do
         [
@@ -133,7 +131,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'with sub collections' do
-      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
+      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } }
       let(:releaseTags) { [release_tag1] }
 
       context 'with only collections' do
