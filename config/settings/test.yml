@@ -12,10 +12,3 @@ workflow:
 
 etd:
   workspace: 'lyberadmin@lyberapps-dev.stanford.edu:/home/lyberadmin/workspace/'
-
-symphony:
-  url: 'http://lyberservices-dev.stanford.edu/cgi-bin/holdings.php?flexkey='
-
-marc_output_directory: /tmp
-
-marc_workspace: tmp

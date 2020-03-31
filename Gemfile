@@ -27,7 +27,6 @@ gem 'resque-pool'
 gem 'slop'
 gem 'systemu', '~> 2.6'
 gem 'uuidtools' # For models/etd_metadata
-gem 'whenever'
 gem 'zeitwerk', '~> 2.1'
 
 group :test do

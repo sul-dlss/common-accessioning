@@ -32,8 +32,3 @@ end
 JHOVE_HOME = File.join(ENV['HOME'], 'jhoveToolkit')
 
 REDIS_URL = Settings.redis.url
-
-# hostname, location, and credentials of the binder dropbox location
-BINDER_DROPBOX_HOST = Settings.binder_dropbox.host
-BINDER_DROPBOX_USER = Settings.binder_dropbox.user
-BINDER_DROPBOX_STORAGE_ROOT = Settings.binder_dropbox.storage_root
