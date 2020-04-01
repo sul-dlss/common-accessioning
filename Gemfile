@@ -13,12 +13,7 @@ gem 'dor-workflow-client', '~> 3.18'
 gem 'druid-tools', '~> 2.1'
 gem 'honeybadger'
 gem 'lyber-core', '~> 6.1'
-gem 'marc' # for etd_submit/submit_marc
-gem 'moab-versioning', '~> 4.0'
-gem 'net-sftp', '~> 2.1' # for binder_batch_transfer
 gem 'nokogiri'
-gem 'pony' # send email, for etd_submit/build_symphony_marc
-gem 'preservation-client', '>= 3.0' # 3.x or greater is needed for token auth
 gem 'pry'
 gem 'pry-byebug', platform: %i[ruby_20 ruby_21]
 gem 'rake'
