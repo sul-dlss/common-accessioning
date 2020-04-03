@@ -20,28 +20,9 @@ tech_md_service:
   url: 'https://dor-techmd-test.stanford.test'
   token: 'rake-generate-token-me'
 
-fedora:
-  url: ~
-
-ssl:
-  cert_file: ~
-  key_file: ~
-  key_pass: ~
-
-suri:
-  mint_ids: true
-  id_namespace: 'druid'
-  url: ~
-  user: ~
-  pass: ~
-
 # Used by Dor::DigitalStacksService, Dor::PublishMetadataService, and Dor::ShelvingService
 stacks:
   local_workspace_root: ~
-  local_stacks_root: ~
-
-solr:
-  url: ~
 
 workflow:
   url: https://example.com/workflow/
@@ -51,6 +32,3 @@ workflow:
 
 redis:
   url: ~
-
-etd:
-  workspace: ~

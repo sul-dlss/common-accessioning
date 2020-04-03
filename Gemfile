@@ -7,7 +7,6 @@ gem 'activesupport', '~> 5.2'
 gem 'assembly-image', '~> 1.7'
 gem 'assembly-objectfile', '>=1.6.6'
 gem 'config', '~> 2.2'
-gem 'dor-services', '~> 9.1'
 gem 'dor-services-client', '~> 5.0'
 gem 'dor-workflow-client', '~> 3.18'
 gem 'druid-tools', '~> 2.1'
@@ -20,12 +19,11 @@ gem 'rake'
 gem 'resque', '~> 2.0' # bundler used 1.x otherwise
 gem 'resque-pool'
 gem 'slop'
-gem 'systemu', '~> 2.6'
-gem 'uuidtools' # For models/etd_metadata
 gem 'zeitwerk', '~> 2.1'
 
 group :test do
   gem 'coveralls', require: false
+  gem 'equivalent-xml'
   gem 'rspec', '~> 3.0'
   gem 'simplecov', '~> 0.17.1' # 0.18 breaks reporting to coveralls `undefined method `coverage' for #<SimpleCov::SourceFile:0x0000561b4563cd18>`
   gem 'webmock'
