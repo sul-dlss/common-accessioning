@@ -10,7 +10,7 @@ module Robots
         end
 
         def perform(druid)
-          object = DruidTools::Druid.new(druid, Dor::Config.stacks.local_workspace_root)
+          object = DruidTools::Druid.new(druid, Settings.stacks.local_workspace_root)
           path = object.find_metadata('rightsMetadata.xml')
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'No rightsMetadata.xml was provided') unless path
 

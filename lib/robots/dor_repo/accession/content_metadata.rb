@@ -17,7 +17,7 @@ module Robots
           # Objects that aren't items/DROs do not have content metadata attached
           return unless object_client.find.dro?
 
-          object = DruidTools::Druid.new(druid, Dor::Config.stacks.local_workspace_root)
+          object = DruidTools::Druid.new(druid, Settings.stacks.local_workspace_root)
           path = object.find_metadata('contentMetadata.xml')
 
           return unless path

@@ -1,14 +1,5 @@
-fedora:
-  url: http://fedoraAdmin:fedoraAdmin@localhost:8983/fedora
-
-solr:
-  url: http://localhost:8984/solr/argo
-
 redis:
   url: '127.0.0.1:6379/resque:development'
 
 workflow:
   url: 'http://workflow.example.com/workflow'
-
-etd:
-  workspace: 'lyberadmin@lyberapps-dev.stanford.edu:/home/lyberadmin/workspace/'
