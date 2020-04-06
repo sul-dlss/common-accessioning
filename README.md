@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/sul-dlss/common-accessioning.svg?branch=master)](https://travis-ci.org/sul-dlss/common-accessioning)
-[![Coverage Status](https://coveralls.io/repos/github/sul-dlss/common-accessioning/badge.svg?branch=master)](https://coveralls.io/github/sul-dlss/common-accessioning?branch=master)
+[![Code Climate](https://codeclimate.com/github/sul-dlss/common-accessioning/badges/gpa.svg)](https://codeclimate.com/github/sul-dlss/common-accessioning)
 
 # DOR consolidated robots
 
@@ -7,6 +7,7 @@ This repository contains a number of Resque background jobs.
 The jobs are enqueued by [workflow-server-rails](https://github.com/sul-dlss/workflow-server-rails).
 
 The jobs are run by [resque-pool](https://github.com/nevans/resque-pool)
+
 
 ## Workflows
 The following workflows are supported by this repository:
