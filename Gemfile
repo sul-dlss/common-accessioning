@@ -25,7 +25,7 @@ group :test do
   gem 'coveralls', require: false
   gem 'equivalent-xml'
   gem 'rspec', '~> 3.0'
-  gem 'simplecov', '~> 0.17.1' # 0.18 breaks reporting to coveralls `undefined method `coverage' for #<SimpleCov::SourceFile:0x0000561b4563cd18>`
+  gem 'simplecov', '~> 0.18.5'
   gem 'webmock'
 end
 
