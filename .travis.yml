@@ -14,6 +14,15 @@ rvm:
   - 2.6.5 # deployed
   - 2.7.1 # latest
 
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
 env:
   global:
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true # speeds up bundle install
+    - CC_TEST_REPORTER_ID=65432e87479984e42c830196f97effd3f7b72df253689fc143a26d3dda73a350

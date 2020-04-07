@@ -4,10 +4,7 @@
 ENV['ROBOT_ENVIRONMENT'] = 'test'
 
 require 'simplecov'
-require 'coveralls'
-require 'byebug'
 
-SimpleCov.formatter = Coveralls::SimpleCov::Formatter
 SimpleCov.start do
   track_files 'bin/**/*'
   track_files 'lib/dor/*.rb'
@@ -17,10 +14,11 @@ end
 
 require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
 
+require 'byebug'
 require 'pry'
 require 'rspec'
 require 'webmock/rspec'
-WebMock.disable_net_connect!(allow: ['localhost:8983', 'localhost:8984'])
+WebMock.disable_net_connect!
 require 'equivalent-xml/rspec_matchers'
 require 'support/foxml_helper'
 

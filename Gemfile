@@ -22,10 +22,9 @@ gem 'slop'
 gem 'zeitwerk', '~> 2.1'
 
 group :test do
-  gem 'coveralls', require: false
   gem 'equivalent-xml'
   gem 'rspec', '~> 3.0'
-  gem 'simplecov', '~> 0.18.5'
+  gem 'simplecov', '~> 0.17.0', require: 'false' # See https://github.com/codeclimate/test-reporter/issues/413
   gem 'webmock'
 end
 
