@@ -12,11 +12,7 @@ cache: bundler
 
 rvm:
   - 2.6.5 # deployed
-  - 2.7.0 # latest
-
-jobs:
-  allow_failures:
-  - rvm: 2.7.0
+  - 2.7.1 # latest
 
 env:
   global:
