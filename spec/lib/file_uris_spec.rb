@@ -52,6 +52,12 @@ RSpec.describe FileUris do
 
       it { is_expected.to eq ["file://#{root}/dd/116/zh/0343/dd116zh0343/content/file%20with%20space.txt"] }
     end
+
+    context 'with a diacritic' do
+      let(:filename) { 'Garges-lès-Gonesse.docx' }
+
+      it { is_expected.to eq ["file://#{root}/dd/116/zh/0343/dd116zh0343/content/Garges-l%C3%A8s-Gonesse.docx"] }
+    end
   end
 
   describe '.filepaths' do
