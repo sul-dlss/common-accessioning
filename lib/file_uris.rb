@@ -14,7 +14,7 @@ class FileUris
   end
 
   def uris
-    @uris ||= filepaths.map { |filepath| URI::File.build(path: filepath.gsub(' ', '%20')).to_s }
+    @uris ||= filepaths.map { |filepath| FileUri.new(filepath).to_s }
   end
 
   private
