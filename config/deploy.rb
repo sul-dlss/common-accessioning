@@ -39,7 +39,11 @@ set :stages, %w[dev staging production]
 # pool of workers with each deploy.
 set :linked_dirs, %w[log run config/settings config/certs tmp/pids]
 
+# Prefer capistrano stage over Rails.env (which is typically `production`)
 set :honeybadger_env, fetch(:stage)
+# See https://github.com/honeybadger-io/honeybadger-ruby/issues/129 &
+# https://github.com/honeybadger-io/honeybadger-ruby/blob/7eea24a47d44aed663e315be970e501b7cf092fc/vendor/capistrano-honeybadger/README.md
+set :honeybadger_server, primary(:app)
 
 set :resque_server_roles, :app
 
