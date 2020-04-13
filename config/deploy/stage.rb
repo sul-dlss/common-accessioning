@@ -7,4 +7,3 @@ Capistrano::OneTimeKey.generate_one_time_key!
 
 set :deploy_environment, 'production'
 set :default_env, robot_environment: fetch(:deploy_environment)
-set :honeybadger_server, primary(:cron)
