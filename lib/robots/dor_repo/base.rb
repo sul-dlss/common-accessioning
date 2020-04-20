@@ -10,7 +10,7 @@ module Robots
       end
 
       def lane_id(druid)
-        workflow_service.process(pid: druid, workflow_name: @workflow_name, process: @step_name).lane_id
+        workflow_service.process(pid: druid, workflow_name: workflow_name, process: process).lane_id
       end
     end
   end

@@ -14,8 +14,17 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
       instance_double(Dor::Services::Client::Object, find: object)
     end
 
+    let(:workflow_client) do
+      instance_double(Dor::Workflow::Client, process: process)
+    end
+
+    let(:process) do
+      instance_double(Dor::Workflow::Response::Process, lane_id: 'low')
+    end
+
     before do
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
+      allow(WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     end
 
     context 'when a DRO with files' do
@@ -59,7 +68,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
         before do
           stub_request(:post, 'https://dor-techmd-test.stanford.test/v1/technical-metadata')
             .with(
-              body: "{\"druid\":\"druid:dd116zh0343\",\"files\":[\"file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story1u.txt\"]}",
+              body: "{\"druid\":\"druid:dd116zh0343\",\"files\":[\"file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story1u.txt\"],\"lane-id\":\"low\"}",
               headers: {
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer rake-generate-token-me'
@@ -77,7 +86,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
         before do
           stub_request(:post, 'https://dor-techmd-test.stanford.test/v1/technical-metadata')
             .with(
-              body: "{\"druid\":\"druid:dd116zh0343\",\"files\":[\"file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story1u.txt\"]}",
+              body: "{\"druid\":\"druid:dd116zh0343\",\"files\":[\"file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story1u.txt\"],\"lane-id\":\"low\"}",
               headers: {
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer rake-generate-token-me'
