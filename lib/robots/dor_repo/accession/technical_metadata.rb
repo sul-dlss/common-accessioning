@@ -25,15 +25,15 @@ module Robots
 
           verify_files_exist(druid, file_uris.filepaths)
 
-          invoke_techmd_service(druid, file_uris.uris)
+          invoke_techmd_service(druid, file_uris.uris, lane_id(druid))
 
           LyberCore::Robot::ReturnState.new(status: :noop, note: 'Initiated technical metadata generation from technical-metadata-service.')
         end
 
         private
 
-        def invoke_techmd_service(druid, file_uris)
-          req = JSON.generate(druid: druid, files: file_uris)
+        def invoke_techmd_service(druid, file_uris, lane_id)
+          req = JSON.generate(druid: druid, files: file_uris, 'lane-id': lane_id)
           resp = Faraday.post("#{Settings.tech_md_service.url}/v1/technical-metadata", req,
                               'Content-Type' => 'application/json',
                               'Authorization' => "Bearer #{Settings.tech_md_service.token}")
