@@ -18,7 +18,7 @@ module Robots
           # skip if no files
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'object has no files') if obj.structural.nil? || obj.structural.contains.blank?
 
-          file_uris = FileUris.new(druid, obj)
+          file_uris = PreservedFileUris.new(druid, obj)
 
           # skip if metadata-only change
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'change is metadata-only') if metadata_only?(file_uris.filepaths)
