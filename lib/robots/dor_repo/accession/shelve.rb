@@ -20,7 +20,7 @@ module Robots
           return skip_steps(druid, 'object has no files') if obj.structural.contains.blank?
 
           # This is an asynchronous result. It will set the shelve-complete workflow to complete when it is done.
-          object_client.shelve
+          object_client.shelve(lane_id: lane_id(druid))
         end
 
         # Objects that aren't items/DROs are not shelved, so set the

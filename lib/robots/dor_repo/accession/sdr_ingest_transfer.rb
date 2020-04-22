@@ -9,7 +9,7 @@ module Robots
         end
 
         def perform(druid)
-          Dor::Services::Client.object(druid).preserve
+          Dor::Services::Client.object(druid).preserve(lane_id: lane_id(druid))
         end
       end
     end
