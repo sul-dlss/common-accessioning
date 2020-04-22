@@ -23,7 +23,7 @@ module Robots
           end
 
           # This is an async result and it will have a callback.
-          object_client.publish(workflow: 'accessionWF')
+          object_client.publish(workflow: 'accessionWF', lane_id: lane_id(druid))
         end
       end
     end

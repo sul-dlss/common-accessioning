@@ -5,9 +5,13 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::Accession::Shelve do
   let(:druid) { 'druid:oo000oo0001' }
   let(:robot) { described_class.new }
+  let(:process) do
+    instance_double(Dor::Workflow::Response::Process, lane_id: 'low')
+  end
 
   before do
     allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
+    allow(robot.workflow_service).to receive(:process).and_return(process)
   end
 
   describe '#perform' do
@@ -62,7 +66,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
 
       it 'shelves the item' do
         perform
-        expect(object_client).to have_received(:shelve)
+        expect(object_client).to have_received(:shelve).with(lane_id: 'low')
       end
     end
 
