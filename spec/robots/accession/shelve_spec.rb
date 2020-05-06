@@ -19,10 +19,6 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
 
     let(:object_client) { instance_double(Dor::Services::Client::Object, find: object, shelve: nil) }
 
-    before do
-      allow(robot.workflow_service).to receive(:update_status)
-    end
-
     context 'when called on a non-item' do
       let(:object) do
         Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
@@ -32,16 +28,9 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                                        version: 1)
       end
 
-      it 'sets the shelve-complete step to completed' do
-        perform
+      it 'sets the status to skipped' do
+        expect(perform.status).to eq 'skipped'
         expect(object_client).not_to have_received(:shelve)
-        expect(robot.workflow_service).to have_received(:update_status)
-          .with(druid: druid,
-                workflow: 'accessionWF',
-                process: 'shelve-complete',
-                status: 'completed',
-                elapsed: 1,
-                note: 'Not an item/DRO, nothing to do')
       end
     end
 
@@ -65,7 +54,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
       end
 
       it 'shelves the item' do
-        perform
+        expect(perform.status).to eq 'noop'
         expect(object_client).to have_received(:shelve).with(lane_id: 'low')
       end
     end
@@ -83,15 +72,8 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
       end
 
       it 'does not shelve the item' do
-        perform
+        expect(perform.status).to eq 'skipped'
         expect(object_client).not_to have_received(:shelve)
-        expect(robot.workflow_service).to have_received(:update_status)
-          .with(druid: druid,
-                workflow: 'accessionWF',
-                process: 'shelve-complete',
-                status: 'completed',
-                elapsed: 1,
-                note: 'object has no files')
       end
     end
   end
