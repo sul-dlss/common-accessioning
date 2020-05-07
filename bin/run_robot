@@ -40,5 +40,5 @@ druids = if opts[:file]
          end
 
 druids.each do |druid|
-  bot.work druid
+  bot.perform druid
 end
