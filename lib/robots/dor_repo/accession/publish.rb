@@ -12,18 +12,14 @@ module Robots
 
         def perform(druid)
           object_client = Dor::Services::Client.object(druid)
-
           # `#find` returns an instance of a model from the cocina-models gem
-          if object_client.find.admin_policy?
-            # Since admin policies are not published, we need to manually set
-            # the publish-complete step to completed so that the workflow will
-            # proceed.
-            workflow_service.update_status(druid: druid, workflow: @workflow_name, process: 'publish-complete', status: 'completed', elapsed: 1, note: 'APOs are not published, so marking completed.')
-            return
-          end
+          obj = object_client.find
 
-          # This is an async result and it will have a callback.
+          return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'Admin policy objects are not published') if obj.admin_policy?
+
+          # This is an asynchronous result. It will set the publish workflow to complete when it is done.
           object_client.publish(workflow: 'accessionWF', lane_id: lane_id(druid))
+          LyberCore::Robot::ReturnState.new(status: :noop, note: 'Initiated publish API call.')
         end
       end
     end
