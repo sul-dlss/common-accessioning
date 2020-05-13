@@ -2,9 +2,10 @@
 
 
 
-## Was the usage documentation (e.g. README, DevOpsDocs, wiki, queue specific README) updated?
+## How was this change tested?
+- test code in this repo, infra-integration-tests, manually on [laptop|stage|qa], vetted by PO in [stage|qa] ...
 
 
 
-## Does this change affect how this application integrates with other services?
-If so, please confirm change was tested on stage and/or test added to sul-dlss/infrastructure-integration-test.
+## Which documentation and/or configurations were updated?
+- README, DevOpsDocs, shared_configs, workflow in workflow-service, wiki, ...
