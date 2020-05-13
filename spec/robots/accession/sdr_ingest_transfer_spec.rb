@@ -15,13 +15,15 @@ RSpec.describe Robots::DorRepo::Accession::SdrIngestTransfer do
   end
 
   describe '#perform' do
+    subject(:perform) { robot.perform(druid) }
+
     before do
       allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
       allow(robot.workflow_service).to receive(:process).and_return(process)
     end
 
     it 'is successful' do
-      robot.perform(druid)
+      expect(perform.status).to eq 'noop'
       expect(object_client).to have_received(:preserve).with(lane_id: 'low')
     end
   end
