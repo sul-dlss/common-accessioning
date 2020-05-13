@@ -18,6 +18,8 @@ module Robots
           LyberCore::Log.debug "release-publish working on #{druid}"
           # This is an async result and it will have a callback.
           Dor::Services::Client.object(druid).publish(workflow: 'releaseWF')
+
+          LyberCore::Robot::ReturnState.new(status: :noop, note: 'Initiated publish API call.')
         end
       end
     end
