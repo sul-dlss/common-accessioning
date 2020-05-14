@@ -15,11 +15,9 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
       instance_double(Dor::Services::Client::Metadata, legacy_update: true)
     end
     let(:druid) { 'druid:ab123cd4567' }
-    let(:finder) { instance_double(DruidTools::Druid, find_metadata: 'spec/fixtures/workspace/ab/123/cd/4567/content_metadata.xml') }
 
     before do
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
-      allow(DruidTools::Druid).to receive(:new).and_return(finder)
     end
 
     context 'on an item' do
@@ -31,18 +29,33 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
                                 version: 1)
       end
 
-      # rubocop:disable RSpec/ExampleLength
-      it 'builds a datastream' do
-        perform
-
-        expect(metadata_client).to have_received(:legacy_update).with(
-          content: {
-            updated: Time,
-            content: /<contentMetadata/
-          }
-        )
+      context 'when no contentMetadata file is found' do
+        it 'builds a datastream from the remote service call' do
+          expect(perform.status).to eq 'skipped'
+          expect(metadata_client).not_to have_received(:legacy_update)
+        end
       end
-      # rubocop:enable RSpec/ExampleLength
+
+      context 'when contentMetadata file is found' do
+        let(:finder) { instance_double(DruidTools::Druid, find_metadata: 'spec/fixtures/workspace/ab/123/cd/4567/content_metadata.xml') }
+
+        before do
+          allow(DruidTools::Druid).to receive(:new).and_return(finder)
+        end
+        # rubocop:disable RSpec/ExampleLength
+
+        it 'builds a datastream' do
+          perform
+
+          expect(metadata_client).to have_received(:legacy_update).with(
+            content: {
+              updated: Time,
+              content: /<contentMetadata/
+            }
+          )
+        end
+        # rubocop:enable RSpec/ExampleLength
+      end
     end
 
     context 'on a collection' do
