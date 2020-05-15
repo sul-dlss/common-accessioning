@@ -20,7 +20,7 @@ module Robots
           object = DruidTools::Druid.new(druid, Settings.stacks.local_workspace_root)
           path = object.find_metadata('contentMetadata.xml')
 
-          return unless path
+          return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'No contentMetadata.xml was provided') unless path
 
           object_client.metadata.legacy_update(
             content: {
