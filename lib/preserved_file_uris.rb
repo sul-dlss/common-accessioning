@@ -36,7 +36,6 @@ class PreservedFileUris
     contains = fileset.structural.contains
     return [] if contains.blank?
 
-    # NOTE: Should this change from label to filename? I flipped it but it caused other tests to fail.
-    contains.filter { |file| file.administrative.sdrPreserve }.map(&:label)
+    contains.filter { |file| file.administrative.sdrPreserve }.map(&:filename)
   end
 end
