@@ -47,6 +47,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                         {
                                           externalIdentifier: '222-1',
                                           label: 'folder1PuSu/story1u.txt',
+                                          filename: 'story1u.txt',
                                           type: Cocina::Models::Vocab.file,
                                           version: 1,
                                           access: {},
