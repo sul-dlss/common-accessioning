@@ -55,24 +55,6 @@ module Dor
         # Returns a list of filenode pairs (file node and associated ObjectFile object), optionally restricted to specific resource content types if specified
         file_nodes(resource_type).map { |fn| [fn, ::Assembly::ObjectFile.new(path_finder.path_to_content_file(fn['id']))] }
       end
-
-      def create_basic_content_metadata
-        raise "Content metadata file #{Settings.assembly.cm_file_name} exists already for #{druid.id}" if content_metadata_exists?
-
-        Honeybadger.notify("How are we getting here? Shouldn't pre-assembly have generated contentMetadata.xml (#{druid.id}) already?")
-
-        LyberCore::Log.info("Creating basic content metadata for #{druid.id}")
-
-        # get a list of files in content folder recursively and sort them
-        files = Dir["#{path_finder.path_to_content_folder}/**/*"].reject { |file| File.directory? file }.sort
-        return nil if files.empty? # only generate contentMetadata if there are files in the content folder, else return nil
-
-        cm_resources = files.map { |file| ::Assembly::ObjectFile.new(file) }
-        # uses the assembly-objectfile gem to create basic content metadata using a simple list of files found in the content folder
-        xml = ::Assembly::ContentMetadata.create_content_metadata(druid: @druid.druid, style: :file, objects: cm_resources, bundle: :filename)
-        @cm = Nokogiri.XML(xml)
-        xml
-      end
     end
   end
 end
