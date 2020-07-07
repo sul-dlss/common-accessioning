@@ -29,7 +29,6 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
 
     it 'does not create content metadata' do
       expect(item).not_to receive(:convert_stub_content_metadata)
-      expect(item).not_to receive(:create_basic_content_metadata)
       expect(item).not_to receive(:persist_content_metadata)
       expect(result.status).to eq('skipped')
       expect(result.note).to eq('object is not an item')
@@ -42,7 +41,6 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
 
     it 'raises an error and does not create content metadata' do
       expect(item).not_to receive(:convert_stub_content_metadata)
-      expect(item).not_to receive(:create_basic_content_metadata)
       expect(item).not_to receive(:persist_content_metadata)
       exp_msg = "#{Settings.assembly.stub_cm_file_name} and #{Settings.assembly.cm_file_name} both exist for #{druid}"
       expect { result }.to raise_error RuntimeError, exp_msg
@@ -55,7 +53,6 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
 
     it 'does not create any content metadata' do
       expect(item).not_to receive(:convert_stub_content_metadata)
-      expect(item).not_to receive(:create_basic_content_metadata)
       expect(item).not_to receive(:persist_content_metadata)
       expect(result.status).to eq('skipped')
       expect(result.note).to eq("#{Settings.assembly.cm_file_name} exists")
@@ -66,11 +63,8 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
     let(:content_metadata) { false }
     let(:stub_content_metadata) { false }
 
-    it 'creates basic content metadata' do
-      expect(item).not_to receive(:convert_stub_content_metadata)
-      expect(item).to receive(:create_basic_content_metadata).once
-      expect(item).to receive(:persist_content_metadata).once
-      expect(result.status).to eq('completed')
+    it 'raises an error' do
+      expect { result }.to raise_error RuntimeError, 'Unable to find stubContentMetadata.xml or contentMetadata.xml'
     end
   end
 

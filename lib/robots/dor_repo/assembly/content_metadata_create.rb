@@ -20,8 +20,10 @@ module Robots
           # regular content metadata exists -- do not recreate it
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: "#{Settings.assembly.cm_file_name} exists") if obj.content_metadata_exists?
 
-          # if stub exists, create metadata from the stub, else create basic content metadata
-          obj.stub_content_metadata_exists? ? obj.convert_stub_content_metadata : obj.create_basic_content_metadata
+          # neither stubContentMetadata or contentMetadata exist.
+          raise "Unable to find #{Settings.assembly.stub_cm_file_name} or #{Settings.assembly.cm_file_name}" unless obj.stub_content_metadata_exists?
+
+          obj.convert_stub_content_metadata
           obj.persist_content_metadata
           LyberCore::Robot::ReturnState.new(status: 'completed')
         end
