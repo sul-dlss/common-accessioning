@@ -26,7 +26,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
                                 type: Cocina::Models::DRO::TYPES.first,
                                 label: 'my repository object',
                                 access: {},
-                                administrative: { hasAdminPolicy: 'druid:xx999xx9999' }, 
+                                administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 version: 1)
       end
 
