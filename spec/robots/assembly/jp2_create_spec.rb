@@ -36,6 +36,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                 type: Cocina::Models::DRO::TYPES.first,
                                 label: 'my dro',
                                 version: 1,
+                                administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 access: {})
       end
 
@@ -53,6 +54,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                        type: Cocina::Models::Collection::TYPES.first,
                                        label: 'my collection',
                                        version: 1,
+                                       administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                        access: {})
       end
 

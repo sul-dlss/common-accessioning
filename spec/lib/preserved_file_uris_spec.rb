@@ -10,6 +10,7 @@ RSpec.describe PreservedFileUris do
                             label: 'my repository object',
                             version: 1,
                             access: {},
+                            administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                             structural: {
                               contains: [{
                                 externalIdentifier: '222',

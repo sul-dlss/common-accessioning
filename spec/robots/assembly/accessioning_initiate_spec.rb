@@ -27,6 +27,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
                               type: Cocina::Models::DRO::TYPES.first,
                               label: 'my dro',
                               access: {},
+                              administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                               version: 1)
     end
 

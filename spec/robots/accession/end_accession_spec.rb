@@ -18,7 +18,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
                                     type: Cocina::Models::AdminPolicy::TYPES.first,
                                     label: 'my apo object',
                                     version: 1,
-                                    administrative: {})
+                                    administrative: { hasAdminPolicy: 'druid:xx999xx9999' })
   end
 
   let(:druid) { 'druid:oo000oo0001' }
@@ -52,7 +52,10 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
                                         type: Cocina::Models::AdminPolicy::TYPES.first,
                                         label: 'my apo object',
                                         version: 1,
-                                        administrative: { registrationWorkflow: 'wasDisseminationWF' })
+                                        administrative: {
+                                          registrationWorkflow: 'wasDisseminationWF',
+                                          hasAdminPolicy: 'druid:xx999xx9999'
+                                        })
       end
 
       it 'kicks off that workflow' do
