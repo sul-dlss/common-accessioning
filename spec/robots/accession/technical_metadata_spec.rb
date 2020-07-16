@@ -36,6 +36,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                 label: 'my repository object',
                                 version: 1,
                                 access: {},
+                                administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 structural: {
                                   contains: [{
                                     externalIdentifier: '222',
@@ -107,6 +108,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                   type: Cocina::Models::Vocab.object,
                                   label: 'my repository object',
                                   version: 1,
+                                  administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                   access: {})
         end
 

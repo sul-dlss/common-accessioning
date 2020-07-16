@@ -25,6 +25,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                                        type: Cocina::Models::Vocab.collection,
                                        label: 'my collection',
                                        access: {},
+                                       administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                        version: 1)
       end
 
@@ -48,6 +49,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                                 label: 'my repository object',
                                 version: 1,
                                 access: {},
+                                administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 structural: {
                                   contains: [file_set]
                                 })
@@ -68,7 +70,8 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                                 structural: {
                                   contains: []
                                 },
-                                access: {})
+                                access: {},
+                                administrative: { hasAdminPolicy: 'druid:xx999xx9999' })
       end
 
       it 'does not shelve the item' do

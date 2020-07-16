@@ -20,6 +20,7 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
                               type: Cocina::Models::DRO::TYPES.first,
                               label: 'my dro',
                               version: 1,
+                              administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                               access: {})
     end
 
