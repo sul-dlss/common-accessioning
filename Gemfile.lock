@@ -58,8 +58,7 @@ GEM
     config (2.2.1)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
-    crack (0.4.3)
-      safe_yaml (~> 1.0.0)
+    crack (0.4.4)
     deep_merge (1.2.1)
     deprecation (1.0.0)
       activesupport
@@ -225,7 +224,6 @@ GEM
       i18n
     ruby-progressbar (1.10.1)
     ruby2_keywords (0.0.2)
-    safe_yaml (1.0.5)
     simplecov (0.17.1)
       docile (~> 1.1)
       json (>= 1.8, < 3)
