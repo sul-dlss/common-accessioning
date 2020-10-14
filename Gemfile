@@ -24,6 +24,7 @@ gem 'zeitwerk', '~> 2.1'
 group :test do
   gem 'equivalent-xml'
   gem 'rspec', '~> 3.0'
+  gem 'rspec_junit_formatter' # needed for test coverage in CircleCI
   gem 'simplecov', '~> 0.17.0', require: 'false' # See https://github.com/codeclimate/test-reporter/issues/413
   gem 'webmock'
 end
