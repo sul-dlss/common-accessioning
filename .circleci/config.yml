@@ -1,0 +1,84 @@
+version: 2.1
+
+orbs:
+  ruby: circleci/ruby@1.0.5
+
+references:
+  default_ruby_version: &default_ruby_version 2.7.1-node-browsers
+  ruby_envs: &ruby_envs
+    environment:
+      BUNDLE_JOBS: 3
+      BUNDLE_RETRY: 3
+      BUNDLE_PATH: vendor/bundle
+      RAILS_ENV: test
+
+executors:
+  default:
+    parameters:
+      ruby_tag:
+        description: "The `circleci/ruby` Docker image version tag."
+        type: string
+        default: *default_ruby_version
+    docker:
+      - image: circleci/ruby:<< parameters.ruby_tag >>
+        <<: *ruby_envs
+  ruby_with_all_deps:
+    parameters:
+      ruby_tag:
+        description: "The `circleci/ruby` Docker image version tag."
+        type: string
+        default: *default_ruby_version
+    docker:
+      - image: circleci/ruby:<< parameters.ruby_tag >>
+        <<: *ruby_envs
+        environment:
+
+workflows:
+  build_and_test:
+    jobs:
+      - build
+      - lint:
+          requires:
+            - build
+      - test:
+          requires:
+            - build
+            - lint
+jobs:
+  build:
+    executor: default
+    steps:
+      - checkout
+      - ruby/install-deps:
+          key: gems-v2
+  lint:
+    executor: default
+    steps:
+      - checkout
+      - ruby/install-deps:
+          key: gems-v2
+      - run:
+          name: Run linter
+          command: bundle exec rubocop
+  test:
+    environment:
+      TZ: "America/Los_Angeles"
+      CC_TEST_REPORTER_ID: "65432e87479984e42c830196f97effd3f7b72df253689fc143a26d3dda73a350"
+    executor: ruby_with_all_deps
+    steps:
+      - checkout
+      - ruby/install-deps:
+          key: gems-v2
+      - run:
+          name: install rsync
+          command: sudo apt install -y rsync
+      - run:
+          name: Set up CodeClimate
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+            ./cc-test-reporter before-build
+      - ruby/rspec-test
+      - run:
+          name: Report test coverage results to CodeClimate
+          command: ./cc-test-reporter after-build --coverage-input-type simplecov --exit-code $?
