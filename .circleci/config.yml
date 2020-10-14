@@ -70,21 +70,14 @@ jobs:
       - ruby/install-deps:
           key: gems-v2
       - run:
-          name: Create directories
-          command: mkdir -p tmp/test_input
-      - run:
-          name: Clone test input
-          command: cp -R spec/test_input/* tmp/test_input/
+          name: install rsync
+          command: sudo apt install -y rsync
       - run:
           name: Set up CodeClimate
           command: |
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
             ./cc-test-reporter before-build
-      # - run:
-      #     name: Load fixtures
-      #     command: RAILS_ENV=test bundle exec rake argo:repo:load
-      # Run rspec in parallel
       - ruby/rspec-test
       - run:
           name: Report test coverage results to CodeClimate
