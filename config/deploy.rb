@@ -22,7 +22,7 @@ set :log_level, :info
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w[config/honeybadger.yml]
+set :linked_files, %w[config/honeybadger.yml tmp/resque-pool.lock]
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
@@ -46,5 +46,3 @@ set :resque_server_roles, :app
 
 # update shared_configs before restarting app
 before 'deploy:publishing', 'shared_configs:update'
-
-after 'deploy:publishing', 'resque:pool:hot_swap'
