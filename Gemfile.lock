@@ -40,7 +40,7 @@ GEM
     capistrano-one_time_key (0.1.0)
       capistrano (~> 3.0)
     capistrano-shared_configs (0.2.2)
-    cocina-models (0.42.1)
+    cocina-models (0.43.0)
       activesupport
       dry-struct (~> 1.0)
       dry-types (~> 1.1)
@@ -66,9 +66,9 @@ GEM
       capistrano-one_time_key
       capistrano-shared_configs
     docile (1.3.2)
-    dor-services-client (6.14.1)
+    dor-services-client (6.15.0)
       activesupport (>= 4.2, < 7)
-      cocina-models (~> 0.42.1)
+      cocina-models (~> 0.43.0)
       deprecation
       faraday (>= 0.15, < 2)
       moab-versioning (~> 4.0)
@@ -89,7 +89,7 @@ GEM
     dry-container (0.7.2)
       concurrent-ruby (~> 1.0)
       dry-configurable (~> 0.1, >= 0.1.3)
-    dry-core (0.4.9)
+    dry-core (0.4.10)
       concurrent-ruby (~> 1.0)
     dry-equalizer (0.3.0)
     dry-inflector (0.2.0)
@@ -184,7 +184,7 @@ GEM
       rack
     rainbow (3.0.0)
     rake (13.0.1)
-    redis (4.2.2)
+    redis (4.2.5)
     redis-namespace (1.8.0)
       redis (>= 3.0.4)
     resque (2.0.0)
@@ -264,7 +264,7 @@ DEPENDENCIES
   capistrano-bundler (~> 1.1)
   config (~> 2.2)
   dlss-capistrano (~> 3.10)
-  dor-services-client (~> 6.13)
+  dor-services-client (~> 6.15)
   dor-workflow-client (~> 3.18)
   druid-tools (~> 2.1)
   equivalent-xml
