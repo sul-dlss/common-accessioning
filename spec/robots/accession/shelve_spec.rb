@@ -74,9 +74,9 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' })
       end
 
-      it 'does not shelve the item' do
-        expect(perform.status).to eq 'skipped'
-        expect(object_client).not_to have_received(:shelve)
+      it 'calls shelve (for the deaccession use case)' do
+        expect(perform.status).to eq 'noop'
+        expect(object_client).to have_received(:shelve)
       end
     end
   end
