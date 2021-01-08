@@ -3,7 +3,7 @@
 set :application, 'common-accessioning'
 set :repo_url, 'https://github.com/sul-dlss/common-accessioning.git'
 
-# Default branch is :master
+# Default branch is :main
 ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
 # Default deploy_to directory is /var/www/my_app
