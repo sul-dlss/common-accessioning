@@ -97,7 +97,7 @@ GEM
     dry-logic (1.1.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5)
-    dry-schema (1.6.0)
+    dry-schema (1.6.1)
       concurrent-ruby (~> 1.0)
       dry-configurable (~> 0.8, >= 0.8.3)
       dry-core (~> 0.5, >= 0.5)
@@ -132,7 +132,7 @@ GEM
       faraday (~> 1.0)
     hashdiff (1.0.1)
     honeybadger (4.7.2)
-    i18n (1.8.7)
+    i18n (1.8.8)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     jaro_winkler (1.5.4)
@@ -187,7 +187,7 @@ GEM
     rainbow (3.0.0)
     rake (13.0.3)
     redis (4.2.5)
-    redis-namespace (1.8.0)
+    redis-namespace (1.8.1)
       redis (>= 3.0.4)
     resque (2.0.0)
       mono_logger (~> 1.0)
@@ -290,4 +290,4 @@ DEPENDENCIES
   zeitwerk (~> 2.1)
 
 BUNDLED WITH
-   2.2.7
+   2.2.8
