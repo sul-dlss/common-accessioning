@@ -53,7 +53,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
                                         label: 'my apo object',
                                         version: 1,
                                         administrative: {
-                                          registrationWorkflow: 'wasDisseminationWF',
+                                          disseminationWorkflow: 'wasDisseminationWF',
                                           hasAdminPolicy: 'druid:xx999xx9999'
                                         })
       end
