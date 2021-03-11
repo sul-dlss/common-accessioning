@@ -52,7 +52,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                           type: Cocina::Models::Vocab.file,
                                           version: 1,
                                           access: {},
-                                          administrative: { sdrPreserve: true, shelve: true },
+                                          administrative: { publish: true, sdrPreserve: true, shelve: true },
                                           hasMessageDigests: []
                                         }
                                       ]

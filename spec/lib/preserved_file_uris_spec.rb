@@ -26,7 +26,7 @@ RSpec.describe PreservedFileUris do
                                       type: Cocina::Models::Vocab.file,
                                       version: 1,
                                       access: {},
-                                      administrative: { sdrPreserve: true, shelve: true },
+                                      administrative: { publish: true, sdrPreserve: true, shelve: true },
                                       hasMessageDigests: []
                                     },
                                     {
@@ -36,7 +36,7 @@ RSpec.describe PreservedFileUris do
                                       type: Cocina::Models::Vocab.file,
                                       version: 1,
                                       access: {},
-                                      administrative: { sdrPreserve: false, shelve: true },
+                                      administrative: { publish: true, sdrPreserve: false, shelve: true },
                                       hasMessageDigests: []
                                     },
                                     {
@@ -46,7 +46,7 @@ RSpec.describe PreservedFileUris do
                                       type: Cocina::Models::Vocab.file,
                                       version: 1,
                                       access: {},
-                                      administrative: { sdrPreserve: true, shelve: true },
+                                      administrative: { publish: true, sdrPreserve: true, shelve: true },
                                       hasMessageDigests: []
                                     }
                                   ]
