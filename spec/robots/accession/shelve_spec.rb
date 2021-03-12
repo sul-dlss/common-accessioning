@@ -38,7 +38,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
     context 'when called on an Item with files' do
       let(:file_set) do
         { externalIdentifier: 'druid:bc123df4568',
-          type: Cocina::Models::Vocab.fileset,
+          type: Cocina::Models::Vocab::Resources.file,
           label: 'my repository object',
           version: 1 }
       end
