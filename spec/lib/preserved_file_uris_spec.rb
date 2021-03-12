@@ -14,7 +14,7 @@ RSpec.describe PreservedFileUris do
                             structural: {
                               contains: [{
                                 externalIdentifier: '222',
-                                type: Cocina::Models::Vocab.fileset,
+                                type: Cocina::Models::Vocab::Resources.file,
                                 label: 'my repository object',
                                 version: 1,
                                 structural: {
