@@ -5,7 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'activesupport', '~> 5.2'
 gem 'assembly-image', '~> 1.7'
-gem 'assembly-objectfile', '>=1.6.6'
+gem 'assembly-objectfile', '~> 1.10', '>= 1.10.1' # webarchive-seed is supported in 1.10.1 and better
 gem 'config', '~> 2.2'
 gem 'dor-services-client', '~> 6.27'
 gem 'dor-workflow-client', '~> 3.18'
