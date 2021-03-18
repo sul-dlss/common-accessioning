@@ -7,7 +7,7 @@ gem 'activesupport', '~> 5.2'
 gem 'assembly-image', '~> 1.7'
 gem 'assembly-objectfile', '~> 1.10', '>= 1.10.1' # webarchive-seed is supported in 1.10.1 and better
 gem 'config', '~> 2.2'
-gem 'dor-services-client', '~> 6.27'
+gem 'dor-services-client', '~> 6.30'
 gem 'dor-workflow-client', '~> 3.18'
 gem 'druid-tools', '~> 2.1'
 gem 'honeybadger'
