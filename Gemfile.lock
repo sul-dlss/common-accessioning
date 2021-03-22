@@ -268,7 +268,7 @@ DEPENDENCIES
   capistrano-bundler (~> 1.1)
   config (~> 2.2)
   dlss-capistrano (~> 3.10)
-  dor-services-client (~> 6.27)
+  dor-services-client (~> 6.30)
   dor-workflow-client (~> 3.18)
   druid-tools (~> 2.1)
   equivalent-xml
