@@ -11,6 +11,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
       <<-EOXML
       <?xml version="1.0"?>
       <contentMetadata objectId="druid:aa111bb3333" type="book">
+        <bookData readingOrder="ltr"/>
         <resource id="aa111bb3333_1" sequence="1" type="object">
           <label>Optional label</label>
           <file id="page1.tif" preserve="yes" shelve="no" publish="no"/>
