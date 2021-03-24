@@ -150,7 +150,7 @@ GEM
       json
       nokogiri
       nokogiri-happymapper
-    mono_logger (1.1.0)
+    mono_logger (1.1.1)
     multi_json (1.15.0)
     multipart-post (2.1.1)
     mustermann (1.1.1)
@@ -290,4 +290,4 @@ DEPENDENCIES
   zeitwerk (~> 2.1)
 
 BUNDLED WITH
-   2.2.14
+   2.2.15
