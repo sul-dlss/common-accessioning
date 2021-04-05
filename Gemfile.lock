@@ -198,7 +198,7 @@ GEM
     resque-pool (0.7.1)
       rake (>= 10.0, < 14.0)
       resque (>= 1.22, < 3)
-    rexml (3.2.4)
+    rexml (3.2.5)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
