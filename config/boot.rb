@@ -22,6 +22,9 @@ Config.setup do |config|
   #
   config.use_env = true
 
+  # Enable lograge
+  config.lograge.enabled = true
+
   # Define ENV variable prefix deciding which variables to load into config.
   #
   config.env_prefix = 'SETTINGS'
