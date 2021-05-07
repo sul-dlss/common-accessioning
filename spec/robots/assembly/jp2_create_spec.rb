@@ -16,7 +16,6 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }
 
-    ``
     let(:assembly_item) { Dor::Assembly::Item.new(druid: druid) }
 
     let(:object_client) do
