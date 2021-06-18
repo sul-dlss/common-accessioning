@@ -18,7 +18,9 @@ module Robots
 
           # Call cleanup
           # Note that this used to be handled by the disseminationWF, which is no longer used.
-          Dor::Services::Client.object(druid).workspace.cleanup
+          # This is an asynchronous result. It will set the end-accession workflow step to complete when it is done.
+          object_client.workspace.cleanup
+          LyberCore::Robot::ReturnState.new(status: :noop, note: 'Initiated end-accession API call.')
         end
 
         private
