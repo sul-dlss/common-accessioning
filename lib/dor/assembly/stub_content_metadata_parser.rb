@@ -26,7 +26,7 @@ module Dor
           end
         end
 
-        xml = ::Assembly::ContentMetadata.create_content_metadata(druid: @druid.druid, style: gem_content_metadata_style, objects: cm_resources, bundle: :prebundled, add_file_attributes: true)
+        xml = ::Assembly::ContentMetadata.create_content_metadata(druid: @druid.druid, style: gem_content_metadata_style, objects: cm_resources, bundle: :prebundled, add_file_attributes: true, reading_order: book_reading_order)
         @cm = Nokogiri.XML(xml)
         xml
       end
@@ -61,6 +61,13 @@ module Dor
         else
           :file # the default content metadata style if not found via the mapping is :file
         end
+      end
+
+      # this determines the reading order from the stub_object_type (default ltr unless the object type contains one of the possible "rtl" designations)
+      def book_reading_order
+        return 'rtl' if stub_object_type.include?('rtl') || stub_object_type.include?('r-l')
+
+        'ltr'
       end
 
       def stub_object_type
