@@ -41,7 +41,7 @@ GEM
     capistrano-one_time_key (0.1.0)
       capistrano (~> 3.0)
     capistrano-shared_configs (0.2.2)
-    cocina-models (0.61.0)
+    cocina-models (0.61.1)
       activesupport
       dry-struct (~> 1.0)
       dry-types (~> 1.1)
@@ -197,7 +197,7 @@ GEM
     rack-protection (2.1.0)
       rack
     rainbow (3.0.0)
-    rake (13.0.3)
+    rake (13.0.4)
     redis (4.3.1)
     redis-namespace (1.8.1)
       redis (>= 3.0.4)
