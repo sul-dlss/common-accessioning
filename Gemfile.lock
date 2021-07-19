@@ -236,7 +236,7 @@ GEM
     rubocop-rspec (1.41.0)
       rubocop (>= 0.68.1)
     ruby-progressbar (1.11.0)
-    ruby2_keywords (0.0.4)
+    ruby2_keywords (0.0.5)
     simplecov (0.17.1)
       docile (~> 1.1)
       json (>= 1.8, < 3)
