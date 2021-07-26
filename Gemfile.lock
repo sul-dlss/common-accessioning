@@ -1,11 +1,12 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (5.2.6)
+    activesupport (6.1.4)
       concurrent-ruby (~> 1.0, >= 1.0.2)
-      i18n (>= 0.7, < 2)
-      minitest (~> 5.1)
-      tzinfo (~> 1.1)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+      zeitwerk (~> 2.3)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     airbrussh (1.4.0)
@@ -40,7 +41,7 @@ GEM
     capistrano-one_time_key (0.1.0)
       capistrano (~> 3.0)
     capistrano-shared_configs (0.2.2)
-    cocina-models (0.60.0)
+    cocina-models (0.61.3)
       activesupport
       dry-struct (~> 1.0)
       dry-types (~> 1.1)
@@ -66,9 +67,9 @@ GEM
       capistrano-one_time_key
       capistrano-shared_configs
     docile (1.4.0)
-    dor-services-client (6.36.0)
+    dor-services-client (7.2.0)
       activesupport (>= 4.2, < 7)
-      cocina-models (~> 0.60.0)
+      cocina-models (~> 0.61.0)
       deprecation
       faraday (>= 0.15, < 2)
       moab-versioning (~> 4.0)
@@ -251,10 +252,9 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     thor (1.1.0)
-    thread_safe (0.3.6)
     tilt (2.0.10)
-    tzinfo (1.2.9)
-      thread_safe (~> 0.1)
+    tzinfo (2.0.4)
+      concurrent-ruby (~> 1.0)
     unicode-display_width (1.6.1)
     vegas (0.1.11)
       rack (>= 1.0.0)
@@ -269,15 +269,15 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  activesupport (~> 5.2)
+  activesupport (~> 6.1)
   assembly-image (~> 1.7)
-  assembly-objectfile (~> 1.10, >= 1.10.2)
+  assembly-objectfile (~> 1.10, >= 1.10.3)
   byebug
   capistrano (~> 3.0)
   capistrano-bundler (~> 1.1)
   config (~> 2.2)
   dlss-capistrano (~> 3.10)
-  dor-services-client (~> 6.30)
+  dor-services-client (~> 7.2)
   dor-workflow-client (~> 3.18)
   druid-tools (~> 2.1)
   equivalent-xml

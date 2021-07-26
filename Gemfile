@@ -3,11 +3,11 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-gem 'activesupport', '~> 5.2'
+gem 'activesupport', '~> 6.1'
 gem 'assembly-image', '~> 1.7'
-gem 'assembly-objectfile', '~> 1.10', '>= 1.10.2' # webarchive-seed and reading order is supported in 1.10.2 and better
+gem 'assembly-objectfile', '~> 1.10', '>= 1.10.3' # reading order, webarchive-seed, json mimetypes are supported in >=1.10.3
 gem 'config', '~> 2.2'
-gem 'dor-services-client', '~> 6.30'
+gem 'dor-services-client', '~> 7.2'
 gem 'dor-workflow-client', '~> 3.18'
 gem 'druid-tools', '~> 2.1'
 gem 'honeybadger'
