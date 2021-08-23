@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.1.4)
+    activesupport (6.1.4.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -142,7 +142,7 @@ GEM
     faraday-net_http_persistent (1.2.0)
     faraday-patron (1.0.0)
     faraday-rack (1.0.0)
-    faraday_middleware (1.0.0)
+    faraday_middleware (1.1.0)
       faraday (~> 1.0)
     hashdiff (1.0.1)
     honeybadger (4.9.0)
@@ -200,10 +200,10 @@ GEM
       rack
     rainbow (3.0.0)
     rake (13.0.6)
-    redis (4.3.1)
+    redis (4.4.0)
     redis-namespace (1.8.1)
       redis (>= 3.0.4)
-    resque (2.0.0)
+    resque (2.1.0)
       mono_logger (~> 1.0)
       multi_json (~> 1.0)
       redis-namespace (~> 1.6)
@@ -260,8 +260,8 @@ GEM
     unicode-display_width (1.6.1)
     vegas (0.1.11)
       rack (>= 1.0.0)
-    webmock (3.13.0)
-      addressable (>= 2.3.6)
+    webmock (3.14.0)
+      addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     zeitwerk (2.4.2)
