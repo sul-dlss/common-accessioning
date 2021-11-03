@@ -14,6 +14,8 @@ module Robots
           path = object.find_metadata('rightsMetadata.xml')
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'No rightsMetadata.xml was provided') unless path
 
+          Honeybadger.notify("[WARN] We don't think that anything uses this robot. It is slated for removal", context: { druid: druid })
+
           object_client = Dor::Services::Client.object(druid)
           object_client.metadata.legacy_update(
             rights: {
