@@ -12,11 +12,21 @@ The jobs are run by [resque-pool](https://github.com/nevans/resque-pool)
 ## Workflows
 The following workflows are supported by this repository:
 
-* Assembly - Creates files in the workspace for a new object and kicks off accessioning
-* Accession - Moves the metadata from the workspace into Fedora.  Moves files into preservation.
-* Dissemination - cleans up the workspace after accessioning
-* Release - Moves files to PURL and updates the marc record in the ILS
-* Goobi notify - informs goobi there are new items
+* Assembly - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/assemblyWF.xml
+  * Transforms the stubContentMetadata.xml provided by Goobi into contentMetadata.xml
+  * Creates derivative JP2 files for access and preservation if the object type is image or page.
+  * Computes checksums for files in contentMetadata.xml
+  * Adds exif, mimetype, file size data to contentMetadata
+  * Kicks off accessioning
+* Accession - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/accessionWF.xml
+  * Moves the metadata from the workspace into Fedora.
+  * Moves files into preservation.
+* Dissemination - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/disseminationWF.xml
+  * cleans up the workspace after accessioning
+* Release - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/releaseWF.xml
+  * Moves files to PURL and updates the marc record in the ILS
+* Goobi - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/goobiWF.xml
+  * informs goobi there are new items
 
 ## For developers
 It's possible to invoke the jobs manually or have an interactive shell:
