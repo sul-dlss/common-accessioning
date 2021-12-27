@@ -59,7 +59,7 @@ GEM
     deep_merge (1.2.1)
     deprecation (1.1.0)
       activesupport
-    diff-lcs (1.4.4)
+    diff-lcs (1.5.0)
     dlss-capistrano (3.11.1)
       capistrano (~> 3.0)
       capistrano-bundle_audit (>= 0.3.0)
@@ -168,7 +168,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.12.5-x86_64-linux)
       racc (~> 1.4)
-    openapi3_parser (0.9.0)
+    openapi3_parser (0.9.1)
       commonmarker (~> 0.17)
       psych (~> 3.1)
     openapi_parser (0.15.0)
@@ -253,7 +253,7 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    zeitwerk (2.5.1)
+    zeitwerk (2.5.2)
 
 PLATFORMS
   ruby
