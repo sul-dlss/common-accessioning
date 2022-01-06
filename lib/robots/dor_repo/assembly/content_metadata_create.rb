@@ -4,8 +4,8 @@ module Robots
   module DorRepo
     module Assembly
       class ContentMetadataCreate < Robots::DorRepo::Assembly::Base
-        def initialize(opts = {})
-          super('assemblyWF', 'content-metadata-create', opts)
+        def initialize
+          super('assemblyWF', 'content-metadata-create')
         end
 
         # generate the content metadata for this object based on some logic of whether

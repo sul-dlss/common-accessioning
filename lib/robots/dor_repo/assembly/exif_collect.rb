@@ -4,8 +4,8 @@ module Robots
   module DorRepo
     module Assembly
       class ExifCollect < Robots::DorRepo::Assembly::Base
-        def initialize(opts = {})
-          super('assemblyWF', 'exif-collect', opts)
+        def initialize
+          super('assemblyWF', 'exif-collect')
         end
 
         def perform(druid)

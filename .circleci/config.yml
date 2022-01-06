@@ -4,7 +4,7 @@ orbs:
   ruby: circleci/ruby@1.0.5
 
 references:
-  default_ruby_version: &default_ruby_version 2.7.1-node-browsers
+  default_ruby_version: &default_ruby_version '3.0'
   ruby_envs: &ruby_envs
     environment:
       BUNDLE_JOBS: 3
@@ -20,7 +20,7 @@ executors:
         type: string
         default: *default_ruby_version
     docker:
-      - image: circleci/ruby:<< parameters.ruby_tag >>
+      - image: cimg/ruby:<< parameters.ruby_tag >>
         <<: *ruby_envs
   ruby_with_all_deps:
     parameters:
