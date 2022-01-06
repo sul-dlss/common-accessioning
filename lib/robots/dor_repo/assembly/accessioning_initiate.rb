@@ -7,8 +7,8 @@ module Robots
       # (i.e. /dor//workspace/xw/754/sd/7436/xw754sd7436 -> /dor/assembly/xw/754/sd/7436/xw754sd7436)
       # and then triggers the accessioningWF
       class AccessioningInitiate < Robots::DorRepo::Assembly::Base
-        def initialize(opts = {})
-          super('assemblyWF', 'accessioning-initiate', opts)
+        def initialize
+          super('assemblyWF', 'accessioning-initiate')
         end
 
         def perform(druid)
