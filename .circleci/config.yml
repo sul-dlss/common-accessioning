@@ -1,84 +1,315 @@
 version: 2.1
-
 orbs:
-  ruby: circleci/ruby@1.0.5
-
-references:
-  default_ruby_version: &default_ruby_version '3.0'
-  ruby_envs: &ruby_envs
-    environment:
-      BUNDLE_JOBS: 3
-      BUNDLE_RETRY: 3
-      BUNDLE_PATH: vendor/bundle
-      RAILS_ENV: test
-
-executors:
-  default:
-    parameters:
-      ruby_tag:
-        description: "The `circleci/ruby` Docker image version tag."
-        type: string
-        default: *default_ruby_version
-    docker:
-      - image: cimg/ruby:<< parameters.ruby_tag >>
-        <<: *ruby_envs
-  ruby_with_all_deps:
-    parameters:
-      ruby_tag:
-        description: "The `circleci/ruby` Docker image version tag."
-        type: string
-        default: *default_ruby_version
-    docker:
-      - image: circleci/ruby:<< parameters.ruby_tag >>
-        <<: *ruby_envs
-        environment:
-
-workflows:
-  build_and_test:
+  ruby-rails:
+    orbs:
+      docker: circleci/docker@2.0.1
+      node: circleci/node@3.0
+      ruby: circleci/ruby@1.2.0
+      browser-tools: circleci/browser-tools@1.2.3
+    executors:
+      ruby:
+        description: Ruby-only executor.
+        parameters:
+          ruby-tag:
+            default: '2.7.5'
+            description: The `cimg/ruby` Docker image version tag.
+            type: string
+        docker:
+          - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
+            environment:
+              BUNDLE_JOBS: '3'
+              BUNDLE_RETRY: '3'
+              TZ: "America/Los_Angeles"
+      ruby-postgres:
+        description: Ruby and postgres-only executor.
+        parameters:
+          ruby-tag:
+            default: '2.7.5'
+            description: The `cimg/ruby` Docker image version tag.
+            type: string
+          postgres-tag:
+            default: '11.13'
+            description: The `cimg/postgres` Docker image version tag.
+            type: string
+        docker:
+          - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
+            environment:
+              BUNDLE_JOBS: '3'
+              BUNDLE_RETRY: '3'
+              PGHOST: 127.0.0.1
+              PGPASSWORD: sekret
+              PGUSER: circleci
+              RAILS_ENV: test
+              PAGER: cat
+              TZ: "America/Los_Angeles"
+          - image: 'cimg/postgres:<< parameters.postgres-tag >>'
+            environment:
+              POSTGRES_USER: postgres
+              POSTGRES_PASSWORD: sekret        
+      ruby-postgres-redis:
+        description: Ruby, postgres, and redis-only executor.
+        parameters:
+          ruby-tag:
+            default: '2.7.5'
+            description: The `cimg/ruby` Docker image version tag.
+            type: string
+          postgres-tag:
+            default: '11.13'
+            description: The `cimg/postgres` Docker image version tag.
+            type: string
+        docker:
+          - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
+            environment:
+              BUNDLE_JOBS: '3'
+              BUNDLE_RETRY: '3'
+              PGHOST: 127.0.0.1
+              PGPASSWORD: sekret
+              PGUSER: circleci
+              RAILS_ENV: test
+              PAGER: cat
+              TZ: "America/Los_Angeles"
+          - image: 'cimg/postgres:<< parameters.postgres-tag >>'
+            environment:
+              POSTGRES_USER: circleci
+              POSTGRES_PASSWORD: sekret              
+          - image: circleci/redis:3
+    commands:
+      gem-install-deps:
+        description: Install dependencies without using deployment mode (suitable for gems)
+        steps:
+          - run:
+              name: Bundle Install
+              command: bundle check || bundle install
+      test:
+        description: Runs rspec wrapped with code climate
+        parameters:
+          cc-test-reporter-id:
+            default: CC_TEST_REPORTER_ID
+            description: |
+              Name of environment variable storing your Code Climate reporter test id
+            type: env_var_name
+        steps:
+          - run:
+              name: Setup Code Climate test-reporter
+              command: |
+                curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+                chmod +x ./cc-test-reporter
+                ./cc-test-reporter before-build
+          - ruby/rspec-test
+          - run:
+              name: upload test coverage report to Code Climate
+              command: ./cc-test-reporter after-build --coverage-input-type simplecov --exit-code $? -r $<< parameters.cc-test-reporter-id >>
+      validate-api:
+        description: Validate openapi specification
+        steps:
+          - run:
+              name: Validate API specification
+              command: |
+                sudo npm install -g openapi-enforcer-cli
+                result=$(openapi-enforcer validate openapi.yml)
+                [[ $result =~ "Document is valid" ]] && {
+                echo "Validation good"
+                exit 0
+                } || {
+                echo $result
+                exit 1
+                }
     jobs:
-      - build
-      - lint:
-          requires:
-            - build
-      - test:
-          requires:
-            - build
-            - lint
-jobs:
+      lint:
+        parameters:
+          executor:
+            default: ruby
+            description: Executor to use for this job, defaults to ruby executor
+            type: executor
+        executor: <<parameters.executor>>
+        steps:
+          - checkout
+          - gem-install-deps
+          - ruby/rubocop-check
+      test-gem:
+        parameters:
+          executor:
+            default: ruby
+            description: Executor to use for this job, defaults to ruby executor
+            type: executor
+        executor: <<parameters.executor>>
+        parallelism: 3
+        steps:
+          - checkout
+          - gem-install-deps
+          - run:
+              name: Install rspec_junit_formatter
+              command: bundle add rspec_junit_formatter
+          - test
+      test-rails:
+        parameters:
+          executor:
+            default: ruby-postgres
+            description: Executor to use for this job, defaults to ruby-postgres executor
+            type: executor
+          api-only:
+            default: false
+            description: True if this is an API only Rails app.
+            type: boolean
+          install-chrome:
+            default: false
+            description: True to install Chrome
+            type: boolean
+          db-prepare-command:
+            default: db:test:prepare
+            description: Database prepare command
+            type: string
+        executor: << parameters.executor >>
+        parallelism: 3
+        steps:
+          - checkout
+          - ruby/install-deps
+          - when:
+              condition: << parameters.install-chrome >>
+              steps:
+                - browser-tools/install-chrome
+          - unless:
+              condition: << parameters.api-only >>
+              steps:
+                - node/install-packages:
+                    pkg-manager: yarn
+          - run:
+              command: 'dockerize -wait tcp://localhost:5432 -timeout 1m'
+              name: Wait for DB
+          - run:
+              name: Test prepare
+              command: bin/rails << parameters.db-prepare-command >>
+          - test
+      validate-api:
+        description: Validate openapi specification
+        executor: node/default
+        steps:
+          - checkout
+          - validate-api
+      docker-publish:
+        description: Build and deploy a Docker image
+        executor: docker/machine
+        parameters:
+          docker-password:
+            default: DOCKER_PASS
+            description: |
+              Name of environment variable storing your Docker password
+            type: env_var_name
+          docker-username:
+            default: DOCKER_USER
+            description: |
+              Name of environment variable storing your Docker username
+            type: env_var_name
+          dockerfile:
+            default: Dockerfile
+            description: 'Name of dockerfile to use, defaults to Dockerfile'
+            type: string
+          image:
+            description: Name of image to build
+            type: string
+          tag:
+            default: latest
+            description: 'Comma-separated list of image tags, defaults to latest'
+            type: string
+        steps:
+          - checkout
+          - docker/check:
+              docker-password: <<parameters.docker-password>>
+              docker-username: <<parameters.docker-username>>
+          - docker/build:
+              dockerfile: <<parameters.dockerfile>>
+              image: <<parameters.image>>
+              tag: <<parameters.tag>>
+          - docker/push:
+              image: <<parameters.image>>
+              tag: <<parameters.tag>>
+workflows:
   build:
-    executor: default
-    steps:
-      - checkout
-      - ruby/install-deps:
-          key: gems-v2
-  lint:
-    executor: default
-    steps:
-      - checkout
-      - ruby/install-deps:
-          key: gems-v2
-      - run:
-          name: Run linter
-          command: bundle exec rubocop
-  test:
-    environment:
-      TZ: "America/Los_Angeles"
-      CC_TEST_REPORTER_ID: "65432e87479984e42c830196f97effd3f7b72df253689fc143a26d3dda73a350"
-    executor: ruby_with_all_deps
-    steps:
-      - checkout
-      - ruby/install-deps:
-          key: gems-v2
-      - run:
-          name: install rsync
-          command: sudo apt install -y rsync
-      - run:
-          name: Set up CodeClimate
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-            ./cc-test-reporter before-build
-      - ruby/rspec-test
-      - run:
-          name: Report test coverage results to CodeClimate
-          command: ./cc-test-reporter after-build --coverage-input-type simplecov --exit-code $?
+    jobs:
+      - ruby-rails/lint:
+          name: lint
+      - ruby-rails/test-gem:
+          name: test
+            
+# orbs:
+#   ruby: circleci/ruby@1.0.5
+
+# references:
+#   default_ruby_version: &default_ruby_version '3.0'
+#   ruby_envs: &ruby_envs
+#     environment:
+#       BUNDLE_JOBS: 3
+#       BUNDLE_RETRY: 3
+#       BUNDLE_PATH: vendor/bundle
+#       RAILS_ENV: test
+
+# executors:
+#   default:
+#     parameters:
+#       ruby_tag:
+#         description: "The `circleci/ruby` Docker image version tag."
+#         type: string
+#         default: *default_ruby_version
+#     docker:
+#       - image: cimg/ruby:<< parameters.ruby_tag >>
+#         <<: *ruby_envs
+#   ruby_with_all_deps:
+#     parameters:
+#       ruby_tag:
+#         description: "The `circleci/ruby` Docker image version tag."
+#         type: string
+#         default: *default_ruby_version
+#     docker:
+#       - image: circleci/ruby:<< parameters.ruby_tag >>
+#         <<: *ruby_envs
+#         environment:
+
+# workflows:
+#   build_and_test:
+#     jobs:
+#       - build
+#       - lint:
+#           requires:
+#             - build
+#       - test:
+#           requires:
+#             - build
+#             - lint
+# jobs:
+#   build:
+#     executor: default
+#     steps:
+#       - checkout
+#       - ruby/install-deps:
+#           key: gems-v2
+#   lint:
+#     executor: default
+#     steps:
+#       - checkout
+#       - ruby/install-deps:
+#           key: gems-v2
+#       - run:
+#           name: Run linter
+#           command: bundle exec rubocop
+#   test:
+#     environment:
+#       TZ: "America/Los_Angeles"
+#       CC_TEST_REPORTER_ID: "65432e87479984e42c830196f97effd3f7b72df253689fc143a26d3dda73a350"
+#     executor: ruby_with_all_deps
+#     steps:
+#       - checkout
+#       - ruby/install-deps:
+#           key: gems-v2
+#       - run:
+#           name: install rsync
+#           command: sudo apt install -y rsync
+#       - run:
+#           name: Set up CodeClimate
+#           command: |
+#             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+#             chmod +x ./cc-test-reporter
+#             ./cc-test-reporter before-build
+#       - ruby/rspec-test
+#       - run:
+#           name: Report test coverage results to CodeClimate
+#           command: ./cc-test-reporter after-build --coverage-input-type simplecov --exit-code $?
