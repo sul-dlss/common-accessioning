@@ -223,13 +223,24 @@ orbs:
           - docker/push:
               image: <<parameters.image>>
               tag: <<parameters.tag>>
+jobs:
+  prep:
+    executor: ruby-rails/ruby
+    steps:
+      - run:
+          name: install rsync
+          command: sudo apt install -y rsync
+
 workflows:
   build:
     jobs:
+      - prep
       - ruby-rails/lint:
           name: lint
       - ruby-rails/test-gem:
           name: test
+          requires:
+            - prep
             
 # orbs:
 #   ruby: circleci/ruby@1.0.5
