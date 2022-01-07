@@ -54,7 +54,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
         robot.send(:set_node_type, node, 'image')
       end
       exp = Nokogiri::XML('<contentMetadata type="image"><resource type="image">' \
-                           '</resource></contentMetadata>')
+                          '</resource></contentMetadata>')
       expect(ng_xml).to be_equivalent_to exp
     end
   end

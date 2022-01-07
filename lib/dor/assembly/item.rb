@@ -10,7 +10,7 @@ module Dor
         # Takes a druid, either as a string or as a Druid object.
         # Always converts @druid to a Druid object.
         @druid = params[:druid]
-        @druid = DruidTools::Druid.new(@druid) unless @druid.class == DruidTools::Druid
+        @druid = DruidTools::Druid.new(@druid) unless @druid.instance_of?(DruidTools::Druid)
         @path_finder = PathFinder.new(druid_id: @druid.id)
         @path_finder.check_for_path
       end

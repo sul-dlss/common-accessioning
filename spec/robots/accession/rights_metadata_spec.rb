@@ -33,7 +33,6 @@ RSpec.describe Robots::DorRepo::Accession::RightsMetadata do
         allow(DruidTools::Druid).to receive(:new).and_return(finder)
       end
 
-      # rubocop:disable RSpec/ExampleLength
       it 'reads the file in' do
         perform
         expect(metadata_client).to have_received(:legacy_update).with(
@@ -43,7 +42,6 @@ RSpec.describe Robots::DorRepo::Accession::RightsMetadata do
           }
         )
       end
-      # rubocop:enable RSpec/ExampleLength
     end
   end
 end

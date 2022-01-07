@@ -126,7 +126,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
       end
     end
 
-    context 'on a collection' do
+    context 'when a collection' do
       let(:object) do
         Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
                                        type: Cocina::Models::Collection::TYPES.first,

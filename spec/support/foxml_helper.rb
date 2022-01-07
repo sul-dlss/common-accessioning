@@ -3,9 +3,9 @@
 def item_from_foxml(foxml, item_class = Dor::Abstract)
   foxml = Nokogiri::XML(foxml) unless foxml.is_a?(Nokogiri::XML::Node)
   xml_streams = foxml.xpath('//foxml:datastream')
-  properties = Hash[foxml.xpath('//foxml:objectProperties/foxml:property').collect do |node|
+  properties = foxml.xpath('//foxml:objectProperties/foxml:property').to_h do |node|
     [node['NAME'].split(/#/).last, node['VALUE']]
-  end]
+  end
   result = item_class.new(pid: foxml.root['PID'])
   result.label    = properties['label']
   result.owner_id = properties['ownerId']

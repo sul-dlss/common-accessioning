@@ -22,7 +22,7 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
     allow(Dor::Assembly::Item).to receive(:new).and_return(item)
   end
 
-  context 'if type is not item' do
+  context 'when type is not item' do
     let(:type) { 'collection' }
     let(:content_metadata) { false }
     let(:stub_content_metadata) { false }
@@ -35,7 +35,7 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
     end
   end
 
-  context 'if contentMetadata and stub content metadata both already exists' do
+  context 'when contentMetadata and stub content metadata both already exist' do
     let(:content_metadata) { true }
     let(:stub_content_metadata) { true }
 
@@ -47,7 +47,7 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
     end
   end
 
-  context 'if contentMetadata already exists' do
+  context 'when contentMetadata already exists' do
     let(:content_metadata) { true }
     let(:stub_content_metadata) { false }
 
@@ -59,7 +59,7 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
     end
   end
 
-  context 'if stub contentMetadata does not exist and neither does regular contentMetadata' do
+  context 'when stub contentMetadata does not exist and neither does regular contentMetadata' do
     let(:content_metadata) { false }
     let(:stub_content_metadata) { false }
 
@@ -68,7 +68,7 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
     end
   end
 
-  context 'if stub contentMetadata exists regular contentMetadata does not' do
+  context 'when stub contentMetadata exists regular contentMetadata does not' do
     let(:content_metadata) { false }
     let(:stub_content_metadata) { true }
 

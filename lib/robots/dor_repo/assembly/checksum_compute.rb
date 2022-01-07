@@ -34,15 +34,15 @@ module Robots
             sha1_nodes = fn.xpath('checksum[@type="sha1"]')
 
             # if we have any existing checksum nodes, compare them all against the checksums we just computed, and raise an error if any fail
-            if !md5_nodes.empty?
-              raise %(Checksums disagree: type="md5", file="#{fn['id']}", computed="#{checksums[:md5]}, provided="#{md5_nodes.first}".) unless checksums_equal?(md5_nodes, checksums[:md5])
-            else
+            if md5_nodes.empty?
               add_checksum_node assembly_item, fn, 'md5', checksums[:md5]
-            end
-            if !sha1_nodes.empty?
-              raise %(Checksums disagree: type="sha1", file="#{fn['id']}", computed="#{checksums[:sha1]}", provided="#{sha1_nodes.first}".) unless checksums_equal?(sha1_nodes, checksums[:sha1])
             else
+              raise %(Checksums disagree: type="md5", file="#{fn['id']}", computed="#{checksums[:md5]}, provided="#{md5_nodes.first}".) unless checksums_equal?(md5_nodes, checksums[:md5])
+            end
+            if sha1_nodes.empty?
               add_checksum_node assembly_item, fn, 'sha1', checksums[:sha1]
+            else
+              raise %(Checksums disagree: type="sha1", file="#{fn['id']}", computed="#{checksums[:sha1]}", provided="#{sha1_nodes.first}".) unless checksums_equal?(sha1_nodes, checksums[:sha1])
             end
           end
 

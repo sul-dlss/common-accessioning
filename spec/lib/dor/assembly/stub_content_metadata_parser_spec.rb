@@ -93,7 +93,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
       it 'maps content metadata types to 3d correctly' do
         %w[3d 3D].each do |content_type|
           allow(item).to receive(:stub_object_type).and_return(content_type)
-          expect(item.gem_content_metadata_style).to eq(:"3d")
+          expect(item.gem_content_metadata_style).to eq(:'3d')
         end
       end
     end
