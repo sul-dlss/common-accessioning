@@ -229,7 +229,7 @@ jobs:
     steps:
       - run:
           name: install rsync
-          command: sudo apt update && apt install -y rsync
+          command: sudo apt update && sudo apt install -y rsync
 
 workflows:
   build:
