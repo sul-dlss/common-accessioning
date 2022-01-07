@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  ruby: circleci/ruby@1.0.5
+  ruby: circleci/ruby@1.3.0
 
 references:
   default_ruby_version: &default_ruby_version '3.0'
@@ -16,7 +16,7 @@ executors:
   default:
     parameters:
       ruby_tag:
-        description: "The `circleci/ruby` Docker image version tag."
+        description: "The `cimg/ruby` Docker image version tag."
         type: string
         default: *default_ruby_version
     docker:
@@ -50,16 +50,14 @@ jobs:
     steps:
       - checkout
       - ruby/install-deps:
-          key: gems-v2
+          key: gems-v4
   lint:
     executor: default
     steps:
       - checkout
       - ruby/install-deps:
-          key: gems-v2
-      - run:
-          name: Run linter
-          command: bundle exec rubocop
+          key: gems-v4
+      - ruby/rubocop-check
   test:
     environment:
       TZ: "America/Los_Angeles"
@@ -68,10 +66,10 @@ jobs:
     steps:
       - checkout
       - ruby/install-deps:
-          key: gems-v2
+          key: gems-v4
       - run:
           name: install rsync
-          command: sudo apt install -y rsync
+          command: sudo apt-get install -y rsync
       - run:
           name: Set up CodeClimate
           command: |
