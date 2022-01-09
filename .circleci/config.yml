@@ -7,6 +7,8 @@ orbs:
       ruby: circleci/ruby@1.2.0
       browser-tools: circleci/browser-tools@1.2.3
     references:
+      ruby-version-ref: &ruby-version-ref '2.7.5'
+      postgres-version-ref: &postgres-version-ref '11.13'
       ruby-executor-refs: &ruby-executor-refs
         image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
         environment:
@@ -23,14 +25,19 @@ orbs:
         environment:
           POSTGRES_USER: circleci
           POSTGRES_PASSWORD: sekret
+      ruby-tag-parameter-ref: &ruby-tag-parameter-ref
+          default: *ruby-version-ref
+          description: The `cimg/ruby` Docker image version tag.
+          type: string
     executors:
       ruby:
         description: Ruby-only executor.
         parameters:
           ruby-tag:
-            default: '2.7.5'
-            description: The `cimg/ruby` Docker image version tag.
-            type: string
+            <<: *ruby-tag-parameter-ref
+            # default: *ruby-version-ref
+            # description: The `cimg/ruby` Docker image version tag.
+            # type: string
         docker:
           - <<: *ruby-executor-refs
           # - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
@@ -42,11 +49,12 @@ orbs:
         description: Ruby and postgres-only executor.
         parameters:
           ruby-tag:
-            default: '2.7.5'
-            description: The `cimg/ruby` Docker image version tag.
-            type: string
+            <<: *ruby-tag-parameter-ref
+            # default: *ruby-version-ref
+            # description: The `cimg/ruby` Docker image version tag.
+            # type: string
           postgres-tag:
-            default: '11.13'
+            default: *postgres-version-ref
             description: The `cimg/postgres` Docker image version tag.
             type: string
         docker:
@@ -70,11 +78,12 @@ orbs:
         description: Ruby, postgres, and redis-only executor.
         parameters:
           ruby-tag:
-            default: '2.7.5'
-            description: The `cimg/ruby` Docker image version tag.
-            type: string
+            <<: *ruby-tag-parameter-ref
+            # default: *ruby-version-ref
+            # description: The `cimg/ruby` Docker image version tag.
+            # type: string
           postgres-tag:
-            default: '11.13'
+            default: *postgres-version-ref
             description: The `cimg/postgres` Docker image version tag.
             type: string
         docker:
