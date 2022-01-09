@@ -7,13 +7,18 @@ orbs:
       ruby: circleci/ruby@1.2.0
       browser-tools: circleci/browser-tools@1.2.3
     references:
-      ruby-refs: &ruby-refs
+      ruby-executor-refs: &ruby-executor-refs
         image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
         environment:
           BUNDLE_JOBS: '3'
           BUNDLE_RETRY: '3'
+          PGHOST: 127.0.0.1
+          PGPASSWORD: sekret
+          PGUSER: circleci
+          RAILS_ENV: test
+          PAGER: cat
           TZ: "America/Los_Angeles"
-      postgres-refs: &postgres-refs
+      postgres-executor-refs: &postgres-executor-refs
         image: 'cimg/postgres:<< parameters.postgres-tag >>'
         environment:
           POSTGRES_USER: circleci
@@ -27,7 +32,7 @@ orbs:
             description: The `cimg/ruby` Docker image version tag.
             type: string
         docker:
-          - <<: *ruby-refs
+          - <<: *ruby-executor-refs
           # - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
           #   environment:
           #     BUNDLE_JOBS: '3'
@@ -45,17 +50,18 @@ orbs:
             description: The `cimg/postgres` Docker image version tag.
             type: string
         docker:
-          - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
-            environment:
-              BUNDLE_JOBS: '3'
-              BUNDLE_RETRY: '3'
-              PGHOST: 127.0.0.1
-              PGPASSWORD: sekret
-              PGUSER: circleci
-              RAILS_ENV: test
-              PAGER: cat
-              TZ: "America/Los_Angeles"
-          - <<: *postgres-refs
+          - <<: *ruby-executor-refs        
+          # - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
+          #   environment:
+          #     BUNDLE_JOBS: '3'
+          #     BUNDLE_RETRY: '3'
+          #     PGHOST: 127.0.0.1
+          #     PGPASSWORD: sekret
+          #     PGUSER: circleci
+          #     RAILS_ENV: test
+          #     PAGER: cat
+          #     TZ: "America/Los_Angeles"
+          - <<: *postgres-executor-refs
           # - image: 'cimg/postgres:<< parameters.postgres-tag >>'
           #   environment:
           #     POSTGRES_USER: postgres
@@ -72,20 +78,22 @@ orbs:
             description: The `cimg/postgres` Docker image version tag.
             type: string
         docker:
-          - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
-            environment:
-              BUNDLE_JOBS: '3'
-              BUNDLE_RETRY: '3'
-              PGHOST: 127.0.0.1
-              PGPASSWORD: sekret
-              PGUSER: circleci
-              RAILS_ENV: test
-              PAGER: cat
-              TZ: "America/Los_Angeles"
-          - image: 'cimg/postgres:<< parameters.postgres-tag >>'
-            environment:
-              POSTGRES_USER: circleci
-              POSTGRES_PASSWORD: sekret              
+          - <<: *ruby-executor-refs
+          # - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
+          #   environment:
+          #     BUNDLE_JOBS: '3'
+          #     BUNDLE_RETRY: '3'
+          #     PGHOST: 127.0.0.1
+          #     PGPASSWORD: sekret
+          #     PGUSER: circleci
+          #     RAILS_ENV: test
+          #     PAGER: cat
+          #     TZ: "America/Los_Angeles"
+          - <<: *postgres-executor-refs
+          # - image: 'cimg/postgres:<< parameters.postgres-tag >>'
+          #   environment:
+          #     POSTGRES_USER: circleci
+          #     POSTGRES_PASSWORD: sekret              
           - image: circleci/redis:3
     commands:
       gem-install-deps:
@@ -258,9 +266,6 @@ workflows:
           name: lint
       - ruby-rails/test-gem:
           name: test
-          executor:
-            name: ruby-rails/ruby
-            ruby-tag: '3.0.3'
           before-test:
             - run:
                 name: install rsync
