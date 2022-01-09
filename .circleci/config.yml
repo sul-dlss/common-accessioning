@@ -121,7 +121,7 @@ orbs:
             default: ruby
             description: Executor to use for this job, defaults to ruby executor
             type: executor
-        executor: <<parameters.executor>>
+        executor: << parameters.executor >>
         steps:
           - checkout
           - gem-install-deps
@@ -132,7 +132,11 @@ orbs:
             default: ruby
             description: Executor to use for this job, defaults to ruby executor
             type: executor
-        executor: <<parameters.executor>>
+          before-test:
+            default: []
+            description: Optional steps to run before running rspec
+            type: steps
+        executor: << parameters.executor >>
         parallelism: 3
         steps:
           - checkout
@@ -140,6 +144,9 @@ orbs:
           - run:
               name: Install rspec_junit_formatter
               command: bundle add rspec_junit_formatter
+          - when:
+              condition: << parameters.before-test >>
+              steps: << parameters.before-test >>
           - test
       test-rails:
         parameters:
@@ -159,6 +166,10 @@ orbs:
             default: db:test:prepare
             description: Database prepare command
             type: string
+          before-test:
+            default: []
+            description: Optional steps to run before running rspec
+            type: steps
         executor: << parameters.executor >>
         parallelism: 3
         steps:
@@ -179,6 +190,9 @@ orbs:
           - run:
               name: Test prepare
               command: bin/rails << parameters.db-prepare-command >>
+          - when:
+              condition: << parameters.before-test >>
+              steps: << parameters.before-test >>
           - test
       validate-api:
         description: Validate openapi specification
@@ -223,24 +237,17 @@ orbs:
           - docker/push:
               image: <<parameters.image>>
               tag: <<parameters.tag>>
-jobs:
-  prep:
-    executor: ruby-rails/ruby
-    steps:
-      - run:
-          name: install rsync
-          command: sudo apt update && sudo apt install -y rsync
-
 workflows:
   build:
     jobs:
-      - prep
       - ruby-rails/lint:
           name: lint
       - ruby-rails/test-gem:
           name: test
-          requires:
-            - prep
+          before-test:
+            - run:
+                name: install rsync
+                command: sudo apt update && sudo apt install -y rsync
             
 # orbs:
 #   ruby: circleci/ruby@1.0.5
