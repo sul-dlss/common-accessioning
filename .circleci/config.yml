@@ -258,6 +258,7 @@ workflows:
           name: lint
       - ruby-rails/test-gem:
           name: test
+          ruby-tag: '3.0.3'
           before-test:
             - run:
                 name: install rsync
