@@ -26,8 +26,12 @@ orbs:
           POSTGRES_USER: circleci
           POSTGRES_PASSWORD: sekret
       ruby-tag-parameter-ref: &ruby-tag-parameter-ref
-          default: *ruby-version-ref
-          description: The `cimg/ruby` Docker image version tag.
+        default: *ruby-version-ref
+        description: The `cimg/ruby` Docker image version tag.
+        type: string
+      postgres-tag-parameter-ref: &postgres-tag-parameter-ref
+          default: *postgres-version-ref
+          description: The `cimg/postgres` Docker image version tag.
           type: string
     executors:
       ruby:
@@ -54,9 +58,10 @@ orbs:
             # description: The `cimg/ruby` Docker image version tag.
             # type: string
           postgres-tag:
-            default: *postgres-version-ref
-            description: The `cimg/postgres` Docker image version tag.
-            type: string
+            <<: *postgres-tag-parameter-ref
+            # default: *postgres-version-ref
+            # description: The `cimg/postgres` Docker image version tag.
+            # type: string
         docker:
           - <<: *ruby-executor-refs        
           # - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
@@ -83,9 +88,10 @@ orbs:
             # description: The `cimg/ruby` Docker image version tag.
             # type: string
           postgres-tag:
-            default: *postgres-version-ref
-            description: The `cimg/postgres` Docker image version tag.
-            type: string
+            <<: *postgres-tag-parameter-ref
+            # default: *postgres-version-ref
+            # description: The `cimg/postgres` Docker image version tag.
+            # type: string
         docker:
           - <<: *ruby-executor-refs
           # - image: 'cimg/ruby:<< parameters.ruby-tag >>-node'
