@@ -8,11 +8,11 @@ module Robots
 
         def with_item(druid)
           ai = item(druid)
-          if !ai.item?
-            LyberCore::Log.info("Skipping #{@step_name} for #{druid} since it is not an item")
-          else
+          if ai.item?
             ai.load_content_metadata
             yield ai
+          else
+            LyberCore::Log.info("Skipping #{@step_name} for #{druid} since it is not an item")
           end
         end
 

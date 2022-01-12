@@ -20,7 +20,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
     end
 
-    context 'on an item' do
+    context 'when an item' do
       let(:object) do
         Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
                                 type: Cocina::Models::DRO::TYPES.first,
@@ -43,7 +43,6 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
         before do
           allow(DruidTools::Druid).to receive(:new).and_return(finder)
         end
-        # rubocop:disable RSpec/ExampleLength
 
         it 'builds a datastream' do
           perform
@@ -55,11 +54,10 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
             }
           )
         end
-        # rubocop:enable RSpec/ExampleLength
       end
     end
 
-    context 'on a collection' do
+    context 'when a collection' do
       let(:object) do
         Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
                                        type: Cocina::Models::Collection::TYPES.first,

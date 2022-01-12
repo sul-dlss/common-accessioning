@@ -12,7 +12,7 @@ SimpleCov.start do
   add_filter '/spec/'
 end
 
-require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
+require File.expand_path("#{__dir__}/../config/boot")
 
 require 'byebug'
 require 'pry'
@@ -48,5 +48,5 @@ def read_fixture(fname)
 end
 
 def fixture_dir
-  @fixture_dir ||= File.join(File.dirname(__FILE__), 'fixtures')
+  @fixture_dir ||= File.join(__dir__, 'fixtures')
 end

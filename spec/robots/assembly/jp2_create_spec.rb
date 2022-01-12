@@ -17,6 +17,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     subject(:perform) { robot.perform(druid) }
 
     let(:assembly_item) { Dor::Assembly::Item.new(druid: druid) }
+    let(:druid) { 'aa222cc3333' }
 
     let(:object_client) do
       instance_double(Dor::Services::Client::Object, find: object)
@@ -27,9 +28,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
     end
 
-    let(:druid) { 'aa222cc3333' }
-
-    context 'for an item' do
+    context 'with an item' do
       let(:object) do
         Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
                                 type: Cocina::Models::DRO::TYPES.first,
@@ -47,7 +46,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       end
     end
 
-    context 'for a collection' do
+    context 'with a collection' do
       let(:object) do
         Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
                                        type: Cocina::Models::Collection::TYPES.first,
@@ -79,13 +78,13 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
     context 'when resource type is not specified' do
       let(:druid) { 'aa111bb2222' }
+      let(:jp2s) { tifs.map { |t| t.sub(/\.tif$/, '.jp2') } }
+      let(:tifs) { item.file_nodes.map { |fn| item.path_finder.path_to_content_file fn['id'] } }
+
       before do
         allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
         allow_any_instance_of(Assembly::Image).to receive(:create_jp2).with(overwrite: false, tmp_folder: '/tmp').and_return(instance_double(Assembly::Image, path: 'spec/out/image111.jp2'))
       end
-
-      let(:jp2s) { tifs.map { |t| t.sub(/\.tif$/, '.jp2') } }
-      let(:tifs) { item.file_nodes.map { |fn| item.path_finder.path_to_content_file fn['id'] } }
 
       it 'does not create any jp2 files' do
         item.load_content_metadata
@@ -125,7 +124,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       end
     end
 
-    context 'for resource type image or page in new location' do
+    context 'with resource type image or page in new location' do
       let(:druid) { 'gg111bb2222' }
 
       before do
@@ -189,7 +188,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
         system "rm #{copy_jp2}"
       end
 
-      context 'and overwrite is false' do
+      context 'with overwrite set to false' do
         before do
           Settings.assembly.overwrite_jp2 = false
 
@@ -222,7 +221,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
         end
       end
 
-      context 'and overwrite is true' do
+      context 'with overwrite set to true' do
         before do
           allow(Settings.assembly).to receive_messages(overwrite_jp2: true, overwrite_dpg_jp2: false)
           allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
@@ -292,7 +291,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
         allow(Assembly::Image).to receive(:new).and_return(source1, source2, s3, s4, s5, s6)
       end
 
-      context 'and overwrite is false' do
+      context 'when overwrite is false' do
         before do
           Settings.assembly.overwrite_dpg_jp2 = false
         end
@@ -317,7 +316,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
         end
       end
 
-      context 'and overwrite is true' do
+      context 'when overwrite is true' do
         let(:out2) { 'tmp/test_input/hh/222/cc/3333/hh222cc3333_00_001.jp2' }
 
         before do
