@@ -1,82 +1,14 @@
 version: 2.1
-
 orbs:
-  ruby: circleci/ruby@1.3.0
-
-references:
-  default_ruby_version: &default_ruby_version '3.0'
-  ruby_envs: &ruby_envs
-    environment:
-      BUNDLE_JOBS: 3
-      BUNDLE_RETRY: 3
-      BUNDLE_PATH: vendor/bundle
-      RAILS_ENV: test
-
-executors:
-  default:
-    parameters:
-      ruby_tag:
-        description: "The `cimg/ruby` Docker image version tag."
-        type: string
-        default: *default_ruby_version
-    docker:
-      - image: cimg/ruby:<< parameters.ruby_tag >>
-        <<: *ruby_envs
-  ruby_with_all_deps:
-    parameters:
-      ruby_tag:
-        description: "The `circleci/ruby` Docker image version tag."
-        type: string
-        default: *default_ruby_version
-    docker:
-      - image: circleci/ruby:<< parameters.ruby_tag >>
-        <<: *ruby_envs
-        environment:
-
+  ruby-rails: sul-dlss/ruby-rails@2.0.0
 workflows:
-  build_and_test:
-    jobs:
-      - build
-      - lint:
-          requires:
-            - build
-      - test:
-          requires:
-            - build
-            - lint
-jobs:
   build:
-    executor: default
-    steps:
-      - checkout
-      - ruby/install-deps:
-          key: gems-v4
-  lint:
-    executor: default
-    steps:
-      - checkout
-      - ruby/install-deps:
-          key: gems-v4
-      - ruby/rubocop-check
-  test:
-    environment:
-      TZ: "America/Los_Angeles"
-      CC_TEST_REPORTER_ID: "65432e87479984e42c830196f97effd3f7b72df253689fc143a26d3dda73a350"
-    executor: ruby_with_all_deps
-    steps:
-      - checkout
-      - ruby/install-deps:
-          key: gems-v4
-      - run:
-          name: install rsync
-          command: sudo apt-get install -y rsync
-      - run:
-          name: Set up CodeClimate
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-            ./cc-test-reporter before-build
-      - ruby/rspec-test
-      - run:
-          name: Report test coverage results to CodeClimate
-          command: ./cc-test-reporter after-build --coverage-input-type simplecov --exit-code $?
+    jobs:
+      - ruby-rails/lint:
+          name: lint
+      - ruby-rails/test-gem:
+          name: test
+          before-test:
+            - run:
+                name: install rsync
+                command: sudo apt update && sudo apt install -y rsync
