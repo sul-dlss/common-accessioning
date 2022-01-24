@@ -3,12 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
-  subject(:robot) { described_class.new }
-
+  let(:robot) { described_class.new }
   let(:druid) { 'aa222cc3333' }
-
   let(:type) { 'item' }
-
   let(:item) do
     instance_double(Dor::Assembly::Item,
                     item?: type == 'item')
