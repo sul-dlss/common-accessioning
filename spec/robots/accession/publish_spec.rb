@@ -60,7 +60,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
                                         type: Cocina::Models::AdminPolicy::TYPES.first,
                                         label: 'my admin policy',
                                         version: 1,
-                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' })
+                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999', hasAgreement: 'druid:bb033gt0615' })
       end
 
       it 'does not publish metadata' do
