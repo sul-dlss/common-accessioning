@@ -18,7 +18,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
                                     type: Cocina::Models::AdminPolicy::TYPES.first,
                                     label: 'my apo object',
                                     version: 1,
-                                    administrative: { hasAdminPolicy: 'druid:xx999xx9999' })
+                                    administrative: { hasAdminPolicy: 'druid:xx999xx9999', hasAgreement: 'druid:bb033gt0615' })
   end
 
   let(:druid) { 'druid:oo000oo0001' }
@@ -54,7 +54,8 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
                                         version: 1,
                                         administrative: {
                                           disseminationWorkflow: 'wasDisseminationWF',
-                                          hasAdminPolicy: 'druid:xx999xx9999'
+                                          hasAdminPolicy: 'druid:xx999xx9999',
+                                          hasAgreement: 'druid:bb033gt0615'
                                         })
       end
 
