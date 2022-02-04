@@ -9,11 +9,9 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
     subject(:perform) { robot.perform(druid) }
 
     let(:object_client) do
-      instance_double(Dor::Services::Client::Object, metadata: metadata_client, find: object)
+      instance_double(Dor::Services::Client::Object, update: nil, find: object)
     end
-    let(:metadata_client) do
-      instance_double(Dor::Services::Client::Metadata, legacy_update: true)
-    end
+
     let(:druid) { 'druid:ab123cd4567' }
 
     before do
@@ -33,7 +31,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
       context 'when no contentMetadata file is found' do
         it 'builds a datastream from the remote service call' do
           expect(perform.status).to eq 'skipped'
-          expect(metadata_client).not_to have_received(:legacy_update)
+          expect(object_client).not_to have_received(:update)
         end
       end
 
@@ -47,12 +45,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
         it 'builds a datastream' do
           perform
 
-          expect(metadata_client).to have_received(:legacy_update).with(
-            content: {
-              updated: Time,
-              content: /<contentMetadata/
-            }
-          )
+          expect(object_client).to have_received(:update).with(params: Cocina::Models::DRO)
         end
       end
     end
@@ -68,7 +61,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
 
       it "doesn't make a datastream" do
         perform
-        expect(object_client).not_to have_received(:metadata)
+        expect(object_client).not_to have_received(:update)
       end
     end
   end
