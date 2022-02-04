@@ -17,7 +17,7 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
       instance_double(Dor::Services::Client::Object, metadata: metadata_client)
     end
     let(:metadata_client) do
-      instance_double(Dor::Services::Client::Metadata, legacy_update: true)
+      instance_double(Dor::Services::Client::Metadata, update_mods: nil)
     end
 
     before do
@@ -27,7 +27,7 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
     context 'when no descMetadata file is found' do
       it 'builds a datastream from the remote service call' do
         expect(perform.status).to eq 'skipped'
-        expect(metadata_client).not_to have_received(:legacy_update)
+        expect(metadata_client).not_to have_received(:update_mods)
       end
     end
 
@@ -40,12 +40,7 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
 
       it 'reads the file in' do
         perform
-        expect(metadata_client).to have_received(:legacy_update).with(
-          descriptive: {
-            updated: Time,
-            content: /first book in Latin/
-          }
-        )
+        expect(metadata_client).to have_received(:update_mods).with(/first book in Latin/)
       end
     end
   end

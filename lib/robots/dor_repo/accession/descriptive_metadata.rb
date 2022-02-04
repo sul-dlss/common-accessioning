@@ -16,12 +16,7 @@ module Robots
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'No descMetadata.xml was provided') unless path
 
           object_client = Dor::Services::Client.object(druid)
-          object_client.metadata.legacy_update(
-            descriptive: {
-              updated: File.mtime(path),
-              content: File.read(path)
-            }
-          )
+          object_client.metadata.update_mods(File.read(path))
         end
       end
     end
