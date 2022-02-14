@@ -173,7 +173,7 @@ GEM
     openapi3_parser (0.9.1)
       commonmarker (~> 0.17)
       psych (~> 3.1)
-    openapi_parser (1.0.0)
+    openapi_parser (0.15.0)
     parallel (1.21.0)
     parser (3.1.0.0)
       ast (~> 2.4.1)
@@ -283,6 +283,7 @@ DEPENDENCIES
   honeybadger
   lyber-core (~> 6.1)
   nokogiri
+  openapi_parser (< 1.0)
   pry
   pry-byebug
   rake
@@ -298,4 +299,4 @@ DEPENDENCIES
   zeitwerk (~> 2.1)
 
 BUNDLED WITH
-   2.3.4
+   2.3.5
