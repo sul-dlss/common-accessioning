@@ -37,7 +37,7 @@ end
 group :development do
   gem 'capistrano', '~> 3.0'
   gem 'capistrano-bundler', '~> 1.1'
-  gem 'dlss-capistrano', '~> 3.10'
+  gem 'dlss-capistrano', require: false
 end
 
 group :development, :test do
