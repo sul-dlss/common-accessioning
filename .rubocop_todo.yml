@@ -74,10 +74,6 @@ RSpec/MultipleExpectations:
 RSpec/MultipleMemoizedHelpers:
   Max: 11
 
-# Offense count: 13
-RSpec/NestedGroups:
-  Max: 4
-
 # Offense count: 16
 # Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
 RSpec/VerifiedDoubles:
