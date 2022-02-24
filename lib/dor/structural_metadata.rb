@@ -15,7 +15,22 @@ module Dor
     end
 
     def update
-      (cocina_item.structural || Cocina::Models::DROStructural).new(props)
+      value = (cocina_item.structural || Cocina::Models::DROStructural).new(props)
+      overwrite_dark_access(value)
+    end
+
+    # This detects and fixes a potential problem where they've provided files marked publish="yes" when access is "dark"
+    def overwrite_dark_access(original)
+      return original unless @cocina_item.access.access == 'dark'
+
+      filtered_contained = original.contains.map do |file_set|
+        filtered_files = file_set.structural.contains.map do |file|
+          file.new(administrative: file.administrative.new(publish: false, shelve: false, sdrPreserve: true))
+        end
+        updated_structural = file_set.structural.new(contains: filtered_files)
+        file_set.new(structural: updated_structural)
+      end
+      original.new(contains: filtered_contained)
     end
 
     def props

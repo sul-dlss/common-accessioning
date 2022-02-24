@@ -23,10 +23,11 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
         Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
                                 type: Cocina::Models::DRO::TYPES.first,
                                 label: 'my repository object',
-                                access: {},
+                                access: access,
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 version: 1)
       end
+      let(:access) { {} }
 
       context 'when no contentMetadata file is found' do
         it 'builds a datastream from the remote service call' do
@@ -42,10 +43,28 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
           allow(DruidTools::Druid).to receive(:new).and_return(finder)
         end
 
-        it 'builds a datastream' do
-          perform
+        context 'with dark access' do
+          it 'builds the structual metadata and casts files to preserve only' do
+            perform
 
-          expect(object_client).to have_received(:update).with(params: Cocina::Models::DRO)
+            expect(object_client).to have_received(:update).with(params: Cocina::Models::DRO) do |model|
+              actions = model[:params].structural.contains.map { |file_set| file_set.structural.contains.map { |file| [file.administrative.publish, file.administrative.shelve, file.administrative.sdrPreserve] } }
+              expect(actions).to eq [[[false, false, true], [false, false, true]], [[false, false, true], [false, false, true]]]
+            end
+          end
+        end
+
+        context 'with non-dark access' do
+          let(:access) { { access: 'world', download: 'stanford' } }
+
+          it 'builds a the structual metadata and retains the original publish/shelve/preserve' do
+            perform
+
+            expect(object_client).to have_received(:update).with(params: Cocina::Models::DRO) do |model|
+              actions = model[:params].structural.contains.map { |file_set| file_set.structural.contains.map { |file| [file.administrative.publish, file.administrative.shelve, file.administrative.sdrPreserve] } }
+              expect(actions).to eq [[[false, false, true], [false, true, true]], [[false, false, true], [false, true, true]]]
+            end
+          end
         end
       end
     end
