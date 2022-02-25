@@ -88,7 +88,9 @@ module Dor
     end
 
     def file_access
-      dro_access.to_h.slice(:access, :download, :readLocation, :controlledDigitalLending)
+      file_access = dro_access.to_h.slice(:access, :download, :readLocation, :controlledDigitalLending)
+      file_access[:access] = 'dark' if file_access[:access] == 'citation-only'
+      file_access
     end
   end
 end
