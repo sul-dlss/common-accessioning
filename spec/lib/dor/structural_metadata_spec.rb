@@ -58,19 +58,44 @@ RSpec.describe Dor::StructuralMetadata do
                               label: 'Something',
                               version: 1,
                               identification: {},
-                              access: {
-                                access: 'world',
-                                download: 'stanford'
-                              },
+                              access: access,
                               administrative: { hasAdminPolicy: apo_druid })
     end
 
-    it 'maps to cocina structural' do
-      expect(updated_structural.hasMemberOrders.first.viewingDirection).to eq 'left-to-right'
-      expect(updated_structural.contains.size).to eq 2
-      file1 = updated_structural.contains.last.structural.contains.last
-      expect(file1.label).to eq 'folder2PdSa/story9d.txt'
-      expect(file1.access).to eq Cocina::Models::FileAccess.new(access: 'world', download: 'stanford')
+    context 'when the parent object access is world/stanford' do
+      let(:access) do
+        {
+          access: 'world',
+          download: 'stanford'
+        }
+      end
+
+      it 'copies the object access to the files' do
+        expect(updated_structural.hasMemberOrders.first.viewingDirection).to eq 'left-to-right'
+        expect(updated_structural.contains.size).to eq 2
+        file1 = updated_structural.contains.last.structural.contains.last
+        expect(file1.label).to eq 'folder2PdSa/story9d.txt'
+        # files inherit the object access
+        expect(file1.access).to eq Cocina::Models::FileAccess.new(access: 'world', download: 'stanford')
+      end
+    end
+
+    context 'when the parent object access is citation-only/none' do
+      let(:access) do
+        {
+          access: 'citation-only',
+          download: 'none'
+        }
+      end
+
+      it 'copies the object access to the files' do
+        expect(updated_structural.hasMemberOrders.first.viewingDirection).to eq 'left-to-right'
+        expect(updated_structural.contains.size).to eq 2
+        file1 = updated_structural.contains.last.structural.contains.last
+        expect(file1.label).to eq 'folder2PdSa/story9d.txt'
+        # citation-only is not inheritable, it should be dark:
+        expect(file1.access).to eq Cocina::Models::FileAccess.new(access: 'dark', download: 'none')
+      end
     end
   end
 end
