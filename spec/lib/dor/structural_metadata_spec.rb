@@ -57,6 +57,10 @@ RSpec.describe Dor::StructuralMetadata do
                               type: Cocina::Models::Vocab.object,
                               label: 'Something',
                               version: 1,
+                              description: {
+                                title: [{ value: 'Something' }],
+                                purl: "https://purl.stanford.edu/#{druid.delete_prefix('druid:')}"
+                              },
                               identification: {},
                               access: access,
                               administrative: { hasAdminPolicy: apo_druid })

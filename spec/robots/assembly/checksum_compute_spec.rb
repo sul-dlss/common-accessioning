@@ -19,6 +19,10 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
       Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
                               type: Cocina::Models::DRO::TYPES.first,
                               label: 'my dro',
+                              description: {
+                                title: [{ value: 'my dro' }],
+                                purl: 'https://purl.stanford.edu/bc123df4567'
+                              },
                               version: 1,
                               administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                               access: {})
@@ -48,6 +52,10 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
       Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
                                      type: Cocina::Models::Collection::TYPES.first,
                                      label: 'my collection',
+                                     description: {
+                                       title: [{ value: 'my collection' }],
+                                       purl: 'https://purl.stanford.edu/bc123df4567'
+                                     },
                                      version: 1,
                                      access: {})
     end

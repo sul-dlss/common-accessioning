@@ -23,6 +23,10 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
         Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
                                 type: Cocina::Models::DRO::TYPES.first,
                                 label: 'my repository object',
+                                description: {
+                                  title: [{ value: 'my repository object' }],
+                                  purl: 'https://purl.stanford.edu/bc123df4567'
+                                },
                                 access: access,
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 version: 1)
@@ -75,6 +79,10 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
                                        type: Cocina::Models::Collection::TYPES.first,
                                        label: 'my collection',
                                        version: 1,
+                                       description: {
+                                         title: [{ value: 'my collection' }],
+                                         purl: 'https://purl.stanford.edu/bc123df4567'
+                                       },
                                        access: {})
       end
 

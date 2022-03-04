@@ -24,6 +24,10 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
         Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
                                        type: Cocina::Models::Vocab.collection,
                                        label: 'my collection',
+                                       description: {
+                                         title: [{ value: 'my collection' }],
+                                         purl: 'https://purl.stanford.edu/bc123df4567'
+                                       },
                                        access: {},
                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                        version: 1)
@@ -48,6 +52,10 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                                 type: Cocina::Models::Vocab.object,
                                 label: 'my repository object',
                                 version: 1,
+                                description: {
+                                  title: [{ value: 'my repository object' }],
+                                  purl: 'https://purl.stanford.edu/bc123df4567'
+                                },
                                 access: {},
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 structural: {
@@ -67,6 +75,10 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                                 type: Cocina::Models::Vocab.object,
                                 label: 'my repository object',
                                 version: 1,
+                                description: {
+                                  title: [{ value: 'my repository object' }],
+                                  purl: 'https://purl.stanford.edu/bc123df4567'
+                                },
                                 structural: {
                                   contains: []
                                 },

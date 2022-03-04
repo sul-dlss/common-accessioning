@@ -10,6 +10,10 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
                             type: Cocina::Models::DRO::TYPES.first,
                             label: 'my repository object',
                             version: 1,
+                            description: {
+                              title: [{ value: 'my repository object' }],
+                              purl: 'https://purl.stanford.edu/bc123df4567'
+                            },
                             access: {},
                             administrative: { hasAdminPolicy: apo_id })
   end
@@ -18,7 +22,11 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
                                     type: Cocina::Models::AdminPolicy::TYPES.first,
                                     label: 'my apo object',
                                     version: 1,
-                                    administrative: { hasAdminPolicy: 'druid:xx999xx9999', hasAgreement: 'druid:bb033gt0615' })
+                                    administrative: {
+                                      hasAdminPolicy: 'druid:xx999xx9999',
+                                      hasAgreement: 'druid:bb033gt0615',
+                                      defaultAccess: { access: 'world', download: 'world' }
+                                    })
   end
 
   let(:druid) { 'druid:oo000oo0001' }
@@ -55,7 +63,8 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
                                         administrative: {
                                           disseminationWorkflow: 'wasDisseminationWF',
                                           hasAdminPolicy: 'druid:xx999xx9999',
-                                          hasAgreement: 'druid:bb033gt0615'
+                                          hasAgreement: 'druid:bb033gt0615',
+                                          defaultAccess: { access: 'world', download: 'world' }
                                         })
       end
 
