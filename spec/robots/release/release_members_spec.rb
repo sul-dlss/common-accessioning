@@ -46,6 +46,10 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
                                      type: Cocina::Models::Vocab.collection,
                                      label: 'my collection',
                                      version: 1,
+                                     description: {
+                                       title: [{ value: 'my collection' }],
+                                       purl: 'https://purl.stanford.edu/bc123df4567'
+                                     },
                                      access: {},
                                      administrative: {
                                        hasAdminPolicy: 'druid:xx999xx9999',

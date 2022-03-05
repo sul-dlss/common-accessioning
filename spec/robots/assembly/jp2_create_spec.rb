@@ -34,6 +34,10 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                 type: Cocina::Models::DRO::TYPES.first,
                                 label: 'my dro',
                                 version: 1,
+                                description: {
+                                  title: [{ value: 'my dro' }],
+                                  purl: 'https://purl.stanford.edu/bc123df4567'
+                                },
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 access: {})
       end
@@ -52,6 +56,10 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                        type: Cocina::Models::Collection::TYPES.first,
                                        label: 'my collection',
                                        version: 1,
+                                       description: {
+                                         title: [{ value: 'my collection' }],
+                                         purl: 'https://purl.stanford.edu/bc123df4567'
+                                       },
                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                        access: {})
       end

@@ -28,6 +28,10 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
                                        type: Cocina::Models::Collection::TYPES.first,
                                        label: 'my collection',
                                        version: 1,
+                                       description: {
+                                         title: [{ value: 'my collection' }],
+                                         purl: 'https://purl.stanford.edu/bc123df4567'
+                                       },
                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                        access: {})
       end
@@ -44,6 +48,10 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
                                 type: Cocina::Models::DRO::TYPES.first,
                                 label: 'my repository object',
                                 version: 1,
+                                description: {
+                                  title: [{ value: 'my repository object' }],
+                                  purl: 'https://purl.stanford.edu/bc123df4567'
+                                },
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 access: {})
       end
@@ -60,7 +68,11 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
                                         type: Cocina::Models::AdminPolicy::TYPES.first,
                                         label: 'my admin policy',
                                         version: 1,
-                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999', hasAgreement: 'druid:bb033gt0615' })
+                                        administrative: {
+                                          hasAdminPolicy: 'druid:xx999xx9999',
+                                          hasAgreement: 'druid:bb033gt0615',
+                                          defaultAccess: { access: 'world', download: 'world' }
+                                        })
       end
 
       it 'does not publish metadata' do

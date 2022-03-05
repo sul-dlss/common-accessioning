@@ -26,6 +26,10 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
       Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
                               type: Cocina::Models::DRO::TYPES.first,
                               label: 'my dro',
+                              description: {
+                                title: [{ value: 'my dro' }],
+                                purl: 'https://purl.stanford.edu/bc123df4567'
+                              },
                               access: {},
                               administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                               version: 1)
@@ -45,6 +49,10 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
       Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
                                      type: Cocina::Models::Collection::TYPES.first,
                                      label: 'my collection',
+                                     description: {
+                                       title: [{ value: 'my collection' }],
+                                       purl: 'https://purl.stanford.edu/bc123df4567'
+                                     },
                                      access: {},
                                      version: 1)
     end

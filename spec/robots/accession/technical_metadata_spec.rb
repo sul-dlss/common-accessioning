@@ -35,6 +35,10 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                 type: Cocina::Models::Vocab.object,
                                 label: 'my repository object',
                                 version: 1,
+                                description: {
+                                  title: [{ value: 'my repository object' }],
+                                  purl: 'https://purl.stanford.edu/dd116zh0343'
+                                },
                                 access: {},
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 structural: {
@@ -107,6 +111,10 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
           Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
                                   type: Cocina::Models::Vocab.object,
                                   label: 'my repository object',
+                                  description: {
+                                    title: [{ value: 'my repository object' }],
+                                    purl: 'https://purl.stanford.edu/bc123df4567'
+                                  },
                                   version: 1,
                                   administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                   access: {})
@@ -131,6 +139,10 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
         Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
                                        type: Cocina::Models::Collection::TYPES.first,
                                        label: 'my collection',
+                                       description: {
+                                         title: [{ value: 'my collection' }],
+                                         purl: 'https://purl.stanford.edu/bc123df4567'
+                                       },
                                        access: {},
                                        version: 1)
       end
