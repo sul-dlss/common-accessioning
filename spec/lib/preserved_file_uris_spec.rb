@@ -6,7 +6,7 @@ RSpec.describe PreservedFileUris do
   let(:root) { File.absolute_path(Settings.sdr.local_workspace_root) }
   let(:object) do
     Cocina::Models::DRO.new(externalIdentifier: druid,
-                            type: Cocina::Models::Vocab.object,
+                            type: Cocina::Models::ObjectType.object,
                             label: 'my repository object',
                             version: 1,
                             description: {
@@ -18,7 +18,7 @@ RSpec.describe PreservedFileUris do
                             structural: {
                               contains: [{
                                 externalIdentifier: '222',
-                                type: Cocina::Models::Vocab::Resources.file,
+                                type: Cocina::Models::FileSetType.file,
                                 label: 'my repository object',
                                 version: 1,
                                 structural: {
@@ -27,7 +27,7 @@ RSpec.describe PreservedFileUris do
                                       externalIdentifier: '222-1',
                                       label: filename1,
                                       filename: filename1,
-                                      type: Cocina::Models::Vocab.file,
+                                      type: Cocina::Models::ObjectType.file,
                                       version: 1,
                                       access: {},
                                       administrative: { publish: true, sdrPreserve: true, shelve: true },
@@ -37,7 +37,7 @@ RSpec.describe PreservedFileUris do
                                       externalIdentifier: '222-2',
                                       label: 'not-this.pdf',
                                       filename: 'not-this.pdf',
-                                      type: Cocina::Models::Vocab.file,
+                                      type: Cocina::Models::ObjectType.file,
                                       version: 1,
                                       access: {},
                                       administrative: { publish: true, sdrPreserve: false, shelve: true },
@@ -47,7 +47,7 @@ RSpec.describe PreservedFileUris do
                                       externalIdentifier: '222-1',
                                       label: filename2,
                                       filename: filename2,
-                                      type: Cocina::Models::Vocab.file,
+                                      type: Cocina::Models::ObjectType.file,
                                       version: 1,
                                       access: {},
                                       administrative: { publish: true, sdrPreserve: true, shelve: true },

@@ -94,7 +94,7 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
                                         administrative: {
                                           hasAdminPolicy: 'druid:xx999xx9999',
                                           hasAgreement: 'druid:bb033gt0615',
-                                          defaultAccess: { access: 'world', download: 'world' }
+                                          accessTemplate: { view: 'world', download: 'world' }
                                         })
       end
 

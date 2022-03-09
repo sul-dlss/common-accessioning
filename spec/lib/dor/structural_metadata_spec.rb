@@ -54,7 +54,7 @@ RSpec.describe Dor::StructuralMetadata do
 
     let(:cocina_object) do
       Cocina::Models::DRO.new(externalIdentifier: druid,
-                              type: Cocina::Models::Vocab.object,
+                              type: Cocina::Models::ObjectType.object,
                               label: 'Something',
                               version: 1,
                               description: {
@@ -69,7 +69,7 @@ RSpec.describe Dor::StructuralMetadata do
     context 'when the parent object access is world/stanford' do
       let(:access) do
         {
-          access: 'world',
+          view: 'world',
           download: 'stanford'
         }
       end
@@ -80,14 +80,14 @@ RSpec.describe Dor::StructuralMetadata do
         file1 = updated_structural.contains.last.structural.contains.last
         expect(file1.label).to eq 'folder2PdSa/story9d.txt'
         # files inherit the object access
-        expect(file1.access).to eq Cocina::Models::FileAccess.new(access: 'world', download: 'stanford')
+        expect(file1.access).to eq Cocina::Models::FileAccess.new(view: 'world', download: 'stanford')
       end
     end
 
     context 'when the parent object access is citation-only/none' do
       let(:access) do
         {
-          access: 'citation-only',
+          view: 'citation-only',
           download: 'none'
         }
       end
@@ -98,7 +98,7 @@ RSpec.describe Dor::StructuralMetadata do
         file1 = updated_structural.contains.last.structural.contains.last
         expect(file1.label).to eq 'folder2PdSa/story9d.txt'
         # citation-only is not inheritable, it should be dark:
-        expect(file1.access).to eq Cocina::Models::FileAccess.new(access: 'dark', download: 'none')
+        expect(file1.access).to eq Cocina::Models::FileAccess.new(view: 'dark', download: 'none')
       end
     end
   end
