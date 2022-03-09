@@ -43,7 +43,7 @@ module Dor
     def resource_type(resource_node)
       val = resource_node['type']&.underscore
       val = 'three_dimensional' if val == '3d'
-      return Cocina::Models::Vocab::Resources.public_send(val) if val && Cocina::Models::Vocab::Resources.respond_to?(val)
+      return Cocina::Models::FileSetType.public_send(val) if val && Cocina::Models::FileSetType.respond_to?(val)
 
       raise "Invalid resource type: '#{val}'"
     end
@@ -65,8 +65,8 @@ module Dor
         use = node.xpath('@role').text.presence
         {
           # External identifier is always generated because it is not stored in Fedora.
-          externalIdentifier: "http://cocina.sul.stanford.edu/file/#{SecureRandom.uuid}",
-          type: Cocina::Models::Vocab.file,
+          externalIdentifier: "https://cocina.sul.stanford.edu/file/#{SecureRandom.uuid}",
+          type: Cocina::Models::ObjectType.file,
           label: node['id'],
           filename: node['id'],
           size: node['size'].to_i,
@@ -88,8 +88,8 @@ module Dor
     end
 
     def file_access
-      file_access = dro_access.to_h.slice(:access, :download, :readLocation, :controlledDigitalLending)
-      file_access[:access] = 'dark' if file_access[:access] == 'citation-only'
+      file_access = dro_access.to_h.slice(:view, :download, :location, :controlledDigitalLending)
+      file_access[:view] = 'dark' if file_access[:view] == 'citation-only'
       file_access
     end
   end

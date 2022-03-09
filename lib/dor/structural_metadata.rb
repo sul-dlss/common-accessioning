@@ -21,7 +21,7 @@ module Dor
 
     # This detects and fixes a potential problem where they've provided files marked publish="yes" when access is "dark"
     def overwrite_dark_access(original)
-      return original unless @cocina_item.access.access == 'dark'
+      return original unless @cocina_item.access.view == 'dark'
 
       filtered_contained = original.contains.map do |file_set|
         filtered_files = file_set.structural.contains.map do |file|

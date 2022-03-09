@@ -43,7 +43,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
 
     let(:cocina_model) do
       Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
-                                     type: Cocina::Models::Vocab.collection,
+                                     type: Cocina::Models::ObjectType.collection,
                                      label: 'my collection',
                                      version: 1,
                                      description: {

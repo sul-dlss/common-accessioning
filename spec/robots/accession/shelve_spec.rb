@@ -22,7 +22,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
     context 'when called on a non-item' do
       let(:object) do
         Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
-                                       type: Cocina::Models::Vocab.collection,
+                                       type: Cocina::Models::ObjectType.collection,
                                        label: 'my collection',
                                        description: {
                                          title: [{ value: 'my collection' }],
@@ -42,14 +42,14 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
     context 'when called on an Item with files' do
       let(:file_set) do
         { externalIdentifier: 'druid:bc123df4568',
-          type: Cocina::Models::Vocab::Resources.file,
+          type: Cocina::Models::FileSetType.file,
           label: 'my repository object',
           version: 1 }
       end
 
       let(:object) do
         Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
-                                type: Cocina::Models::Vocab.object,
+                                type: Cocina::Models::ObjectType.object,
                                 label: 'my repository object',
                                 version: 1,
                                 description: {
@@ -72,7 +72,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
     context 'when called on an Item without files' do
       let(:object) do
         Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
-                                type: Cocina::Models::Vocab.object,
+                                type: Cocina::Models::ObjectType.object,
                                 label: 'my repository object',
                                 version: 1,
                                 description: {

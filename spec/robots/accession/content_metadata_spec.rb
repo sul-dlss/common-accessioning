@@ -59,7 +59,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
         end
 
         context 'with non-dark access' do
-          let(:access) { { access: 'world', download: 'stanford' } }
+          let(:access) { { view: 'world', download: 'stanford' } }
 
           it 'builds a the structual metadata and retains the original publish/shelve/preserve' do
             perform

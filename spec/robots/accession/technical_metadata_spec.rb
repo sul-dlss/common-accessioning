@@ -32,7 +32,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
 
       let(:object) do
         Cocina::Models::DRO.new(externalIdentifier: 'druid:dd116zh0343',
-                                type: Cocina::Models::Vocab.object,
+                                type: Cocina::Models::ObjectType.object,
                                 label: 'my repository object',
                                 version: 1,
                                 description: {
@@ -44,7 +44,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                 structural: {
                                   contains: [{
                                     externalIdentifier: '222',
-                                    type: Cocina::Models::Vocab::Resources.file,
+                                    type: Cocina::Models::FileSetType.file,
                                     label: 'my repository object',
                                     version: 1,
                                     structural: {
@@ -53,7 +53,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                           externalIdentifier: '222-1',
                                           label: 'folder1PuSu/story1u.txt',
                                           filename: 'folder1PuSu/story1u.txt',
-                                          type: Cocina::Models::Vocab.file,
+                                          type: Cocina::Models::ObjectType.file,
                                           version: 1,
                                           access: {},
                                           administrative: { publish: true, sdrPreserve: true, shelve: true },
@@ -109,7 +109,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
       context 'when the DRO has no files' do
         let(:object) do
           Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
-                                  type: Cocina::Models::Vocab.object,
+                                  type: Cocina::Models::ObjectType.object,
                                   label: 'my repository object',
                                   description: {
                                     title: [{ value: 'my repository object' }],

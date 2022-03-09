@@ -25,7 +25,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
                                     administrative: {
                                       hasAdminPolicy: 'druid:xx999xx9999',
                                       hasAgreement: 'druid:bb033gt0615',
-                                      defaultAccess: { access: 'world', download: 'world' }
+                                      accessTemplate: { view: 'world', download: 'world' }
                                     })
   end
 
@@ -64,7 +64,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
                                           disseminationWorkflow: 'wasDisseminationWF',
                                           hasAdminPolicy: 'druid:xx999xx9999',
                                           hasAgreement: 'druid:bb033gt0615',
-                                          defaultAccess: { access: 'world', download: 'world' }
+                                          accessTemplate: { view: 'world', download: 'world' }
                                         })
       end
 
