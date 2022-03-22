@@ -54,7 +54,8 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
                                      administrative: {
                                        hasAdminPolicy: 'druid:xx999xx9999',
                                        releaseTags: release_tags
-                                     })
+                                     },
+                                     identification: {})
     end
 
     context 'when the collection is released to self only' do

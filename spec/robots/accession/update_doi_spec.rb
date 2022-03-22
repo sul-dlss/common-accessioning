@@ -33,7 +33,8 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
                                          purl: 'https://purl.stanford.edu/bc123df4567'
                                        },
                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                       access: {})
+                                       access: {},
+                                       identification: {})
       end
 
       it 'does not call the API' do
@@ -55,7 +56,8 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
                                   },
                                   administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                   access: {},
-                                  identification: { doi: '10.25740/bc123df4567' })
+                                  identification: { doi: '10.25740/bc123df4567' },
+                                  structural: {})
         end
 
         it 'calls the api' do
@@ -75,7 +77,9 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
                                     purl: 'https://purl.stanford.edu/bc123df4567'
                                   },
                                   administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                  access: {})
+                                  access: {},
+                                  structural: {},
+                                  identification: {})
         end
 
         it 'calls the api' do

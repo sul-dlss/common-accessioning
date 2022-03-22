@@ -39,7 +39,9 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                   purl: 'https://purl.stanford.edu/bc123df4567'
                                 },
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                access: {})
+                                access: {},
+                                identification: {},
+                                structural: {})
       end
 
       it 'creates jp2' do
@@ -61,7 +63,8 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                          purl: 'https://purl.stanford.edu/bc123df4567'
                                        },
                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                       access: {})
+                                       access: {},
+                                       identification: {})
       end
 
       it 'does not create jp2' do

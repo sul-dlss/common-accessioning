@@ -33,7 +33,8 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
                                          purl: 'https://purl.stanford.edu/bc123df4567'
                                        },
                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                       access: {})
+                                       access: {},
+                                       identification: {})
       end
 
       it 'publishes metadata' do
@@ -53,7 +54,9 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
                                   purl: 'https://purl.stanford.edu/bc123df4567'
                                 },
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                access: {})
+                                access: {},
+                                structural: {},
+                                identification: {})
       end
 
       it 'publishes metadata' do

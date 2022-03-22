@@ -15,7 +15,9 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
                               purl: 'https://purl.stanford.edu/bc123df4567'
                             },
                             access: {},
-                            administrative: { hasAdminPolicy: apo_id })
+                            administrative: { hasAdminPolicy: apo_id },
+                            identification: {},
+                            structural: {})
   end
   let(:apo) do
     Cocina::Models::AdminPolicy.new(externalIdentifier: 'druid:bc123df4567',

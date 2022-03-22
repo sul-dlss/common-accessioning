@@ -30,6 +30,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                                        },
                                        access: {},
                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
+                                       identification: {},
                                        version: 1)
       end
 
@@ -44,7 +45,8 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
         { externalIdentifier: 'druid:bc123df4568',
           type: Cocina::Models::FileSetType.file,
           label: 'my repository object',
-          version: 1 }
+          version: 1,
+          structural: {} }
       end
 
       let(:object) do
@@ -60,7 +62,8 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 structural: {
                                   contains: [file_set]
-                                })
+                                },
+                                identification: {})
       end
 
       it 'shelves the item' do
@@ -79,11 +82,10 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                                   title: [{ value: 'my repository object' }],
                                   purl: 'https://purl.stanford.edu/bc123df4567'
                                 },
-                                structural: {
-                                  contains: []
-                                },
+                                structural: {},
                                 access: {},
-                                administrative: { hasAdminPolicy: 'druid:xx999xx9999' })
+                                administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
+                                identification: {})
       end
 
       it 'calls shelve (for the deaccession use case)' do

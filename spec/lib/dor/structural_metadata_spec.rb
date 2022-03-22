@@ -63,7 +63,8 @@ RSpec.describe Dor::StructuralMetadata do
                               },
                               identification: {},
                               access: access,
-                              administrative: { hasAdminPolicy: apo_druid })
+                              administrative: { hasAdminPolicy: apo_druid },
+                              structural: {})
     end
 
     context 'when the parent object access is world/stanford' do
