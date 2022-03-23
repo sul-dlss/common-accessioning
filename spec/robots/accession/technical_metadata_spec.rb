@@ -62,7 +62,8 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                       ]
                                     }
                                   }]
-                                })
+                                },
+                                identification: {})
       end
 
       before do
@@ -117,7 +118,9 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                   },
                                   version: 1,
                                   administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                  access: {})
+                                  access: {},
+                                  identification: {},
+                                  structural: {})
         end
 
         it 'does not run technical metadata' do
@@ -144,7 +147,9 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                          purl: 'https://purl.stanford.edu/bc123df4567'
                                        },
                                        access: {},
-                                       version: 1)
+                                       version: 1,
+                                       administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
+                                       identification: {})
       end
 
       it 'skips' do

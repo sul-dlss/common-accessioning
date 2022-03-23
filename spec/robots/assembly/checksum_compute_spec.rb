@@ -25,7 +25,9 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
                               },
                               version: 1,
                               administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                              access: {})
+                              access: {},
+                              identification: {},
+                              structural: {})
     end
 
     before do
@@ -57,7 +59,9 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
                                        purl: 'https://purl.stanford.edu/bc123df4567'
                                      },
                                      version: 1,
-                                     access: {})
+                                     access: {},
+                                     administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
+                                     identification: {})
     end
 
     it 'does not compute checksums' do

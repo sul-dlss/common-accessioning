@@ -29,7 +29,9 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
                                 },
                                 access: access,
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                version: 1)
+                                version: 1,
+                                structural: {},
+                                identification: {})
       end
       let(:access) { {} }
 
@@ -83,7 +85,9 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
                                          title: [{ value: 'my collection' }],
                                          purl: 'https://purl.stanford.edu/bc123df4567'
                                        },
-                                       access: {})
+                                       access: {},
+                                       administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
+                                       identification: {})
       end
 
       it "doesn't make a datastream" do

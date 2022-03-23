@@ -56,7 +56,8 @@ RSpec.describe PreservedFileUris do
                                   ]
                                 }
                               }]
-                            })
+                            },
+                            identification: {})
   end
 
   before do
