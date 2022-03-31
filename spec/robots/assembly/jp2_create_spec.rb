@@ -40,7 +40,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                 },
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 access: {},
-                                identification: {},
+                                identification: { sourceId: 'sul:1234' },
                                 structural: {})
       end
 
@@ -64,7 +64,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                        },
                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                        access: {},
-                                       identification: {})
+                                       identification: { sourceId: 'sul:1234' })
       end
 
       it 'does not create jp2' do

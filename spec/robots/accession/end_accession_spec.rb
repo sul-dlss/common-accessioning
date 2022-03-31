@@ -16,7 +16,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
                             },
                             access: {},
                             administrative: { hasAdminPolicy: apo_id },
-                            identification: {},
+                            identification: { sourceId: 'sul:1234' },
                             structural: {})
   end
   let(:apo) do

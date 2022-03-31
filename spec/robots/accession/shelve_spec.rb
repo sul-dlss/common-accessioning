@@ -30,7 +30,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                                        },
                                        access: {},
                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                       identification: {},
+                                       identification: { sourceId: 'sul:1234' },
                                        version: 1)
       end
 
@@ -63,7 +63,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                                 structural: {
                                   contains: [file_set]
                                 },
-                                identification: {})
+                                identification: { sourceId: 'sul:1234' })
       end
 
       it 'shelves the item' do
@@ -85,7 +85,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
                                 structural: {},
                                 access: {},
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                identification: {})
+                                identification: { sourceId: 'sul:1234' })
       end
 
       it 'calls shelve (for the deaccession use case)' do

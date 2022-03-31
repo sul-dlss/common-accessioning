@@ -57,7 +57,7 @@ RSpec.describe PreservedFileUris do
                                 }
                               }]
                             },
-                            identification: {})
+                            identification: { sourceId: 'sul:1234' })
   end
 
   before do

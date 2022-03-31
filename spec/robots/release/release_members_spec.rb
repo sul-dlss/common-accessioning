@@ -55,7 +55,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
                                        hasAdminPolicy: 'druid:xx999xx9999',
                                        releaseTags: release_tags
                                      },
-                                     identification: {})
+                                     identification: { sourceId: 'sul:1234' })
     end
 
     context 'when the collection is released to self only' do

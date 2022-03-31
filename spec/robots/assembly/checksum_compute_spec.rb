@@ -26,7 +26,7 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
                               version: 1,
                               administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                               access: {},
-                              identification: {},
+                              identification: { sourceId: 'sul:1234' },
                               structural: {})
     end
 
@@ -61,7 +61,7 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
                                      version: 1,
                                      access: {},
                                      administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                     identification: {})
+                                     identification: { sourceId: 'sul:1234' })
     end
 
     it 'does not compute checksums' do
