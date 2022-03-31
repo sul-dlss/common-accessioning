@@ -33,7 +33,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
                               access: {},
                               administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                               version: 1,
-                              identification: {},
+                              identification: { sourceId: 'sul:1234' },
                               structural: {})
     end
 
@@ -58,7 +58,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
                                      access: {},
                                      version: 1,
                                      administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                     identification: {})
+                                     identification: { sourceId: 'sul:1234' })
     end
 
     it 'initiates accessioning, but does not initialize the workspace' do

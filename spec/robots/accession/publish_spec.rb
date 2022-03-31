@@ -34,7 +34,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
                                        },
                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                        access: {},
-                                       identification: {})
+                                       identification: { sourceId: 'sul:1234' })
       end
 
       it 'publishes metadata' do
@@ -56,7 +56,7 @@ RSpec.describe Robots::DorRepo::Accession::Publish do
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 access: {},
                                 structural: {},
-                                identification: {})
+                                identification: { sourceId: 'sul:1234' })
       end
 
       it 'publishes metadata' do

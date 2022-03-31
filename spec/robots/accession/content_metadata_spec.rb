@@ -31,7 +31,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
                                 administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                 version: 1,
                                 structural: {},
-                                identification: {})
+                                identification: { sourceId: 'sul:1234' })
       end
       let(:access) { {} }
 
@@ -87,7 +87,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
                                        },
                                        access: {},
                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                       identification: {})
+                                       identification: { sourceId: 'sul:1234' })
       end
 
       it "doesn't make a datastream" do

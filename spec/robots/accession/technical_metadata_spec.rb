@@ -63,7 +63,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                     }
                                   }]
                                 },
-                                identification: {})
+                                identification: { sourceId: 'sul:1234' })
       end
 
       before do
@@ -119,7 +119,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                   version: 1,
                                   administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                   access: {},
-                                  identification: {},
+                                  identification: { sourceId: 'sul:1234' },
                                   structural: {})
         end
 
@@ -149,7 +149,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                        access: {},
                                        version: 1,
                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                       identification: {})
+                                       identification: { sourceId: 'sul:1234' })
       end
 
       it 'skips' do

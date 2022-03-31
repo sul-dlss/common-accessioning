@@ -34,7 +34,7 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
                                        },
                                        administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                        access: {},
-                                       identification: {})
+                                       identification: { sourceId: 'sul:1234' })
       end
 
       it 'does not call the API' do
@@ -56,7 +56,10 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
                                   },
                                   administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                   access: {},
-                                  identification: { doi: '10.25740/bc123df4567' },
+                                  identification: {
+                                    doi: '10.25740/bc123df4567',
+                                    sourceId: 'sul:1234'
+                                  },
                                   structural: {})
         end
 
@@ -79,7 +82,7 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
                                   administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                                   access: {},
                                   structural: {},
-                                  identification: {})
+                                  identification: { sourceId: 'sul:1234' })
         end
 
         it 'calls the api' do

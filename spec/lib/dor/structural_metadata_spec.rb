@@ -61,7 +61,7 @@ RSpec.describe Dor::StructuralMetadata do
                                 title: [{ value: 'Something' }],
                                 purl: "https://purl.stanford.edu/#{druid.delete_prefix('druid:')}"
                               },
-                              identification: {},
+                              identification: { sourceId: 'sul:1234' },
                               access: access,
                               administrative: { hasAdminPolicy: apo_druid },
                               structural: {})
