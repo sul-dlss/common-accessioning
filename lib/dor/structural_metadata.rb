@@ -64,7 +64,6 @@ module Dor
     def create_member_order
       reading_direction = ng_xml.xpath('//bookData/@readingOrder').first&.value
       viewing_direction = ViewingDirectionHelper.viewing_direction(reading_direction)
-      viewing_direction ||= 'left-to-right'
 
       [{ viewingDirection: viewing_direction }]
     end

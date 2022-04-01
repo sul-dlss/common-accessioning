@@ -102,5 +102,52 @@ RSpec.describe Dor::StructuralMetadata do
         expect(file1.access).to eq Cocina::Models::FileAccess.new(view: 'dark', download: 'none')
       end
     end
+
+    context 'when reading direction is missing' do
+      let(:content_xml) do
+        <<~XML
+          <contentMetadata type="book" objectId="#{druid}">
+            <resource sequence="1" type="file" id="folder1PuSu">
+              <label>Folder 1</label>
+              <file mimetype="text/plain" shelve="yes" publish="yes" size="7888" preserve="no" id="folder1PuSu/story1u.txt">
+                <checksum type="md5">e2837b9f02e0b0b76f526eeb81c7aa7b</checksum>
+                <checksum type="sha1">61dfac472b7904e1413e0cbf4de432bda2a97627</checksum>
+              </file>
+              <file mimetype="text/plain" shelve="yes" publish="yes" size="6307" preserve="yes" id="folder1PuSu/story4d.txt">
+                <checksum type="md5">34f3f646523b0a8504f216483a57bce4</checksum>
+                <checksum type="sha1">d498b513add5bb138ed4f6205453a063a2434dc4</checksum>
+              </file>
+            </resource>
+            <resource sequence="2" type="file" id="folder2PdSa">
+              <file mimetype="text/plain" shelve="no" publish="yes" size="2534" preserve="yes" id="folder2PdSa/story6u.txt">
+                <checksum type="md5">1f15cc786bfe832b2fa1e6f047c500ba</checksum>
+                <checksum type="sha1">bf3af01de2afa15719d8c42a4141e3b43d06fef6</checksum>
+              </file>
+              <file mimetype="text/plain" shelve="no" publish="yes" size="17074" preserve="yes" id="folder2PdSa/story7r.txt">
+                <checksum type="md5">205271287477c2309512eb664eff9130</checksum>
+                <checksum type="sha1">b23aa592ab673030ace6178e29fad3cf6a45bd32</checksum>
+              </file>
+            </resource>
+          </contentMetadata>
+        XML
+      end
+      let(:access) do
+        {
+          view: 'world',
+          download: 'stanford'
+        }
+      end
+
+      before do
+        allow(Honeybadger).to receive(:notify)
+      end
+
+      it 'notifies Honeybadger, does not raise an error, and uses left-to-right' do
+        expect(updated_structural.hasMemberOrders.first.viewingDirection).to eq 'left-to-right'
+        exp_hb_warning = "[WARNING] reading direction in contentMetadata.xml is ''; defaulting to ltr"
+        expect(Honeybadger).to have_received(:notify).with(exp_hb_warning)
+        expect(updated_structural.contains.size).to eq 2
+      end
+    end
   end
 end

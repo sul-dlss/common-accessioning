@@ -20,7 +20,9 @@ module Dor
       when 'rtl'
         'right-to-left'
       else
-        raise "can't find reading direction in contentMetadata.xml"
+        message = "reading direction in contentMetadata.xml is '#{reading_direction}'; defaulting to ltr"
+        Honeybadger.notify("[WARNING] #{message}")
+        'left-to-right'
       end
     end
   end
