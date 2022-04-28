@@ -56,7 +56,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                                           type: Cocina::Models::ObjectType.file,
                                           version: 1,
                                           access: {},
-                                          administrative: { publish: true, sdrPreserve: true, shelve: true },
+                                          administrative: { publish: true, sdrPreserve: true, shelve: false },
                                           hasMessageDigests: []
                                         }
                                       ]

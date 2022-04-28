@@ -13,7 +13,7 @@ RSpec.describe PreservedFileUris do
                               title: [{ value: 'my repository object' }],
                               purl: "https://purl.stanford.edu/#{druid.delete_prefix('druid:')}"
                             },
-                            access: {},
+                            access: { view: 'world', download: 'world' },
                             administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
                             structural: {
                               contains: [{
