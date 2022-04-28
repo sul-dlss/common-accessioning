@@ -5,59 +5,51 @@ RSpec.describe PreservedFileUris do
   let(:druid) { 'druid:dd116zh0343' }
   let(:root) { File.absolute_path(Settings.sdr.local_workspace_root) }
   let(:object) do
-    Cocina::Models::DRO.new(externalIdentifier: druid,
-                            type: Cocina::Models::ObjectType.object,
-                            label: 'my repository object',
-                            version: 1,
-                            description: {
-                              title: [{ value: 'my repository object' }],
-                              purl: "https://purl.stanford.edu/#{druid.delete_prefix('druid:')}"
-                            },
-                            access: { view: 'world', download: 'world' },
-                            administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                            structural: {
-                              contains: [{
-                                externalIdentifier: '222',
-                                type: Cocina::Models::FileSetType.file,
-                                label: 'my repository object',
-                                version: 1,
-                                structural: {
-                                  contains: [
-                                    {
-                                      externalIdentifier: '222-1',
-                                      label: filename1,
-                                      filename: filename1,
-                                      type: Cocina::Models::ObjectType.file,
-                                      version: 1,
-                                      access: {},
-                                      administrative: { publish: true, sdrPreserve: true, shelve: true },
-                                      hasMessageDigests: []
-                                    },
-                                    {
-                                      externalIdentifier: '222-2',
-                                      label: 'not-this.pdf',
-                                      filename: 'not-this.pdf',
-                                      type: Cocina::Models::ObjectType.file,
-                                      version: 1,
-                                      access: {},
-                                      administrative: { publish: true, sdrPreserve: false, shelve: true },
-                                      hasMessageDigests: []
-                                    },
-                                    {
-                                      externalIdentifier: '222-1',
-                                      label: filename2,
-                                      filename: filename2,
-                                      type: Cocina::Models::ObjectType.file,
-                                      version: 1,
-                                      access: {},
-                                      administrative: { publish: true, sdrPreserve: true, shelve: true },
-                                      hasMessageDigests: []
-                                    }
-                                  ]
-                                }
-                              }]
-                            },
-                            identification: { sourceId: 'sul:1234' })
+    build(:dro, id: druid).new(
+      access: { view: 'world', download: 'world' },
+      structural: {
+        contains: [{
+          externalIdentifier: '222',
+          type: Cocina::Models::FileSetType.file,
+          label: 'my repository object',
+          version: 1,
+          structural: {
+            contains: [
+              {
+                externalIdentifier: '222-1',
+                label: filename1,
+                filename: filename1,
+                type: Cocina::Models::ObjectType.file,
+                version: 1,
+                access: {},
+                administrative: { publish: true, sdrPreserve: true, shelve: true },
+                hasMessageDigests: []
+              },
+              {
+                externalIdentifier: '222-2',
+                label: 'not-this.pdf',
+                filename: 'not-this.pdf',
+                type: Cocina::Models::ObjectType.file,
+                version: 1,
+                access: {},
+                administrative: { publish: true, sdrPreserve: false, shelve: true },
+                hasMessageDigests: []
+              },
+              {
+                externalIdentifier: '222-1',
+                label: filename2,
+                filename: filename2,
+                type: Cocina::Models::ObjectType.file,
+                version: 1,
+                access: {},
+                administrative: { publish: true, sdrPreserve: true, shelve: true },
+                hasMessageDigests: []
+              }
+            ]
+          }
+        }]
+      }
+    )
   end
 
   before do

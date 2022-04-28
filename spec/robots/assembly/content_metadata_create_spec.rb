@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
   subject(:result) { robot.perform(druid) }
 
-  let(:druid) { 'aa111bb2222' }
+  let(:druid) { 'bb111bb2222' }
   let(:robot) { described_class.new }
   let(:type) { 'item' }
 

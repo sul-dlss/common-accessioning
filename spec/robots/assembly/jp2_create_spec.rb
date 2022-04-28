@@ -14,10 +14,10 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
   end
 
   describe '#perform' do
-    subject(:perform) { robot.perform(druid) }
+    subject(:perform) { robot.perform(bare_druid) }
 
-    let(:assembly_item) { Dor::Assembly::Item.new(druid: druid) }
-    let(:druid) { 'aa222cc3333' }
+    let(:assembly_item) { Dor::Assembly::Item.new(druid: bare_druid) }
+    let(:bare_druid) { 'bb222cc3333' }
 
     let(:object_client) do
       instance_double(Dor::Services::Client::Object, find: object)
@@ -29,20 +29,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     end
 
     context 'with an item' do
-      let(:object) do
-        Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
-                                type: Cocina::Models::DRO::TYPES.first,
-                                label: 'my dro',
-                                version: 1,
-                                description: {
-                                  title: [{ value: 'my dro' }],
-                                  purl: 'https://purl.stanford.edu/bc123df4567'
-                                },
-                                administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                access: {},
-                                identification: { sourceId: 'sul:1234' },
-                                structural: {})
-      end
+      let(:object) { build(:dro, id: "druid:#{bare_druid}") }
 
       it 'creates jp2' do
         expect(assembly_item).to receive(:item?).and_call_original
@@ -53,19 +40,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     end
 
     context 'with a collection' do
-      let(:object) do
-        Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
-                                       type: Cocina::Models::Collection::TYPES.first,
-                                       label: 'my collection',
-                                       version: 1,
-                                       description: {
-                                         title: [{ value: 'my collection' }],
-                                         purl: 'https://purl.stanford.edu/bc123df4567'
-                                       },
-                                       administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                       access: {},
-                                       identification: { sourceId: 'sul:1234' })
-      end
+      let(:object) { build(:collection, id: "druid:#{bare_druid}") }
 
       it 'does not create jp2' do
         expect(assembly_item).to receive(:item?)
@@ -84,11 +59,11 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     end
 
     let(:item) do
-      Dor::Assembly::Item.new(druid: druid)
+      Dor::Assembly::Item.new(druid: bare_druid)
     end
 
     context 'when resource type is not specified' do
-      let(:druid) { 'aa111bb2222' }
+      let(:bare_druid) { 'bb111bb2222' }
       let(:jp2s) { tifs.map { |t| t.sub(/\.tif$/, '.jp2') } }
       let(:tifs) { item.file_nodes.map { |fn| item.path_finder.path_to_content_file fn['id'] } }
 
@@ -115,7 +90,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     end
 
     context 'with mixed resource types' do
-      let(:druid) { 'ff222cc3333' }
+      let(:bare_druid) { 'ff222cc3333' }
 
       before do
         allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
@@ -136,7 +111,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     end
 
     context 'with resource type image or page in new location' do
-      let(:druid) { 'gg111bb2222' }
+      let(:bare_druid) { 'gg111bb2222' }
 
       before do
         allow(item).to receive(:cm_file_name).and_return(item.path_finder.path_to_metadata_file(Settings.assembly.cm_file_name))
@@ -185,7 +160,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     end
 
     context 'when some files exist' do
-      let(:druid) { 'ff222cc3333' }
+      let(:bare_druid) { 'ff222cc3333' }
       let(:copy_jp2) { File.join TMP_ROOT_DIR, 'ff/222/cc/3333', 'image115.jp2' }
 
       before do
@@ -265,7 +240,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     end
 
     context 'when there is a DPG style jp2 already there' do
-      let(:druid) { 'hh222cc3333' }
+      let(:bare_druid) { 'hh222cc3333' }
 
       # This file does not need to create, unless overwrite is on.
       let(:source1) do
@@ -357,7 +332,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
   end
 
   describe '#add_jp2_file_node' do
-    let(:druid) { 'aa111bb2222' }
+    let(:bare_druid) { 'bb111bb2222' }
     let(:exp_xml) do
       <<-XML.gsub(/^ {8}/, '')
         <?xml version="1.0"?>

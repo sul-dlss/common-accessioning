@@ -49,23 +49,8 @@ RSpec.describe Dor::StructuralMetadata do
       XML
     end
 
-    let(:apo_druid) { 'druid:pp000pp0000' }
     let(:druid) { 'druid:bc123dg9393' }
-
-    let(:cocina_object) do
-      Cocina::Models::DRO.new(externalIdentifier: druid,
-                              type: Cocina::Models::ObjectType.object,
-                              label: 'Something',
-                              version: 1,
-                              description: {
-                                title: [{ value: 'Something' }],
-                                purl: "https://purl.stanford.edu/#{druid.delete_prefix('druid:')}"
-                              },
-                              identification: { sourceId: 'sul:1234' },
-                              access: access,
-                              administrative: { hasAdminPolicy: apo_druid },
-                              structural: {})
-    end
+    let(:cocina_object) { build(:dro, id: druid).new(access: access) }
 
     context 'when the parent object access is world/stanford' do
       let(:access) do

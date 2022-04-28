@@ -9,18 +9,9 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
     subject(:perform) { robot.perform(druid) }
 
     let(:druid) { 'druid:dd116zh0343' }
-
-    let(:object_client) do
-      instance_double(Dor::Services::Client::Object, find: object)
-    end
-
-    let(:workflow_client) do
-      instance_double(Dor::Workflow::Client, process: process)
-    end
-
-    let(:process) do
-      instance_double(Dor::Workflow::Response::Process, lane_id: 'low')
-    end
+    let(:object_client) { instance_double(Dor::Services::Client::Object, find: object) }
+    let(:workflow_client) { instance_double(Dor::Workflow::Client, process: process) }
+    let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'low') }
 
     before do
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
@@ -29,41 +20,31 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
 
     context 'when a DRO with files' do
       let(:workspace) { File.absolute_path('spec/fixtures/workspace') }
-
       let(:object) do
-        Cocina::Models::DRO.new(externalIdentifier: 'druid:dd116zh0343',
-                                type: Cocina::Models::ObjectType.object,
-                                label: 'my repository object',
-                                version: 1,
-                                description: {
-                                  title: [{ value: 'my repository object' }],
-                                  purl: 'https://purl.stanford.edu/dd116zh0343'
-                                },
-                                access: {},
-                                administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                structural: {
-                                  contains: [{
-                                    externalIdentifier: '222',
-                                    type: Cocina::Models::FileSetType.file,
-                                    label: 'my repository object',
-                                    version: 1,
-                                    structural: {
-                                      contains: [
-                                        {
-                                          externalIdentifier: '222-1',
-                                          label: 'folder1PuSu/story1u.txt',
-                                          filename: 'folder1PuSu/story1u.txt',
-                                          type: Cocina::Models::ObjectType.file,
-                                          version: 1,
-                                          access: {},
-                                          administrative: { publish: true, sdrPreserve: true, shelve: false },
-                                          hasMessageDigests: []
-                                        }
-                                      ]
-                                    }
-                                  }]
-                                },
-                                identification: { sourceId: 'sul:1234' })
+        build(:dro, id: druid).new(
+          structural: {
+            contains: [{
+              externalIdentifier: '222',
+              type: Cocina::Models::FileSetType.file,
+              label: 'my repository object',
+              version: 1,
+              structural: {
+                contains: [
+                  {
+                    externalIdentifier: '222-1',
+                    label: 'folder1PuSu/story1u.txt',
+                    filename: 'folder1PuSu/story1u.txt',
+                    type: Cocina::Models::ObjectType.file,
+                    version: 1,
+                    access: {},
+                    administrative: { publish: true, sdrPreserve: true, shelve: false },
+                    hasMessageDigests: []
+                  }
+                ]
+              }
+            }]
+          }
+        )
       end
 
       before do
@@ -108,20 +89,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
       end
 
       context 'when the DRO has no files' do
-        let(:object) do
-          Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
-                                  type: Cocina::Models::ObjectType.object,
-                                  label: 'my repository object',
-                                  description: {
-                                    title: [{ value: 'my repository object' }],
-                                    purl: 'https://purl.stanford.edu/bc123df4567'
-                                  },
-                                  version: 1,
-                                  administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                  access: {},
-                                  identification: { sourceId: 'sul:1234' },
-                                  structural: {})
-        end
+        let(:object) { build(:dro, id: druid) }
 
         it 'does not run technical metadata' do
           expect(perform.status).to eq('skipped')
@@ -138,21 +106,9 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
     end
 
     context 'when a collection' do
-      let(:object) do
-        Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
-                                       type: Cocina::Models::Collection::TYPES.first,
-                                       label: 'my collection',
-                                       description: {
-                                         title: [{ value: 'my collection' }],
-                                         purl: 'https://purl.stanford.edu/bc123df4567'
-                                       },
-                                       access: {},
-                                       version: 1,
-                                       administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                       identification: { sourceId: 'sul:1234' })
-      end
+      let(:object) { build(:collection, id: druid) }
 
-      it 'skips' do
+      it 'does not run technical metadata' do
         expect(perform.status).to eq('skipped')
       end
     end

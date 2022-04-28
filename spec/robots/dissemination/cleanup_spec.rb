@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::Dissemination::Cleanup do
   subject(:robot) { described_class.new }
 
-  let(:druid) { 'druid:aa222cc3333' }
+  let(:druid) { 'druid:bb222cc3333' }
 
   describe '#perform' do
     let(:object_client) { instance_double(Dor::Services::Client::Object, workspace: workspace_client) }

@@ -21,6 +21,7 @@ require 'webmock/rspec'
 WebMock.disable_net_connect!
 require 'equivalent-xml/rspec_matchers'
 require 'support/foxml_helper'
+require 'cocina/rspec'
 
 TMP_ROOT_DIR = 'tmp/test_input'
 

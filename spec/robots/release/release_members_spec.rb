@@ -6,7 +6,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
   subject(:perform) { robot.perform(druid) }
 
   let(:robot) { described_class.new }
-  let(:druid) { 'druid:aa222cc3333' }
+  let(:druid) { 'druid:bb222cc3333' }
   let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: cocina_model, members: members) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
   let(:members) { [] }
@@ -42,20 +42,12 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     let(:release_tags) { [] }
 
     let(:cocina_model) do
-      Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
-                                     type: Cocina::Models::ObjectType.collection,
-                                     label: 'my collection',
-                                     version: 1,
-                                     description: {
-                                       title: [{ value: 'my collection' }],
-                                       purl: 'https://purl.stanford.edu/bc123df4567'
-                                     },
-                                     access: {},
-                                     administrative: {
-                                       hasAdminPolicy: 'druid:xx999xx9999',
-                                       releaseTags: release_tags
-                                     },
-                                     identification: { sourceId: 'sul:1234' })
+      build(:collection, id: 'druid:bc123df4567').new(
+        administrative: {
+          hasAdminPolicy: 'druid:xx999xx9999',
+          releaseTags: release_tags
+        }
+      )
     end
 
     context 'when the collection is released to self only' do
