@@ -102,8 +102,8 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
         # Only tifs should exist.
         expect(item.file_nodes.size).to eq(3)
-        expect(tifs.all?  { |t| File.file? t }).to eq(true)
-        expect(jp2s.none? { |j| File.file? j }).to eq(true)
+        expect(tifs.all?  { |t| File.file? t }).to be(true)
+        expect(jp2s.none? { |j| File.file? j }).to be(true)
 
         # We now have jp2s since all resource types = image
         robot.send(:create_jp2s, item)
@@ -220,7 +220,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
           expect(count_file_types(bef_files, '.tif')).to eq(5)
           expect(count_file_types(bef_files, '.jp2')).to eq(1)
 
-          expect(File.exist?(copy_jp2)).to eq(true)
+          expect(File.exist?(copy_jp2)).to be(true)
 
           robot.send(:create_jp2s, item)
 
@@ -252,7 +252,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
           expect(count_file_types(bef_files, '.tif')).to eq(5)
           expect(count_file_types(bef_files, '.jp2')).to eq(1)
 
-          expect(File.exist?(copy_jp2)).to eq(true)
+          expect(File.exist?(copy_jp2)).to be(true)
 
           robot.send(:create_jp2s, item)
 

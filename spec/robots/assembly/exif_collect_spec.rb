@@ -328,7 +328,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
         expect(aft_res_nodes.size).to eq(5)
         expect(aft_res_nodes[0].attributes['type'].value).to eq('file') # first resource type should be set to file (which is the default if it contains no images)
         expect(aft_res_nodes[1].attributes['type'].value).to eq('file') # second resource type should be set to file (which is the default if it contains no images)
-        expect(aft_res_nodes[2].attributes['type'].nil?).to eq(true) # third resource type should be nil still
+        expect(aft_res_nodes[2].attributes['type'].nil?).to be(true) # third resource type should be nil still
         expect(aft_res_nodes[3].attributes['type'].value).to eq('page') # fourth resource type should be set to page (which it started out as)
         expect(aft_res_nodes[4].attributes['type'].value).to eq('image') # fifth resource type should be set to image (which it started out as)
 
