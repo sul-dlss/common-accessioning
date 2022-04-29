@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
   let(:robot) { described_class.new }
-  let(:druid) { 'aa222cc3333' }
+  let(:bare_druid) { 'bb222cc3333' }
+  let(:druid) { "druid:#{bare_druid}" }
   let(:object_client) do
     instance_double(Dor::Services::Client::Object, find: object)
   end
@@ -14,21 +15,8 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
   end
 
   context 'when the item is a DRO' do
-    let(:assembly_item) { Dor::Assembly::Item.new(druid: druid) }
-    let(:object) do
-      Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
-                              type: Cocina::Models::DRO::TYPES.first,
-                              label: 'my dro',
-                              description: {
-                                title: [{ value: 'my dro' }],
-                                purl: 'https://purl.stanford.edu/bc123df4567'
-                              },
-                              version: 1,
-                              administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                              access: {},
-                              identification: { sourceId: 'sul:1234' },
-                              structural: {})
-    end
+    let(:assembly_item) { Dor::Assembly::Item.new(druid: bare_druid) }
+    let(:object) { build(:dro, id: druid) }
 
     before do
       # Need to load_content_metadata before we can set up expectations on the file_nodes
@@ -45,28 +33,16 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
       expect(assembly_item.file_nodes[1]).not_to receive(:add_child)
       expect(assembly_item.file_nodes[2]).to receive(:add_child).twice
 
-      robot.perform(druid)
+      robot.perform(bare_druid)
     end
   end
 
   context 'when not a DRO' do
-    let(:object) do
-      Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
-                                     type: Cocina::Models::Collection::TYPES.first,
-                                     label: 'my collection',
-                                     description: {
-                                       title: [{ value: 'my collection' }],
-                                       purl: 'https://purl.stanford.edu/bc123df4567'
-                                     },
-                                     version: 1,
-                                     access: {},
-                                     administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                     identification: { sourceId: 'sul:1234' })
-    end
+    let(:object) { build(:collection, id: druid) }
 
     it 'does not compute checksums' do
       expect(robot).not_to receive(:compute_checksums)
-      robot.perform(druid)
+      robot.perform(bare_druid)
     end
   end
 end

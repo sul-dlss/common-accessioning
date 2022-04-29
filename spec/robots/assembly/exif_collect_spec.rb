@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
   let(:robot) { described_class.new }
-  let(:druid) { 'aa222cc3333' }
+  let(:druid) { 'bb222cc3333' }
   let(:type) { 'item' }
   let(:item) do
     instance_double(Dor::Assembly::Item,
@@ -73,14 +73,14 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
     context 'when there are no existing mimetypes and filesizes in file nodes' do
       let(:xml) do
         <<~XML
-          <contentMetadata objectId="aa111bb2222">
-              <resource type="image" sequence="1" id="aa111bb2222_1">
+          <contentMetadata objectId="bb111bb2222">
+              <resource type="image" sequence="1" id="bb111bb2222_1">
                   <label>Image 1</label>
                   <file preserve="yes" publish="no" shelve="no" id="image111.tif">
                       <checksum type="md5">42616f9e6c1b7e7b7a71b4fa0c5ef794</checksum>
                   </file>
               </resource>
-              <resource type="image" sequence="2" id="aa111bb2222_2">
+              <resource type="image" sequence="2" id="bb111bb2222_2">
                   <label>Image 2</label>
                   <file preserve="yes" publish="no" shelve="no" id="image112.tif">
                       <checksum type="md5">ac440802bd590ce0899dafecc5a5ab1b</checksum>
@@ -89,7 +89,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
                       <checksum type="bar">BAR</checksum>
                   </file>
               </resource>
-              <resource type="image" sequence="3" id="aa111bb2222_3">
+              <resource type="image" sequence="3" id="bb111bb2222_3">
                   <label>Image 3</label>
                   <file preserve="yes" publish="no" shelve="no" id="sub/image113.tif" />
               </resource>
@@ -97,7 +97,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
         XML
       end
 
-      let(:druid) { 'druid:aa111bb2222' }
+      let(:druid) { 'druid:bb111bb2222' }
 
       before do
         allow(Assembly::ObjectFile).to receive(:new).and_return(

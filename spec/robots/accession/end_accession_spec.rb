@@ -5,34 +5,10 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::Accession::EndAccession do
   subject(:robot) { described_class.new }
 
-  let(:object) do
-    Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
-                            type: Cocina::Models::DRO::TYPES.first,
-                            label: 'my repository object',
-                            version: 1,
-                            description: {
-                              title: [{ value: 'my repository object' }],
-                              purl: 'https://purl.stanford.edu/bc123df4567'
-                            },
-                            access: {},
-                            administrative: { hasAdminPolicy: apo_id },
-                            identification: { sourceId: 'sul:1234' },
-                            structural: {})
-  end
-  let(:apo) do
-    Cocina::Models::AdminPolicy.new(externalIdentifier: 'druid:bc123df4567',
-                                    type: Cocina::Models::AdminPolicy::TYPES.first,
-                                    label: 'my apo object',
-                                    version: 1,
-                                    administrative: {
-                                      hasAdminPolicy: 'druid:xx999xx9999',
-                                      hasAgreement: 'druid:bb033gt0615',
-                                      accessTemplate: { view: 'world', download: 'world' }
-                                    })
-  end
-
-  let(:druid) { 'druid:oo000oo0001' }
-  let(:apo_id) { 'druid:mx121xx1234' }
+  let(:object) { build(:dro, id: druid, admin_policy_id: apo_druid) }
+  let(:apo) { build(:admin_policy, id: apo_druid) }
+  let(:druid) { 'druid:zz000zz0001' }
+  let(:apo_druid) { 'druid:mx121xx1234' }
   let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
   let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process: process) }
   let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: object, workspace: workspace_client) }
@@ -43,7 +19,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   before do
     allow(WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
-    allow(Dor::Services::Client).to receive(:object).with(apo_id).and_return(apo_object_client)
+    allow(Dor::Services::Client).to receive(:object).with(apo_druid).and_return(apo_object_client)
   end
 
   describe '#perform' do
@@ -58,16 +34,14 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
     context 'when there is a special dissemniation workflow' do
       let(:apo) do
-        Cocina::Models::AdminPolicy.new(externalIdentifier: 'druid:bc123df4567',
-                                        type: Cocina::Models::AdminPolicy::TYPES.first,
-                                        label: 'my apo object',
-                                        version: 1,
-                                        administrative: {
-                                          disseminationWorkflow: 'wasDisseminationWF',
-                                          hasAdminPolicy: 'druid:xx999xx9999',
-                                          hasAgreement: 'druid:bb033gt0615',
-                                          accessTemplate: { view: 'world', download: 'world' }
-                                        })
+        build(:admin_policy, id: apo_druid).new(
+          administrative: {
+            disseminationWorkflow: 'wasDisseminationWF',
+            hasAdminPolicy: 'druid:xx999xx9999',
+            hasAgreement: 'druid:bb033gt0615',
+            accessTemplate: { view: 'world', download: 'world' }
+          }
+        )
       end
 
       it 'kicks off that workflow' do

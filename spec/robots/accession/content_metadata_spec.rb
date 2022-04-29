@@ -12,27 +12,14 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
       instance_double(Dor::Services::Client::Object, update: nil, find: object)
     end
 
-    let(:druid) { 'druid:ab123cd4567' }
+    let(:druid) { 'druid:bb123cd4567' }
 
     before do
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
     end
 
     context 'when an item' do
-      let(:object) do
-        Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
-                                type: Cocina::Models::DRO::TYPES.first,
-                                label: 'my repository object',
-                                description: {
-                                  title: [{ value: 'my repository object' }],
-                                  purl: 'https://purl.stanford.edu/bc123df4567'
-                                },
-                                access: access,
-                                administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                version: 1,
-                                structural: {},
-                                identification: { sourceId: 'sul:1234' })
-      end
+      let(:object) { build(:dro, id: druid).new(access: access) }
       let(:access) { {} }
 
       context 'when no contentMetadata file is found' do
@@ -76,19 +63,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
     end
 
     context 'when a collection' do
-      let(:object) do
-        Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
-                                       type: Cocina::Models::Collection::TYPES.first,
-                                       label: 'my collection',
-                                       version: 1,
-                                       description: {
-                                         title: [{ value: 'my collection' }],
-                                         purl: 'https://purl.stanford.edu/bc123df4567'
-                                       },
-                                       access: {},
-                                       administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                       identification: { sourceId: 'sul:1234' })
-      end
+      let(:object) { build(:collection, id: druid) }
 
       it "doesn't make a datastream" do
         perform

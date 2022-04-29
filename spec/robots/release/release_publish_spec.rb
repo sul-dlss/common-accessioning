@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::Release::ReleasePublish do
   subject(:perform) { robot.perform(druid) }
 
-  let(:druid) { 'aa222cc3333' }
+  let(:druid) { 'bb222cc3333' }
   let(:robot) { described_class.new }
   let(:object_client) { instance_double(Dor::Services::Client::Object, publish: true) }
 

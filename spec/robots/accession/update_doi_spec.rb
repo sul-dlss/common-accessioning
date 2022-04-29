@@ -10,9 +10,7 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
                     update_doi_metadata: true,
                     find: object)
   end
-  let(:process) do
-    instance_double(Dor::Workflow::Response::Process, lane_id: 'low')
-  end
+  let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'low') }
 
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }
@@ -23,19 +21,7 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
     end
 
     context 'when called on a Collection' do
-      let(:object) do
-        Cocina::Models::Collection.new(externalIdentifier: 'druid:bc123df4567',
-                                       type: Cocina::Models::Collection::TYPES.first,
-                                       label: 'my collection',
-                                       version: 1,
-                                       description: {
-                                         title: [{ value: 'my collection' }],
-                                         purl: 'https://purl.stanford.edu/bc123df4567'
-                                       },
-                                       administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                       access: {},
-                                       identification: { sourceId: 'sul:1234' })
-      end
+      let(:object) { build(:collection) }
 
       it 'does not call the API' do
         expect(perform.status).to eq 'skipped'
@@ -46,21 +32,12 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
     context 'when called on an Item' do
       context 'with a doi' do
         let(:object) do
-          Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
-                                  type: Cocina::Models::DRO::TYPES.first,
-                                  label: 'my repository object',
-                                  version: 1,
-                                  description: {
-                                    title: [{ value: 'my repository object' }],
-                                    purl: 'https://purl.stanford.edu/bc123df4567'
-                                  },
-                                  administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                  access: {},
-                                  identification: {
-                                    doi: '10.25740/bc123df4567',
-                                    sourceId: 'sul:1234'
-                                  },
-                                  structural: {})
+          build(:dro).new(
+            identification: {
+              doi: '10.25740/bc123df4567',
+              sourceId: 'sul:1234'
+            }
+          )
         end
 
         it 'calls the api' do
@@ -70,22 +47,9 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
       end
 
       context 'without a doi' do
-        let(:object) do
-          Cocina::Models::DRO.new(externalIdentifier: 'druid:bc123df4567',
-                                  type: Cocina::Models::DRO::TYPES.first,
-                                  label: 'my repository object',
-                                  version: 1,
-                                  description: {
-                                    title: [{ value: 'my repository object' }],
-                                    purl: 'https://purl.stanford.edu/bc123df4567'
-                                  },
-                                  administrative: { hasAdminPolicy: 'druid:xx999xx9999' },
-                                  access: {},
-                                  structural: {},
-                                  identification: { sourceId: 'sul:1234' })
-        end
+        let(:object) { build(:dro) }
 
-        it 'calls the api' do
+        it 'does not call the api' do
           expect(perform.status).to eq 'skipped'
           expect(object_client).not_to have_received(:update_doi_metadata)
         end
@@ -93,17 +57,7 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
     end
 
     context 'when called on an APO' do
-      let(:object) do
-        Cocina::Models::AdminPolicy.new(externalIdentifier: 'druid:bc123df4567',
-                                        type: Cocina::Models::AdminPolicy::TYPES.first,
-                                        label: 'my admin policy',
-                                        version: 1,
-                                        administrative: {
-                                          hasAdminPolicy: 'druid:xx999xx9999',
-                                          hasAgreement: 'druid:bb033gt0615',
-                                          accessTemplate: { view: 'world', download: 'world' }
-                                        })
-      end
+      let(:object) { build(:admin_policy) }
 
       it 'does not call the API' do
         expect(perform.status).to eq 'skipped'
