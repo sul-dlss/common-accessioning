@@ -16,7 +16,11 @@ module Robots
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'No descMetadata.xml was provided') unless path
 
           object_client = Dor::Services::Client.object(druid)
-          object_client.metadata.update_mods(File.read(path))
+          cocina_object = object_client.find
+          mods_ng = Nokogiri::XML(File.read(path))
+          description_props = Cocina::Models::Mapping::FromMods::Description.props(mods: mods_ng, druid: cocina_object.externalIdentifier,
+                                                                                   label: cocina_object.label)
+          object_client.update(params: cocina_object.new(description: description_props))
         end
       end
     end

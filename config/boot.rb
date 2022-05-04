@@ -60,3 +60,5 @@ if defined? REDIS_TIMEOUT
 else
   Resque.redis = REDIS_URL
 end
+
+Cocina::Models::Mapping::Purl.base_url = Settings.purl_url
