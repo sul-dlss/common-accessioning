@@ -32,3 +32,5 @@ workflow:
 
 redis:
   url: ~
+
+purl_url: 'https://purl-example.stanford.edu'

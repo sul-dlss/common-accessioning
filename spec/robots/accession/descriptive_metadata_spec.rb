@@ -12,12 +12,11 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
   describe '#perform' do
     subject(:perform) { robot.perform(druid) }
 
-    let(:druid) { 'druid:ab123cd4567' }
+    let(:druid) { 'druid:bb123cd4567' }
+    let(:cocina_object) { build(:dro, id: druid) }
+
     let(:object_client) do
-      instance_double(Dor::Services::Client::Object, metadata: metadata_client)
-    end
-    let(:metadata_client) do
-      instance_double(Dor::Services::Client::Metadata, update_mods: nil)
+      instance_double(Dor::Services::Client::Object, update: nil, find: cocina_object)
     end
 
     before do
@@ -27,12 +26,29 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
     context 'when no descMetadata file is found' do
       it 'builds a datastream from the remote service call' do
         expect(perform.status).to eq 'skipped'
-        expect(metadata_client).not_to have_received(:update_mods)
+        expect(object_client).not_to have_received(:find)
       end
     end
 
     context 'when descMetadata file is found' do
-      let(:finder) { instance_double(DruidTools::Druid, find_metadata: 'spec/fixtures/ab123cd4567_descMetadata.xml') }
+      let(:finder) { instance_double(DruidTools::Druid, find_metadata: 'spec/fixtures/bb123cd4567_descMetadata.xml') }
+
+      let(:expected_cocina_object) do
+        cocina_object.new(description: {
+                            title: [
+                              {
+                                structuredValue: [
+                                  { value: 'A', type: 'nonsorting characters' },
+                                  { value: 'first book in Latin', type: 'main title' }
+                                ],
+                                note: [
+                                  { value: '2', type: 'nonsorting character count' }
+                                ]
+                              }
+                            ],
+                            purl: 'https://purl-example.stanford.edu/bb123cd4567'
+                          })
+      end
 
       before do
         allow(DruidTools::Druid).to receive(:new).and_return(finder)
@@ -40,7 +56,7 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
 
       it 'reads the file in' do
         perform
-        expect(metadata_client).to have_received(:update_mods).with(/first book in Latin/)
+        expect(object_client).to have_received(:update).with(params: expected_cocina_object)
       end
     end
   end
