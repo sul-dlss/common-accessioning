@@ -3,7 +3,7 @@
 module Robots
   module DorRepo
     module Accession
-      # Creates the technicalMetadata datastream
+      # Creates the technical metadata by calling technical-metadata-service
       class TechnicalMetadata < Robots::DorRepo::Base
         def initialize
           super('accessionWF', 'technical-metadata')

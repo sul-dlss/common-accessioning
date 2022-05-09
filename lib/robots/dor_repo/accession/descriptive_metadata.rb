@@ -3,8 +3,8 @@
 module Robots
   module DorRepo
     module Accession
-      # Creates or updates the descMetadata datastream
-      # it looks for a file on disk that is newer than the datastream.
+      # Creates or updates the descriptive metadata
+      # it looks for descMetadata.xml file on disk; if found uses it to update the object.
       class DescriptiveMetadata < Robots::DorRepo::Base
         def initialize
           super('accessionWF', 'descriptive-metadata')

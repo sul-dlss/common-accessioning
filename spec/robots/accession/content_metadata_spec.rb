@@ -22,8 +22,8 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
       let(:object) { build(:dro, id: druid).new(access: access) }
       let(:access) { {} }
 
-      context 'when no contentMetadata file is found' do
-        it 'builds a datastream from the remote service call' do
+      context 'when no contentMetadata.xml file is found' do
+        it 'does not update the object and returns status skipped' do
           expect(perform.status).to eq 'skipped'
           expect(object_client).not_to have_received(:update)
         end
@@ -65,7 +65,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
     context 'when a collection' do
       let(:object) { build(:collection, id: druid) }
 
-      it "doesn't make a datastream" do
+      it "doesn't update the object" do
         perform
         expect(object_client).not_to have_received(:update)
       end

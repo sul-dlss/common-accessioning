@@ -3,7 +3,7 @@
 module Robots
   module DorRepo
     module Accession
-      # Creates the contentMetadata datastream
+      # Creates structural metadata based on contentMetadata.xml
       class ContentMetadata < Robots::DorRepo::Base
         def initialize
           super('accessionWF', 'content-metadata')
