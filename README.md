@@ -19,8 +19,8 @@ The following workflows are supported by this repository:
   * Adds exif, mimetype, file size data to contentMetadata
   * Kicks off accessioning
 * Accession - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/accessionWF.xml
-  * Moves the metadata from the workspace into Fedora.
-  * Moves files into preservation.
+  * Moves the metadata from the workspace into the SDR.
+  * Moves objects into preservation.
 * Dissemination - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/disseminationWF.xml
   * cleans up the workspace after accessioning
 * Release - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/releaseWF.xml
