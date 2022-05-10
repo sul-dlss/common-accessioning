@@ -64,7 +64,7 @@ module Dor
         width = node.xpath('imageData/@width').text.presence&.to_i
         use = node.xpath('@role').text.presence
         {
-          # External identifier is always generated because it is not stored in Fedora.
+          # External identifier is always generated because it is not stored in SDR.
           externalIdentifier: "https://cocina.sul.stanford.edu/file/#{SecureRandom.uuid}",
           type: Cocina::Models::ObjectType.file,
           label: node['id'],

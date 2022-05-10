@@ -23,14 +23,14 @@ RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
     end
 
-    context 'when no descMetadata file is found' do
-      it 'builds a datastream from the remote service call' do
+    context 'when no descMetadata.xml file is found' do
+      it 'does nothing and returns status skipped' do
         expect(perform.status).to eq 'skipped'
         expect(object_client).not_to have_received(:find)
       end
     end
 
-    context 'when descMetadata file is found' do
+    context 'when descMetadata.xml file is found' do
       let(:finder) { instance_double(DruidTools::Druid, find_metadata: 'spec/fixtures/bb123cd4567_descMetadata.xml') }
 
       let(:expected_cocina_object) do
