@@ -7,7 +7,7 @@ gem 'activesupport', '~> 7.0'
 gem 'assembly-image', '~> 1.7'
 gem 'assembly-objectfile', '~> 1.10', '>= 1.10.3' # reading order, webarchive-seed, json mimetypes are supported in >=1.10.3
 gem 'config', '~> 2.2'
-gem 'dor-services-client', '~> 11.0'
+gem 'dor-services-client', '~> 12.0'
 gem 'dor-workflow-client', '~> 4.0'
 gem 'druid-tools', '~> 2.1'
 gem 'honeybadger'
