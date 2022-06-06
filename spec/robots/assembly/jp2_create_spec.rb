@@ -98,12 +98,12 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
       it 'creates jp2 files only for resource type image or page' do
         item.load_content_metadata
-        bef_files = get_filenames(item)
+        before_files = get_filenames(item)
 
         # there should be 10 file nodes in total
         expect(item.file_nodes.size).to eq(10)
-        expect(count_file_types(bef_files, '.tif')).to eq(5)
-        expect(count_file_types(bef_files, '.jp2')).to eq(1)
+        expect(count_file_types(before_files, '.tif')).to eq(5)
+        expect(count_file_types(before_files, '.jp2')).to eq(1)
 
         expect(robot).to receive(:create_jp2).twice
         robot.send(:create_jp2s, item)
@@ -137,20 +137,20 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
       it 'creates jp2 files only for the resource type image or page in new location' do
         item.load_content_metadata
-        bef_files = get_filenames(item)
+        before_files = get_filenames(item)
 
         # there should be 3 file nodes in total
         expect(item.file_nodes.size).to eq(3)
-        expect(count_file_types(bef_files, '.tif')).to eq(3)
-        expect(count_file_types(bef_files, '.jp2')).to eq(0)
+        expect(count_file_types(before_files, '.tif')).to eq(3)
+        expect(count_file_types(before_files, '.jp2')).to eq(0)
 
         robot.send(:create_jp2s, item)
 
         # we now have three jps
         expect(item.file_nodes.size).to eq(6)
-        aft_files = get_filenames(item)
-        expect(count_file_types(aft_files, '.tif')).to eq(3)
-        expect(count_file_types(aft_files, '.jp2')).to eq(3)
+        after_files = get_filenames(item)
+        expect(count_file_types(after_files, '.tif')).to eq(3)
+        expect(count_file_types(after_files, '.jp2')).to eq(3)
 
         # Read the XML file and check the file names.
         xml = Nokogiri::XML File.read(item.cm_file_name)
@@ -188,22 +188,21 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
         it 'does not overwrite existing jp2s but should not fail either' do
           item.load_content_metadata
-          bef_files = get_filenames(item)
+          before_files = get_filenames(item)
 
           # there should be 10 file nodes in total
           expect(item.file_nodes.size).to eq(10)
-          expect(count_file_types(bef_files, '.tif')).to eq(5)
-          expect(count_file_types(bef_files, '.jp2')).to eq(1)
+          expect(count_file_types(before_files, '.tif')).to eq(5)
+          expect(count_file_types(before_files, '.jp2')).to eq(1)
 
           expect(File.exist?(copy_jp2)).to be(true)
 
           robot.send(:create_jp2s, item)
 
-          # we now have only one extra jp2, only for the resource nodes that had type=image or page specified, since one was not created because it was already there
-          expect(item.file_nodes.size).to eq(11)
-          aft_files = get_filenames(item)
-          expect(count_file_types(aft_files, '.tif')).to eq(5)
-          expect(count_file_types(aft_files, '.jp2')).to eq(2)
+          expect(item.file_nodes.size).to eq(12)
+          after_files = get_filenames(item)
+          expect(count_file_types(after_files, '.tif')).to eq(5)
+          expect(count_file_types(after_files, '.jp2')).to eq(3)
         end
       end
 
@@ -220,21 +219,21 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
         it 'overwrites existing jp2s but should not fail either' do
           item.load_content_metadata
-          bef_files = get_filenames(item)
+          before_files = get_filenames(item)
 
           # there should be 10 file nodes in total
           expect(item.file_nodes.size).to eq(10)
-          expect(count_file_types(bef_files, '.tif')).to eq(5)
-          expect(count_file_types(bef_files, '.jp2')).to eq(1)
+          expect(count_file_types(before_files, '.tif')).to eq(5)
+          expect(count_file_types(before_files, '.jp2')).to eq(1)
 
           expect(File.exist?(copy_jp2)).to be(true)
 
           robot.send(:create_jp2s, item)
 
-          expect(item.file_nodes.size).to eq(11)
-          aft_files = get_filenames(item)
-          expect(count_file_types(aft_files, '.tif')).to eq(5)
-          expect(count_file_types(aft_files, '.jp2')).to eq(2)
+          expect(item.file_nodes.size).to eq(12)
+          after_files = get_filenames(item)
+          expect(count_file_types(after_files, '.tif')).to eq(5)
+          expect(count_file_types(after_files, '.jp2')).to eq(3)
         end
       end
     end
@@ -284,21 +283,19 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
         it 'does not overwrite existing jp2s' do
           item.load_content_metadata
-          bef_files = get_filenames(item)
+          before_files = get_filenames(item)
 
           # there should be 6 file nodes in total to start
           expect(item.file_nodes.size).to eq(6)
-          expect(count_file_types(bef_files, '.tif')).to eq(5)
-          expect(count_file_types(bef_files, '.jp2')).to eq(1)
+          expect(count_file_types(before_files, '.tif')).to eq(5)
+          expect(count_file_types(before_files, '.jp2')).to eq(1)
 
           robot.send(:create_jp2s, item)
 
-          # we now have three extra jp2, one for each tif that didn't have a matching dpg style jp2
-          # even if the jp2 does not exist in the original content metadata, if a matching one is found, a derivative won't be created
-          expect(item.file_nodes.size).to eq(9) # there are 9 total nodes, 4 jp2 and 5 tif
-          aft_files = get_filenames(item)
-          expect(count_file_types(aft_files, '.tif')).to eq(5)
-          expect(count_file_types(aft_files, '.jp2')).to eq(4)
+          expect(item.file_nodes.size).to eq(10)
+          after_files = get_filenames(item)
+          expect(count_file_types(after_files, '.tif')).to eq(5)
+          expect(count_file_types(after_files, '.jp2')).to eq(5)
         end
       end
 
@@ -313,19 +310,19 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
         it 'overwrites existing jp2s' do
           item.load_content_metadata
-          bef_files = get_filenames(item)
+          before_files = get_filenames(item)
 
           # there should be 6 file nodes in total to start
           expect(item.file_nodes.size).to eq(6)
-          expect(count_file_types(bef_files, '.tif')).to eq(5)
-          expect(count_file_types(bef_files, '.jp2')).to eq(1)
+          expect(count_file_types(before_files, '.tif')).to eq(5)
+          expect(count_file_types(before_files, '.jp2')).to eq(1)
 
           robot.send(:create_jp2s, item)
 
-          expect(item.file_nodes.size).to eq(11)
-          aft_files = get_filenames(item)
-          expect(count_file_types(aft_files, '.tif')).to eq(5)
-          expect(count_file_types(aft_files, '.jp2')).to eq(6)
+          expect(item.file_nodes.size).to eq(10)
+          after_files = get_filenames(item)
+          expect(count_file_types(after_files, '.tif')).to eq(5)
+          expect(count_file_types(after_files, '.jp2')).to eq(5)
         end
       end
     end
@@ -333,30 +330,43 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
   describe '#add_jp2_file_node' do
     let(:bare_druid) { 'bb111bb2222' }
-    let(:exp_xml) do
-      <<-XML.gsub(/^ {8}/, '')
-        <?xml version="1.0"?>
-        <contentMetadata>
-          <resource>
-            <file id="foo.tif"/>
-          </resource>
-        </contentMetadata>
-      XML
-    end
-
-    let(:resource_node) do
-      content_metadata.xpath('//resource').first
-    end
 
     let(:content_metadata) do
       Nokogiri.XML(xml) { |conf| conf.default_xml.noblanks }
     end
 
-    let(:xml) { '<contentMetadata><resource></resource></contentMetadata>' }
+    let(:expected_xml) do
+      <<-XML
+        <?xml version="1.0"?>
+        <contentMetadata>
+          <resource>
+            <file id="foo.tif"/>
+            <file id="foo.jp2"/>
+          </resource>
+        </contentMetadata>
+      XML
+    end
 
-    it 'adds a <file> node to XML if the resource type is not specified' do
-      robot.send :add_jp2_file_node, resource_node, 'foo.tif'
-      expect(content_metadata).to be_equivalent_to exp_xml
+    let(:file_node) do
+      content_metadata.xpath('//file[@id="foo.tif"]').first
+    end
+
+    context 'when file node does not exist' do
+      let(:xml) { '<contentMetadata><resource><file id="foo.tif"/></resource></contentMetadata>' }
+
+      it 'adds a file node' do
+        robot.send :add_jp2_file_node, file_node, 'foo.jp2', 'foo.tif'
+        expect(content_metadata).to be_equivalent_to expected_xml
+      end
+    end
+
+    context 'when file node already exists' do
+      let(:xml) { '<contentMetadata><resource><file id="foo.tif"/><file id="foo2.jp2"/></resource></contentMetadata>' }
+
+      it 'replaces file node' do
+        robot.send :add_jp2_file_node, file_node, 'foo.jp2', 'foo.tif'
+        expect(content_metadata).to be_equivalent_to expected_xml
+      end
     end
   end
 end

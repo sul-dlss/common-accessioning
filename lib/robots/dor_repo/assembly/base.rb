@@ -7,10 +7,10 @@ module Robots
         protected
 
         def with_item(druid)
-          ai = item(druid)
-          if ai.item?
-            ai.load_content_metadata
-            yield ai
+          assembly_item = item(druid)
+          if assembly_item.item?
+            assembly_item.load_content_metadata
+            yield assembly_item
           else
             LyberCore::Log.info("Skipping #{@step_name} for #{druid} since it is not an item")
           end
