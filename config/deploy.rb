@@ -19,7 +19,7 @@ set :deploy_to, "/opt/app/lyberadmin/#{fetch(:application)}"
 set :log_level, :info
 
 # Default value for :pty is false
-# set :pty, true
+set :pty, true
 
 # Default value for :linked_files is []
 set :linked_files, %w[config/honeybadger.yml tmp/resque-pool.lock]
