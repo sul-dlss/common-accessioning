@@ -5,7 +5,7 @@ require 'assembly-objectfile'
 module Dor
   module Assembly
     module ContentMetadata
-      attr_accessor :cm, :stub_cm, :cm_handle, :druid, :root_dir
+      attr_accessor :cm, :stub_cm, :druid, :root_dir
 
       # return the location to store or load the contentMetadata.xml file (could be in either the new or old location)
       def cm_file_name
@@ -27,14 +27,11 @@ module Dor
       # rubocop:enable Naming/MemoizedInstanceVariableName
 
       def persist_content_metadata
-        # Writes content metadata XML to the content metadata file or
-        # to @cm_handle (the latter is used for testing purposes).
+        # Writes content metadata XML to the content metadata file
         xml = @cm.to_xml
-        if @cm_handle
-          @cm_handle.puts xml
-        elsif !xml.blank?
-          File.open(cm_file_name, 'w') { |f| f.puts xml }
-        end
+        return if xml.blank?
+
+        File.open(cm_file_name, 'w') { |f| f.puts xml }
       end
 
       def new_node_in_cm(node_name)
