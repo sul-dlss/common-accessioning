@@ -4,6 +4,7 @@ module Robots
   module DorRepo
     module Accession
       # Creates structural metadata based on contentMetadata.xml
+      # Needed by https://github.com/sul-dlss/gis-robot-suite/blob/main/lib/robots/dor_repo/gis_assembly/generate_content_metadata.rb
       class ContentMetadata < Robots::DorRepo::Base
         def initialize
           super('accessionWF', 'content-metadata')
