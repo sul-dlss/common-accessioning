@@ -167,6 +167,13 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
         # copy an existing jp2
         source_jp2 = File.join TMP_ROOT_DIR, 'ff/222/cc/3333', 'image111.jp2'
         system "cp #{source_jp2} #{copy_jp2}"
+
+        allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
+        out1 = 'tmp/test_input/ff/222/cc/3333/image114.jp2'
+        d1 = instance_double(Assembly::Image, path: out1)
+        s1 = instance_double(Assembly::Image, 'source 1', dpg_jp2_filename: out1, jp2_filename: out1, path: 'tmp/test_input/ff/222/cc/3333/image114.tif', create_jp2: d1)
+        s2 = instance_double(Assembly::Image, 'source 2', dpg_jp2_filename: copy_jp2, jp2_filename: copy_jp2, path: 'tmp/test_input/ff/222/cc/3333/image115.tif')
+        allow(Assembly::Image).to receive(:new).and_return(s1, s2)
       end
 
       after do
@@ -174,67 +181,23 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
         system "rm #{copy_jp2}"
       end
 
-      context 'with overwrite set to false' do
-        before do
-          Settings.assembly.overwrite_jp2 = false
+      it 'does not overwrite existing jp2s but should not fail either' do
+        item.load_content_metadata
+        before_files = get_filenames(item)
 
-          allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
-          out1 = 'tmp/test_input/ff/222/cc/3333/image114.jp2'
-          d1 = instance_double(Assembly::Image, path: out1)
-          s1 = instance_double(Assembly::Image, 'source 1', dpg_jp2_filename: out1, jp2_filename: out1, path: 'tmp/test_input/ff/222/cc/3333/image114.tif', create_jp2: d1)
-          s2 = instance_double(Assembly::Image, 'source 2', dpg_jp2_filename: copy_jp2, jp2_filename: copy_jp2, path: 'tmp/test_input/ff/222/cc/3333/image115.tif')
-          allow(Assembly::Image).to receive(:new).and_return(s1, s2)
-        end
+        # there should be 10 file nodes in total
+        expect(item.file_nodes.size).to eq(10)
+        expect(count_file_types(before_files, '.tif')).to eq(5)
+        expect(count_file_types(before_files, '.jp2')).to eq(1)
 
-        it 'does not overwrite existing jp2s but should not fail either' do
-          item.load_content_metadata
-          before_files = get_filenames(item)
+        expect(File.exist?(copy_jp2)).to be(true)
 
-          # there should be 10 file nodes in total
-          expect(item.file_nodes.size).to eq(10)
-          expect(count_file_types(before_files, '.tif')).to eq(5)
-          expect(count_file_types(before_files, '.jp2')).to eq(1)
+        robot.send(:create_jp2s, item)
 
-          expect(File.exist?(copy_jp2)).to be(true)
-
-          robot.send(:create_jp2s, item)
-
-          expect(item.file_nodes.size).to eq(12)
-          after_files = get_filenames(item)
-          expect(count_file_types(after_files, '.tif')).to eq(5)
-          expect(count_file_types(after_files, '.jp2')).to eq(3)
-        end
-      end
-
-      context 'with overwrite set to true' do
-        before do
-          allow(Settings.assembly).to receive_messages(overwrite_jp2: true, overwrite_dpg_jp2: false)
-          allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
-          out1 = 'tmp/test_input/ff/222/cc/3333/image114.jp2'
-          d1 = instance_double(Assembly::Image, path: out1)
-          s1 = instance_double(Assembly::Image, 'source 1', dpg_jp2_filename: out1, jp2_filename: out1, path: 'tmp/test_input/ff/222/cc/3333/image114.tif', create_jp2: d1)
-          s2 = instance_double(Assembly::Image, 'source 2', dpg_jp2_filename: copy_jp2, jp2_filename: copy_jp2, path: 'tmp/test_input/ff/222/cc/3333/image115.tif')
-          allow(Assembly::Image).to receive(:new).and_return(s1, s2)
-        end
-
-        it 'overwrites existing jp2s but should not fail either' do
-          item.load_content_metadata
-          before_files = get_filenames(item)
-
-          # there should be 10 file nodes in total
-          expect(item.file_nodes.size).to eq(10)
-          expect(count_file_types(before_files, '.tif')).to eq(5)
-          expect(count_file_types(before_files, '.jp2')).to eq(1)
-
-          expect(File.exist?(copy_jp2)).to be(true)
-
-          robot.send(:create_jp2s, item)
-
-          expect(item.file_nodes.size).to eq(12)
-          after_files = get_filenames(item)
-          expect(count_file_types(after_files, '.tif')).to eq(5)
-          expect(count_file_types(after_files, '.jp2')).to eq(3)
-        end
+        expect(item.file_nodes.size).to eq(12)
+        after_files = get_filenames(item)
+        expect(count_file_types(after_files, '.tif')).to eq(5)
+        expect(count_file_types(after_files, '.jp2')).to eq(3)
       end
     end
 
@@ -276,54 +239,21 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
         allow(Assembly::Image).to receive(:new).and_return(source1, source2, s3, s4, s5, s6)
       end
 
-      context 'when overwrite is false' do
-        before do
-          Settings.assembly.overwrite_dpg_jp2 = false
-        end
+      it 'does not overwrite existing jp2s' do
+        item.load_content_metadata
+        before_files = get_filenames(item)
 
-        it 'does not overwrite existing jp2s' do
-          item.load_content_metadata
-          before_files = get_filenames(item)
+        # there should be 6 file nodes in total to start
+        expect(item.file_nodes.size).to eq(6)
+        expect(count_file_types(before_files, '.tif')).to eq(5)
+        expect(count_file_types(before_files, '.jp2')).to eq(1)
 
-          # there should be 6 file nodes in total to start
-          expect(item.file_nodes.size).to eq(6)
-          expect(count_file_types(before_files, '.tif')).to eq(5)
-          expect(count_file_types(before_files, '.jp2')).to eq(1)
+        robot.send(:create_jp2s, item)
 
-          robot.send(:create_jp2s, item)
-
-          expect(item.file_nodes.size).to eq(10)
-          after_files = get_filenames(item)
-          expect(count_file_types(after_files, '.tif')).to eq(5)
-          expect(count_file_types(after_files, '.jp2')).to eq(5)
-        end
-      end
-
-      context 'when overwrite is true' do
-        let(:out2) { 'tmp/test_input/hh/222/cc/3333/hh222cc3333_00_001.jp2' }
-
-        before do
-          Settings.assembly.overwrite_dpg_jp2 = true
-          allow(source1).to receive(:create_jp2).and_return(instance_double(Assembly::Image, path: out2))
-          allow(source2).to receive(:create_jp2).and_return(instance_double(Assembly::Image, path: out2))
-        end
-
-        it 'overwrites existing jp2s' do
-          item.load_content_metadata
-          before_files = get_filenames(item)
-
-          # there should be 6 file nodes in total to start
-          expect(item.file_nodes.size).to eq(6)
-          expect(count_file_types(before_files, '.tif')).to eq(5)
-          expect(count_file_types(before_files, '.jp2')).to eq(1)
-
-          robot.send(:create_jp2s, item)
-
-          expect(item.file_nodes.size).to eq(10)
-          after_files = get_filenames(item)
-          expect(count_file_types(after_files, '.tif')).to eq(5)
-          expect(count_file_types(after_files, '.jp2')).to eq(5)
-        end
+        expect(item.file_nodes.size).to eq(10)
+        after_files = get_filenames(item)
+        expect(count_file_types(after_files, '.tif')).to eq(5)
+        expect(count_file_types(after_files, '.jp2')).to eq(5)
       end
     end
   end

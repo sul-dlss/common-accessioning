@@ -39,18 +39,18 @@ module Robots
         def create_jp2(file_node, object_file)
           img = ::Assembly::Image.new(object_file.path) # create a new image object from the object file so we can generate a jp2
           # (e.g. if oo000oo0001_05_00.jp2 exists and you call create_jp2 for oo000oo0001_00_00.tif, you will not create a new JP2, even though there would not be a filename clash)
-          if !Settings.assembly.overwrite_dpg_jp2 && File.exist?(img.dpg_jp2_filename) # don't fail this case, but log it
+          if File.exist?(img.dpg_jp2_filename) # don't fail this case, but log it
             message = "WARNING: Did not create jp2 for #{img.path} -- since another JP2 with the same DPG base name called #{img.dpg_jp2_filename} exists"
             LyberCore::Log.warn(message)
             add_jp2_file_node(file_node, img.dpg_jp2_filename, img.path)
           # if we have an existing jp2 with the same basename as the tiff -- don't fail, but do log it
-          elsif !Settings.assembly.overwrite_jp2 && File.exist?(img.jp2_filename)
+          elsif File.exist?(img.jp2_filename)
             message = "WARNING: Did not create jp2 for #{img.path} -- file already exists"
             LyberCore::Log.warn(message)
             add_jp2_file_node(file_node, img.jp2_filename, img.path)
           else
             tmp_folder = Settings.assembly.tmp_folder
-            jp2 = img.create_jp2(overwrite: Settings.assembly.overwrite_jp2, tmp_folder: tmp_folder)
+            jp2 = img.create_jp2(overwrite: false, tmp_folder: tmp_folder)
             add_jp2_file_node(file_node, jp2.path, img.path)
           end
         end
