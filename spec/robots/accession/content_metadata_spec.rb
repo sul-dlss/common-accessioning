@@ -55,7 +55,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
 
             expect(object_client).to have_received(:update).with(params: Cocina::Models::DRO) do |model|
               actions = model[:params].structural.contains.map { |file_set| file_set.structural.contains.map { |file| [file.administrative.publish, file.administrative.shelve, file.administrative.sdrPreserve] } }
-              expect(actions).to eq [[[false, false, true], [false, true, true]], [[false, false, true], [false, true, true]]]
+              expect(actions).to eq [[[true, false, true], [false, true, true]], [[true, false, true], [false, true, true]]]
             end
           end
         end

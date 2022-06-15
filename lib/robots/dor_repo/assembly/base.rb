@@ -9,7 +9,6 @@ module Robots
         def with_item(druid)
           assembly_item = item(druid)
           if assembly_item.item?
-            assembly_item.load_content_metadata
             yield assembly_item
           else
             LyberCore::Log.info("Skipping #{@step_name} for #{druid} since it is not an item")
