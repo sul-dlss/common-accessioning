@@ -45,6 +45,8 @@ module Robots
             add_jp2_file_node(file_node, img.dpg_jp2_filename, img.path)
           # if we have an existing jp2 with the same basename as the tiff -- don't fail, but do log it
           elsif File.exist?(img.jp2_filename)
+            Honeybadger.notify('Does this path ever get hit in production?  If you see this error, ' \
+                               "please write a test for this case in common-accessioning, presently it's not covered.", { image_path: img.path })
             message = "WARNING: Did not create jp2 for #{img.path} -- file already exists"
             LyberCore::Log.warn(message)
             add_jp2_file_node(file_node, img.jp2_filename, img.path)
