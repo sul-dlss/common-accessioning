@@ -10,7 +10,7 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     airbrussh (1.4.0)
       sshkit (>= 1.6.1, != 1.7.0)
-    assembly-image (1.8.0)
+    assembly-image (1.9.0)
       assembly-objectfile (>= 1.6.4)
       mini_exiftool (>= 1.6, < 3)
     assembly-objectfile (1.12.0)
