@@ -73,11 +73,7 @@ module Dor
           version: version,
           hasMessageDigests: digests(node),
           access: file_access,
-          administrative: {
-            publish: node['publish'] == 'yes',
-            sdrPreserve: node['preserve'] == 'yes',
-            shelve: node['shelve'] == 'yes'
-          }
+          administrative: file_administrative(node)
         }.tap do |attrs|
           # Files from Goobi don't have mimetype until they hit exif-collect in the assemblyWF
           attrs[:hasMimeType] = node['mimetype'] if node['mimetype'].present?
@@ -85,6 +81,22 @@ module Dor
           attrs[:use] = use if use
         end
       end
+    end
+
+    def file_administrative(node)
+      default_administrative = default_administrative_attributes(node['mimetype'])
+
+      publish = (node['publish'] || default_administrative[:publish]) == 'yes'
+      preserve = (node['preserve'] || default_administrative[:preserve]) == 'yes'
+      shelve = (node['shelve'] || default_administrative[:shelve]) == 'yes'
+
+      { publish: publish, sdrPreserve: preserve, shelve: shelve }
+    end
+
+    def default_administrative_attributes(mimetype)
+      attrs = ::Assembly::ContentMetadata::File::ATTRIBUTES_FOR_TYPE
+
+      attrs.fetch(mimetype) { attrs.fetch('default') }
     end
 
     def file_access

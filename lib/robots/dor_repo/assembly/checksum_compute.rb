@@ -10,58 +10,55 @@ module Robots
 
         def perform(druid)
           with_item(druid) do |assembly_item|
-            compute_checksums(assembly_item)
+            cocina_model = assembly_item.cocina_model
+            file_sets = compute_checksums(assembly_item, cocina_model)
+
+            # Save the modified metadata
+            updated = cocina_model.new(structural: cocina_model.structural.new(contains: file_sets))
+            assembly_item.object_client.update(params: updated)
           end
         end
 
         private
 
-        def compute_checksums(assembly_item)
+        def compute_checksums(assembly_item, cocina_model)
           LyberCore::Log.info("Computing checksums for #{assembly_item.druid.id}")
 
-          # Get the object we'll use to compute checksums.
+          file_sets = cocina_model.structural.to_h.fetch(:contains) # make this a mutable hash
 
-          # Process each <file> node in the content metadata.
-          assembly_item.file_nodes.each do |fn|
-            # Compute checksums.
-            obj = ::Assembly::ObjectFile.new(assembly_item.path_finder.path_to_content_file(fn['id']))
+          file_sets.each do |file_set|
+            files = file_set.dig(:structural, :contains)
 
-            # compute checksums
-            checksums = { md5: obj.md5, sha1: obj.sha1 }
+            files.each do |file|
+              object_file = ::Assembly::ObjectFile.new(assembly_item.path_finder.path_to_content_file(file.fetch(:filename)))
 
-            # find any existing checksum nodes
-            md5_nodes = fn.xpath('checksum[@type="md5"]')
-            sha1_nodes = fn.xpath('checksum[@type="sha1"]')
+              # compute checksums
+              checksums = { md5: object_file.md5, sha1: object_file.sha1 }
 
-            # if we have any existing checksum nodes, compare them all against the checksums we just computed, and raise an error if any fail
-            if md5_nodes.empty?
-              add_checksum_node assembly_item, fn, 'md5', checksums[:md5]
-            else
-              raise %(Checksums disagree: type="md5", file="#{fn['id']}", computed="#{checksums[:md5]}, provided="#{md5_nodes.first}".) unless checksums_equal?(md5_nodes, checksums[:md5])
-            end
-            if sha1_nodes.empty?
-              add_checksum_node assembly_item, fn, 'sha1', checksums[:sha1]
-            else
-              raise %(Checksums disagree: type="sha1", file="#{fn['id']}", computed="#{checksums[:sha1]}", provided="#{sha1_nodes.first}".) unless checksums_equal?(sha1_nodes, checksums[:sha1])
+              # find any existing checksum nodes
+              md5_node = file[:hasMessageDigests].find { |digest| digest[:type] == 'md5' }
+              sha1_node = file[:hasMessageDigests].find { |digest| digest[:type] == 'sha1' }
+
+              # if we have any existing checksum nodes, compare them all against the checksums we just computed, and raise an error if any fail
+              if md5_node
+                raise %(Checksums disagree: type="md5", file="#{fn['id']}", computed="#{checksums[:md5]}, provided="#{md5_node[:digest]}".) unless checksums_equal?(md5_node, checksums[:md5])
+              else
+                file[:hasMessageDigests] << { type: 'md5', digest: checksums[:md5] }
+              end
+              if sha1_node
+                raise %(Checksums disagree: type="sha1", file="#{fn['id']}", computed="#{checksums[:sha1]}", provided="#{sha1_node[:digest]}".) unless checksums_equal?(sha1_node, checksums[:sha1])
+              else
+                file[:hasMessageDigests] << { type: 'sha1', digest: checksums[:sha1] }
+              end
             end
           end
 
-          # Save the modified XML.
-          assembly_item.persist_content_metadata
+          file_sets
         end
 
         # compare existing checksum nodes with computed checksum, return false if there are any mismatches, otherwise return true
-        def checksums_equal?(existing_checksum_nodes, computed_checksum)
-          match = true
-          existing_checksum_nodes.each { |checksum| match = false unless checksum.content.casecmp(computed_checksum).zero? }
-          match
-        end
-
-        def add_checksum_node(assembly_item, parent_node, checksum_type, checksum)
-          cn         = assembly_item.new_node_in_cm 'checksum'
-          cn.content = checksum
-          cn['type'] = checksum_type
-          parent_node.add_child cn
+        def checksums_equal?(existing_checksum_node, computed_checksum)
+          existing_checksum_node[:digest].casecmp(computed_checksum).zero?
         end
       end
     end

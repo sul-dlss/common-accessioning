@@ -7,8 +7,7 @@ module Dor
     # eventually be the contentMetadata.xml. It contains just enough information
     # before our robots fill in the rest.
     module StubContentMetadataParser
-      # BEWARE: This writes to the @cm ivar which is also written to by ContentMetadata#create_basic_content_metadata
-      #         It depends on the @druid ivar and druid method
+      # BEWARE: This depends on the @druid ivar and druid method
       def convert_stub_content_metadata
         # uses the assembly-objectfile gem to create content metadata using the stub contentMetadata provided
         load_stub_content_metadata
@@ -26,9 +25,7 @@ module Dor
           end
         end
 
-        xml = ::Assembly::ContentMetadata.create_content_metadata(druid: @druid.druid, style: gem_content_metadata_style, objects: cm_resources, bundle: :prebundled, add_file_attributes: true, reading_order: book_reading_order)
-        @cm = Nokogiri.XML(xml)
-        xml
+        ::Assembly::ContentMetadata.create_content_metadata(druid: @druid.druid, style: gem_content_metadata_style, objects: cm_resources, bundle: :prebundled, add_file_attributes: true, reading_order: book_reading_order)
       end
 
       def stub_content_metadata_exists?

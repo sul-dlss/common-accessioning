@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'fileutils'
+
 module Robots
   module DorRepo
     module Assembly
@@ -14,18 +16,37 @@ module Robots
           obj =  item(druid)
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'object is not an item') unless obj.item? # not an item, skip
 
+          return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'No contentMetadata to load from the filesystem') if !content_metadata_exists?(obj) && !obj.stub_content_metadata_exists?
+
           # both stub and regular content metadata exist -- this is an ambiguous situation and generates an error
-          raise "#{Settings.assembly.stub_cm_file_name} and #{Settings.assembly.cm_file_name} both exist for #{druid}" if obj.stub_content_metadata_exists? && obj.content_metadata_exists?
+          raise "#{Settings.assembly.stub_cm_file_name} and #{Settings.assembly.cm_file_name} both exist for #{druid}" if obj.stub_content_metadata_exists? && content_metadata_exists?(obj)
 
-          # regular content metadata exists -- do not recreate it
-          return LyberCore::Robot::ReturnState.new(status: :skipped, note: "#{Settings.assembly.cm_file_name} exists") if obj.content_metadata_exists?
+          # Build the xml
+          xml = if obj.stub_content_metadata_exists?
+                  obj.convert_stub_content_metadata
+                else
+                  File.read(cm_file_name(obj))
+                end
 
-          # neither stubContentMetadata or contentMetadata exist.
-          raise "Unable to find #{Settings.assembly.stub_cm_file_name} or #{Settings.assembly.cm_file_name}" unless obj.stub_content_metadata_exists?
+          # Convert the XML to cocina and save it
+          structural = Dor::StructuralMetadata.update(xml, obj.cocina_model)
+          updated = obj.cocina_model.new(structural: structural)
+          obj.object_client.update(params: updated)
 
-          obj.convert_stub_content_metadata
-          obj.persist_content_metadata
+          # Remove the contentMetadata.xml
+          FileUtils.rm(cm_file_name(obj)) if content_metadata_exists?(obj)
+
           LyberCore::Robot::ReturnState.new(status: 'completed')
+        end
+
+        # return the location to store or load the contentMetadata.xml file (could be in either the new or old location)
+        def cm_file_name(obj)
+          @cm_file_name ||= obj.path_finder.path_to_metadata_file(Settings.assembly.cm_file_name)
+        end
+
+        def content_metadata_exists?(obj)
+          # indicate if a contentMetadata file exists
+          File.exist?(cm_file_name(obj))
         end
       end
     end

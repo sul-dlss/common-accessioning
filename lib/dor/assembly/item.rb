@@ -3,7 +3,6 @@
 module Dor
   module Assembly
     class Item
-      include Dor::Assembly::ContentMetadata
       include Dor::Assembly::StubContentMetadataParser
 
       def initialize(params = {})
@@ -15,9 +14,15 @@ module Dor
         @path_finder.check_for_path
       end
 
+      attr_reader :druid, :path_finder
+
       def cocina_model
         # `#find` returns an instance of a model from the cocina-models gem
-        @cocina_model ||= Dor::Services::Client.object(druid.druid).find
+        @cocina_model ||= object_client.find
+      end
+
+      def object_client
+        @object_client ||= Dor::Services::Client.object(druid.druid)
       end
 
       def item?
@@ -29,8 +34,6 @@ module Dor
       def self.default_file_attributes(mimetype)
         ::Assembly::ContentMetadata::File::ATTRIBUTES_FOR_TYPE.fetch(mimetype) { ::Assembly::ContentMetadata::File::ATTRIBUTES_FOR_TYPE.fetch('default') }
       end
-
-      attr_reader :path_finder
     end
   end
 end
