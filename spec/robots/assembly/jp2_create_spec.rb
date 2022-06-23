@@ -452,8 +452,8 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
         allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
         out1 = 'tmp/test_input/ff/222/cc/3333/image114.jp2'
         d1 = instance_double(Assembly::Image, path: out1)
-        s1 = instance_double(Assembly::Image, 'source 1', dpg_jp2_filename: out1, jp2_filename: out1, path: 'tmp/test_input/ff/222/cc/3333/image114.tif', create_jp2: d1)
-        s2 = instance_double(Assembly::Image, 'source 2', dpg_jp2_filename: copy_jp2, jp2_filename: copy_jp2, path: 'tmp/test_input/ff/222/cc/3333/image115.tif')
+        s1 = instance_double(Assembly::Image, 'source 1', jp2_filename: out1, path: 'tmp/test_input/ff/222/cc/3333/image114.tif', create_jp2: d1)
+        s2 = instance_double(Assembly::Image, 'source 2', jp2_filename: copy_jp2, path: 'tmp/test_input/ff/222/cc/3333/image115.tif')
         allow(Assembly::Image).to receive(:new).and_return(s1, s2)
       end
 
@@ -473,7 +473,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       end
     end
 
-    context 'when there is a DPG style jp2 already there' do
+    context 'when there is a jp2 already there' do
       let(:bare_druid) { 'hh222cc3333' }
 
       # This file does not need to create
@@ -497,8 +497,8 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                                   administrative: { publish: false, sdrPreserve: false, shelve: false } },
                                                 { type: 'https://cocina.sul.stanford.edu/models/file',
                                                   externalIdentifier: 'https://cocina.sul.stanford.edu/file/661f8462-e0c2-49c4-b617-4d5c11a969b7',
-                                                  label: 'hh222cc3333_05_001.jp2',
-                                                  filename: 'hh222cc3333_05_001.jp2',
+                                                  label: 'hh222cc3333_00_001.jp2',
+                                                  filename: 'hh222cc3333_00_001.jp2',
                                                   size: 0,
                                                   version: 1,
                                                   hasMessageDigests: [],
@@ -564,7 +564,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       let(:tiff_file) { instance_double(Assembly::ObjectFile, jp2able?: true, path: '') }
 
       before do
-        # These files needs to create
+        # No need to create these jp2 files here
         d3 = instance_double(Assembly::Image, path: 'tmp/test_input/hh/222/cc/3333/hh222cc3333_00_002.jp2')
         s3 = Assembly::Image.new('tmp/test_input/hh/222/cc/3333/hh222cc3333_00_002.tif')
         allow(s3).to receive(:create_jp2).and_return(d3)
