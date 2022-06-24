@@ -55,15 +55,10 @@ module Robots
         end
 
         def create_jp2(file_node, file_set, assembly_image, cocina_model)
-          file_name = if File.exist?(assembly_image.dpg_jp2_filename) # don't fail this case, but log it
-                        # (e.g. if oo000oo0001_05_00.jp2 exists and you call create_jp2 for oo000oo0001_00_00.tif, you will not create a new JP2, even though there would not be a filename clash)
-                        message = "WARNING: Did not create jp2 for #{assembly_image.path} -- since another JP2 with the same DPG base name called #{assembly_image.dpg_jp2_filename} exists"
-                        LyberCore::Log.warn(message)
-                        new_jp2_file_name(file_node, assembly_image.dpg_jp2_filename, assembly_image.path)
-                      elsif File.exist?(assembly_image.jp2_filename)
+          file_name = if File.exist?(assembly_image.jp2_filename)
                         # if we have an existing jp2 with the same basename as the tiff -- don't fail, but do log it
                         Honeybadger.notify('Does this path ever get hit in production?  If you see this error, ' \
-                                           "please write a test for this case in common-accessioning, presently it's not covered.", { image_path: img.path })
+                                           "please write a test for this case in common-accessioning, presently it's not covered.", { image_path: assembly_image.path })
                         message = "WARNING: Did not create jp2 for #{assembly_image.path} -- file already exists"
                         LyberCore::Log.warn(message)
                         new_jp2_file_name(file_node, assembly_image.jp2_filename, assembly_image.path)
