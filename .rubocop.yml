@@ -23,7 +23,7 @@ Naming/PredicateName:
 RSpec/NestedGroups:
   Max: 5
 
-Gemspec/DateAssignment: # new in 1.10
+Gemspec/DeprecatedAttributeAssignment: # new in 1.10
   Enabled: true
 Gemspec/RequireMFA: # new in 1.23
   Enabled: true
