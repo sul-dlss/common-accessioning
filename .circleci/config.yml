@@ -12,3 +12,6 @@ workflows:
             - run:
                 name: install rsync
                 command: sudo apt update && sudo apt install -y rsync
+            - run:
+                name: Install libvips
+                command: sudo apt-get update && sudo apt-get install -y libvips
