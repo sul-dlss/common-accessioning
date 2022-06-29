@@ -57,6 +57,9 @@ module Robots
         def create_jp2(file_node, file_set, assembly_image, cocina_model)
           file_name = if File.exist?(assembly_image.jp2_filename)
                         # if we have an existing jp2 with the same basename as the tiff -- don't fail, but do log it
+                        #  this can happen if a user provides jp2 files as part of the accessioning process
+                        #  (for example, if they were generated in a specific way ahead of time).
+                        #  in this case, we do not want to overwrite the files provided with newly derived jp2s
                         message = "WARNING: Did not create jp2 for #{assembly_image.path} -- file already exists"
                         LyberCore::Log.warn(message)
                         new_jp2_file_name(file_node, assembly_image.jp2_filename, assembly_image.path)
