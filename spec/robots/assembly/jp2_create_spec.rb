@@ -7,7 +7,8 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
   let(:object_client) do
     instance_double(Dor::Services::Client::Object, find: cocina_model, update: true)
   end
-  let(:cocina_model) { build(:dro, id: "druid:#{bare_druid}").new(structural: structural, access: { view: 'world' }) }
+  let(:access) { { view: 'world' } }
+  let(:cocina_model) { build(:dro, id: "druid:#{bare_druid}").new(structural: structural, access: access) }
 
   let(:structural) do
     { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
@@ -71,10 +72,22 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     context 'with an item' do
       let(:object) { build(:dro, id: "druid:#{bare_druid}") }
 
+      before do
+        allow(assembly_item).to receive(:item?).and_call_original
+      end
+
       it 'creates jp2' do
-        expect(assembly_item).to receive(:item?).and_call_original
         allow(robot).to receive(:create_jp2s).with(assembly_item, cocina_model).and_return([])
         perform
+        expect(assembly_item).to have_received(:item?)
+      end
+
+      context 'with dark access' do
+        let(:access) { { view: 'dark' } }
+
+        it 'does not create jp2' do
+          expect(perform.status).to eq 'skipped'
+        end
       end
     end
 

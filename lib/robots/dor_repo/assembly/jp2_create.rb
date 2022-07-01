@@ -11,6 +11,8 @@ module Robots
         def perform(druid)
           with_item(druid) do |assembly_item|
             cocina_model = assembly_item.cocina_model
+            return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'object is dark, no derivatives required') if cocina_model.access.view == 'dark'
+
             file_sets = create_jp2s(assembly_item, cocina_model)
             # Save the modified metadata
             updated = cocina_model.new(structural: cocina_model.structural.new(contains: file_sets))
