@@ -11,7 +11,7 @@ task default: %i[rubocop spec]
 
 task :clean do
   puts 'Cleaning old coverage.data'
-  FileUtils.rm('coverage.data') if File.exist? 'coverage.data'
+  FileUtils.rm_rf('coverage.data')
 end
 
 begin
