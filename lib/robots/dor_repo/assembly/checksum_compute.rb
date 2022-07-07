@@ -23,12 +23,10 @@ module Robots
 
         def compute_checksums(assembly_item, cocina_model)
           LyberCore::Log.info("Computing checksums for #{assembly_item.druid.id}")
-
           file_sets = cocina_model.structural.to_h.fetch(:contains) # make this a mutable hash
 
           file_sets.each do |file_set|
             files = file_set.dig(:structural, :contains)
-
             files.each do |file|
               object_file = ::Assembly::ObjectFile.new(assembly_item.path_finder.path_to_content_file(file.fetch(:filename)))
 
@@ -41,12 +39,12 @@ module Robots
 
               # if we have any existing checksum nodes, compare them all against the checksums we just computed, and raise an error if any fail
               if md5_node
-                raise %(Checksums disagree: type="md5", file="#{fn['id']}", computed="#{checksums[:md5]}, provided="#{md5_node[:digest]}".) unless checksums_equal?(md5_node, checksums[:md5])
+                raise %(Checksums disagree: type="md5", file="#{file[:filename]}", computed="#{checksums[:md5]}, provided="#{md5_node[:digest]}".) unless checksums_equal?(md5_node, checksums[:md5])
               else
                 file[:hasMessageDigests] << { type: 'md5', digest: checksums[:md5] }
               end
               if sha1_node
-                raise %(Checksums disagree: type="sha1", file="#{fn['id']}", computed="#{checksums[:sha1]}", provided="#{sha1_node[:digest]}".) unless checksums_equal?(sha1_node, checksums[:sha1])
+                raise %(Checksums disagree: type="sha1", file="#{file[:filename]}", computed="#{checksums[:sha1]}", provided="#{sha1_node[:digest]}".) unless checksums_equal?(sha1_node, checksums[:sha1])
               else
                 file[:hasMessageDigests] << { type: 'sha1', digest: checksums[:sha1] }
               end
