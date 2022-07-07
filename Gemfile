@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'activesupport', '~> 7.0'
-gem 'assembly-image', '~> 2.0' # ruby-vips is used by 2.0.0 for improved image processing
+gem 'assembly-image', '~> 1.0' # don't use libvips (v2.0.0)
 gem 'assembly-objectfile', '~> 1.10', '>= 1.10.3' # reading order, webarchive-seed, json mimetypes are supported in >=1.10.3
 gem 'config', '~> 2.2'
 gem 'dor-services-client', '~> 12.0'
