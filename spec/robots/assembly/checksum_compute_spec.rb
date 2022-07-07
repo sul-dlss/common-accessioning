@@ -130,5 +130,11 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
         ]
       ]
     end
+
+    it 'errors with a useful message when checksums do not match' do
+      structural[:contains].first[:structural][:contains].first[:hasMessageDigests].first[:digest] = '666'
+      cocina_object = build(:dro, id: druid).new(structural: structural)
+      expect { robot.send(:compute_checksums, assembly_item, cocina_object) }.to raise_error(RuntimeError, /Checksums disagree: type="md5", file="image111.tif"/)
+    end
   end
 end
