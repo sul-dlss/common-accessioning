@@ -94,7 +94,7 @@ module Dor
     end
 
     def default_administrative_attributes(mimetype)
-      attrs = ::Assembly::ContentMetadata::File::ATTRIBUTES_FOR_TYPE
+      attrs = Assembly::ContentMetadata::File::ATTRIBUTES_FOR_TYPE
 
       attrs.fetch(mimetype) { attrs.fetch('default') }
     end
