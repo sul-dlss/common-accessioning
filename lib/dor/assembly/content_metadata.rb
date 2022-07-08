@@ -23,30 +23,20 @@ module Dor
       #                 :map, like simple_image, but with contentMetadata type="map", resource type="image"
       #                 :3d, contentMetadata type="3d", ".obj" and other configured 3d extension files go into resource_type="3d", everything else into resource_type="file"
       #                 :webarchive-seed, contentMetadata type="webarchive-seed", resource type="image"
-      #   :include_root_xml = optional - a boolean to indicate if the contentMetadata returned includes a root <?xml version="1.0"?> tag, defaults to true
       #   See https://consul.stanford.edu/pages/viewpage.action?spaceKey=chimera&title=DOR+content+types%2C+resource+types+and+interpretive+metadata for next two settings
       #   :reading_order = optional - only valid for simple_book, can be 'rtl' or 'ltr'.  The default is 'ltr'.
       # Example:
       #    Assembly::ContentMetadata.create_content_metadata(:druid=>'druid:nx288wh8889',:style=>:simple_image,:objects=>object_files)
-      def self.create_content_metadata(druid:, objects:,
-                                       style: :simple_image,
-                                       include_root_xml: nil,
-                                       reading_order: 'ltr')
+      def self.create_content_metadata(druid:, objects:, style: :simple_image, reading_order: 'ltr')
         common_path = find_common_path(objects) # find common paths to all files provided
 
         filesets = FileSetBuilder.build(objects: objects, style: style)
 
-        builder = NokogiriBuilder.build(druid: druid,
-                                        filesets: filesets,
-                                        common_path: common_path,
-                                        reading_order: reading_order,
-                                        type: object_level_type(style))
-
-        if include_root_xml == false
-          builder.doc.root.to_xml
-        else
-          builder.to_xml
-        end
+        NokogiriBuilder.build(druid: druid,
+                              filesets: filesets,
+                              common_path: common_path,
+                              reading_order: reading_order,
+                              type: object_level_type(style)).to_xml
       end
 
       def self.find_common_path(objects)
