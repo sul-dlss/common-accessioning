@@ -27,6 +27,9 @@ TMP_ROOT_DIR = 'tmp/test_input'
 RSpec.configure do |config|
   config.order = :random
   config.default_formatter = 'doc' if config.files_to_run.one?
+
+  # Enable flags like --only-failures and --next-failure
+  config.example_status_persistence_file_path = '.rspec_status'
 end
 
 # Use rsync to create a copy of the test_input directory that we can modify.

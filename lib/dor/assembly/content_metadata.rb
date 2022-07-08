@@ -23,10 +23,6 @@ module Dor
       #                 :map, like simple_image, but with contentMetadata type="map", resource type="image"
       #                 :3d, contentMetadata type="3d", ".obj" and other configured 3d extension files go into resource_type="3d", everything else into resource_type="file"
       #                 :webarchive-seed, contentMetadata type="webarchive-seed", resource type="image"
-      #   :bundle = optional - a symbol containing the method of bundling files into resources, allowed values are
-      #                 :default = all files get their own resources (default)
-      #                 :filename = files with the same filename but different extensions get bundled together in a single resource
-      #                 :prebundlded = this option requires you to prebundled the files passed in as an array of arrays, indicating how files are bundlded into resources; this is the most flexible option since it gives you full control
       #   :add_exif = optional - a boolean to indicate if exif data should be added (mimetype, filesize, image height/width, etc.) to each file, defaults to false and is not required if project goes through assembly
       #   :add_file_attributes = optional - a boolean to indicate if publish/preserve/shelve/role attributes should be added using defaults or by supplied override by mime/type, defaults to false and is not required if project goes through assembly
       #   :file_attributes = optional - a hash of file attributes by mimetype to use instead of defaults, only used if add_file_attributes is also true,
@@ -42,14 +38,13 @@ module Dor
       # Example:
       #    Assembly::ContentMetadata.create_content_metadata(:druid=>'druid:nx288wh8889',:style=>:simple_image,:objects=>object_files,:add_file_attributes=>false)
       def self.create_content_metadata(druid:, objects:, auto_labels: true,
-                                       add_exif: false, bundle: :default, style: :simple_image,
+                                       add_exif: false, style: :simple_image,
                                        add_file_attributes: false, file_attributes: {},
                                        preserve_common_paths: false, include_root_xml: nil,
                                        reading_order: 'ltr')
-
         common_path = find_common_path(objects) unless preserve_common_paths # find common paths to all files provided if needed
 
-        filesets = FileSetBuilder.build(bundle: bundle, objects: objects, style: style)
+        filesets = FileSetBuilder.build(objects: objects, style: style)
         config = Config.new(auto_labels: auto_labels,
                             add_file_attributes: add_file_attributes,
                             file_attributes: file_attributes,
