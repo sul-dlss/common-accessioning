@@ -34,7 +34,6 @@ module Dor
 
         attr_reader :resource_files, :style
 
-        # rubocop:disable Metrics/CyclomaticComplexity
         # use style attribute to determine the resource_type_description
         def resource_type_descriptions
           # grab all of the file types within a resource into an array so we can decide what the resource type should be
@@ -42,18 +41,12 @@ module Dor
           resource_has_non_images = !(resource_file_types - [:image]).empty?
 
           case style
-          when :simple_image, :map, :'webarchive-seed'
+          when :simple_image, :map
             'image'
           when :file
             'file'
           when :simple_book # in a simple book project, all resources are pages unless they are *all* non-images -- if so, switch the type to object
             resource_has_non_images && resource_file_types.include?(:image) == false ? 'object' : 'page'
-          when :book_as_image # same as simple book, but all resources are images instead of pages, unless we need to switch them to object type
-            resource_has_non_images && resource_file_types.include?(:image) == false ? 'object' : 'image'
-          when :book_with_pdf # in book with PDF type, if we find a resource with *any* non images, switch it's type from book to object
-            resource_has_non_images ? 'object' : 'page'
-          when :document
-            'document'
           when :'3d'
             resource_extensions = resource_files.collect(&:ext)
             if (resource_extensions & VALID_THREE_DIMENSION_EXTENTIONS).empty? # if this resource contains no known 3D file extensions, the resource type is file
@@ -63,7 +56,6 @@ module Dor
             end
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
       end
     end
   end
