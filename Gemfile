@@ -9,6 +9,8 @@ gem 'assembly-objectfile', '~> 1.10', '>= 1.10.3' # reading order, webarchive-se
 gem 'config', '~> 2.2'
 gem 'dor-services-client', '~> 12.0'
 gem 'dor-workflow-client', '~> 4.0'
+gem 'dry-struct', '~> 1.0'
+gem 'dry-types', '~> 1.1'
 gem 'druid-tools', '~> 2.1'
 gem 'honeybadger'
 gem 'lyber-core', '~> 6.1'

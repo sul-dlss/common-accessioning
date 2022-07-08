@@ -15,3 +15,6 @@ workflows:
             - run:
                 name: Install libvips
                 command: sudo apt-get update && sudo apt-get install -y libvips
+            - run:
+                name: Install exiftool
+                command: curl -L http://cpanmin.us | perl - --sudo Image::ExifTool

@@ -282,6 +282,8 @@ DEPENDENCIES
   dor-services-client (~> 12.0)
   dor-workflow-client (~> 4.0)
   druid-tools (~> 2.1)
+  dry-struct (~> 1.0)
+  dry-types (~> 1.1)
   equivalent-xml
   honeybadger
   lyber-core (~> 6.1)
