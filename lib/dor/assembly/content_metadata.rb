@@ -2,7 +2,7 @@
 
 module Dor
   module Assembly
-    VALID_STYLES = %i[simple_image simple_book file map document 3d webarchive-seed].freeze
+    VALID_STYLES = %i[simple_image simple_book file map 3d].freeze
 
     # This class generates content metadata for image files
     class ContentMetadata

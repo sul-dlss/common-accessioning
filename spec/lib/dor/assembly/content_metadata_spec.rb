@@ -285,32 +285,6 @@ RSpec.describe Dor::Assembly::ContentMetadata do
       end
     end
 
-    context 'when using style=document' do
-      let(:objects) do
-        [[Assembly::ObjectFile.new(TEST_PDF_FILE)]]
-      end
-
-      let(:style) { :document }
-
-      it 'generates valid content metadata' do
-        expect(xml.errors.size).to eq 0
-        expect(xml.xpath('//contentMetadata')[0].attributes['type'].value).to eq('document')
-        expect(xml.xpath('//bookData').length).to eq 0
-        expect(xml.xpath('//resource').length).to eq 1
-        expect(xml.xpath('//resource/file').length).to eq 1
-        expect(xml.xpath('//label').length).to eq 1
-        expect(xml.xpath('//label')[0].text).to match(/Document 1/)
-        expect(xml.xpath('//resource/file/imageData').length).to eq 0
-        file = xml.xpath('//resource/file').first
-        expect(file.attributes['size']).to be_nil
-        expect(file.attributes['mimetype']).to be_nil
-        expect(file.attributes['publish']).to be_nil
-        expect(file.attributes['preserve']).to be_nil
-        expect(file.attributes['shelve']).to be_nil
-        expect(xml.xpath('//resource')[0].attributes['type'].value).to eq('document')
-      end
-    end
-
     context 'when using user supplied checksums for two tifs and style=simple_book' do
       it 'generates valid content metadata with no exif' do
         obj1 = Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE)
