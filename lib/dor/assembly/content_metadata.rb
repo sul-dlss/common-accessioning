@@ -23,7 +23,6 @@ module Dor
       #                 :map, like simple_image, but with contentMetadata type="map", resource type="image"
       #                 :3d, contentMetadata type="3d", ".obj" and other configured 3d extension files go into resource_type="3d", everything else into resource_type="file"
       #                 :webarchive-seed, contentMetadata type="webarchive-seed", resource type="image"
-      #   :add_exif = optional - a boolean to indicate if exif data should be added (mimetype, filesize, image height/width, etc.) to each file, defaults to false and is not required if project goes through assembly
       #   :add_file_attributes = optional - a boolean to indicate if publish/preserve/shelve/role attributes should be added using defaults or by supplied override by mime/type, defaults to false and is not required if project goes through assembly
       #   :file_attributes = optional - a hash of file attributes by mimetype to use instead of defaults, only used if add_file_attributes is also true,
       #             If a mimetype match is not found in your hash, the default is used (either your supplied default or the gems).
@@ -38,7 +37,7 @@ module Dor
       # Example:
       #    Assembly::ContentMetadata.create_content_metadata(:druid=>'druid:nx288wh8889',:style=>:simple_image,:objects=>object_files,:add_file_attributes=>false)
       def self.create_content_metadata(druid:, objects:, auto_labels: true,
-                                       add_exif: false, style: :simple_image,
+                                       style: :simple_image,
                                        add_file_attributes: false, file_attributes: {},
                                        preserve_common_paths: false, include_root_xml: nil,
                                        reading_order: 'ltr')
@@ -48,7 +47,6 @@ module Dor
         config = Config.new(auto_labels: auto_labels,
                             add_file_attributes: add_file_attributes,
                             file_attributes: file_attributes,
-                            add_exif: add_exif,
                             reading_order: reading_order,
                             type: object_level_type(style))
 

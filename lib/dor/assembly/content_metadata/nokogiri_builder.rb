@@ -35,14 +35,9 @@ module Dor
                   fileset.files.each do |cm_file| # iterate over all the files in a resource
                     xml_file_params = { id: cm_file.file_id(common_path: common_path) }
                     xml_file_params.merge!(cm_file.file_attributes(config.file_attributes)) if config.add_file_attributes
-                    xml_file_params.merge!(mimetype: cm_file.mimetype, size: cm_file.filesize) if config.add_exif
 
                     xml.file(xml_file_params) do
-                      if config.add_exif # add exif info if the user requested it
-                        xml.checksum(cm_file.sha1, type: 'sha1')
-                        xml.checksum(cm_file.md5, type: 'md5')
-                        xml.imageData(cm_file.image_data) if cm_file.valid_image? # add image data for an image
-                      elsif cm_file.provider_md5 || cm_file.provider_sha1 # if we did not add exif info, see if there are user supplied checksums to add
+                      if cm_file.provider_md5 || cm_file.provider_sha1 # if there are user supplied checksums to add
                         xml.checksum(cm_file.provider_sha1, type: 'sha1') if cm_file.provider_sha1
                         xml.checksum(cm_file.provider_md5, type: 'md5') if cm_file.provider_md5
                       end

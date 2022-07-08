@@ -8,7 +8,7 @@ RSpec.describe Dor::Assembly::ContentMetadata do
   TEST_TIF_INPUT_FILE2 = File.join(TEST_INPUT_DIR, 'test2.tif')
   TEST_JP2_INPUT_FILE = File.join(TEST_INPUT_DIR, 'test.jp2')
   TEST_JP2_INPUT_FILE2 = File.join(TEST_INPUT_DIR, 'test2.jp2')
-  TEST_SVG_INPUT_FILE  = File.join(TEST_INPUT_DIR, 'test.svg')
+
   TEST_RES1_TIF1 = File.join(TEST_INPUT_DIR, 'res1_image1.tif')
   TEST_RES1_TIF2 = File.join(TEST_INPUT_DIR, 'res1_image2.tif')
   TEST_RES1_TEI = File.join(TEST_INPUT_DIR, 'res1_teifile.txt')
@@ -41,79 +41,7 @@ RSpec.describe Dor::Assembly::ContentMetadata do
     let(:xml) { Nokogiri::XML(result) }
 
     context 'when style=simple_image' do
-      context 'when using a single tif and jp2 with add_exif: true' do
-        it 'generates valid content metadata with exif, adding file attributes' do
-          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE)], [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE)]]
-          result = described_class.create_content_metadata(druid: TEST_DRUID, add_exif: true, add_file_attributes: true, objects: objects)
-          expect(result.class).to be String
-          xml = Nokogiri::XML(result)
-          expect(xml.errors.size).to eq 0
-          expect(xml.xpath('//contentMetadata')[0].attributes['type'].value).to eq('image')
-          expect(xml.xpath('//resource').length).to eq 2
-          expect(xml.xpath('//resource/file').length).to eq 2
-          expect(xml.xpath('//resource/file/checksum').length).to eq 4
-          expect(xml.xpath('//resource/file/checksum')[0].text).to eq('8d11fab63089a24c8b17063d29a4b0eac359fb41')
-          expect(xml.xpath('//resource/file/checksum')[1].text).to eq('a2400500acf21e43f5440d93be894101')
-          expect(xml.xpath('//resource/file/checksum')[2].text).to eq('b965b5787e0100ec2d43733144120feab327e88c')
-          expect(xml.xpath('//resource/file/checksum')[3].text).to eq('4eb54050d374291ece622d45e84f014d')
-          expect(xml.xpath('//label').length).to eq 2
-          expect(xml.xpath('//label')[0].text).to match(/Image 1/)
-          expect(xml.xpath('//label')[1].text).to match(/Image 2/)
-          expect(xml.xpath('//resource')[0].attributes['type'].value).to eq('image')
-          expect(xml.xpath('//resource')[1].attributes['type'].value).to eq('image')
-          expect(xml.xpath('//resource/file')[0].attributes['size'].value).to eq('63542')
-          expect(xml.xpath('//resource/file')[0].attributes['mimetype'].value).to eq('image/tiff')
-          expect(xml.xpath('//resource/file')[0].attributes['publish'].value).to eq('no')
-          expect(xml.xpath('//resource/file')[0].attributes['preserve'].value).to eq('yes')
-          expect(xml.xpath('//resource/file')[0].attributes['shelve'].value).to eq('no')
-          expect(xml.xpath('//resource/file/imageData')[0].attributes['width'].value).to eq('100')
-          expect(xml.xpath('//resource/file/imageData')[0].attributes['height'].value).to eq('100')
-          expect(xml.xpath('//resource/file')[1].attributes['size'].value).to eq('306')
-          expect(xml.xpath('//resource/file')[1].attributes['mimetype'].value).to eq('image/jp2')
-          expect(xml.xpath('//resource/file')[1].attributes['publish'].value).to eq('yes')
-          expect(xml.xpath('//resource/file')[1].attributes['preserve'].value).to eq('no')
-          expect(xml.xpath('//resource/file')[1].attributes['shelve'].value).to eq('yes')
-          expect(xml.xpath('//resource/file/imageData')[1].attributes['width'].value).to eq('100')
-          expect(xml.xpath('//resource/file/imageData')[1].attributes['height'].value).to eq('100')
-        end
-
-        it 'generates valid content metadata, overriding file labels' do
-          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, label: 'Sample tif label!')], [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE, label: 'Sample jp2 label!')]]
-          result = described_class.create_content_metadata(druid: TEST_DRUID, add_exif: true, add_file_attributes: true, objects: objects)
-          expect(result.class).to be String
-          xml = Nokogiri::XML(result)
-          expect(xml.errors.size).to eq 0
-          expect(xml.xpath('//contentMetadata')[0].attributes['type'].value).to eq('image')
-          expect(xml.xpath('//resource').length).to eq 2
-          expect(xml.xpath('//resource/file').length).to eq 2
-          expect(xml.xpath('//resource/file/checksum').length).to eq 4
-          expect(xml.xpath('//resource/file/checksum')[0].text).to eq('8d11fab63089a24c8b17063d29a4b0eac359fb41')
-          expect(xml.xpath('//resource/file/checksum')[1].text).to eq('a2400500acf21e43f5440d93be894101')
-          expect(xml.xpath('//resource/file/checksum')[2].text).to eq('b965b5787e0100ec2d43733144120feab327e88c')
-          expect(xml.xpath('//resource/file/checksum')[3].text).to eq('4eb54050d374291ece622d45e84f014d')
-          expect(xml.xpath('//label').length).to eq 2
-          expect(xml.xpath('//label')[0].text).to match(/Sample tif label!/)
-          expect(xml.xpath('//label')[1].text).to match(/Sample jp2 label!/)
-          expect(xml.xpath('//resource')[0].attributes['type'].value).to eq('image')
-          expect(xml.xpath('//resource')[1].attributes['type'].value).to eq('image')
-          expect(xml.xpath('//resource/file')[0].attributes['size'].value).to eq('63542')
-          expect(xml.xpath('//resource/file')[0].attributes['mimetype'].value).to eq('image/tiff')
-          expect(xml.xpath('//resource/file')[0].attributes['publish'].value).to eq('no')
-          expect(xml.xpath('//resource/file')[0].attributes['preserve'].value).to eq('yes')
-          expect(xml.xpath('//resource/file')[0].attributes['shelve'].value).to eq('no')
-          expect(xml.xpath('//resource/file/imageData')[0].attributes['width'].value).to eq('100')
-          expect(xml.xpath('//resource/file/imageData')[0].attributes['height'].value).to eq('100')
-          expect(xml.xpath('//resource/file')[1].attributes['size'].value).to eq('306')
-          expect(xml.xpath('//resource/file')[1].attributes['mimetype'].value).to eq('image/jp2')
-          expect(xml.xpath('//resource/file')[1].attributes['publish'].value).to eq('yes')
-          expect(xml.xpath('//resource/file')[1].attributes['preserve'].value).to eq('no')
-          expect(xml.xpath('//resource/file')[1].attributes['shelve'].value).to eq('yes')
-          expect(xml.xpath('//resource/file/imageData')[1].attributes['width'].value).to eq('100')
-          expect(xml.xpath('//resource/file/imageData')[1].attributes['height'].value).to eq('100')
-        end
-      end
-
-      context 'when using a single tif and jp2 with add_exif: false' do
+      context 'when using a single tif and jp2' do
         it 'generates valid content metadata adding specific file attributes for 2 objects, and defaults for 1 object' do
           obj1 = Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE)
           obj2 = Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE)
@@ -121,7 +49,7 @@ RSpec.describe Dor::Assembly::ContentMetadata do
           obj1.file_attributes = { publish: 'no', preserve: 'no', shelve: 'no' }
           obj2.file_attributes = { publish: 'yes', preserve: 'yes', shelve: 'yes' }
           objects = [[obj1], [obj2], [obj3]]
-          result = described_class.create_content_metadata(druid: TEST_DRUID, add_exif: false, add_file_attributes: true, objects: objects)
+          result = described_class.create_content_metadata(druid: TEST_DRUID, add_file_attributes: true, objects: objects)
           expect(result.class).to be String
           xml = Nokogiri::XML(result)
           expect(xml.errors.size).to eq 0
@@ -262,55 +190,6 @@ RSpec.describe Dor::Assembly::ContentMetadata do
             expect(xml.xpath('//label')[i].text).to eq("Image #{i + 1}")
             expect(xml.xpath('//resource')[i].attributes['type'].value).to eq('image')
           end
-        end
-      end
-
-      context 'when using a single svg with add_exif: true' do
-        subject(:result) { described_class.create_content_metadata(druid: TEST_DRUID, add_exif: true, auto_labels: false, add_file_attributes: true, objects: objects) }
-
-        let(:objects) { [[Assembly::ObjectFile.new(TEST_SVG_INPUT_FILE)]] }
-
-        it 'generates no imageData node' do
-          xml = Nokogiri::XML(result)
-          expect(xml.errors.size).to eq 0
-          expect(xml.xpath('//contentMetadata')[0].attributes['type'].value).to eq('image')
-          expect(xml.xpath('//resource/file').length).to eq 1
-          expect(xml.xpath('//resource/file')[0]['mimetype']).to eq 'image/svg+xml'
-          expect(xml.xpath('//resource/file')[0]['publish']).to eq('no')
-          expect(xml.xpath('//resource/file')[0]['preserve']).to eq('yes')
-          expect(xml.xpath('//resource/file')[0]['shelve']).to eq('no')
-          expect(xml.xpath("//resource[@sequence='1']/file").length).to eq 1
-          expect(xml.xpath('//imageData')).not_to be_present
-          expect(xml.xpath('//resource')[0].attributes['type'].value).to eq('image')
-        end
-      end
-    end
-
-    context 'when style=webarchive-seed' do
-      context 'when using a jp2' do
-        it 'generates valid content metadata with exif, adding file attributes' do
-          objects = [[Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE)]]
-          result = described_class.create_content_metadata(style: :'webarchive-seed', druid: TEST_DRUID, add_exif: true, add_file_attributes: true, objects: objects)
-          expect(result.class).to be String
-          xml = Nokogiri::XML(result)
-          expect(xml.errors.size).to eq 0
-          expect(xml.xpath('//contentMetadata')[0].attributes['type'].value).to eq('webarchive-seed')
-          expect(xml.xpath('//bookData').length).to eq 0
-          expect(xml.xpath('//resource').length).to eq 1
-          expect(xml.xpath('//resource/file').length).to eq 1
-          expect(xml.xpath('//resource/file/checksum').length).to eq 2
-          expect(xml.xpath('//resource/file/checksum')[0].text).to eq('b965b5787e0100ec2d43733144120feab327e88c')
-          expect(xml.xpath('//resource/file/checksum')[1].text).to eq('4eb54050d374291ece622d45e84f014d')
-          expect(xml.xpath('//label').length).to eq 1
-          expect(xml.xpath('//label')[0].text).to match(/Image 1/)
-          expect(xml.xpath('//resource')[0].attributes['type'].value).to eq('image')
-          expect(xml.xpath('//resource/file')[0].attributes['size'].value).to eq('306')
-          expect(xml.xpath('//resource/file')[0].attributes['mimetype'].value).to eq('image/jp2')
-          expect(xml.xpath('//resource/file')[0].attributes['publish'].value).to eq('yes')
-          expect(xml.xpath('//resource/file')[0].attributes['preserve'].value).to eq('no')
-          expect(xml.xpath('//resource/file')[0].attributes['shelve'].value).to eq('yes')
-          expect(xml.xpath('//resource/file/imageData')[0].attributes['width'].value).to eq('100')
-          expect(xml.xpath('//resource/file/imageData')[0].attributes['height'].value).to eq('100')
         end
       end
     end
@@ -509,7 +388,7 @@ RSpec.describe Dor::Assembly::ContentMetadata do
         obj1 = Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE)
         obj1.file_attributes = { publish: 'no', preserve: 'no', shelve: 'no', role: 'master-role' }
         objects = [[obj1]]
-        result = described_class.create_content_metadata(druid: TEST_DRUID, add_exif: false, add_file_attributes: true, objects: objects)
+        result = described_class.create_content_metadata(druid: TEST_DRUID, add_file_attributes: true, objects: objects)
         expect(result.class).to be String
         xml = Nokogiri::XML(result)
         expect(xml.errors.size).to eq 0

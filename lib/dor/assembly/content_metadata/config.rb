@@ -14,7 +14,6 @@ module Dor
         READING_ORDERS = %w[ltr rtl].freeze
         attribute :auto_labels, Types::Strict::Bool.default(true)
         attribute :add_file_attributes, Types::Strict::Bool.default(false)
-        attribute :add_exif, Types::Strict::Bool.default(false)
         attribute :file_attributes, Types::Strict::Hash.default({}.freeze)
         attribute :type, Types::Strict::String.enum(*STYLES)
         attribute :reading_order, Types::Strict::String.default('ltr').enum(*READING_ORDERS)
