@@ -25,7 +25,7 @@ module Dor
           end
         end
 
-        ContentMetadata.create_content_metadata(druid: @druid.druid, style: gem_content_metadata_style, objects: cm_resources, bundle: :prebundled, add_file_attributes: true, reading_order: book_reading_order)
+        ContentMetadata.create_content_metadata(druid: @druid.druid, style: gem_content_metadata_style, objects: cm_resources, add_file_attributes: true, reading_order: book_reading_order)
       end
 
       def stub_content_metadata_exists?
