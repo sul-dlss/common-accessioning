@@ -27,20 +27,18 @@ module Dor
       #   :preserve_common_paths = optional - When creating the file "id" attribute, content metadata uses the "relative_path" attribute of the ObjectFile objects passed in.  If the "relative_path" attribute is not set,  the "path" attribute is used instead,
       #                   which includes a full path to the file. If the "preserve_common_paths" parameter is set to false or left off, then the common paths of all of the ObjectFile's passed in are removed from any "path" attributes.  This should turn full paths into
       #                   the relative paths that are required in content metadata file id nodes.  If you do not want this behavior, set "preserve_common_paths" to true.  The default is false.
-      #   :auto_labels = optional - Will add automated resource labels (e.g. "File 1") when labels are not provided by the user.  The default is true.
       #   See https://consul.stanford.edu/pages/viewpage.action?spaceKey=chimera&title=DOR+content+types%2C+resource+types+and+interpretive+metadata for next two settings
       #   :reading_order = optional - only valid for simple_book, can be 'rtl' or 'ltr'.  The default is 'ltr'.
       # Example:
       #    Assembly::ContentMetadata.create_content_metadata(:druid=>'druid:nx288wh8889',:style=>:simple_image,:objects=>object_files)
-      def self.create_content_metadata(druid:, objects:, auto_labels: true,
+      def self.create_content_metadata(druid:, objects:,
                                        style: :simple_image,
                                        preserve_common_paths: false, include_root_xml: nil,
                                        reading_order: 'ltr')
         common_path = find_common_path(objects) unless preserve_common_paths # find common paths to all files provided if needed
 
         filesets = FileSetBuilder.build(objects: objects, style: style)
-        config = Config.new(auto_labels: auto_labels,
-                            reading_order: reading_order,
+        config = Config.new(reading_order: reading_order,
                             type: object_level_type(style))
 
         builder = NokogiriBuilder.build(druid: druid,
