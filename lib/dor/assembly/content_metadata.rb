@@ -23,8 +23,7 @@ module Dor
       #                 :map, like simple_image, but with contentMetadata type="map", resource type="image"
       #                 :3d, contentMetadata type="3d", ".obj" and other configured 3d extension files go into resource_type="3d", everything else into resource_type="file"
       #                 :webarchive-seed, contentMetadata type="webarchive-seed", resource type="image"
-      #   :add_file_attributes = optional - a boolean to indicate if publish/preserve/shelve/role attributes should be added using defaults or by supplied override by mime/type, defaults to false and is not required if project goes through assembly
-      #   :file_attributes = optional - a hash of file attributes by mimetype to use instead of defaults, only used if add_file_attributes is also true,
+      #   :file_attributes = optional - a hash of file attributes by mimetype to use instead of defaults
       #             If a mimetype match is not found in your hash, the default is used (either your supplied default or the gems).
       #             e.g. {'default'=>{:preserve=>'yes',:shelve=>'yes',:publish=>'yes'},'image/tif'=>{:preserve=>'yes',:shelve=>'no',:publish=>'no'},'application/pdf'=>{:preserve=>'yes',:shelve=>'yes',:publish=>'yes'}}
       #   :include_root_xml = optional - a boolean to indicate if the contentMetadata returned includes a root <?xml version="1.0"?> tag, defaults to true
@@ -35,17 +34,15 @@ module Dor
       #   See https://consul.stanford.edu/pages/viewpage.action?spaceKey=chimera&title=DOR+content+types%2C+resource+types+and+interpretive+metadata for next two settings
       #   :reading_order = optional - only valid for simple_book, can be 'rtl' or 'ltr'.  The default is 'ltr'.
       # Example:
-      #    Assembly::ContentMetadata.create_content_metadata(:druid=>'druid:nx288wh8889',:style=>:simple_image,:objects=>object_files,:add_file_attributes=>false)
+      #    Assembly::ContentMetadata.create_content_metadata(:druid=>'druid:nx288wh8889',:style=>:simple_image,:objects=>object_files)
       def self.create_content_metadata(druid:, objects:, auto_labels: true,
-                                       style: :simple_image,
-                                       add_file_attributes: false, file_attributes: {},
+                                       style: :simple_image, file_attributes: {},
                                        preserve_common_paths: false, include_root_xml: nil,
                                        reading_order: 'ltr')
         common_path = find_common_path(objects) unless preserve_common_paths # find common paths to all files provided if needed
 
         filesets = FileSetBuilder.build(objects: objects, style: style)
         config = Config.new(auto_labels: auto_labels,
-                            add_file_attributes: add_file_attributes,
                             file_attributes: file_attributes,
                             reading_order: reading_order,
                             type: object_level_type(style))
