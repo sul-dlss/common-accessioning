@@ -285,41 +285,6 @@ RSpec.describe Dor::Assembly::ContentMetadata do
       end
     end
 
-    context 'when using user supplied checksums for two tifs and style=simple_book' do
-      it 'generates valid content metadata with no exif' do
-        obj1 = Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE)
-        obj1.provider_md5 = '123456789'
-        obj1.provider_sha1 = 'abcdefgh'
-        obj2 = Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE2)
-        obj2.provider_md5 = 'qwerty'
-        objects = [[obj1], [obj2]]
-        result = described_class.create_content_metadata(druid: TEST_DRUID, style: :simple_book, objects: objects)
-        expect(result.class).to be String
-        xml = Nokogiri::XML(result)
-        expect(xml.errors.size).to eq 0
-        expect(xml.xpath('//contentMetadata')[0].attributes['type'].value).to eq('book')
-        expect(xml.xpath('//resource').length).to eq 2
-        expect(xml.xpath('//resource/file').length).to eq 2
-        expect(xml.xpath('//resource/file/checksum').length).to eq 3
-        expect(xml.xpath('//label').length).to eq 2
-        expect(xml.xpath('//label')[0].text).to match(/Page 1/)
-        expect(xml.xpath('//label')[1].text).to match(/Page 2/)
-        expect(xml.xpath('//resource/file/imageData').length).to eq 0
-        expect(xml.xpath('//resource/file/checksum')[0].text).to eq('abcdefgh')
-        expect(xml.xpath('//resource/file/checksum')[1].text).to eq('123456789')
-        expect(xml.xpath('//resource/file/checksum')[2].text).to eq('qwerty')
-        (0..1).each do |i|
-          expect(xml.xpath('//resource/file')[i].attributes['size']).to be_nil
-          expect(xml.xpath('//resource/file')[i].attributes['mimetype']).to be_nil
-          expect(xml.xpath('//resource/file')[i].attributes['publish']).to be_nil
-          expect(xml.xpath('//resource/file')[i].attributes['preserve']).to be_nil
-          expect(xml.xpath('//resource/file')[i].attributes['shelve']).to be_nil
-        end
-        expect(xml.xpath('//resource')[0].attributes['type'].value).to eq('page')
-        expect(xml.xpath('//resource')[1].attributes['type'].value).to eq('page')
-      end
-    end
-
     context 'when not all input files exist' do
       it 'does not generate valid content metadata' do
         junk_file = '/tmp/flim_flam_floom.jp2'
