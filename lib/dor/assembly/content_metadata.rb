@@ -74,7 +74,7 @@ module Dor
       private_class_method :find_common_path
 
       def self.object_level_type(style)
-        raise "Supplied style (#{style}) not valid" unless (VALID_STYLES).include? style
+        raise "Supplied style (#{style}) not valid" unless VALID_STYLES.include? style
 
         case style
         when :simple_image
