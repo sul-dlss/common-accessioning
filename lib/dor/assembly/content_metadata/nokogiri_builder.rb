@@ -34,7 +34,7 @@ module Dor
                   xml.label(resource_label) unless resource_label.empty?
                   fileset.files.each do |cm_file| # iterate over all the files in a resource
                     xml_file_params = { id: cm_file.file_id(common_path: common_path) }
-                    xml_file_params.merge!(cm_file.file_attributes(config.file_attributes)) if config.add_file_attributes
+                    xml_file_params.merge!(cm_file.file_attributes)
 
                     xml.file(xml_file_params)
                   end

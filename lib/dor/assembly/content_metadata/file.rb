@@ -46,9 +46,7 @@ module Dor
           common_path ? file.path.gsub(common_path, '') : file.path
         end
 
-        def file_attributes(provided_file_attributes)
-          file.file_attributes || provided_file_attributes[mimetype] || provided_file_attributes['default'] || ATTRIBUTES_FOR_TYPE[mimetype] || ATTRIBUTES_FOR_TYPE['default']
-        end
+        delegate :file_attributes, to: :file
 
         def image_data
           { height: file.exif.imageheight, width: file.exif.imagewidth }

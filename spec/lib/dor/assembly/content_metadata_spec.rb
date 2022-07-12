@@ -39,17 +39,16 @@ RSpec.describe Dor::Assembly::ContentMetadata do
     subject(:result) { described_class.create_content_metadata(druid: TEST_DRUID, style: style, objects: objects) }
 
     let(:xml) { Nokogiri::XML(result) }
+    let(:file_attributes) { { 'publish' => 'no', 'preserve' => 'yes', 'shelve' => 'no' } }
 
     context 'when style=simple_image' do
       context 'when using a single tif and jp2' do
-        it 'generates valid content metadata adding specific file attributes for 2 objects, and defaults for 1 object' do
-          obj1 = Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE)
-          obj2 = Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE)
-          obj3 = Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE2)
-          obj1.file_attributes = { publish: 'no', preserve: 'no', shelve: 'no' }
-          obj2.file_attributes = { publish: 'yes', preserve: 'yes', shelve: 'yes' }
+        it 'generates valid content metadata' do
+          obj1 = Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, file_attributes: { publish: 'no', preserve: 'no', shelve: 'no' })
+          obj2 = Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE, file_attributes: { publish: 'yes', preserve: 'yes', shelve: 'yes' })
+          obj3 = Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE2, file_attributes: file_attributes)
           objects = [[obj1], [obj2], [obj3]]
-          result = described_class.create_content_metadata(druid: TEST_DRUID, add_file_attributes: true, objects: objects)
+          result = described_class.create_content_metadata(druid: TEST_DRUID, objects: objects)
           expect(result.class).to be String
           xml = Nokogiri::XML(result)
           expect(xml.errors.size).to eq 0
@@ -71,16 +70,18 @@ RSpec.describe Dor::Assembly::ContentMetadata do
           expect(xml.xpath('//resource/file')[1].attributes['publish'].value).to eq('yes') # specificially set in object
           expect(xml.xpath('//resource/file')[1].attributes['preserve'].value).to eq('yes') # specificially set in object
           expect(xml.xpath('//resource/file')[1].attributes['shelve'].value).to eq('yes')  # specificially set in object
-          expect(xml.xpath('//resource/file')[2].attributes['publish'].value).to eq('yes') # defaults by mimetype
-          expect(xml.xpath('//resource/file')[2].attributes['preserve'].value).to eq('no') # defaults by mimetype
-          expect(xml.xpath('//resource/file')[2].attributes['shelve'].value).to eq('yes') # defaults by mimetype
+          expect(xml.xpath('//resource/file')[2].attributes['publish'].value).to eq('no')
+          expect(xml.xpath('//resource/file')[2].attributes['preserve'].value).to eq('yes')
+          expect(xml.xpath('//resource/file')[2].attributes['shelve'].value).to eq('no')
         end
       end
 
-      context 'when using a single tif and jp2' do
+      context 'when using a single tif and jp2 and auto_labels=false' do
         it 'generates valid content metadata with exif, overriding file labels for one, and skipping auto labels for the others or for where the label is set but is blank' do
-          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, label: 'Sample tif label!')], [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE)], [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE, label: '')]]
-          result = described_class.create_content_metadata(druid: TEST_DRUID, auto_labels: false, add_file_attributes: true, objects: objects)
+          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, label: 'Sample tif label!', file_attributes: file_attributes)],
+                     [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE, file_attributes: file_attributes)],
+                     [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE, label: '', file_attributes: file_attributes)]]
+          result = described_class.create_content_metadata(druid: TEST_DRUID, auto_labels: false, objects: objects)
           expect(result.class).to be String
           xml = Nokogiri::XML(result)
           expect(xml.errors.size).to eq 0
@@ -92,69 +93,11 @@ RSpec.describe Dor::Assembly::ContentMetadata do
         end
       end
 
-      context 'when using a single tif and jp2' do
-        it 'generates valid content metadata with overriding file attributes and no exif data' do
-          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE)], [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE)]]
-          result = described_class.create_content_metadata(druid: TEST_DRUID, add_file_attributes: true,
-                                                           file_attributes: { 'image/tiff' => { publish: 'no', preserve: 'no', shelve: 'no' }, 'image/jp2' => { publish: 'yes', preserve: 'yes', shelve: 'yes' } }, objects: objects)
-          expect(result.class).to be String
-          xml = Nokogiri::XML(result)
-          expect(xml.errors.size).to eq 0
-          expect(xml.xpath('//contentMetadata')[0].attributes['type'].value).to eq('image')
-          expect(xml.xpath('//resource').length).to eq 2
-          expect(xml.xpath('//resource/file').length).to eq 2
-          expect(xml.xpath('//label').length).to eq 2
-          expect(xml.xpath('//resource/file/imageData').length).to eq 0
-          expect(xml.xpath('//label')[0].text).to match(/Image 1/)
-          expect(xml.xpath('//label')[1].text).to match(/Image 2/)
-          expect(xml.xpath('//resource')[0].attributes['type'].value).to eq('image')
-          expect(xml.xpath('//resource')[1].attributes['type'].value).to eq('image')
-          expect(xml.xpath('//resource/file')[0].attributes['size']).to be_nil
-          expect(xml.xpath('//resource/file')[0].attributes['mimetype']).to be_nil
-          expect(xml.xpath('//resource/file')[0].attributes['role']).to be_nil
-          expect(xml.xpath('//resource/file')[0].attributes['publish'].value).to eq('no')
-          expect(xml.xpath('//resource/file')[0].attributes['preserve'].value).to eq('no')
-          expect(xml.xpath('//resource/file')[0].attributes['shelve'].value).to eq('no')
-          expect(xml.xpath('//resource/file')[1].attributes['size']).to be_nil
-          expect(xml.xpath('//resource/file')[1].attributes['mimetype']).to be_nil
-          expect(xml.xpath('//resource/file')[1].attributes['role']).to be_nil
-          expect(xml.xpath('//resource/file')[1].attributes['publish'].value).to eq('yes')
-          expect(xml.xpath('//resource/file')[1].attributes['preserve'].value).to eq('yes')
-          expect(xml.xpath('//resource/file')[1].attributes['shelve'].value).to eq('yes')
-        end
-      end
-
-      context 'when using a single tif and jp2' do
-        it 'generates valid content metadata with overriding file attributes, including a default value, and no exif data' do
-          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE)], [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE)]]
-          result = described_class.create_content_metadata(druid: TEST_DRUID, add_file_attributes: true,
-                                                           file_attributes: { 'default' => { publish: 'yes', preserve: 'no', shelve: 'no' }, 'image/jp2' => { publish: 'yes', preserve: 'yes', shelve: 'yes' } }, objects: objects)
-          expect(result.class).to be String
-          xml = Nokogiri::XML(result)
-          expect(xml.errors.size).to eq 0
-          expect(xml.xpath('//contentMetadata')[0].attributes['type'].value).to eq('image')
-          expect(xml.xpath('//resource/file').length).to eq 2
-          expect(xml.xpath('//resource/file')[0].attributes['mimetype']).to be_nil
-          expect(xml.xpath('//resource/file')[0].attributes['publish'].value).to eq('yes')
-          expect(xml.xpath('//resource/file')[0].attributes['preserve'].value).to eq('no')
-          expect(xml.xpath('//resource/file')[0].attributes['shelve'].value).to eq('no')
-          expect(xml.xpath('//resource/file')[1].attributes['mimetype']).to be_nil
-          expect(xml.xpath('//resource/file')[1].attributes['publish'].value).to eq('yes')
-          expect(xml.xpath('//resource/file')[1].attributes['preserve'].value).to eq('yes')
-          expect(xml.xpath('//resource/file')[1].attributes['shelve'].value).to eq('yes')
-          (0..1).each do |i|
-            expect(xml.xpath("//resource[@sequence='#{i + 1}']/file").length).to eq 1
-            expect(xml.xpath('//label')[i].text).to eq("Image #{i + 1}")
-            expect(xml.xpath('//resource')[i].attributes['type'].value).to eq('image')
-          end
-        end
-      end
-
       context 'when providing multiple files per resource' do
         it 'generates valid content metadata for images and associated text files and no exif data' do
           files = [[TEST_RES1_TIF1, TEST_RES1_JP1, TEST_RES1_TIF2, TEST_RES1_JP2, TEST_RES1_TEI, TEST_RES1_TEXT, TEST_RES1_PDF], [TEST_RES2_TIF1, TEST_RES2_JP1, TEST_RES2_TIF2, TEST_RES2_JP2, TEST_RES2_TEI, TEST_RES2_TEXT],
                    [TEST_RES3_TIF1, TEST_RES3_JP1, TEST_RES3_TEI]]
-          objects = files.collect { |resource| resource.collect { |file| Assembly::ObjectFile.new(file) } }
+          objects = files.collect { |resource| resource.collect { |file| Assembly::ObjectFile.new(file, file_attributes: file_attributes) } }
           result = described_class.create_content_metadata(druid: TEST_DRUID, style: :simple_image, objects: objects)
           expect(result.class).to be String
           xml = Nokogiri::XML(result)
@@ -196,13 +139,11 @@ RSpec.describe Dor::Assembly::ContentMetadata do
 
     context 'when style=map' do
       context 'when using a single tif and jp2' do
-        it 'generates valid content metadata with overriding file attributes, including a default value, and no exif data' do
-          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE)], [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE)]]
+        it 'generates valid content metadata' do
+          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, file_attributes: { publish: 'yes', preserve: 'no', shelve: 'no' })],
+                     [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE, file_attributes: { publish: 'yes', preserve: 'yes', shelve: 'yes' })]]
           result = described_class.create_content_metadata(style: :map,
                                                            druid: TEST_DRUID,
-                                                           add_file_attributes: true,
-                                                           file_attributes: { 'default' => { publish: 'yes', preserve: 'no', shelve: 'no' },
-                                                                              'image/jp2' => { publish: 'yes', preserve: 'yes', shelve: 'yes' } },
                                                            objects: objects)
           expect(result.class).to be String
           xml = Nokogiri::XML(result)
@@ -230,7 +171,8 @@ RSpec.describe Dor::Assembly::ContentMetadata do
     context 'when style=simple_book' do
       context 'when using two tifs' do
         it 'generates valid content metadata for two tifs of style=simple_book' do
-          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE)], [Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE2)]]
+          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, file_attributes: file_attributes)],
+                     [Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE2, file_attributes: file_attributes)]]
           result = described_class.create_content_metadata(druid: TEST_DRUID, style: :simple_book, objects: objects)
           expect(result.class).to be String
           xml = Nokogiri::XML(result)
@@ -245,10 +187,11 @@ RSpec.describe Dor::Assembly::ContentMetadata do
           (0..1).each do |i|
             expect(xml.xpath('//resource/file')[i].attributes['size']).to be_nil
             expect(xml.xpath('//resource/file')[i].attributes['mimetype']).to be_nil
-            expect(xml.xpath('//resource/file')[i].attributes['publish']).to be_nil
-            expect(xml.xpath('//resource/file')[i].attributes['preserve']).to be_nil
-            expect(xml.xpath('//resource/file')[i].attributes['shelve']).to be_nil
+            expect(xml.xpath('//resource/file')[i].attributes['publish'].text).to eq 'no'
+            expect(xml.xpath('//resource/file')[i].attributes['preserve'].text).to eq 'yes'
+            expect(xml.xpath('//resource/file')[i].attributes['shelve'].text).to eq 'no'
           end
+
           expect(xml.xpath('//resource')[0].attributes['type'].value).to eq('page')
           expect(xml.xpath('//resource')[1].attributes['type'].value).to eq('page')
         end
@@ -258,7 +201,8 @@ RSpec.describe Dor::Assembly::ContentMetadata do
     context 'when style=file' do
       context 'when using two tifs and two associated jp2s' do
         it 'generates valid content metadata using specific content metadata paths' do
-          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE)], [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE)], [Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE2)], [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE2)]]
+          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, file_attributes: {})], [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE, file_attributes: {})], [Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE2, file_attributes: {})],
+                     [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE2, file_attributes: {})]]
           objects[0].first.relative_path = 'input/test.tif'
           objects[1].first.relative_path = 'input/test.jp2'
           objects[2].first.relative_path = 'input/test2.tif'
@@ -296,10 +240,10 @@ RSpec.describe Dor::Assembly::ContentMetadata do
 
     context 'when using a 3d object with one 3d type files and three other supporting files (where one supporting file is a non-viewable but downloadable 3d file)' do
       let(:objects) do
-        [[Assembly::ObjectFile.new(TEST_OBJ_FILE)],
-         [Assembly::ObjectFile.new(TEST_PLY_FILE)],
-         [Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE)],
-         [Assembly::ObjectFile.new(TEST_PDF_FILE)]]
+        [[Assembly::ObjectFile.new(TEST_OBJ_FILE, file_attributes: file_attributes)],
+         [Assembly::ObjectFile.new(TEST_PLY_FILE, file_attributes: file_attributes)],
+         [Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, file_attributes: file_attributes)],
+         [Assembly::ObjectFile.new(TEST_PDF_FILE, file_attributes: file_attributes)]]
       end
       let(:style) { :'3d' }
 
@@ -327,7 +271,7 @@ RSpec.describe Dor::Assembly::ContentMetadata do
         obj1 = Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE)
         obj1.file_attributes = { publish: 'no', preserve: 'no', shelve: 'no', role: 'master-role' }
         objects = [[obj1]]
-        result = described_class.create_content_metadata(druid: TEST_DRUID, add_file_attributes: true, objects: objects)
+        result = described_class.create_content_metadata(druid: TEST_DRUID, objects: objects)
         expect(result.class).to be String
         xml = Nokogiri::XML(result)
         expect(xml.errors.size).to eq 0
