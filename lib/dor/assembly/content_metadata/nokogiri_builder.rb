@@ -36,12 +36,7 @@ module Dor
                     xml_file_params = { id: cm_file.file_id(common_path: common_path) }
                     xml_file_params.merge!(cm_file.file_attributes(config.file_attributes)) if config.add_file_attributes
 
-                    xml.file(xml_file_params) do
-                      if cm_file.provider_md5 || cm_file.provider_sha1 # if there are user supplied checksums to add
-                        xml.checksum(cm_file.provider_sha1, type: 'sha1') if cm_file.provider_sha1
-                        xml.checksum(cm_file.provider_md5, type: 'md5') if cm_file.provider_md5
-                      end
-                    end
+                    xml.file(xml_file_params)
                   end
                 end
               end
