@@ -8,15 +8,16 @@ module Dor
         # @param [Array<Fileset>] filesets
         # @param [String] druid
         # @param [String] common_path
-        # @param [Config] config
-        def self.build(filesets:, druid:, common_path:, config:)
+        # @param [String] reading_order
+        # @param [String] type
+        def self.build(filesets:, druid:, common_path:, reading_order:, type:)
           # a counter to use when creating auto-labels for resources, with incremenets for each type
           resource_type_counters = Hash.new(0)
           pid = druid.gsub('druid:', '') # remove druid prefix when creating IDs
 
           Nokogiri::XML::Builder.new do |xml|
-            xml.contentMetadata(objectId: druid.to_s, type: config.type) do
-              xml.bookData(readingOrder: config.reading_order) if config.type == 'book'
+            xml.contentMetadata(objectId: druid.to_s, type: type) do
+              xml.bookData(readingOrder: reading_order) if type == 'book'
 
               filesets.each_with_index do |fileset, index| # iterate over all the resources
                 # start a new resource element

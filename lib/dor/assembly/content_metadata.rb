@@ -35,13 +35,12 @@ module Dor
         common_path = find_common_path(objects) # find common paths to all files provided
 
         filesets = FileSetBuilder.build(objects: objects, style: style)
-        config = Config.new(reading_order: reading_order,
-                            type: object_level_type(style))
 
         builder = NokogiriBuilder.build(druid: druid,
                                         filesets: filesets,
                                         common_path: common_path,
-                                        config: config)
+                                        reading_order: reading_order,
+                                        type: object_level_type(style))
 
         if include_root_xml == false
           builder.doc.root.to_xml
