@@ -12,7 +12,6 @@ module Dor
       class Config < Dry::Struct
         STYLES = %w[image file book map 3d document webarchive-seed].freeze
         READING_ORDERS = %w[ltr rtl].freeze
-        attribute :auto_labels, Types::Strict::Bool.default(true)
         attribute :type, Types::Strict::String.enum(*STYLES)
         attribute :reading_order, Types::Strict::String.default('ltr').enum(*READING_ORDERS)
       end

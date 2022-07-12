@@ -76,23 +76,6 @@ RSpec.describe Dor::Assembly::ContentMetadata do
         end
       end
 
-      context 'when using a single tif and jp2 and auto_labels=false' do
-        it 'generates valid content metadata with exif, overriding file labels for one, and skipping auto labels for the others or for where the label is set but is blank' do
-          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, label: 'Sample tif label!', file_attributes: file_attributes)],
-                     [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE, file_attributes: file_attributes)],
-                     [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE, label: '', file_attributes: file_attributes)]]
-          result = described_class.create_content_metadata(druid: TEST_DRUID, auto_labels: false, objects: objects)
-          expect(result.class).to be String
-          xml = Nokogiri::XML(result)
-          expect(xml.errors.size).to eq 0
-          expect(xml.xpath('//contentMetadata')[0].attributes['type'].value).to eq('image')
-          expect(xml.xpath('//resource').length).to eq 3
-          expect(xml.xpath('//resource/file').length).to eq 3
-          expect(xml.xpath('//label').length).to eq 1
-          expect(xml.xpath('//label')[0].text).to match(/Sample tif label!/)
-        end
-      end
-
       context 'when providing multiple files per resource' do
         it 'generates valid content metadata for images and associated text files and no exif data' do
           files = [[TEST_RES1_TIF1, TEST_RES1_JP1, TEST_RES1_TIF2, TEST_RES1_JP2, TEST_RES1_TEI, TEST_RES1_TEXT, TEST_RES1_PDF], [TEST_RES2_TIF1, TEST_RES2_JP1, TEST_RES2_TIF2, TEST_RES2_JP2, TEST_RES2_TEI, TEST_RES2_TEXT],

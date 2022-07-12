@@ -26,7 +26,7 @@ module Dor
 
                 xml.resource(id: "#{pid}_#{sequence}", sequence: sequence, type: fileset.resource_type_description) do
                   # create a generic resource label if needed
-                  default_label = config.auto_labels ? "#{fileset.resource_type_description.capitalize} #{resource_type_counters[fileset.resource_type_description]}" : ''
+                  default_label = "#{fileset.resource_type_description.capitalize} #{resource_type_counters[fileset.resource_type_description]}"
 
                   # but if one of the files has a label, use it instead
                   resource_label = fileset.label_from_file(default: default_label)
