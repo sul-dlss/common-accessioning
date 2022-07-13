@@ -18,10 +18,13 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
   end
 
   let(:cm_file_name) { 'tmp/contentMetadata.xml' }
+  let(:stub_content_file_name) { 'tmp/stubContentMetadata.xml' }
+
   let(:item) do
     instance_double(Dor::Assembly::Item,
                     item?: type == 'item',
                     stub_content_metadata_exists?: stub_content_metadata,
+                    stub_cm_file_name: stub_content_file_name,
                     convert_stub_content_metadata: true,
                     cocina_model: cocina_model,
                     object_client: object_client,
@@ -91,7 +94,8 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
     let(:stub_content_metadata) { true }
 
     before do
-      allow(item).to receive(:convert_stub_content_metadata).and_return('<contentMetadata type="image"></contentMetadata>')
+      allow(item).to receive(:convert_stub_content_metadata).and_return(build(:dro).structural)
+      allow(FileUtils).to receive(:rm).with(stub_content_file_name)
     end
 
     it 'converts stub content metadata' do
