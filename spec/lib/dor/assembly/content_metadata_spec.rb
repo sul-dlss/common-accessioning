@@ -183,13 +183,12 @@ RSpec.describe Dor::Assembly::ContentMetadata do
 
     context 'when style=file' do
       context 'when using two tifs and two associated jp2s' do
-        it 'generates valid content metadata using specific content metadata paths' do
-          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, file_attributes: {})], [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE, file_attributes: {})], [Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE2, file_attributes: {})],
+        it 'generates valid content metadata' do
+          objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, file_attributes: {})],
+                     [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE, file_attributes: {})],
+                     [Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE2, file_attributes: {})],
                      [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE2, file_attributes: {})]]
-          objects[0].first.relative_path = 'input/test.tif'
-          objects[1].first.relative_path = 'input/test.jp2'
-          objects[2].first.relative_path = 'input/test2.tif'
-          objects[3].first.relative_path = 'input/test2.jp2'
+
           result = described_class.create_content_metadata(druid: TEST_DRUID, style: :file, objects: objects)
           expect(result.class).to be String
           xml = Nokogiri::XML(result)
@@ -199,10 +198,10 @@ RSpec.describe Dor::Assembly::ContentMetadata do
           expect(xml.xpath('//resource').length).to eq 4
           expect(xml.xpath('//resource/file').length).to eq 4
           expect(xml.xpath('//label').length).to eq 4
-          expect(xml.xpath('//resource/file')[0].attributes['id'].value).to eq('input/test.tif')
-          expect(xml.xpath('//resource/file')[1].attributes['id'].value).to eq('input/test.jp2')
-          expect(xml.xpath('//resource/file')[2].attributes['id'].value).to eq('input/test2.tif')
-          expect(xml.xpath('//resource/file')[3].attributes['id'].value).to eq('input/test2.jp2')
+          expect(xml.xpath('//resource/file')[0].attributes['id'].value).to eq 'test.tif'
+          expect(xml.xpath('//resource/file')[1].attributes['id'].value).to eq 'test.jp2'
+          expect(xml.xpath('//resource/file')[2].attributes['id'].value).to eq 'test2.tif'
+          expect(xml.xpath('//resource/file')[3].attributes['id'].value).to eq 'test2.jp2'
           (0..3).each do |i|
             expect(xml.xpath("//resource[@sequence='#{i + 1}']/file").length).to eq 1
             expect(xml.xpath('//label')[i].text).to eq("File #{i + 1}")

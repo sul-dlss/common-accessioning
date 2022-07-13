@@ -36,12 +36,9 @@ module Dor
           @style = style
         end
 
+        # Remove the common part of the path
         def file_id(common_path:)
-          # set file id attribute, first check the relative_path parameter on the object, and if it is set, just use that
-          return file.relative_path if file.relative_path
-
-          # if the relative_path attribute is not set, then use the path attribute and check to see if we need to remove the common part of the path
-          common_path ? file.path.gsub(common_path, '') : file.path
+          file.path.delete_prefix(common_path)
         end
 
         delegate :file_attributes, to: :file
