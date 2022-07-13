@@ -3,6 +3,26 @@
 module Dor
   # builds the FileSet instance from a Dor::Item
   class FileSets
+    # default publish/preserve/shelve attributes used in content metadata
+    # if no mimetype specific attributes are specified for a given file, define some defaults, and override for specific mimetypes below
+    ATTRIBUTES_FOR_TYPE = {
+      'default' => { preserve: 'yes', shelve: 'no', publish: 'no' },
+      'image/tif' => { preserve: 'yes', shelve: 'no', publish: 'no' },
+      'image/tiff' => { preserve: 'yes', shelve: 'no', publish: 'no' },
+      'image/jp2' => { preserve: 'no', shelve: 'yes', publish: 'yes' },
+      'image/jpeg' => { preserve: 'yes', shelve: 'no', publish: 'no' },
+      'audio/wav' => { preserve: 'yes', shelve: 'no', publish: 'no' },
+      'audio/x-wav' => { preserve: 'yes', shelve: 'no', publish: 'no' },
+      'audio/mp3' => { preserve: 'no', shelve: 'yes', publish: 'yes' },
+      'audio/mpeg' => { preserve: 'no', shelve: 'yes', publish: 'yes' },
+      'application/pdf' => { preserve: 'yes', shelve: 'yes', publish: 'yes' },
+      'plain/text' => { preserve: 'yes', shelve: 'yes', publish: 'yes' },
+      'text/plain' => { preserve: 'yes', shelve: 'yes', publish: 'yes' },
+      'image/png' => { preserve: 'yes', shelve: 'yes', publish: 'no' },
+      'application/zip' => { preserve: 'yes', shelve: 'no', publish: 'no' },
+      'application/json' => { preserve: 'yes', shelve: 'yes', publish: 'yes' }
+    }.freeze
+
     # @param [Nokogir::XML::Document] ng_xml
     # @param [Integer] version
     # @param [Cocina::Models::DROAccess] access to copy down to the files
@@ -34,6 +54,10 @@ module Dor
           attrs[:label] = resource_node.xpath('label', 'attr[@type="label"]', 'attr[@name="label"]').text # some will be missing labels, they will just be blank
         end
       end
+    end
+
+    def self.default_administrative_attributes(mimetype)
+      ATTRIBUTES_FOR_TYPE.fetch(mimetype) { ATTRIBUTES_FOR_TYPE.fetch('default') }
     end
 
     private
@@ -84,19 +108,13 @@ module Dor
     end
 
     def file_administrative(node)
-      default_administrative = default_administrative_attributes(node['mimetype'])
+      default_administrative = self.class.default_administrative_attributes(node['mimetype'])
 
       publish = (node['publish'] || default_administrative[:publish]) == 'yes'
       preserve = (node['preserve'] || default_administrative[:preserve]) == 'yes'
       shelve = (node['shelve'] || default_administrative[:shelve]) == 'yes'
 
       { publish: publish, sdrPreserve: preserve, shelve: shelve }
-    end
-
-    def default_administrative_attributes(mimetype)
-      attrs = Assembly::ContentMetadata::File::ATTRIBUTES_FOR_TYPE
-
-      attrs.fetch(mimetype) { attrs.fetch('default') }
     end
 
     def file_access

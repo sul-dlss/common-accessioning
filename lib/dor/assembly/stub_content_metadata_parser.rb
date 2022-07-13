@@ -19,7 +19,7 @@ module Dor
             obj_file = ::Assembly::ObjectFile.new(File.join(path_finder.path_to_content_folder, filename(file)))
             # set the default file attributes here (instead of in the create_content_metadata step in the gem below)
             #  so they can overridden/added to by values coming from the stub content metadata
-            obj_file.file_attributes = Dor::Assembly::Item.default_file_attributes(obj_file.mimetype).merge(stub_file_attributes(file))
+            obj_file.file_attributes = Dor::FileSets.default_administrative_attributes(obj_file.mimetype).merge(stub_file_attributes(file))
             obj_file.label = resource_label(resource)
             obj_file
           end
