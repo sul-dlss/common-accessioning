@@ -14,9 +14,11 @@ config/certs
 .ruby-version
 .ruby-gemset
 .pry_history
+.byebug_history
 
 # rspec failure tracking
 .rspec_status
+
 
 /tmp/*
 !/tmp/.keep
