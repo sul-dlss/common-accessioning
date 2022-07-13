@@ -33,9 +33,9 @@ module Dor
                   resource_label = fileset.label_from_file(default: default_label)
 
                   xml.label(resource_label) unless resource_label.empty?
-                  fileset.files.each do |cm_file| # iterate over all the files in a resource
-                    xml_file_params = { id: cm_file.file_id(common_path: common_path) }
-                    xml_file_params.merge!(cm_file.file_attributes)
+                  fileset.resource_files.each do |assembly_objectfile| # iterate over all the files in a resource
+                    xml_file_params = { id: assembly_objectfile.path.delete_prefix(common_path) }
+                    xml_file_params.merge!(assembly_objectfile.file_attributes)
 
                     xml.file(xml_file_params)
                   end
