@@ -2,7 +2,7 @@
 
 module Dor
   module Assembly
-    class ContentMetadata
+    class ContentMetadataFromStub
       # Builds a nokogiri representation of the content metadata
       class NokogiriBuilder
         # @param [Array<Fileset>] filesets

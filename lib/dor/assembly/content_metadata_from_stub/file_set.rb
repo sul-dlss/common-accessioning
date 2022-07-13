@@ -4,7 +4,7 @@ require 'active_support/core_ext/object/blank'
 
 module Dor
   module Assembly
-    class ContentMetadata
+    class ContentMetadataFromStub
       # Represents a groups of related Files, such as a single master file and the derivatives
       class FileSet
         # if input file has one of these extensions in a 3D object, it will get the 3d resource type
