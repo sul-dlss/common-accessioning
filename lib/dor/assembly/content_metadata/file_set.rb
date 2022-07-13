@@ -26,13 +26,11 @@ module Dor
           resource_files.find { |obj| obj.label.present? }&.label || default
         end
 
-        def files
-          resource_files.map { |file| File.new(file: file) }
-        end
+        attr_reader :resource_files
 
         private
 
-        attr_reader :resource_files, :style
+        attr_reader :style
 
         # use style attribute to determine the resource_type_description
         def resource_type_descriptions
