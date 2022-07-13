@@ -48,10 +48,6 @@ module Dor
 
         delegate :file_attributes, to: :file
 
-        def image_data
-          { height: file.exif.imageheight, width: file.exif.imagewidth }
-        end
-
         private
 
         attr_reader :file
