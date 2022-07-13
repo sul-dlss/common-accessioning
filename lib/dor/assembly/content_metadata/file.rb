@@ -7,13 +7,9 @@ module Dor
     class ContentMetadata
       # Represents a single File
       class File
-        # @param [Symbol] bundle
         # @param [Assembly::ObjectFile] file
-        # @param style
-        def initialize(file:, bundle: nil, style: nil)
-          @bundle = bundle
+        def initialize(file:)
           @file = file
-          @style = style
         end
 
         # Remove the common part of the path
