@@ -30,7 +30,7 @@ module Dor
       def self.create_content_metadata(druid:, objects:, style: :simple_image, reading_order: 'ltr')
         common_path = find_common_path(objects) # find common paths to all files provided
 
-        filesets = FileSetBuilder.build(objects: objects, style: style)
+        filesets = objects.map { |resource_files| FileSet.new(resource_files: resource_files, style: style) }
 
         NokogiriBuilder.build(druid: druid,
                               filesets: filesets,
