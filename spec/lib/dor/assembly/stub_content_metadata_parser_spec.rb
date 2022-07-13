@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Dor::Assembly::StubContentMetadataParser do
-  describe '#stub_content_metadata_parser' do
+  describe '#object_type' do
     let(:druid) { 'druid:bb111bb3333' }
     let(:druid_rtl) { 'druid:bb111bb5555' }
     let(:item) { Dor::Assembly::Item.new(druid: druid) }
@@ -13,7 +13,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
       it 'maps content metadata types to book correctly' do
         ['book', 'a book (l-r)', 'book (ltr)'].each do |content_type|
           allow(item).to receive(:stub_object_type).and_return(content_type)
-          expect(item.gem_content_metadata_style).to eq(:simple_book)
+          expect(item.object_type).to eq 'book'
           expect(item.book_reading_order).to eq('ltr')
         end
       end
@@ -23,7 +23,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
       it 'maps content metadata types to book correctly' do
         ['flipbook (r-l)', 'book (rtl)'].each do |content_type|
           allow(item).to receive(:stub_object_type).and_return(content_type)
-          expect(item.gem_content_metadata_style).to eq(:simple_book)
+          expect(item.object_type).to eq 'book'
           expect(item.book_reading_order).to eq('rtl')
         end
       end
@@ -32,14 +32,14 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
     context 'when stub_object_type is image' do
       it 'maps content metadata types to image correctly' do
         allow(item).to receive(:stub_object_type).and_return('image')
-        expect(item.gem_content_metadata_style).to eq(:simple_image)
+        expect(item.object_type).to eq 'image'
       end
     end
 
     context 'when stub_object_type is map' do
       it 'maps content metadata types to map correctly' do
         allow(item).to receive(:stub_object_type).and_return('maps')
-        expect(item.gem_content_metadata_style).to eq(:map)
+        expect(item.object_type).to eq 'map'
       end
     end
 
@@ -47,7 +47,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
       it 'maps content metadata types to 3d correctly' do
         %w[3d 3D].each do |content_type|
           allow(item).to receive(:stub_object_type).and_return(content_type)
-          expect(item.gem_content_metadata_style).to eq(:'3d')
+          expect(item.object_type).to eq '3d'
         end
       end
     end
@@ -56,7 +56,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
       it 'maps content metadata type to file correctly' do
         %w[file bogus].each do |content_type|
           allow(item).to receive(:stub_object_type).and_return(content_type)
-          expect(item.gem_content_metadata_style).to eq(:file)
+          expect(item.object_type).to eq 'file'
         end
       end
     end

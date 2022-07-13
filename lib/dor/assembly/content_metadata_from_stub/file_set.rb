@@ -10,14 +10,13 @@ module Dor
         # if input file has one of these extensions in a 3D object, it will get the 3d resource type
         VALID_THREE_DIMENSION_EXTENTIONS = ['.obj'].freeze
 
-        # @param style
+        # @param [String] object_type
         # @param [Array<Assembly::ObjectFile>] resource_files
-        def initialize(resource_files:, style:)
+        def initialize(resource_files:, object_type:)
           @resource_files = resource_files
-          @style = style
+          @object_type = object_type
         end
 
-        # otherwise look at the style to determine the resource_type_description
         def resource_type_description
           @resource_type_description ||= resource_type_descriptions
         end
@@ -30,22 +29,22 @@ module Dor
 
         private
 
-        attr_reader :style
+        attr_reader :object_type
 
-        # use style attribute to determine the resource_type_description
+        # use object_type attribute to determine the resource_type_description
         def resource_type_descriptions
           # grab all of the file types within a resource into an array so we can decide what the resource type should be
           resource_file_types = resource_files.collect(&:object_type)
           resource_has_non_images = !(resource_file_types - [:image]).empty?
 
-          case style
-          when :simple_image, :map
-            'image'
-          when :file
-            'file'
-          when :simple_book # in a simple book project, all resources are pages unless they are *all* non-images -- if so, switch the type to object
+          case object_type
+          when 'book'
             resource_has_non_images && resource_file_types.include?(:image) == false ? 'object' : 'page'
-          when :'3d'
+          when 'image', 'map'
+            'image'
+          when 'file'
+            'file'
+          when '3d'
             resource_extensions = resource_files.collect(&:ext)
             if (resource_extensions & VALID_THREE_DIMENSION_EXTENTIONS).empty? # if this resource contains no known 3D file extensions, the resource type is file
               'file'
