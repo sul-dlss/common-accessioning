@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Dor::Assembly::ContentMetadata do
+RSpec.describe Dor::Assembly::ContentMetadataFromStub do
   TEST_INPUT_DIR = File.join(__dir__, '../../../fixtures/content_metadata')
   TEST_TIF_INPUT_FILE = File.join(TEST_INPUT_DIR, 'test.tif')
   TEST_TIF_INPUT_FILE2 = File.join(TEST_INPUT_DIR, 'test2.tif')

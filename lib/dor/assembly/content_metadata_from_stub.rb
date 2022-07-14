@@ -4,11 +4,9 @@ module Dor
   module Assembly
     VALID_STYLES = %i[simple_image simple_book file map 3d].freeze
 
-    # This class generates content metadata for image files
-    class ContentMetadata
+    # This class generates content metadata XML from stubContentMetadata
+    class ContentMetadataFromStub
       # Generates image content XML metadata for a repository object.
-      # This method only produces content metadata for images
-      # and does not depend on a specific folder structure.  Note that it is class level method.
       #
       # @param [Hash] params a hash containg parameters needed to produce content metadata
       #   :druid = required - a string of druid of the repository object's druid id (with or without 'druid:' prefix)
