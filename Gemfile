@@ -5,7 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'activesupport', '~> 7.0'
 gem 'assembly-image', '~> 2.0' # ruby-vips is used by 2.0.0 for improved image processing
-gem 'assembly-objectfile', '~> 2.0'
+gem 'assembly-objectfile', '~> 2.1'
 gem 'config', '~> 2.2'
 gem 'dor-services-client', '~> 12.0'
 gem 'dor-workflow-client', '~> 4.0'
