@@ -17,15 +17,13 @@ module Dor
         cm_resources = resources.map do |resource| # loop over all resources from the stub content metadata
           resource_files(resource).map do |file| # loop over the files in this resource
             obj_file = ::Assembly::ObjectFile.new(File.join(path_finder.path_to_content_folder, filename(file)))
-            # set the default file attributes here (instead of in the create_content_metadata step in the gem below)
-            #  so they can overridden/added to by values coming from the stub content metadata
             obj_file.file_attributes = Dor::FileSets.default_administrative_attributes(obj_file.mimetype).merge(stub_file_attributes(file))
             obj_file.label = resource_label(resource)
             obj_file
           end
         end
 
-        ContentMetadataFromStub.create_content_metadata(druid: @druid.druid, object_type: object_type, objects: cm_resources, reading_order: book_reading_order)
+        ContentMetadataFromStub::StructuralBuilder.build(cocina_model: cocina_model, objects: cm_resources, reading_order: book_reading_order)
       end
 
       def stub_content_metadata_exists?
@@ -45,26 +43,11 @@ module Dor
         @stub_cm = Nokogiri.XML(File.open(stub_cm_file_name)) { |conf| conf.default_xml.noblanks }
       end
 
-      # this maps types coming from the stub content metadata (e.g. as produced by goobi) into the contentMetadata types allowed for CM generation
-      def object_type
-        if stub_object_type.include?('book')
-          'book'
-        elsif stub_object_type.include?('map')
-          'map'
-        elsif stub_object_type.casecmp('3d').zero? # just in case it comes in as 3D...
-          '3d'
-        elsif stub_object_type == 'image'
-          'image'
-        else
-          'file' # the default content metadata style if not found via the mapping
-        end
-      end
-
       # this determines the reading order from the stub_object_type (default ltr unless the object type contains one of the possible "rtl" designations)
       def book_reading_order
-        return 'rtl' if stub_object_type.include?('rtl') || stub_object_type.include?('r-l')
+        return 'right-to-left' if stub_object_type.include?('rtl') || stub_object_type.include?('r-l')
 
-        'ltr'
+        'left-to-right'
       end
 
       def stub_object_type

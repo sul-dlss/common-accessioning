@@ -21,20 +21,21 @@ module Robots
           # both stub and regular content metadata exist -- this is an ambiguous situation and generates an error
           raise "#{Settings.assembly.stub_cm_file_name} and #{Settings.assembly.cm_file_name} both exist for #{druid}" if obj.stub_content_metadata_exists? && content_metadata_exists?(obj)
 
-          # Build the xml
-          xml = if obj.stub_content_metadata_exists?
-                  obj.convert_stub_content_metadata
-                else
-                  File.read(cm_file_name(obj))
-                end
+          structural = if obj.stub_content_metadata_exists?
+                         obj.convert_stub_content_metadata
+                       else
+                         # handle contentMetadata.xml
+                         xml = File.read(cm_file_name(obj))
+                         # Convert the XML to cocina and save it
+                         Dor::StructuralMetadata.update(xml, obj.cocina_model)
+                       end
 
-          # Convert the XML to cocina and save it
-          structural = Dor::StructuralMetadata.update(xml, obj.cocina_model)
           updated = obj.cocina_model.new(structural: structural)
           obj.object_client.update(params: updated)
 
-          # Remove the contentMetadata.xml
+          # Remove the contentMetadata.xml or stubContentMetadata.xml
           FileUtils.rm(cm_file_name(obj)) if content_metadata_exists?(obj)
+          FileUtils.rm(obj.stub_cm_file_name) if obj.stub_content_metadata_exists?
 
           LyberCore::Robot::ReturnState.new(status: 'completed')
         end

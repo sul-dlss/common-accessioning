@@ -88,17 +88,11 @@ module Robots
             hasMessageDigests: [],
             hasMimeType: 'image/jp2',
             administrative: { sdrPreserve: false, publish: true, shelve: true },
-            access: file_access(cocina_model.access)
+            access: Dor::FileSets.file_access(cocina_model.access)
           }
 
           # Adds a file node representing the new jp2 file.
           file_set.dig(:structural, :contains) << file_attributes
-        end
-
-        def file_access(dro_access)
-          file_access = dro_access.to_h.slice(:view, :download, :location, :controlledDigitalLending)
-          file_access[:view] = 'dark' if file_access[:view] == 'citation-only'
-          file_access
         end
       end
     end

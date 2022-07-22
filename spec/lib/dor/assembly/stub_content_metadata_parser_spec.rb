@@ -3,18 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Dor::Assembly::StubContentMetadataParser do
-  describe '#object_type' do
+  describe '#book_reading_order' do
     let(:druid) { 'druid:bb111bb3333' }
-    let(:druid_rtl) { 'druid:bb111bb5555' }
     let(:item) { Dor::Assembly::Item.new(druid: druid) }
-    let(:item_rtl) { Dor::Assembly::Item.new(druid: druid_rtl) }
 
     context 'when stub_object_type is book (ltr)' do
       it 'maps content metadata types to book correctly' do
         ['book', 'a book (l-r)', 'book (ltr)'].each do |content_type|
           allow(item).to receive(:stub_object_type).and_return(content_type)
-          expect(item.object_type).to eq 'book'
-          expect(item.book_reading_order).to eq('ltr')
+          expect(item.book_reading_order).to eq('left-to-right')
         end
       end
     end
@@ -23,101 +20,184 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
       it 'maps content metadata types to book correctly' do
         ['flipbook (r-l)', 'book (rtl)'].each do |content_type|
           allow(item).to receive(:stub_object_type).and_return(content_type)
-          expect(item.object_type).to eq 'book'
-          expect(item.book_reading_order).to eq('rtl')
+          expect(item.book_reading_order).to eq('right-to-left')
         end
       end
     end
+  end
 
-    context 'when stub_object_type is image' do
-      it 'maps content metadata types to image correctly' do
-        allow(item).to receive(:stub_object_type).and_return('image')
-        expect(item.object_type).to eq 'image'
-      end
+  describe '#convert_stub_content_metadata' do
+    let(:item) { Dor::Assembly::Item.new(druid: druid) }
+    let(:cocina_model) { build(:dro, type: object_type) }
+    let(:object_type) { Cocina::Models::ObjectType.book }
+
+    before do
+      allow(item).to receive(:cocina_model).and_return(cocina_model)
     end
 
-    context 'when stub_object_type is map' do
-      it 'maps content metadata types to map correctly' do
-        allow(item).to receive(:stub_object_type).and_return('maps')
-        expect(item.object_type).to eq 'map'
-      end
-    end
-
-    context 'when stub_object_type is 3d' do
-      it 'maps content metadata types to 3d correctly' do
-        %w[3d 3D].each do |content_type|
-          allow(item).to receive(:stub_object_type).and_return(content_type)
-          expect(item.object_type).to eq '3d'
-        end
-      end
-    end
-
-    context 'when stub_object_type is file or unknown' do
-      it 'maps content metadata type to file correctly' do
-        %w[file bogus].each do |content_type|
-          allow(item).to receive(:stub_object_type).and_return(content_type)
-          expect(item.object_type).to eq 'file'
-        end
-      end
-    end
-
-    context 'when convert_stub_content_metadata method is called for an ltr book' do
+    context 'with a left-to-right book' do
+      let(:druid) { 'druid:bb111bb3333' }
       let(:expected_content_metadata) do
-        <<-EOXML
-        <?xml version="1.0"?>
-        <contentMetadata objectId="druid:bb111bb3333" type="book">
-          <bookData readingOrder="ltr"/>
-          <resource id="bb111bb3333_1" sequence="1" type="page">
-            <label>Optional label</label>
-            <file id="page1.tif" preserve="yes" shelve="no" publish="no"/>
-            <file id="page1.txt" preserve="no" shelve="no" publish="no"/>
-          </resource>
-          <resource id="bb111bb3333_2" sequence="2" type="page">
-            <label>optional page 2 label</label>
-            <file id="page2.tif" preserve="yes" shelve="no" publish="no"/>
-            <file id="some_filename.txt" preserve="yes" shelve="yes" publish="yes" role="transcription"/>
-          </resource>
-          <resource id="bb111bb3333_3" sequence="3" type="object">
-            <label>Object 1</label>
-            <file id="whole_book.pdf" preserve="no" shelve="yes" publish="yes"/>
-          </resource>
-        </contentMetadata>
-        EOXML
+        {
+          contains: [
+            {
+              type: 'https://cocina.sul.stanford.edu/models/resources/page',
+              externalIdentifier: 'bc234fg5678_1', label: 'Optional label',
+              version: 1,
+              structural: {
+                contains: [
+                  {
+                    type: 'https://cocina.sul.stanford.edu/models/file',
+                    externalIdentifier: 'https://cocina.sul.stanford.edu/file/1',
+                    label: 'page1.tif',
+                    filename: 'page1.tif', version: 1, hasMessageDigests: [],
+                    access: { view: 'dark', download: 'none', controlledDigitalLending: false },
+                    administrative: { publish: false, sdrPreserve: true, shelve: false }
+                  }, {
+                    type: 'https://cocina.sul.stanford.edu/models/file',
+                    externalIdentifier: 'https://cocina.sul.stanford.edu/file/2',
+                    label: 'page1.txt',
+                    filename: 'page1.txt', version: 1, hasMessageDigests: [],
+                    access: { view: 'dark', download: 'none', controlledDigitalLending: false },
+                    administrative: { publish: false, sdrPreserve: false, shelve: false }
+                  }
+                ]
+              }
+            }, {
+              type: 'https://cocina.sul.stanford.edu/models/resources/page',
+              externalIdentifier: 'bc234fg5678_2', label: 'optional page 2 label',
+              version: 1,
+              structural: {
+                contains: [
+                  {
+                    type: 'https://cocina.sul.stanford.edu/models/file',
+                    externalIdentifier: 'https://cocina.sul.stanford.edu/file/3',
+                    label: 'page2.tif',
+                    filename: 'page2.tif', version: 1, hasMessageDigests: [],
+                    access: { view: 'dark', download: 'none', controlledDigitalLending: false },
+                    administrative: { publish: false, sdrPreserve: true, shelve: false }
+                  }, {
+                    type: 'https://cocina.sul.stanford.edu/models/file',
+                    externalIdentifier: 'https://cocina.sul.stanford.edu/file/4',
+                    label: 'some_filename.txt',
+                    filename: 'some_filename.txt', version: 1,
+                    use: 'transcription', hasMessageDigests: [],
+                    access: { view: 'dark', download: 'none', controlledDigitalLending: false },
+                    administrative: { publish: true, sdrPreserve: true, shelve: true }
+                  }
+                ]
+              }
+            }, {
+              type: 'https://cocina.sul.stanford.edu/models/resources/object',
+              externalIdentifier: 'bc234fg5678_3', label: 'Object 1', version: 1,
+              structural: {
+                contains: [
+                  {
+                    type: 'https://cocina.sul.stanford.edu/models/file',
+                    externalIdentifier: 'https://cocina.sul.stanford.edu/file/5',
+                    label: 'whole_book.pdf', filename: 'whole_book.pdf', version: 1, hasMessageDigests: [],
+                    access: { view: 'dark', download: 'none', controlledDigitalLending: false },
+                    administrative: { publish: true, sdrPreserve: false, shelve: true }
+                  }
+                ]
+              }
+            }
+          ],
+          hasMemberOrders: [{ members: [], viewingDirection: 'left-to-right' }],
+          isMemberOf: []
+        }
       end
 
-      it 'generates stub content metadata' do
-        stub_xml = item.convert_stub_content_metadata
-        expect(stub_xml).to be_equivalent_to expected_content_metadata
+      before do
+        allow(SecureRandom).to receive(:uuid).and_return('1', '2', '3', '4', '5')
+      end
+
+      it 'generates structural metadata' do
+        structural = item.convert_stub_content_metadata
+        expect(structural.to_h).to eq expected_content_metadata
       end
     end
 
-    context 'when convert_stub_content_metadata method is called for an rtl book' do
+    context 'with a right-to-left book' do
+      let(:druid) { 'druid:bb111bb5555' }
       let(:expected_content_metadata) do
-        <<-EOXML
-        <?xml version="1.0"?>
-        <contentMetadata objectId="druid:bb111bb5555" type="book">
-          <bookData readingOrder="rtl"/>
-          <resource id="bb111bb5555_1" sequence="1" type="page">
-            <label>Optional label</label>
-            <file id="page1.tif" preserve="yes" shelve="no" publish="no"/>
-            <file id="page1.txt" preserve="no" shelve="no" publish="no"/>
-          </resource>
-          <resource id="bb111bb5555_2" sequence="2" type="page">
-            <label>optional page 2 label</label>
-            <file id="page2.tif" preserve="yes" shelve="no" publish="no"/>
-            <file id="some_filename.txt" preserve="yes" shelve="yes" publish="yes" role="transcription"/>
-          </resource>
-          <resource id="bb111bb5555_3" sequence="3" type="object">
-            <label>Object 1</label>
-            <file id="whole_book.pdf" preserve="no" shelve="yes" publish="yes"/>
-          </resource>
-        </contentMetadata>
-        EOXML
+        {
+          contains: [
+            {
+              type: 'https://cocina.sul.stanford.edu/models/resources/page',
+              externalIdentifier: 'bc234fg5678_1', label: 'Optional label',
+              version: 1,
+              structural: {
+                contains: [
+                  {
+                    type: 'https://cocina.sul.stanford.edu/models/file',
+                    externalIdentifier: 'https://cocina.sul.stanford.edu/file/1',
+                    label: 'page1.tif',
+                    filename: 'page1.tif', version: 1, hasMessageDigests: [],
+                    access: { view: 'dark', download: 'none', controlledDigitalLending: false },
+                    administrative: { publish: false, sdrPreserve: true, shelve: false }
+                  }, {
+                    type: 'https://cocina.sul.stanford.edu/models/file',
+                    externalIdentifier: 'https://cocina.sul.stanford.edu/file/2',
+                    label: 'page1.txt',
+                    filename: 'page1.txt', version: 1, hasMessageDigests: [],
+                    access: { view: 'dark', download: 'none', controlledDigitalLending: false },
+                    administrative: { publish: false, sdrPreserve: false, shelve: false }
+                  }
+                ]
+              }
+            }, {
+              type: 'https://cocina.sul.stanford.edu/models/resources/page',
+              externalIdentifier: 'bc234fg5678_2', label: 'optional page 2 label',
+              version: 1,
+              structural: {
+                contains: [
+                  {
+                    type: 'https://cocina.sul.stanford.edu/models/file',
+                    externalIdentifier: 'https://cocina.sul.stanford.edu/file/3',
+                    label: 'page2.tif',
+                    filename: 'page2.tif', version: 1, hasMessageDigests: [],
+                    access: { view: 'dark', download: 'none', controlledDigitalLending: false },
+                    administrative: { publish: false, sdrPreserve: true, shelve: false }
+                  }, {
+                    type: 'https://cocina.sul.stanford.edu/models/file',
+                    externalIdentifier: 'https://cocina.sul.stanford.edu/file/4',
+                    label: 'some_filename.txt',
+                    filename: 'some_filename.txt', version: 1,
+                    use: 'transcription', hasMessageDigests: [],
+                    access: { view: 'dark', download: 'none', controlledDigitalLending: false },
+                    administrative: { publish: true, sdrPreserve: true, shelve: true }
+                  }
+                ]
+              }
+            }, {
+              type: 'https://cocina.sul.stanford.edu/models/resources/object',
+              externalIdentifier: 'bc234fg5678_3', label: 'Object 1', version: 1,
+              structural: {
+                contains: [
+                  {
+                    type: 'https://cocina.sul.stanford.edu/models/file',
+                    externalIdentifier: 'https://cocina.sul.stanford.edu/file/5',
+                    label: 'whole_book.pdf', filename: 'whole_book.pdf', version: 1, hasMessageDigests: [],
+                    access: { view: 'dark', download: 'none', controlledDigitalLending: false },
+                    administrative: { publish: true, sdrPreserve: false, shelve: true }
+                  }
+                ]
+              }
+            }
+          ],
+          hasMemberOrders: [{ members: [], viewingDirection: 'right-to-left' }],
+          isMemberOf: []
+        }
       end
 
-      it 'generates stub content metadata' do
-        stub_xml = item_rtl.convert_stub_content_metadata
-        expect(stub_xml).to be_equivalent_to expected_content_metadata
+      before do
+        allow(SecureRandom).to receive(:uuid).and_return('1', '2', '3', '4', '5')
+      end
+
+      it 'generates structural metadata' do
+        structural = item.convert_stub_content_metadata
+        expect(structural.to_h).to eq expected_content_metadata
       end
     end
   end

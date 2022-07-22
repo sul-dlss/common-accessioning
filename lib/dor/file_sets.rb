@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Dor
-  # builds the FileSet instance from a Dor::Item
+  # Builds the FileSet instance from contentMetadata.xml
   class FileSets
     # default publish/preserve/shelve attributes used in content metadata
     # if no mimetype specific attributes are specified for a given file, define some defaults, and override for specific mimetypes below
@@ -60,6 +60,12 @@ module Dor
       ATTRIBUTES_FOR_TYPE.fetch(mimetype) { ATTRIBUTES_FOR_TYPE.fetch('default') }
     end
 
+    def self.file_access(dro_access)
+      file_access = dro_access.to_h.slice(:view, :download, :location, :controlledDigitalLending)
+      file_access[:view] = 'dark' if file_access[:view] == 'citation-only'
+      file_access
+    end
+
     private
 
     attr_reader :ng_xml, :version, :dro_access
@@ -96,7 +102,7 @@ module Dor
           size: node['size'].to_i,
           version: version,
           hasMessageDigests: digests(node),
-          access: file_access,
+          access: self.class.file_access(dro_access),
           administrative: file_administrative(node)
         }.tap do |attrs|
           # Files from Goobi don't have mimetype until they hit exif-collect in the assemblyWF
@@ -115,12 +121,6 @@ module Dor
       shelve = (node['shelve'] || default_administrative[:shelve]) == 'yes'
 
       { publish: publish, sdrPreserve: preserve, shelve: shelve }
-    end
-
-    def file_access
-      file_access = dro_access.to_h.slice(:view, :download, :location, :controlledDigitalLending)
-      file_access[:view] = 'dark' if file_access[:view] == 'citation-only'
-      file_access
     end
   end
 end
