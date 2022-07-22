@@ -25,7 +25,7 @@ module Dor
           end
         end
 
-        ContentMetadataFromStub.create_content_metadata(druid: @druid.druid, style: gem_content_metadata_style, objects: cm_resources, reading_order: book_reading_order)
+        ContentMetadataFromStub.create_content_metadata(druid: @druid.druid, object_type: object_type, objects: cm_resources, reading_order: book_reading_order)
       end
 
       def stub_content_metadata_exists?
@@ -45,18 +45,18 @@ module Dor
         @stub_cm = Nokogiri.XML(File.open(stub_cm_file_name)) { |conf| conf.default_xml.noblanks }
       end
 
-      # this maps types coming from the stub content metadata (e.g. as produced by goobi) into the contentMetadata types allowed by the Assembly::Objectfile gem for CM generation
-      def gem_content_metadata_style
+      # this maps types coming from the stub content metadata (e.g. as produced by goobi) into the contentMetadata types allowed for CM generation
+      def object_type
         if stub_object_type.include?('book')
-          :simple_book
+          'book'
         elsif stub_object_type.include?('map')
-          :map
+          'map'
         elsif stub_object_type.casecmp('3d').zero? # just in case it comes in as 3D...
-          :'3d'
+          '3d'
         elsif stub_object_type == 'image'
-          :simple_image
+          'image'
         else
-          :file # the default content metadata style if not found via the mapping is :file
+          'file' # the default content metadata style if not found via the mapping
         end
       end
 

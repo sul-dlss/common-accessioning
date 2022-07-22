@@ -36,12 +36,12 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub do
   TEST_DRUID = 'nx288wh8889'
 
   describe '#create_content_metadata' do
-    subject(:result) { described_class.create_content_metadata(druid: TEST_DRUID, style: style, objects: objects) }
+    subject(:result) { described_class.create_content_metadata(druid: TEST_DRUID, object_type: object_type, objects: objects) }
 
     let(:xml) { Nokogiri::XML(result) }
     let(:file_attributes) { { 'publish' => 'no', 'preserve' => 'yes', 'shelve' => 'no' } }
 
-    context 'when style=simple_image' do
+    context 'when object_type=image' do
       context 'when using a single tif and jp2' do
         it 'generates valid content metadata' do
           obj1 = Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, file_attributes: { publish: 'no', preserve: 'no', shelve: 'no' })
@@ -81,7 +81,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub do
           files = [[TEST_RES1_TIF1, TEST_RES1_JP1, TEST_RES1_TIF2, TEST_RES1_JP2, TEST_RES1_TEI, TEST_RES1_TEXT, TEST_RES1_PDF], [TEST_RES2_TIF1, TEST_RES2_JP1, TEST_RES2_TIF2, TEST_RES2_JP2, TEST_RES2_TEI, TEST_RES2_TEXT],
                    [TEST_RES3_TIF1, TEST_RES3_JP1, TEST_RES3_TEI]]
           objects = files.collect { |resource| resource.collect { |file| Assembly::ObjectFile.new(file, file_attributes: file_attributes) } }
-          result = described_class.create_content_metadata(druid: TEST_DRUID, style: :simple_image, objects: objects)
+          result = described_class.create_content_metadata(druid: TEST_DRUID, object_type: 'image', objects: objects)
           expect(result.class).to be String
           xml = Nokogiri::XML(result)
           expect(xml.errors.size).to eq 0
@@ -120,12 +120,12 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub do
       end
     end
 
-    context 'when style=map' do
+    context 'when object_type=map' do
       context 'when using a single tif and jp2' do
         it 'generates valid content metadata' do
           objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, file_attributes: { publish: 'yes', preserve: 'no', shelve: 'no' })],
                      [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE, file_attributes: { publish: 'yes', preserve: 'yes', shelve: 'yes' })]]
-          result = described_class.create_content_metadata(style: :map,
+          result = described_class.create_content_metadata(object_type: 'map',
                                                            druid: TEST_DRUID,
                                                            objects: objects)
           expect(result.class).to be String
@@ -151,12 +151,12 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub do
       end
     end
 
-    context 'when style=simple_book' do
+    context 'when object_type=book' do
       context 'when using two tifs' do
-        it 'generates valid content metadata for two tifs of style=simple_book' do
+        it 'generates valid content metadata for two tifs of object_type=book' do
           objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, file_attributes: file_attributes)],
                      [Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE2, file_attributes: file_attributes)]]
-          result = described_class.create_content_metadata(druid: TEST_DRUID, style: :simple_book, objects: objects)
+          result = described_class.create_content_metadata(druid: TEST_DRUID, object_type: 'book', objects: objects)
           expect(result.class).to be String
           xml = Nokogiri::XML(result)
           expect(xml.errors.size).to eq 0
@@ -181,7 +181,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub do
       end
     end
 
-    context 'when style=file' do
+    context 'when object_type=file' do
       context 'when using two tifs and two associated jp2s' do
         it 'generates valid content metadata' do
           objects = [[Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, file_attributes: {})],
@@ -189,7 +189,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub do
                      [Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE2, file_attributes: {})],
                      [Assembly::ObjectFile.new(TEST_JP2_INPUT_FILE2, file_attributes: {})]]
 
-          result = described_class.create_content_metadata(druid: TEST_DRUID, style: :file, objects: objects)
+          result = described_class.create_content_metadata(druid: TEST_DRUID, object_type: 'file', objects: objects)
           expect(result.class).to be String
           xml = Nokogiri::XML(result)
           expect(xml.errors.size).to eq 0
@@ -227,7 +227,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub do
          [Assembly::ObjectFile.new(TEST_TIF_INPUT_FILE, file_attributes: file_attributes)],
          [Assembly::ObjectFile.new(TEST_PDF_FILE, file_attributes: file_attributes)]]
       end
-      let(:style) { :'3d' }
+      let(:object_type) { '3d' }
 
       it 'generates valid content metadata' do
         expect(xml.errors.size).to eq 0
@@ -266,29 +266,17 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub do
     end
 
     context 'when no objects are passed in' do
-      subject(:result) { described_class.create_content_metadata(druid: TEST_DRUID, style: style, objects: objects) }
+      subject(:result) { described_class.create_content_metadata(druid: TEST_DRUID, object_type: object_type, objects: objects) }
 
       let(:objects) { [] }
 
-      let(:style) { :file }
+      let(:object_type) { 'file' }
 
       it 'generates content metadata even when no objects are passed in' do
         expect(xml.errors.size).to eq 0
         expect(xml.xpath('//contentMetadata')[0].attributes['type'].value).to eq('file')
         expect(xml.xpath('//resource').length).to eq 0
         expect(xml.xpath('//resource/file').length).to eq 0
-      end
-    end
-
-    context 'when an unknown style is passed in' do
-      subject(:result) { described_class.create_content_metadata(druid: TEST_DRUID, style: style, objects: objects) }
-
-      let(:objects) { [] }
-
-      let(:style) { :borked }
-
-      it 'generates an error message' do
-        expect { result }.to raise_error 'Supplied style (borked) not valid'
       end
     end
   end
