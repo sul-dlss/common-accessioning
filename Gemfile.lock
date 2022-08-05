@@ -78,11 +78,11 @@ GEM
       faraday (~> 2.0)
       faraday-retry
       zeitwerk (~> 2.1)
-    dor-workflow-client (4.0.0)
+    dor-workflow-client (5.0.0)
       activesupport (>= 3.2.1, < 8)
       deprecation (>= 0.99.0)
       faraday (~> 2.0)
-      faraday-retry
+      faraday-retry (~> 1.0)
       nokogiri (~> 1.6)
       zeitwerk (~> 2.1)
     druid-tools (2.2.1)
@@ -130,8 +130,7 @@ GEM
       faraday-net_http (~> 2.0)
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (2.1.0)
-    faraday-retry (2.0.0)
-      faraday (~> 2.0)
+    faraday-retry (1.0.3)
     ffi (1.15.5)
     hashdiff (1.0.1)
     honeybadger (4.12.1)
@@ -275,7 +274,7 @@ DEPENDENCIES
   config (~> 2.2)
   dlss-capistrano
   dor-services-client (~> 12.0)
-  dor-workflow-client (~> 4.0)
+  dor-workflow-client (~> 5.0)
   druid-tools (~> 2.1)
   dry-struct (~> 1.0)
   dry-types (~> 1.1)
