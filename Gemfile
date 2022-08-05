@@ -8,7 +8,7 @@ gem 'assembly-image', '~> 2.0' # ruby-vips is used by 2.0.0 for improved image p
 gem 'assembly-objectfile', '~> 2.1'
 gem 'config', '~> 2.2'
 gem 'dor-services-client', '~> 12.0'
-gem 'dor-workflow-client', '~> 4.0'
+gem 'dor-workflow-client', '~> 5.0'
 gem 'dry-struct', '~> 1.0'
 gem 'dry-types', '~> 1.1'
 gem 'druid-tools', '~> 2.1'
