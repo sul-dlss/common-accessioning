@@ -19,6 +19,7 @@ gem 'pry'
 gem 'pry-byebug', platform: %i[ruby_20 ruby_21]
 gem 'rake'
 gem 'resque', '~> 2.0' # bundler used 1.x otherwise
+gem 'redis', '~> 4.0' # redis 5.x has breaking changes with resque, see https://github.com/resque/resque/issues/1821
 gem 'resque-pool'
 gem 'slop'
 gem 'zeitwerk', '~> 2.1'

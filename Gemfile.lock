@@ -59,7 +59,6 @@ GEM
     config (2.2.3)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
-    connection_pool (2.2.5)
     crack (0.4.5)
       rexml
     deep_merge (1.2.2)
@@ -184,10 +183,7 @@ GEM
       rack
     rainbow (3.1.1)
     rake (13.0.6)
-    redis (5.0.0)
-      redis-client (~> 0.7)
-    redis-client (0.7.1)
-      connection_pool
+    redis (4.8.0)
     redis-namespace (1.9.0)
       redis (>= 4)
     regexp_parser (2.5.0)
@@ -291,6 +287,7 @@ DEPENDENCIES
   pry
   pry-byebug
   rake
+  redis (~> 4.0)
   resque (~> 2.0)
   resque-pool
   rspec (~> 3.0)
