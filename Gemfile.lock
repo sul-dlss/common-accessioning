@@ -99,7 +99,7 @@ GEM
     dry-logic (1.2.0)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.5, >= 0.5)
-    dry-schema (1.9.3)
+    dry-schema (1.10.2)
       concurrent-ruby (~> 1.0)
       dry-configurable (~> 0.13, >= 0.13.0)
       dry-core (~> 0.5, >= 0.5)
@@ -183,11 +183,11 @@ GEM
       rack
     rainbow (3.1.1)
     rake (13.0.6)
-    redis (4.7.1)
+    redis (4.8.0)
     redis-namespace (1.9.0)
       redis (>= 4)
     regexp_parser (2.5.0)
-    resque (2.2.1)
+    resque (2.3.0)
       mono_logger (~> 1.0)
       multi_json (~> 1.0)
       redis-namespace (~> 1.6)
@@ -287,6 +287,7 @@ DEPENDENCIES
   pry
   pry-byebug
   rake
+  redis (~> 4.0)
   resque (~> 2.0)
   resque-pool
   rspec (~> 3.0)
