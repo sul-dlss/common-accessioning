@@ -24,6 +24,7 @@ module Robots
           structural = if obj.stub_content_metadata_exists?
                          obj.convert_stub_content_metadata
                        else
+                         Honeybadger.notify('NOTE: assemblyWF#content-metadata-create robot converted contentMetadata.xml to Cocina. We are not sure this should happen anymore.')
                          # handle contentMetadata.xml
                          xml = File.read(cm_file_name(obj))
                          # Convert the XML to cocina and save it
