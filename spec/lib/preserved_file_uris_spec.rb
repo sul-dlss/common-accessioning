@@ -23,7 +23,7 @@ RSpec.describe PreservedFileUris do
                 version: 1,
                 access: {},
                 administrative: { publish: true, sdrPreserve: true, shelve: true },
-                hasMessageDigests: []
+                hasMessageDigests: [{ type: 'md5', digest: '123' }]
               },
               {
                 externalIdentifier: '222-2',
@@ -33,7 +33,7 @@ RSpec.describe PreservedFileUris do
                 version: 1,
                 access: {},
                 administrative: { publish: true, sdrPreserve: false, shelve: true },
-                hasMessageDigests: []
+                hasMessageDigests: [{ type: 'md5', digest: '456' }]
               },
               {
                 externalIdentifier: '222-1',
@@ -58,14 +58,19 @@ RSpec.describe PreservedFileUris do
   end
 
   describe '.uris' do
-    subject { described_class.new(druid, object).uris }
+    let(:uris) { described_class.new(druid, object).uris }
 
     let(:prefix) { "file://#{root}/dd/116/zh/0343/dd116zh0343/content/" }
 
     let(:filename1) { 'folder1PuSu/story1u.txt' }
     let(:filename2) { 'folder1PuSu/story2u.txt' }
 
-    it { is_expected.to eq ["#{prefix}#{filename1}", "#{prefix}#{filename2}"] }
+    it {
+      expect(uris).to eq [
+        PreservedFileUris::UriMd5.new("#{prefix}#{filename1}", '123'),
+        PreservedFileUris::UriMd5.new("#{prefix}#{filename2}", '')
+      ]
+    }
   end
 
   describe '.filepaths' do

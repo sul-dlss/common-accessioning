@@ -38,13 +38,26 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
                     version: 1,
                     access: {},
                     administrative: { publish: true, sdrPreserve: true, shelve: false },
-                    hasMessageDigests: []
+                    hasMessageDigests: [{ type: 'md5', digest: '123' }]
                   }
                 ]
               }
             }]
           }
         )
+      end
+
+      let(:body) do
+        {
+          druid: 'druid:dd116zh0343',
+          files: [
+            {
+              uri: "file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story1u.txt",
+              md5: '123'
+            }
+          ],
+          'lane-id' => 'low'
+        }
       end
 
       before do
@@ -56,7 +69,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
         before do
           stub_request(:post, 'https://dor-techmd-test.stanford.test/v1/technical-metadata')
             .with(
-              body: "{\"druid\":\"druid:dd116zh0343\",\"files\":[\"file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story1u.txt\"],\"lane-id\":\"low\"}",
+              body: body.to_json,
               headers: {
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer rake-generate-token-me'
@@ -74,7 +87,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
         before do
           stub_request(:post, 'https://dor-techmd-test.stanford.test/v1/technical-metadata')
             .with(
-              body: "{\"druid\":\"druid:dd116zh0343\",\"files\":[\"file://#{workspace}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story1u.txt\"],\"lane-id\":\"low\"}",
+              body: body.to_json,
               headers: {
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer rake-generate-token-me'

@@ -12,7 +12,7 @@ module Robots
         def perform(druid)
           obj = Dor::Services::Client.object(druid).find
 
-          # non-items don't generate contentMetadata
+          # non-items don't generate technical metadata
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'object is not an item') unless obj.dro?
 
           # skip if no files
@@ -23,8 +23,6 @@ module Robots
           # skip if metadata-only change
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'change is metadata-only') if metadata_only?(file_uris.filepaths)
 
-          verify_files_exist(druid, file_uris.filepaths)
-
           invoke_techmd_service(druid, file_uris.uris, lane_id(druid))
 
           LyberCore::Robot::ReturnState.new(status: :noop, note: 'Initiated technical metadata generation from technical-metadata-service.')
@@ -33,7 +31,8 @@ module Robots
         private
 
         def invoke_techmd_service(druid, file_uris, lane_id)
-          req = JSON.generate(druid: druid, files: file_uris, 'lane-id': lane_id)
+          files = file_uris.map { |uri_md5| { uri: uri_md5.uri, md5: uri_md5.md5 } }
+          req = JSON.generate(druid: druid, files: files, 'lane-id': lane_id)
           resp = Faraday.post("#{Settings.tech_md_service.url}/v1/technical-metadata", req,
                               'Content-Type' => 'application/json',
                               'Authorization' => "Bearer #{Settings.tech_md_service.token}")
@@ -43,11 +42,6 @@ module Robots
         def metadata_only?(filepaths)
           # Assume metadata only if no files exist
           filepaths.all? { |filepath| !File.exist?(filepath) }
-        end
-
-        def verify_files_exist(druid, filepaths)
-          missing_filepaths = filepaths.filter { |filepath| !File.exist?(filepath) }
-          raise "#{druid} is missing the following files: #{filepaths}" unless missing_filepaths.empty?
         end
       end
     end
