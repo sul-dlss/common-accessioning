@@ -110,9 +110,9 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
 
       before do
         allow(Assembly::ObjectFile).to receive(:new).and_return(
-          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_468, image?: true, exif: exif),
-          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_472, image?: true, exif: exif),
-          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_472, image?: true, exif: exif)
+          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_468, valid_image?: true, exif: exif),
+          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_472, valid_image?: true, exif: exif),
+          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_472, valid_image?: true, exif: exif)
         )
       end
 
@@ -164,8 +164,8 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
 
       before do
         allow(Assembly::ObjectFile).to receive(:new).and_return(
-          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_468, image?: true, exif: exif),
-          instance_double(Assembly::ObjectFile, mimetype: 'image/jp2', filesize: 465, image?: false)
+          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_468, valid_image?: true, exif: exif),
+          instance_double(Assembly::ObjectFile, mimetype: 'image/jp2', filesize: 465, valid_image?: false)
         )
       end
 
