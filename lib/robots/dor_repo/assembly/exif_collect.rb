@@ -32,7 +32,10 @@ module Robots
               file[:size] = object_file.filesize if !file[:size] || file[:size].zero?
               file[:hasMimeType] ||= object_file.mimetype
 
-              next unless object_file.image?
+              # NOTE: Only include height/width presentation information for
+              #       "valid" images as determined by the assembly-objectfile gem:
+              #       TIFF, PNG, JPEG, JP2
+              next unless object_file.valid_image?
 
               file[:presentation] = { height: object_file.exif.imageheight, width: object_file.exif.imagewidth }
             end
