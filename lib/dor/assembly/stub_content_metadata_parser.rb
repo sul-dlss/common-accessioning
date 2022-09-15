@@ -17,7 +17,7 @@ module Dor
         cm_resources = resources.map do |resource| # loop over all resources from the stub content metadata
           resource_files(resource).map do |file| # loop over the files in this resource
             obj_file = ::Assembly::ObjectFile.new(File.join(path_finder.path_to_content_folder, filename(file)))
-            obj_file.file_attributes = Dor::FileSets.default_administrative_attributes(obj_file.mimetype).merge(stub_file_attributes(file))
+            obj_file.file_attributes = Dor::FileSets.default_administrative_attributes(obj_file.mimetype, object_access: cocina_model.access).merge(stub_file_attributes(file))
             obj_file.label = resource_label(resource)
             obj_file
           end

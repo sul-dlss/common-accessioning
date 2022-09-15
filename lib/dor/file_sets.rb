@@ -56,8 +56,14 @@ module Dor
       end
     end
 
-    def self.default_administrative_attributes(mimetype)
-      ATTRIBUTES_FOR_TYPE.fetch(mimetype) { ATTRIBUTES_FOR_TYPE.fetch('default') }
+    def self.default_administrative_attributes(mimetype, object_access: nil)
+      ATTRIBUTES_FOR_TYPE
+        .fetch(mimetype) { ATTRIBUTES_FOR_TYPE.fetch('default') }
+        .tap do |attrs|
+        next unless object_access&.view == 'dark'
+
+        attrs[:publish] = attrs[:shelve] = 'no'
+      end
     end
 
     def self.file_access(dro_access)

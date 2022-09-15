@@ -83,7 +83,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     filename: 'some_filename.txt', version: 1,
                     use: 'transcription', hasMessageDigests: [],
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
-                    administrative: { publish: true, sdrPreserve: true, shelve: true }
+                    administrative: { publish: false, sdrPreserve: true, shelve: false }
                   }
                 ]
               }
@@ -97,7 +97,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     externalIdentifier: 'https://cocina.sul.stanford.edu/file/5',
                     label: 'whole_book.pdf', filename: 'whole_book.pdf', version: 1, hasMessageDigests: [],
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
-                    administrative: { publish: true, sdrPreserve: false, shelve: true }
+                    administrative: { publish: false, sdrPreserve: false, shelve: false }
                   }
                 ]
               }
@@ -166,7 +166,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     filename: 'some_filename.txt', version: 1,
                     use: 'transcription', hasMessageDigests: [],
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
-                    administrative: { publish: true, sdrPreserve: true, shelve: true }
+                    administrative: { publish: false, sdrPreserve: true, shelve: false }
                   }
                 ]
               }
@@ -180,7 +180,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     externalIdentifier: 'https://cocina.sul.stanford.edu/file/5',
                     label: 'whole_book.pdf', filename: 'whole_book.pdf', version: 1, hasMessageDigests: [],
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
-                    administrative: { publish: true, sdrPreserve: false, shelve: true }
+                    administrative: { publish: false, sdrPreserve: false, shelve: false }
                   }
                 ]
               }
