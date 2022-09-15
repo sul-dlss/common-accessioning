@@ -50,7 +50,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                     version: 1,
                                                     hasMessageDigests: [],
                                                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
-                                                    administrative: { publish: true, sdrPreserve: true, shelve: true } }] } },
+                                                    administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
                        { type: 'https://cocina.sul.stanford.edu/models/resources/image',
                          externalIdentifier: 'nx288wh8889_3',
                          label: 'Image 3',
@@ -268,7 +268,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                     version: 1,
                                                     hasMessageDigests: [],
                                                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
-                                                    administrative: { publish: true, sdrPreserve: false, shelve: false } }] } },
+                                                    administrative: { publish: false, sdrPreserve: false, shelve: false } }] } },
                        { type: 'https://cocina.sul.stanford.edu/models/resources/image',
                          externalIdentifier: 'nx288wh8889_2',
                          label: 'Image 2',
@@ -280,7 +280,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                     version: 1,
                                                     hasMessageDigests: [],
                                                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
-                                                    administrative: { publish: true, sdrPreserve: true, shelve: true } }] } }],
+                                                    administrative: { publish: false, sdrPreserve: true, shelve: false } }] } }],
             hasMemberOrders: [],
             isMemberOf: [] }
         end

@@ -37,7 +37,9 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
         end
 
         context 'with dark access' do
-          it 'builds the structual metadata and casts files to preserve only' do
+          let(:access) { { view: 'dark', download: 'none' } }
+
+          it 'builds the structural metadata and casts files to preserve only' do
             perform
 
             expect(object_client).to have_received(:update).with(params: Cocina::Models::DRO) do |model|
@@ -50,7 +52,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
         context 'with non-dark access' do
           let(:access) { { view: 'world', download: 'stanford' } }
 
-          it 'builds a the structual metadata and retains the original publish/shelve/preserve' do
+          it 'builds the structural metadata and retains the original publish/shelve/preserve' do
             perform
 
             expect(object_client).to have_received(:update).with(params: Cocina::Models::DRO) do |model|
