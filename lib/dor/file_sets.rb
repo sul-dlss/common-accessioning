@@ -120,7 +120,7 @@ module Dor
     end
 
     def file_administrative(node)
-      default_administrative = self.class.default_administrative_attributes(node['mimetype'])
+      default_administrative = self.class.default_administrative_attributes(node['mimetype'], object_access: dro_access)
 
       publish = (node['publish'] || default_administrative[:publish]) == 'yes'
       preserve = (node['preserve'] || default_administrative[:preserve]) == 'yes'

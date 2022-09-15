@@ -8,7 +8,7 @@
    <resource>
       <label>optional page 2 label</label>
       <file name="page2.tif"/>
-      <file name="some_filename.txt" role="transcription"/>
+      <file name="some_filename.txt" role="transcription"  publish="yes" preserve="yes" shelve="yes"/>
    </resource>
    <resource>
       <file name="whole_book.pdf" preserve="no" random_ignored_attribute="cheeseburger"/>

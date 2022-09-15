@@ -34,11 +34,11 @@ module Dor
         end
         private_class_method :find_common_path
 
-        def self.administrative(file_attributes)
+        def self.administrative(file_attributes, object_access)
           {
             sdrPreserve: file_attributes[:preserve] == 'yes',
-            publish: file_attributes[:publish] == 'yes',
-            shelve: file_attributes[:shelve] == 'yes'
+            publish: object_access.view == 'dark' ? false : file_attributes[:publish] == 'yes',
+            shelve: object_access.view == 'dark' ? false : file_attributes[:shelve] == 'yes'
           }
         end
         private_class_method :administrative
@@ -82,7 +82,7 @@ module Dor
             label: filename,
             filename: filename,
             version: cocina_model.version,
-            administrative: administrative(assembly_objectfile.file_attributes),
+            administrative: administrative(assembly_objectfile.file_attributes, cocina_model.access),
             access: Dor::FileSets.file_access(cocina_model.access)
           }
           file_attributes[:use] = assembly_objectfile.file_attributes[:role] if assembly_objectfile.file_attributes[:role]
