@@ -17,6 +17,7 @@ module Robots
 
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'DOIs are not supported on non-Item objects') unless cocina_object.dro?
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'Object does not have a DOI') unless cocina_object.identification&.doi
+          return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'Object belongs to the SDR graveyard APO') if cocina_object.administrative.hasAdminPolicy == Settings.graveyard_admin_policy.druid
 
           # This is an asynchronous result. It will set the publish workflow to complete when it is done.
           object_client.update_doi_metadata

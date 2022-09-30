@@ -44,6 +44,26 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
           perform
           expect(object_client).to have_received(:update_doi_metadata)
         end
+
+        context 'when in the graveyard APO' do
+          let(:object) do
+            build(:dro).new(
+              identification: {
+                doi: '10.25740/bc123df4567',
+                sourceId: 'sul:1234'
+              },
+              administrative: {
+                hasAdminPolicy: Settings.graveyard_admin_policy.druid
+              }
+            )
+          end
+
+          it 'does not call the API' do
+            expect(perform.status).to eq('skipped')
+            expect(perform.note).to eq('Object belongs to the SDR graveyard APO')
+            expect(object_client).not_to have_received(:update_doi_metadata)
+          end
+        end
       end
 
       context 'without a doi' do

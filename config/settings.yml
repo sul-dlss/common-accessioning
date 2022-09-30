@@ -1,3 +1,7 @@
+# Graveyard Admin Policy
+graveyard_admin_policy:
+  druid: 'druid:kg712km1576' # This value varies by environment and is managed in shared_configs
+
 dor_services:
   url:  'https://dor-services-test.stanford.test'
   token: secret-token
