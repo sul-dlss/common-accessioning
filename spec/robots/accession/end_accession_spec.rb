@@ -28,7 +28,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
     context 'when there is no special dissemniation workflow' do
       it 'cleans up' do
         perform
-        expect(workspace_client).to have_received(:cleanup)
+        expect(workspace_client).to have_received(:cleanup).with(workflow: 'accessionWF', lane_id: 'default')
       end
     end
 
@@ -48,7 +48,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
         perform
         expect(workflow_client).to have_received(:create_workflow_by_name)
           .with(druid, 'wasDisseminationWF', version: '1', lane_id: 'default')
-        expect(workspace_client).to have_received(:cleanup)
+        expect(workspace_client).to have_received(:cleanup).with(workflow: 'accessionWF', lane_id: 'default')
       end
     end
   end

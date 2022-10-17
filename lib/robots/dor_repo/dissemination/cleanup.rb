@@ -11,7 +11,8 @@ module Robots
         end
 
         def perform(druid)
-          Dor::Services::Client.object(druid).workspace.cleanup
+          Dor::Services::Client.object(druid).workspace.cleanup(workflow: 'disseminationWF', lane_id: lane_id(druid))
+          LyberCore::Robot::ReturnState.new(status: :noop, note: 'Initiated cleanup API call.')
         end
       end
     end
