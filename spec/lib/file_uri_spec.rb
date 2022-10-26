@@ -19,15 +19,15 @@ RSpec.describe FileUri do
     subject { described_class.new(filename).to_s }
 
     context 'with a sub folder' do
-      let(:filename) { "#{content_dir}/folder1PuSu/story1u.txt" }
+      let(:filename) { "#{content_dir}/folder1PuSu/folder2/story1u.txt" }
 
-      it { is_expected.to eq "file://#{root}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/story1u.txt" }
+      it { is_expected.to eq "file://#{root}/dd/116/zh/0343/dd116zh0343/content/folder1PuSu/folder2/story1u.txt" }
     end
 
     context 'with a space' do
-      let(:filename) { "#{content_dir}/file with space.txt" }
+      let(:filename) { "#{content_dir}/folder with space/file with space.txt" }
 
-      it { is_expected.to eq "file://#{root}/dd/116/zh/0343/dd116zh0343/content/file%20with%20space.txt" }
+      it { is_expected.to eq "file://#{root}/dd/116/zh/0343/dd116zh0343/content/folder%20with%20space/file%20with%20space.txt" }
     end
 
     context 'with a diacritic' do

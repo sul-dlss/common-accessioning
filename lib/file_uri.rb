@@ -16,10 +16,20 @@ class FileUri
   private
 
   def escaped_path
-    File.join(File.dirname(@raw), escaped_filename)
+    File.join(*escaped_parts)
   end
 
-  def escaped_filename
-    CGI.escape(File.basename(@raw)).gsub(/\+/, '%20')
+  def path_parts
+    File.dirname(@raw).split('/').tap do |parts|
+      parts << File.basename(@raw)
+    end
+  end
+
+  def escaped_parts
+    path_parts.map { |part| escape(part) }
+  end
+
+  def escape(str)
+    CGI.escape(str).gsub(/\+/, '%20')
   end
 end
