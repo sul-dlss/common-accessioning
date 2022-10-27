@@ -23,7 +23,7 @@ module Robots
           # skip if metadata-only change
           return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'change is metadata-only') if metadata_only?(file_uris.filepaths)
 
-          invoke_techmd_service(druid, file_uris.uris, lane_id(druid))
+          invoke_techmd_service(druid, file_uris, lane_id(druid))
 
           LyberCore::Robot::ReturnState.new(status: :noop, note: 'Initiated technical metadata generation from technical-metadata-service.')
         end
@@ -31,8 +31,8 @@ module Robots
         private
 
         def invoke_techmd_service(druid, file_uris, lane_id)
-          files = file_uris.map { |uri_md5| { uri: uri_md5.uri, md5: uri_md5.md5 } }
-          req = JSON.generate(druid: druid, files: files, 'lane-id': lane_id)
+          files = file_uris.uris.map { |uri_md5| { uri: uri_md5.uri, md5: uri_md5.md5 } }
+          req = JSON.generate(druid: druid, files: files, 'lane-id': lane_id, basepath: file_uris.content_dir)
           resp = Faraday.post("#{Settings.tech_md_service.url}/v1/technical-metadata", req,
                               'Content-Type' => 'application/json',
                               'Authorization' => "Bearer #{Settings.tech_md_service.token}")

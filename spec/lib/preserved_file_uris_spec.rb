@@ -52,6 +52,9 @@ RSpec.describe PreservedFileUris do
     )
   end
 
+  let(:filename1) { 'folder1PuSu/story1u.txt' }
+  let(:filename2) { 'folder1PuSu/story2u.txt' }
+
   before do
     # For File URIs, need to use absolute paths
     allow(Settings.sdr).to receive(:local_workspace_root).and_return(workspace)
@@ -61,9 +64,6 @@ RSpec.describe PreservedFileUris do
     let(:uris) { described_class.new(druid, object).uris }
 
     let(:prefix) { "file://#{root}/dd/116/zh/0343/dd116zh0343/content/" }
-
-    let(:filename1) { 'folder1PuSu/story1u.txt' }
-    let(:filename2) { 'folder1PuSu/story2u.txt' }
 
     it {
       expect(uris).to eq [
@@ -76,10 +76,14 @@ RSpec.describe PreservedFileUris do
   describe '.filepaths' do
     subject { described_class.new(druid, object).filepaths }
 
-    let(:filename1) { 'folder1PuSu/story1u.txt' }
-    let(:filename2) { 'folder1PuSu/story2u.txt' }
     let(:prefix) { "#{root}/dd/116/zh/0343/dd116zh0343/content/" }
 
     it { is_expected.to eq ["#{prefix}#{filename1}", "#{prefix}#{filename2}"] }
+  end
+
+  describe '.content_dir' do
+    subject { described_class.new(druid, object).content_dir }
+
+    it { is_expected.to eq "#{root}/dd/116/zh/0343/dd116zh0343/content" }
   end
 end

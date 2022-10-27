@@ -22,13 +22,16 @@ class PreservedFileUris
     @filepaths ||= filepath_uris.map(&:filepath)
   end
 
+  def content_dir
+    @content_dir ||= DruidTools::Druid.new(druid, local_workspace_root).content_dir(false)
+  end
+
   private
 
   attr_reader :obj, :druid
 
-  def content_dir
-    workspace = DruidTools::Druid.new(druid, File.absolute_path(Settings.sdr.local_workspace_root))
-    workspace.content_dir(false)
+  def local_workspace_root
+    @local_workspace_root ||= File.absolute_path(Settings.sdr.local_workspace_root)
   end
 
   def filepath_uris
