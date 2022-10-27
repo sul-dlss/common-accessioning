@@ -56,7 +56,8 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
               md5: '123'
             }
           ],
-          'lane-id' => 'low'
+          'lane-id' => 'low',
+          basepath: "#{workspace}/dd/116/zh/0343/dd116zh0343/content"
         }
       end
 
