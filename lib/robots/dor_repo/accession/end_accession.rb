@@ -18,7 +18,8 @@ module Robots
 
           # Call cleanup
           # Note that this used to be handled by the disseminationWF, which is no longer used.
-          Dor::Services::Client.object(druid).workspace.cleanup
+          Dor::Services::Client.object(druid).workspace.cleanup(workflow: 'accessionWF', lane_id: lane_id(druid))
+          LyberCore::Robot::ReturnState.new(status: :noop, note: 'Initiated cleanup API call.')
         end
 
         private
