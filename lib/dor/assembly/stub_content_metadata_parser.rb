@@ -12,8 +12,6 @@ module Dor
         # uses the assembly-objectfile gem to create content metadata using the stub contentMetadata provided
         load_stub_content_metadata
 
-        LyberCore::Log.info("Creating content metadata from stub for #{druid.id}")
-
         cm_resources = resources.map do |resource| # loop over all resources from the stub content metadata
           resource_files(resource).map do |file| # loop over the files in this resource
             obj_file = ::Assembly::ObjectFile.new(File.join(path_finder.path_to_content_folder, filename(file)))

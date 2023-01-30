@@ -5,12 +5,8 @@ require 'spec_helper'
 RSpec.describe Robots::DorRepo::Accession::DescriptiveMetadata do
   subject(:robot) { described_class.new }
 
-  it 'includes behavior from LyberCore::Robot' do
-    expect(robot.methods).to include(:work)
-  end
-
   describe '#perform' do
-    subject(:perform) { robot.perform(druid) }
+    subject(:perform) { test_perform(robot, druid) }
 
     let(:druid) { 'druid:bb123cd4567' }
     let(:cocina_object) { build(:dro, id: druid) }

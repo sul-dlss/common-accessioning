@@ -27,7 +27,6 @@ require 'capistrano/bundler'
 # require 'capistrano/rails/migrations'
 
 require 'dlss/capistrano'
-require 'dlss/capistrano/resque_pool'
 require 'capistrano/honeybadger'
 
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.

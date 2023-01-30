@@ -15,7 +15,7 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
   end
 
   describe '#perform' do
-    subject(:perform) { robot.perform(bare_druid) }
+    subject(:perform) { test_perform(robot, druid) }
 
     let(:cocina_object) { build(:dro, id: druid) }
 
@@ -23,7 +23,7 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
       let(:assembly_item) { Dor::Assembly::Item.new(druid: bare_druid) }
 
       before do
-        allow(robot).to receive(:item).and_return(assembly_item)
+        allow(robot).to receive(:assembly_item).and_return(assembly_item)
         allow(robot).to receive(:compute_checksums).with(assembly_item, cocina_object).and_return([])
       end
 

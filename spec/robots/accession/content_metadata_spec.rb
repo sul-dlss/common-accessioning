@@ -6,7 +6,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
   subject(:robot) { described_class.new }
 
   describe '.perform' do
-    subject(:perform) { robot.perform(druid) }
+    subject(:perform) { test_perform(robot, druid) }
 
     let(:object_client) do
       instance_double(Dor::Services::Client::Object, update: nil, find: object)

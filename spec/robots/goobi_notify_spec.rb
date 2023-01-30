@@ -3,15 +3,18 @@
 require 'spec_helper'
 
 describe Robots::DorRepo::Goobi::GoobiNotify do
-  it 'makes the web service call to notify goobi' do
-    druid = 'druid:bb222cc3333'
+  let(:druid) { 'druid:bb222cc3333' }
+  let(:robot) { described_class.new }
+
+  before do
     stub_request(:post, "https://dor-services-test.stanford.test/v1/objects/#{druid}/notify_goobi")
       .with(headers: { 'Accept' => '*/*',
                        'Authorization' => 'Bearer secret-token',
                        'Content-Length' => '0' })
       .to_return(status: 200, body: '', headers: {})
-    r = described_class.new
-    response = r.perform(druid)
-    expect(response).to be true
+  end
+
+  it 'makes the web service call to notify goobi' do
+    expect(test_perform(robot, druid)).to be true
   end
 end

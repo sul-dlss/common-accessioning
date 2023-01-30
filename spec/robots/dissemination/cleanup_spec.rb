@@ -15,11 +15,11 @@ RSpec.describe Robots::DorRepo::Dissemination::Cleanup do
 
     before do
       allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
-      allow(WorkflowClientFactory).to receive(:build).and_return(workflow_client)
+      allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     end
 
     it 'is successful' do
-      robot.perform(druid)
+      test_perform(robot, druid)
       expect(workspace_client).to have_received(:cleanup).with(workflow: 'disseminationWF', lane_id: 'default')
     end
   end

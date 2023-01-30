@@ -17,13 +17,13 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, cleanup: true) }
 
   before do
-    allow(WorkflowClientFactory).to receive(:build).and_return(workflow_client)
+    allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
     allow(Dor::Services::Client).to receive(:object).with(apo_druid).and_return(apo_object_client)
   end
 
   describe '#perform' do
-    subject(:perform) { robot.perform(druid) }
+    subject(:perform) { test_perform(robot, druid) }
 
     context 'when there is no special dissemniation workflow' do
       it 'cleans up' do

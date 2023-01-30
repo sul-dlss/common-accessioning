@@ -5,21 +5,21 @@ module Robots
   module DorRepo
     module Release
       # Sends updated metadata to PURL. Specifically stuff in identityMetadata
-      class ReleasePublish < Robots::DorRepo::Base
+      class ReleasePublish < LyberCore::Robot
         def initialize
-          super('releaseWF', 'release-publish', check_queued_status: true) # init LyberCore::Robot
+          super('releaseWF', 'release-publish')
         end
 
         # `perform` is the main entry point for the robot. This is where
         # all of the robot's work is done.
         #
         # @param [String] druid -- the Druid identifier for the object to process
-        def perform(druid)
-          LyberCore::Log.debug "release-publish working on #{druid}"
+        def perform_work
+          logger.debug "release-publish working on #{druid}"
           # This is an async result and it will have a callback.
-          Dor::Services::Client.object(druid).publish(workflow: 'releaseWF')
+          object_client.publish(workflow: 'releaseWF')
 
-          LyberCore::Robot::ReturnState.new(status: :noop, note: 'Initiated publish API call.')
+          LyberCore::ReturnState.new(status: :noop, note: 'Initiated publish API call.')
         end
       end
     end

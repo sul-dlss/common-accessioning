@@ -24,7 +24,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
   end
 
   describe '#perform' do
-    subject(:perform) { robot.perform(druid) }
+    subject(:perform) { test_perform(robot, druid) }
 
     context "when it's an item" do
       before do

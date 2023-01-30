@@ -11,24 +11,22 @@ module Robots
           super('assemblyWF', 'accessioning-initiate')
         end
 
-        def perform(druid)
-          @ai = item(druid)
-          LyberCore::Log.info("Inititate accessioning for #{@ai.druid.id}")
-          initialize_workspace if @ai.item?
-          start_accession_workflow(druid)
+        def perform_work
+          logger.info("Initiate accessioning for #{druid}")
+          initialize_workspace if assembly_item.item?
+          start_accession_workflow
           true
         end
 
         private
 
         def initialize_workspace
-          Dor::Services::Client.object(@ai.druid.druid).workspace.create(source: @ai.path_finder.path_to_object)
+          object_client.workspace.create(source: assembly_item.path_finder.path_to_object)
         end
 
-        def start_accession_workflow(druid)
-          object_client = Dor::Services::Client.object(@ai.druid.druid)
+        def start_accession_workflow
           current_version = object_client.version.current
-          workflow_service.create_workflow_by_name(@ai.druid.druid, 'accessionWF', version: current_version, lane_id: lane_id(druid))
+          workflow_service.create_workflow_by_name(druid, 'accessionWF', version: current_version, lane_id: lane_id)
         end
       end
     end

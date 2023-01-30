@@ -13,16 +13,18 @@ gem 'dry-struct', '~> 1.0'
 gem 'dry-types', '~> 1.1'
 gem 'druid-tools', '~> 2.1'
 gem 'honeybadger'
-gem 'lyber-core', '~> 6.1'
+gem 'lyber-core', '~> 7.0'
 gem 'nokogiri'
 gem 'pry'
 gem 'pry-byebug', platform: %i[ruby_20 ruby_21]
 gem 'rake'
-gem 'resque', '~> 2.0' # bundler used 1.x otherwise
-gem 'redis', '~> 4.0' # redis 5.x has breaking changes with resque, see https://github.com/resque/resque/issues/1821
-gem 'resque-pool'
+gem 'sidekiq', '~> 6.4'
 gem 'slop'
 gem 'zeitwerk', '~> 2.1'
+
+source 'https://gems.contribsys.com/' do
+  gem 'sidekiq-pro'
+end
 
 # openapi_parser is an indirect dependency that's being pinned for now, because 1.0 introduces
 # stricter date-time format parsing, which breaks the test suite
