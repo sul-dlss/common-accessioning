@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Release::ReleasePublish do
-  subject(:perform) { robot.perform(druid) }
+  subject(:perform) { test_perform(robot, druid) }
 
   let(:druid) { 'bb222cc3333' }
   let(:robot) { described_class.new }

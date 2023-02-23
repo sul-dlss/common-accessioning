@@ -3,32 +3,30 @@
 module Robots
   module DorRepo
     module Accession
-      class EndAccession < Robots::DorRepo::Base
+      class EndAccession < LyberCore::Robot
         def initialize
           super('accessionWF', 'end-accession')
         end
 
-        def perform(druid)
-          object_client = Dor::Services::Client.object(druid)
+        def perform_work
           current_version = object_client.version.current
 
           # Search for the specialized workflow
-          next_dissemination_wf = special_dissemination_wf(object_client)
-          workflow_service.create_workflow_by_name(druid, next_dissemination_wf, version: current_version, lane_id: lane_id(druid)) if next_dissemination_wf.present?
+          next_dissemination_wf = special_dissemination_wf
+          workflow_service.create_workflow_by_name(druid, next_dissemination_wf, version: current_version, lane_id: lane_id) if next_dissemination_wf.present?
 
           # Call cleanup
           # Note that this used to be handled by the disseminationWF, which is no longer used.
-          Dor::Services::Client.object(druid).workspace.cleanup(workflow: 'accessionWF', lane_id: lane_id(druid))
-          LyberCore::Robot::ReturnState.new(status: :noop, note: 'Initiated cleanup API call.')
+          object_client.workspace.cleanup(workflow: 'accessionWF', lane_id: lane_id)
+          LyberCore::ReturnState.new(status: :noop, note: 'Initiated cleanup API call.')
         end
 
         private
 
         # This returns any optional workflow such as wasDisseminationWF
-        def special_dissemination_wf(object_client)
-          druid_obj = object_client.find
-          apo_id = druid_obj.administrative.hasAdminPolicy
-          raise "#{druid_obj.externalIdentifier} doesn't have a valid apo" if apo_id.nil?
+        def special_dissemination_wf
+          apo_id = cocina_object.administrative.hasAdminPolicy
+          raise "#{cocina_object.externalIdentifier} doesn't have a valid apo" if apo_id.nil?
 
           apo = Dor::Services::Client.object(apo_id).find
 

@@ -17,7 +17,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
   end
 
   before do
-    allow(WorkflowClientFactory).to receive(:build).and_return(workflow_client)
+    allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
   end
 
@@ -25,7 +25,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
     let(:object) { build(:dro, id: druid) }
 
     it 'initiates accessioning' do
-      robot.perform(bare_druid)
+      test_perform(robot, druid)
       expect(workspace_client).to have_received(:create)
         .with(source: 'spec/test_input2/bb/222/cc/3333')
       expect(workflow_client).to have_received(:create_workflow_by_name)
@@ -37,7 +37,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
     let(:object) { build(:collection, id: druid) }
 
     it 'initiates accessioning, but does not initialize the workspace' do
-      robot.perform(bare_druid)
+      test_perform(robot, druid)
       expect(workspace_client).not_to have_received(:create)
       expect(workflow_client).to have_received(:create_workflow_by_name)
         .with(druid, 'accessionWF', version: '1', lane_id: 'default')

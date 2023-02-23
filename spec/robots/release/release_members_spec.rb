@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
-  subject(:perform) { robot.perform(druid) }
+  subject(:perform) { test_perform(robot, druid) }
 
   let(:robot) { described_class.new }
   let(:druid) { 'druid:bb222cc3333' }
@@ -15,7 +15,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
 
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
-    allow(WorkflowClientFactory).to receive(:build).and_return(workflow_client)
+    allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
   end
 
   context 'when the model is an item' do

@@ -8,20 +8,20 @@ module Robots
           super('assemblyWF', 'exif-collect')
         end
 
-        def perform(druid)
-          with_item(druid) do |assembly_item|
-            cocina_model = assembly_item.cocina_model
-            file_sets = collect_exif_info(assembly_item, cocina_model)
-            # Save the modified metadata
-            updated = cocina_model.new(structural: cocina_model.structural.new(contains: file_sets))
-            assembly_item.object_client.update(params: updated)
-          end
+        def perform_work
+          return unless check_assembly_item
+
+          cocina_model = assembly_item.cocina_model
+          file_sets = collect_exif_info(assembly_item, cocina_model)
+          # Save the modified metadata
+          updated = cocina_model.new(structural: cocina_model.structural.new(contains: file_sets))
+          assembly_item.object_client.update(params: updated)
         end
 
         private
 
         def collect_exif_info(assembly_item, cocina_model)
-          LyberCore::Log.info("Collecting exif info for #{assembly_item.druid}")
+          logger.info("Collecting exif info for #{assembly_item.druid}")
           file_sets = cocina_model.structural.to_h.fetch(:contains) # make this a mutable hash
 
           file_sets.each do |file_set|

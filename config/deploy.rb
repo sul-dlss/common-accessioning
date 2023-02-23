@@ -23,7 +23,7 @@ set :log_level, :info
 set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w[config/honeybadger.yml tmp/resque-pool.lock]
+set :linked_files, %w[config/honeybadger.yml]
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
@@ -43,7 +43,8 @@ set :linked_dirs, %w[log run config/settings config/certs tmp/pids]
 # Prefer capistrano stage over Rails.env (which is typically `production`)
 set :honeybadger_env, fetch(:stage)
 
-set :resque_server_roles, :app
+set :sidekiq_systemd_role, :worker
+set :sidekiq_systemd_use_hooks, true
 
 # update shared_configs before restarting app
 before 'deploy:publishing', 'shared_configs:update'

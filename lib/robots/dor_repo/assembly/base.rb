@@ -3,20 +3,18 @@
 module Robots
   module DorRepo
     module Assembly
-      class Base < Robots::DorRepo::Base
+      class Base < LyberCore::Robot
         protected
 
-        def with_item(druid)
-          assembly_item = item(druid)
-          if assembly_item.item?
-            yield assembly_item
-          else
-            LyberCore::Log.info("Skipping #{@step_name} for #{druid} since it is not an item")
-          end
+        def check_assembly_item
+          return true if assembly_item.item?
+
+          logger.info("Skipping #{@step_name} for #{druid} since it is not an item")
+          false
         end
 
-        def item(druid)
-          Dor::Assembly::Item.new druid: druid
+        def assembly_item
+          @assembly_item ||= Dor::Assembly::Item.new(druid: druid)
         end
       end
     end

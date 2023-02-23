@@ -15,7 +15,7 @@ RSpec.describe Robots::DorRepo::Accession::SdrIngestTransfer do
   end
 
   describe '#perform' do
-    subject(:perform) { robot.perform(druid) }
+    subject(:perform) { test_perform(robot, druid) }
 
     before do
       allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)

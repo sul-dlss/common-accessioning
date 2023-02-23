@@ -6,8 +6,10 @@ workflows:
     jobs:
       - ruby-rails/lint:
           name: lint
+          context: dlss
       - ruby-rails/test-gem:
           name: test
+          context: dlss
           before-test:
             - run:
                 name: install rsync

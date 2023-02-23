@@ -15,7 +15,7 @@ RSpec.describe Robots::DorRepo::Accession::Shelve do
   end
 
   describe '#perform' do
-    subject(:perform) { robot.perform(druid) }
+    subject(:perform) { test_perform(robot, druid) }
 
     let(:object_client) { instance_double(Dor::Services::Client::Object, find: object, shelve: nil) }
 

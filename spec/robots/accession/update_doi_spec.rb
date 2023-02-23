@@ -13,7 +13,7 @@ RSpec.describe Robots::DorRepo::Accession::UpdateDoi do
   let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'low') }
 
   describe '#perform' do
-    subject(:perform) { robot.perform(druid) }
+    subject(:perform) { test_perform(robot, druid) }
 
     before do
       allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)

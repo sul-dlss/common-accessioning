@@ -6,7 +6,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
   subject(:robot) { described_class.new }
 
   describe '.perform' do
-    subject(:perform) { robot.perform(druid) }
+    subject(:perform) { test_perform(robot, druid) }
 
     let(:druid) { 'druid:dd116zh0343' }
     let(:object_client) { instance_double(Dor::Services::Client::Object, find: object) }
@@ -15,7 +15,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
 
     before do
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
-      allow(WorkflowClientFactory).to receive(:build).and_return(workflow_client)
+      allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     end
 
     context 'when a DRO with files' do

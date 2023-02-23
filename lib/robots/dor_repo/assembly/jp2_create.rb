@@ -8,16 +8,16 @@ module Robots
           super('assemblyWF', 'jp2-create')
         end
 
-        def perform(druid)
-          with_item(druid) do |assembly_item|
-            cocina_model = assembly_item.cocina_model
-            return LyberCore::Robot::ReturnState.new(status: :skipped, note: 'object is dark, no derivatives required') if cocina_model.access.view == 'dark'
+        def perform_work
+          return unless check_assembly_item
 
-            file_sets = create_jp2s(assembly_item, cocina_model)
-            # Save the modified metadata
-            updated = cocina_model.new(structural: cocina_model.structural.new(contains: file_sets))
-            assembly_item.object_client.update(params: updated)
-          end
+          cocina_model = assembly_item.cocina_model
+          return LyberCore::ReturnState.new(status: :skipped, note: 'object is dark, no derivatives required') if cocina_model.access.view == 'dark'
+
+          file_sets = create_jp2s(assembly_item, cocina_model)
+          # Save the modified metadata
+          updated = cocina_model.new(structural: cocina_model.structural.new(contains: file_sets))
+          assembly_item.object_client.update(params: updated)
         end
 
         private
@@ -26,7 +26,7 @@ module Robots
         # and modify structural metadata to reflect the new file.
         # grab all the file node tuples for each valid resource type that we want to generate derivates for
         def create_jp2s(assembly_item, cocina_model)
-          LyberCore::Log.info("Creating JP2s for #{assembly_item.druid.id}")
+          logger.info("Creating JP2s for #{assembly_item.druid.id}")
           file_sets = cocina_model.structural.to_h.fetch(:contains) # make this a mutable hash
           file_sets.each do |file_set|
             next unless [Cocina::Models::FileSetType.page, Cocina::Models::FileSetType.image].include?(file_set.fetch(:type))
@@ -63,7 +63,7 @@ module Robots
                         #  (for example, if they were generated in a specific way ahead of time).
                         #  in this case, we do not want to overwrite the files provided with newly derived jp2s
                         message = "WARNING: Did not create jp2 for #{assembly_image.path} -- file already exists"
-                        LyberCore::Log.warn(message)
+                        logger.warn(message)
                         new_jp2_file_name(file_node, assembly_image.jp2_filename, assembly_image.path)
                       else
                         tmp_folder = Settings.assembly.tmp_folder

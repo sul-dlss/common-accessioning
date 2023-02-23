@@ -4,41 +4,39 @@
 module Robots
   module DorRepo
     module Release
-      class ReleaseMembers < Robots::DorRepo::Base
+      class ReleaseMembers < LyberCore::Robot
         def initialize
-          super('releaseWF', 'release-members', check_queued_status: true) # init LyberCore::Robot
+          super('releaseWF', 'release-members')
         end
 
         # `perform` is the main entry point for the robot. This is where
         # all of the robot's work is done.
         #
         # @param [String] druid -- the Druid identifier for the object to process
-        def perform(druid)
-          LyberCore::Log.debug "release-members working on #{druid}"
+        def perform_work
+          logger.debug "release-members working on #{druid}"
 
-          # `#find` returns an instance of a model from the cocina-models gem
-          obj = Dor::Services::Client.object(druid).find
-          return unless obj.collection?
+          return unless cocina_object.collection?
 
-          publish_collection(druid: druid, object: obj)
+          publish_collection
         end
 
         private
 
-        def publish_collection(druid:, object:)
+        def publish_collection
           member_service = Dor::Release::MemberService.new(druid: druid)
-          add_workflow_to_members(member_service.items) if add_wf_to_members?(object)
+          add_workflow_to_members(member_service.items) if add_wf_to_members?
           add_workflow_to_members(member_service.sub_collections)
         end
 
         # Here's an example of the kinds of tags we're dealing with:
         #   https://argo.stanford.edu/view/druid:fh138mm2023
         # @return [boolean] returns true if the most recent releaseTags for any target is "collection"
-        def add_wf_to_members?(object)
-          object.administrative.releaseTags
-                .group_by(&:to)
-                .each_with_object({}) { |(key, v), out| out[key] = v.max_by(&:date) }
-                .values.map(&:what).any? { |x| x == 'collection' }
+        def add_wf_to_members?
+          cocina_object.administrative.releaseTags
+                       .group_by(&:to)
+                       .each_with_object({}) { |(key, v), out| out[key] = v.max_by(&:date) }
+                       .values.map(&:what).any? { |x| x == 'collection' }
         end
 
         # iterate through any item members and add workflows
@@ -55,12 +53,12 @@ module Robots
         end
 
         def create_release_workflow(druid)
-          LyberCore::Log.debug "...adding workflow releaseWF for #{druid}"
+          logger.debug "...adding workflow releaseWF for #{druid}"
           object_client = Dor::Services::Client.object(druid)
 
           # initiate workflow by making workflow service call
           current_version = object_client.version.current
-          workflow_service.create_workflow_by_name(druid, 'releaseWF', version: current_version, lane_id: lane_id(druid))
+          workflow_service.create_workflow_by_name(druid, 'releaseWF', version: current_version, lane_id: lane_id)
         end
       end
     end

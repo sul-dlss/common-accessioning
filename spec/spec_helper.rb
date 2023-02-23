@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# Make sure specs run with the definitions from test.rb
-ENV['ROBOT_ENVIRONMENT'] = 'test'
-
 require 'simplecov'
 
 SimpleCov.start do
@@ -12,6 +9,7 @@ SimpleCov.start do
   add_filter '/spec/'
 end
 
+ENV['ROBOT_ENVIRONMENT'] = 'test'
 require File.expand_path("#{__dir__}/../config/boot")
 
 require 'byebug'
@@ -21,6 +19,7 @@ require 'webmock/rspec'
 WebMock.disable_net_connect!
 require 'equivalent-xml/rspec_matchers'
 require 'cocina/rspec'
+include LyberCore::Rspec # rubocop:disable Style/MixinUsage
 
 TMP_ROOT_DIR = 'tmp/test_input'
 

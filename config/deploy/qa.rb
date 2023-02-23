@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-server 'common-accessioning-qa-a.stanford.edu', user: 'lyberadmin', roles: %w[app]
-server 'common-accessioning-qa-b.stanford.edu', user: 'lyberadmin', roles: %w[app]
+server 'common-accessioning-qa-a.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
+server 'common-accessioning-qa-b.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
 
 Capistrano::OneTimeKey.generate_one_time_key!
 

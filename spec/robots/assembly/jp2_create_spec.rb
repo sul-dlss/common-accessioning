@@ -8,7 +8,8 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     instance_double(Dor::Services::Client::Object, find: cocina_model, update: true)
   end
   let(:access) { { view: 'world' } }
-  let(:cocina_model) { build(:dro, id: "druid:#{bare_druid}").new(structural: structural, access: access) }
+  let(:druid) { "druid:#{bare_druid}" }
+  let(:cocina_model) { build(:dro, id: druid).new(structural: structural, access: access) }
 
   let(:structural) do
     { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
@@ -60,17 +61,17 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
   end
 
   describe '#perform' do
-    subject(:perform) { robot.perform(bare_druid) }
+    subject(:perform) { test_perform(robot, druid) }
 
     let(:assembly_item) { Dor::Assembly::Item.new(druid: bare_druid) }
     let(:bare_druid) { 'bb222cc3333' }
 
     before do
-      allow(robot).to receive(:item).and_return(assembly_item)
+      allow(robot).to receive(:assembly_item).and_return(assembly_item)
     end
 
     context 'with an item' do
-      let(:object) { build(:dro, id: "druid:#{bare_druid}") }
+      let(:object) { build(:dro, id: druid) }
 
       before do
         allow(assembly_item).to receive(:item?).and_call_original
@@ -92,7 +93,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     end
 
     context 'with a collection' do
-      let(:object) { build(:collection, id: "druid:#{bare_druid}") }
+      let(:object) { build(:collection, id: druid) }
 
       it 'does not create jp2' do
         expect(assembly_item).to receive(:item?)

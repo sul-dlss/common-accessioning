@@ -11,6 +11,6 @@ RSpec.describe Robots::DorRepo::Release::UpdateMarc do
       .to_return(status: 201, body: '', headers: {})
     # NOTE: Until I wrapped the `#perform` call in the `expect...not_to raise_error`,
     #       there were no expectations in this spec. What do we *really* expect here?
-    expect { robot.perform(druid) }.not_to raise_error
+    expect { test_perform(robot, druid) }.not_to raise_error
   end
 end
