@@ -2,7 +2,6 @@
 
 require 'rake'
 require 'rake/testtask'
-require 'resque/pool/tasks'
 
 # Import external rake tasks
 Dir.glob('lib/tasks/*.rake').each { |r| import r }
@@ -37,18 +36,6 @@ desc 'Get application version'
 task :app_version do
   puts File.read(File.expand_path('VERSION', __dir__)).chomp
 end
-
-# Set up resque-pool
-task 'resque:pool:setup' do
-  # close any sockets or files in pool manager
-  # and re-open them in the resque worker parent
-  Resque::Pool.after_prefork do |_job|
-    Resque.redis.client.reconnect
-    CommonAccessioning.connect_dor_services_app
-  end
-end
-
-task 'resque:setup' => :environment
 
 task :environment do
   require_relative 'config/boot'
