@@ -3,11 +3,8 @@
 
 # DOR consolidated robots
 
-This repository contains a number of Resque background jobs.
+This repository contains a number of Sidekiq background jobs.
 The jobs are enqueued by [workflow-server-rails](https://github.com/sul-dlss/workflow-server-rails).
-
-The jobs are run by [resque-pool](https://github.com/nevans/resque-pool)
-
 
 ## Workflows
 The following workflows are supported by this repository:

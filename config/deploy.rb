@@ -18,10 +18,6 @@ set :deploy_to, "/opt/app/lyberadmin/#{fetch(:application)}"
 # Default value for :log_level is :debug
 set :log_level, :info
 
-# Default value for :pty is false
-# true for ubuntu to perform resque:pool:hot_swap
-set :pty, true
-
 # Default value for :linked_files is []
 set :linked_files, %w[config/honeybadger.yml]
 
@@ -36,9 +32,7 @@ set :linked_files, %w[config/honeybadger.yml]
 
 set :stages, %w[dev staging production]
 
-# resque-pool writes it's pidfile to tmp/pids, so link it or we'll start a new
-# pool of workers with each deploy.
-set :linked_dirs, %w[log run config/settings config/certs tmp/pids]
+set :linked_dirs, %w[log run config/settings config/certs]
 
 # Prefer capistrano stage over Rails.env (which is typically `production`)
 set :honeybadger_env, fetch(:stage)
