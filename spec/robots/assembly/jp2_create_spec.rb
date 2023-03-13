@@ -334,7 +334,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
         # We now have three jp2s
         filenames = file_sets.flat_map { |fs| fs[:structural][:contains] }.map { |file| file[:filename] }
-        expect(filenames).to match_array ['image111.jp2', 'image111.tif', 'image112.jp2', 'image112.tif', 'sub/image113.jp2', 'sub/image113.tif']
+        expect(filenames).to contain_exactly('image111.jp2', 'image111.tif', 'image112.jp2', 'image112.tif', 'sub/image113.jp2', 'sub/image113.tif')
       end
     end
 
