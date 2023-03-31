@@ -1,8 +1,8 @@
 GEM
   remote: https://gems.contribsys.com/
   specs:
-    sidekiq-pro (5.5.8)
-      sidekiq (~> 6.0, >= 6.5.6)
+    sidekiq-pro (7.0.8)
+      sidekiq (>= 7.0.0, < 8)
 
 GEM
   remote: https://rubygems.org/
@@ -150,14 +150,14 @@ GEM
     json (2.6.3)
     jsonpath (1.1.2)
       multi_json
-    lyber-core (7.0.0)
+    lyber-core (7.1.0)
       activesupport
       config
       dor-services-client (~> 12.10)
       dor-workflow-client (~> 5.0)
       druid-tools
       honeybadger
-      sidekiq (~> 6.2)
+      sidekiq (~> 7.0)
       zeitwerk
     method_source (1.0.0)
     mime-types (3.4.1)
@@ -192,10 +192,11 @@ GEM
       pry (>= 0.13, < 0.15)
     public_suffix (5.0.1)
     racc (1.6.2)
-    rack (2.2.6.4)
+    rack (3.0.7)
     rainbow (3.1.1)
     rake (13.0.6)
-    redis (4.8.1)
+    redis-client (0.14.0)
+      connection_pool
     regexp_parser (2.7.0)
     rexml (3.2.5)
     rspec (3.12.0)
@@ -236,10 +237,11 @@ GEM
     ruby-vips (2.1.4)
       ffi (~> 1.12)
     ruby2_keywords (0.0.5)
-    sidekiq (6.5.8)
-      connection_pool (>= 2.2.5, < 3)
-      rack (~> 2.0)
-      redis (>= 4.5.0, < 5)
+    sidekiq (7.0.7)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.11.0)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -284,7 +286,7 @@ DEPENDENCIES
   dry-types (~> 1.1)
   equivalent-xml
   honeybadger
-  lyber-core (~> 7.0)
+  lyber-core (~> 7.1)
   nokogiri
   openapi_parser (< 1.0)
   pry
@@ -294,7 +296,7 @@ DEPENDENCIES
   rspec_junit_formatter
   rubocop
   rubocop-rspec
-  sidekiq (~> 6.4)
+  sidekiq (~> 7.0)
   sidekiq-pro!
   simplecov
   slop
