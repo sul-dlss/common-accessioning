@@ -15,6 +15,9 @@ module Robots
         # @param [String] druid -- the Druid identifier for the object to process
         def perform_work
           object_client.notify_goobi
+        rescue Dor::Services::Client::BadRequestError => e
+          # NOTE: We don't know why this error is occurring, but the condition seems to go away momentarily, so retry automatically.
+          retry if e.message.match?(/Process template Example_Workflow does not exist/)
         end
       end
     end
