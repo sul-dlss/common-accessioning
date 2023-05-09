@@ -44,7 +44,7 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
   end
 
   describe '#compute_checksums' do
-    let(:cocina_object) { build(:dro, id: druid).new(structural: structural) }
+    let(:cocina_object) { build(:dro, id: druid).new(structural:) }
 
     let(:structural) do
       { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
@@ -133,7 +133,7 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
 
     it 'errors with a useful message when checksums do not match' do
       structural[:contains].first[:structural][:contains].first[:hasMessageDigests].first[:digest] = '666'
-      cocina_object = build(:dro, id: druid).new(structural: structural)
+      cocina_object = build(:dro, id: druid).new(structural:)
       expect { robot.send(:compute_checksums, assembly_item, cocina_object) }.to raise_error(RuntimeError, /Checksums disagree: type="md5", file="image111.tif"/)
     end
   end

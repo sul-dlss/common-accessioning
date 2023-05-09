@@ -21,7 +21,7 @@ module Dor
           end
         end
 
-        ContentMetadataFromStub::StructuralBuilder.build(cocina_model: cocina_model, objects: cm_resources, reading_order: book_reading_order)
+        ContentMetadataFromStub::StructuralBuilder.build(cocina_model:, objects: cm_resources, reading_order: book_reading_order)
       end
 
       def stub_content_metadata_exists?

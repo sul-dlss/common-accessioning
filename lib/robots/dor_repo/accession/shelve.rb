@@ -15,7 +15,7 @@ module Robots
           # Shelving must be done whether an object has files or not, because the shelve call
           # also plays a role in decommissioning an object where the files are removed from stacks.
           # This is an asynchronous result. It will set the shelve workflow to complete when it is done.
-          object_client.shelve(lane_id: lane_id)
+          object_client.shelve(lane_id:)
           LyberCore::ReturnState.new(status: :noop, note: 'Initiated shelve API call.')
         end
       end

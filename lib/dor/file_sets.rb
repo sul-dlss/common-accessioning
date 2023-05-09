@@ -29,8 +29,8 @@ module Dor
     def self.build(ng_xml:, version:, dro_access:)
       new(
         ng_xml,
-        version: version,
-        dro_access: dro_access
+        version:,
+        dro_access:
       ).build
     end
 
@@ -48,8 +48,8 @@ module Dor
         {
           externalIdentifier: resource_node['id'],
           type: resource_type(resource_node),
-          version: version,
-          structural: structural
+          version:,
+          structural:
         }.tap do |attrs|
           attrs[:label] = resource_node.xpath('label', 'attr[@type="label"]', 'attr[@name="label"]').text # some will be missing labels, they will just be blank
         end
@@ -106,14 +106,14 @@ module Dor
           label: node['id'],
           filename: node['id'],
           size: node['size'].to_i,
-          version: version,
+          version:,
           hasMessageDigests: digests(node),
           access: self.class.file_access(dro_access),
           administrative: file_administrative(node)
         }.tap do |attrs|
           # Files from Goobi don't have mimetype until they hit exif-collect in the assemblyWF
           attrs[:hasMimeType] = node['mimetype'] if node['mimetype'].present?
-          attrs[:presentation] = { height: height, width: width } if height && width
+          attrs[:presentation] = { height:, width: } if height && width
           attrs[:use] = use if use
         end
       end
@@ -126,7 +126,7 @@ module Dor
       preserve = (node['preserve'] || default_administrative[:preserve]) == 'yes'
       shelve = (node['shelve'] || default_administrative[:shelve]) == 'yes'
 
-      { publish: publish, sdrPreserve: preserve, shelve: shelve }
+      { publish:, sdrPreserve: preserve, shelve: }
     end
   end
 end

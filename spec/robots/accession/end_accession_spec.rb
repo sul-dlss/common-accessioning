@@ -10,7 +10,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   let(:druid) { 'druid:zz000zz0001' }
   let(:apo_druid) { 'druid:mx121xx1234' }
   let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
-  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process: process) }
+  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process:) }
   let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: object, workspace: workspace_client) }
   let(:apo_object_client) { instance_double(Dor::Services::Client::Object, find: apo) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }

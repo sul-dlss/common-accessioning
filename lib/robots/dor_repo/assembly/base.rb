@@ -14,7 +14,7 @@ module Robots
         end
 
         def assembly_item
-          @assembly_item ||= Dor::Assembly::Item.new(druid: druid)
+          @assembly_item ||= Dor::Assembly::Item.new(druid:)
         end
       end
     end

@@ -11,7 +11,7 @@ module Robots
         end
 
         def perform_work
-          object_client.workspace.cleanup(workflow: 'disseminationWF', lane_id: lane_id)
+          object_client.workspace.cleanup(workflow: 'disseminationWF', lane_id:)
           LyberCore::ReturnState.new(status: :noop, note: 'Initiated cleanup API call.')
         end
       end

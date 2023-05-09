@@ -19,7 +19,7 @@ RSpec.describe Robots::DorRepo::Accession::ContentMetadata do
     end
 
     context 'when an item' do
-      let(:object) { build(:dro, id: druid).new(access: access) }
+      let(:object) { build(:dro, id: druid).new(access:) }
       let(:access) { {} }
 
       context 'when no contentMetadata.xml file is found' do

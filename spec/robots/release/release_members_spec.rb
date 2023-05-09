@@ -7,11 +7,11 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
 
   let(:robot) { described_class.new }
   let(:druid) { 'druid:bb222cc3333' }
-  let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: cocina_model, members: members) }
+  let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: cocina_model, members:) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
   let(:members) { [] }
   let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
-  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process: process) }
+  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process:) }
 
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)

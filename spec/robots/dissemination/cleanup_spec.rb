@@ -11,7 +11,7 @@ RSpec.describe Robots::DorRepo::Dissemination::Cleanup do
   describe '#perform' do
     let(:object_client) { instance_double(Dor::Services::Client::Object, workspace: workspace_client) }
     let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, cleanup: true) }
-    let(:workflow_client) { instance_double(Dor::Workflow::Client, process: process) }
+    let(:workflow_client) { instance_double(Dor::Workflow::Client, process:) }
 
     before do
       allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)

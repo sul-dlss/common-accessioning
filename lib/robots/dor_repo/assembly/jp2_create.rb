@@ -67,7 +67,7 @@ module Robots
                         new_jp2_file_name(file_node, assembly_image.jp2_filename, assembly_image.path)
                       else
                         tmp_folder = Settings.assembly.tmp_folder
-                        jp2 = assembly_image.create_jp2(overwrite: false, tmp_folder: tmp_folder)
+                        jp2 = assembly_image.create_jp2(overwrite: false, tmp_folder:)
                         new_jp2_file_name(file_node, jp2.path, assembly_image.path)
                       end
           add_jp2_file_node(file_set, cocina_model, file_name)

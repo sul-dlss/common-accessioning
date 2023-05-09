@@ -30,7 +30,7 @@ module Robots
 
         def invoke_techmd_service(file_uris)
           files = file_uris.uris.map { |uri_md5| { uri: uri_md5.uri, md5: uri_md5.md5 } }
-          req = JSON.generate(druid: druid, files: files, 'lane-id': lane_id, basepath: file_uris.content_dir)
+          req = JSON.generate(druid:, files:, 'lane-id': lane_id, basepath: file_uris.content_dir)
           resp = Faraday.post("#{Settings.tech_md_service.url}/v1/technical-metadata", req,
                               'Content-Type' => 'application/json',
                               'Authorization' => "Bearer #{Settings.tech_md_service.token}")

@@ -6,7 +6,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
   let(:test_input_dir) { File.join(__dir__, '../../../../fixtures/content_metadata') }
 
   describe '.build' do
-    subject(:result) { described_class.build(cocina_model: cocina_model, objects: objects) }
+    subject(:result) { described_class.build(cocina_model:, objects:) }
 
     let(:druid) { 'druid:nx288wh8889' }
     let(:cocina_model) { build(:dro, id: druid, type: object_type) }
@@ -23,7 +23,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
         let(:objects) do
           [[Assembly::ObjectFile.new(File.join(test_input_dir, 'test.tif'), file_attributes: { publish: 'no', preserve: 'no', shelve: 'no' })],
            [Assembly::ObjectFile.new(File.join(test_input_dir, 'test.jp2'), file_attributes: { publish: 'yes', preserve: 'yes', shelve: 'yes' })],
-           [Assembly::ObjectFile.new(File.join(test_input_dir, 'test2.jp2'), file_attributes: file_attributes)]]
+           [Assembly::ObjectFile.new(File.join(test_input_dir, 'test2.jp2'), file_attributes:)]]
         end
 
         let(:expected) do
@@ -93,7 +93,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                    [File.join(test_input_dir, 'res3_image1.tif'),
                     File.join(test_input_dir, 'res3_image1.jp2'),
                     File.join(test_input_dir, 'res3_teifile.txt')]]
-          files.collect { |resource| resource.collect { |file| Assembly::ObjectFile.new(file, file_attributes: file_attributes) } }
+          files.collect { |resource| resource.collect { |file| Assembly::ObjectFile.new(file, file_attributes:) } }
         end
 
         let(:expected) do
@@ -296,8 +296,8 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
 
       context 'when using two tifs' do
         let(:objects) do
-          [[Assembly::ObjectFile.new(File.join(test_input_dir, 'test.tif'), file_attributes: file_attributes)],
-           [Assembly::ObjectFile.new(File.join(test_input_dir, 'test.jp2'), file_attributes: file_attributes)]]
+          [[Assembly::ObjectFile.new(File.join(test_input_dir, 'test.tif'), file_attributes:)],
+           [Assembly::ObjectFile.new(File.join(test_input_dir, 'test.jp2'), file_attributes:)]]
         end
 
         let(:expected) do
@@ -424,10 +424,10 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
 
     context 'when using a 3d object with one 3d type files and three other supporting files (where one supporting file is a non-viewable but downloadable 3d file)' do
       let(:objects) do
-        [[Assembly::ObjectFile.new(File.join(test_input_dir, 'someobject.obj'), file_attributes: file_attributes)],
-         [Assembly::ObjectFile.new(File.join(test_input_dir, 'someobject.ply'), file_attributes: file_attributes)],
-         [Assembly::ObjectFile.new(File.join(test_input_dir, 'test.tif'), file_attributes: file_attributes)],
-         [Assembly::ObjectFile.new(File.join(test_input_dir, 'test.pdf'), file_attributes: file_attributes)]]
+        [[Assembly::ObjectFile.new(File.join(test_input_dir, 'someobject.obj'), file_attributes:)],
+         [Assembly::ObjectFile.new(File.join(test_input_dir, 'someobject.ply'), file_attributes:)],
+         [Assembly::ObjectFile.new(File.join(test_input_dir, 'test.tif'), file_attributes:)],
+         [Assembly::ObjectFile.new(File.join(test_input_dir, 'test.pdf'), file_attributes:)]]
       end
       let(:object_type) { Cocina::Models::ObjectType.three_dimensional }
 

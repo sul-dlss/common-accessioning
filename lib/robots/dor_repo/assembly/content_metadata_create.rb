@@ -30,7 +30,7 @@ module Robots
                          Dor::StructuralMetadata.update(xml, assembly_item.cocina_model)
                        end
 
-          updated = assembly_item.cocina_model.new(structural: structural)
+          updated = assembly_item.cocina_model.new(structural:)
           assembly_item.object_client.update(params: updated)
 
           # Remove the contentMetadata.xml or stubContentMetadata.xml
