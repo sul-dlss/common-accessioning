@@ -9,7 +9,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
   end
   let(:access) { { view: 'world' } }
   let(:druid) { "druid:#{bare_druid}" }
-  let(:cocina_model) { build(:dro, id: druid).new(structural: structural, access: access) }
+  let(:cocina_model) { build(:dro, id: druid).new(structural:, access:) }
 
   let(:structural) do
     { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',

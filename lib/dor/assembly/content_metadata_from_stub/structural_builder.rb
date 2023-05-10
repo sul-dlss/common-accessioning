@@ -13,10 +13,10 @@ module Dor
         def self.build(cocina_model:, objects:, reading_order: 'left-to-right')
           common_path = find_common_path(objects) # find common paths to all files provided
 
-          filesets = objects.map { |resource_files| FileSet.new(resource_files: resource_files, cocina_model: cocina_model) }
+          filesets = objects.map { |resource_files| FileSet.new(resource_files:, cocina_model:) }
 
           structural = {
-            contains: build_filesets(filesets: filesets, cocina_model: cocina_model, common_path: common_path)
+            contains: build_filesets(filesets:, cocina_model:, common_path:)
           }
 
           structural[:hasMemberOrders] = [{ viewingDirection: reading_order }] if cocina_model.type == Cocina::Models::ObjectType.book
@@ -57,7 +57,7 @@ module Dor
             default_label = "#{file_set_type.capitalize} #{resource_type_counters[file_set_type]}"
 
             contains = fileset.resource_files.map do |assembly_objectfile| # iterate over all the files in a resource
-              build_file(assembly_objectfile: assembly_objectfile, cocina_model: cocina_model, common_path: common_path)
+              build_file(assembly_objectfile:, cocina_model:, common_path:)
             end
 
             Cocina::Models::FileSet.new(
@@ -66,7 +66,7 @@ module Dor
               type: Cocina::Models::FileSetType[file_set_type],
               version: cocina_model.version,
               structural: {
-                contains: contains
+                contains:
               }
             )
           end
@@ -80,7 +80,7 @@ module Dor
             type: Cocina::Models::ObjectType.file,
             externalIdentifier: "https://cocina.sul.stanford.edu/file/#{SecureRandom.uuid}",
             label: filename,
-            filename: filename,
+            filename:,
             version: cocina_model.version,
             administrative: administrative(assembly_objectfile.file_attributes, cocina_model.access),
             access: Dor::FileSets.file_access(cocina_model.access)

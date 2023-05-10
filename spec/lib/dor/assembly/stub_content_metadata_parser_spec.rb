@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Dor::Assembly::StubContentMetadataParser do
   describe '#book_reading_order' do
     let(:druid) { 'druid:bb111bb3333' }
-    let(:item) { Dor::Assembly::Item.new(druid: druid) }
+    let(:item) { Dor::Assembly::Item.new(druid:) }
 
     context 'when stub_object_type is book (ltr)' do
       it 'maps content metadata types to book correctly' do
@@ -27,7 +27,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
   end
 
   describe '#convert_stub_content_metadata' do
-    let(:item) { Dor::Assembly::Item.new(druid: druid) }
+    let(:item) { Dor::Assembly::Item.new(druid:) }
     let(:cocina_model) { build(:dro, type: object_type) }
     let(:object_type) { Cocina::Models::ObjectType.book }
 

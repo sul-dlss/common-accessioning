@@ -37,7 +37,7 @@ module Dor
       {}.tap do |structural|
         has_member_orders = build_has_member_orders
         structural[:hasMemberOrders] = has_member_orders if has_member_orders.present?
-        structural[:contains] = FileSets.build(ng_xml: ng_xml, version: version, dro_access: cocina_item.access)
+        structural[:contains] = FileSets.build(ng_xml:, version:, dro_access: cocina_item.access)
       end
     end
 

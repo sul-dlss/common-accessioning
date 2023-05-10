@@ -8,12 +8,12 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
   let(:type) { 'item' }
   let(:item) do
     instance_double(Dor::Assembly::Item,
-                    cocina_model: cocina_model,
-                    object_client: object_client,
+                    cocina_model:,
+                    object_client:,
                     item?: type == 'item')
   end
   let(:structural) { {} }
-  let(:cocina_model) { build(:dro, id: druid).new(structural: structural) }
+  let(:cocina_model) { build(:dro, id: druid).new(structural:) }
 
   let(:object_client) do
     instance_double(Dor::Services::Client::Object, update: true)
@@ -50,7 +50,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
   describe '#collect_exif_info' do
     subject(:result) { robot.send(:collect_exif_info, item, cocina_model) }
 
-    let(:item) { Dor::Assembly::Item.new(druid: druid) }
+    let(:item) { Dor::Assembly::Item.new(druid:) }
 
     let(:exif) { double('result', mimetype: nil, imagewidth: 7, imageheight: 9) }
 
@@ -110,9 +110,9 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
 
       before do
         allow(Assembly::ObjectFile).to receive(:new).and_return(
-          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_468, valid_image?: true, exif: exif),
-          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_472, valid_image?: true, exif: exif),
-          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_472, valid_image?: true, exif: exif)
+          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_468, valid_image?: true, exif:),
+          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_472, valid_image?: true, exif:),
+          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_472, valid_image?: true, exif:)
         )
       end
 
@@ -164,7 +164,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
 
       before do
         allow(Assembly::ObjectFile).to receive(:new).and_return(
-          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_468, valid_image?: true, exif: exif),
+          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_468, valid_image?: true, exif:),
           instance_double(Assembly::ObjectFile, mimetype: 'image/jp2', filesize: 465, valid_image?: false)
         )
       end

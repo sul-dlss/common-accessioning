@@ -10,7 +10,7 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
 
     let(:druid) { 'druid:dd116zh0343' }
     let(:object_client) { instance_double(Dor::Services::Client::Object, find: object) }
-    let(:workflow_client) { instance_double(Dor::Workflow::Client, process: process) }
+    let(:workflow_client) { instance_double(Dor::Workflow::Client, process:) }
     let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'low') }
 
     before do

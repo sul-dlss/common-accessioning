@@ -24,7 +24,7 @@ module Robots
         private
 
         def publish_collection
-          member_service = Dor::Release::MemberService.new(druid: druid)
+          member_service = Dor::Release::MemberService.new(druid:)
           add_workflow_to_members(member_service.items) if add_wf_to_members?
           add_workflow_to_members(member_service.sub_collections)
         end
@@ -58,7 +58,7 @@ module Robots
 
           # initiate workflow by making workflow service call
           current_version = object_client.version.current
-          workflow_service.create_workflow_by_name(druid, 'releaseWF', version: current_version, lane_id: lane_id)
+          workflow_service.create_workflow_by_name(druid, 'releaseWF', version: current_version, lane_id:)
         end
       end
     end

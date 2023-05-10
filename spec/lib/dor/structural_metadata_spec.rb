@@ -50,7 +50,7 @@ RSpec.describe Dor::StructuralMetadata do
     end
 
     let(:druid) { 'druid:bc123dg9393' }
-    let(:cocina_object) { build(:dro, id: druid).new(access: access) }
+    let(:cocina_object) { build(:dro, id: druid).new(access:) }
 
     context 'when the parent object access is world/stanford' do
       let(:access) do

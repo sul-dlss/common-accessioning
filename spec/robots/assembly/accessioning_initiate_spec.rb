@@ -9,7 +9,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
   let(:bare_druid) { 'bb222cc3333' }
   let(:druid) { "druid:#{bare_druid}" }
   let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
-  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process: process) }
+  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process:) }
   let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, create: nil) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
   let(:object_client) do

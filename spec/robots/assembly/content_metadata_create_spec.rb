@@ -26,9 +26,9 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
                     stub_content_metadata_exists?: stub_content_metadata,
                     stub_cm_file_name: stub_content_file_name,
                     convert_stub_content_metadata: true,
-                    cocina_model: cocina_model,
-                    object_client: object_client,
-                    path_finder: path_finder)
+                    cocina_model:,
+                    object_client:,
+                    path_finder:)
   end
 
   let(:path_finder) { instance_double(Dor::Assembly::PathFinder, path_to_metadata_file: cm_file_name) }

@@ -9,7 +9,7 @@ module Robots
         end
 
         def perform_work
-          object_client.preserve(lane_id: lane_id)
+          object_client.preserve(lane_id:)
           LyberCore::ReturnState.new(status: :noop, note: 'Initiated preserve API call.')
         end
       end
