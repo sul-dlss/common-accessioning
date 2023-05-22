@@ -13,6 +13,7 @@ module Robots
 
           cocina_model = assembly_item.cocina_model
           file_sets = compute_checksums(assembly_item, cocina_model)
+          verify_checksums_exist(file_sets)
 
           # Save the modified metadata
           updated = cocina_model.new(structural: cocina_model.structural.new(contains: file_sets))
@@ -52,6 +53,20 @@ module Robots
           end
 
           file_sets
+        end
+
+        # verify that each file has an MD5 and SHA1 checksum node and it has a non-blank value
+        def verify_checksums_exist(file_sets)
+          file_sets.each do |file_set|
+            files = file_set.dig(:structural, :contains)
+            files.each do |file|
+              md5_node = file[:hasMessageDigests].find { |digest| digest[:type] == 'md5' }
+              sha1_node = file[:hasMessageDigests].find { |digest| digest[:type] == 'sha1' }
+              raise %(Missing MD5 checksum after checksum-compute for file="#{file[:filename]}") unless md5_node && md5_node[:digest].present?
+              raise %(Missing SHA1 checksum after checksum-compute for file="#{file[:filename]}") unless sha1_node && sha1_node[:digest].present?
+            end
+          end
+          true
         end
 
         # compare existing checksum nodes with computed checksum, return false if there are any mismatches, otherwise return true

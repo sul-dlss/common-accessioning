@@ -131,6 +131,26 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
       ]
     end
 
+    it 'indicates checksums not verified with an error if a checksum does not exist' do
+      # create the checksums, remove one, and ensure our verification step fails
+      file_sets = robot.send(:compute_checksums, assembly_item, cocina_object)
+      file_sets[0][:structural][:contains][0][:hasMessageDigests].pop
+      expect { robot.send(:verify_checksums_exist, file_sets) }.to raise_error(RuntimeError, /Missing SHA1 checksum after checksum-compute for file="image111.tif"/)
+    end
+
+    it 'indicates checksums not verified with an error if a checksum is blank' do
+      # create the checksums, set one to blank, and ensure our verification step fails
+      file_sets = robot.send(:compute_checksums, assembly_item, cocina_object)
+      file_sets[0][:structural][:contains][0][:hasMessageDigests][0][:digest] = ''
+      expect { robot.send(:verify_checksums_exist, file_sets) }.to raise_error(RuntimeError, /Missing MD5 checksum after checksum-compute for file="image111.tif"/)
+    end
+
+    it 'indicates checksums are verified if all checksums exist' do
+      # create the checksums, and ensure our verification step passes
+      file_sets = robot.send(:compute_checksums, assembly_item, cocina_object)
+      expect(robot.send(:verify_checksums_exist, file_sets)).to be true
+    end
+
     it 'errors with a useful message when checksums do not match' do
       structural[:contains].first[:structural][:contains].first[:hasMessageDigests].first[:digest] = '666'
       cocina_object = build(:dro, id: druid).new(structural:)
