@@ -65,8 +65,8 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'when there are multiple targets but they are all released to self only' do
-      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } }
-      let(:release_tag2) { { to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket' } }
+      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } } # rubocop:disable RSpec/IndexedLet
+      let(:release_tag2) { { to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket' } } # rubocop:disable RSpec/IndexedLet
       let(:release_tags) { [release_tag1, release_tag2] }
       let(:members) do
         [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'collection')]
@@ -79,8 +79,8 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'with multiple tags for a single target' do
-      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'self', date: '2019-03-09 19:34:43 UTC', who: 'hfrost ' } }
-      let(:release_tag2) { { to: 'Searchworks', release: false, what: 'self', date: '2020-02-07 19:34:43 UTC', who: 'jkalchik' } }
+      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'self', date: '2019-03-09 19:34:43 UTC', who: 'hfrost ' } } # rubocop:disable RSpec/IndexedLet
+      let(:release_tag2) { { to: 'Searchworks', release: false, what: 'self', date: '2020-02-07 19:34:43 UTC', who: 'jkalchik' } } # rubocop:disable RSpec/IndexedLet
       let(:release_tags) { [release_tag1, release_tag2] }
       let(:members) do
         [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'collection')]
@@ -112,8 +112,8 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'when there are multiple targets and at least one of the release targets is not released to self' do
-      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } }
-      let(:release_tag2) { { to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket' } }
+      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } } # rubocop:disable RSpec/IndexedLet
+      let(:release_tag2) { { to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket' } } # rubocop:disable RSpec/IndexedLet
       let(:release_tags) { [release_tag1, release_tag2] }
       let(:members) do
         [

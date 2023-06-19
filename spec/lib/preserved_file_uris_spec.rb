@@ -52,8 +52,8 @@ RSpec.describe PreservedFileUris do
     )
   end
 
-  let(:filename1) { 'folder1PuSu/story1u.txt' }
-  let(:filename2) { 'folder1PuSu/story2u.txt' }
+  let(:filename1) { 'folder1PuSu/story1u.txt' } # rubocop:disable RSpec/IndexedLet
+  let(:filename2) { 'folder1PuSu/story2u.txt' } # rubocop:disable RSpec/IndexedLet
 
   before do
     # For File URIs, need to use absolute paths
