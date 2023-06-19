@@ -37,10 +37,10 @@ module Dor
             'file'
           when Cocina::Models::ObjectType.three_dimensional
             resource_extensions = resource_files.collect(&:ext)
-            if (resource_extensions & VALID_THREE_DIMENSION_EXTENTIONS).empty? # if this resource contains no known 3D file extensions, the resource type is file
-              'file'
-            else # otherwise the resource type is 3d
+            if resource_extensions.intersect?(VALID_THREE_DIMENSION_EXTENTIONS)
               '3d'
+            else
+              'file'
             end
           else
             raise "Unexpected type '#{@cocina_model.type}'"
