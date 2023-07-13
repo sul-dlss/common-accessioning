@@ -4,6 +4,10 @@ server 'common-accessioning-prod-a.stanford.edu', user: 'lyberadmin', roles: %w[
 server 'common-accessioning-prod-b.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
 server 'common-accessioning-prod-c.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
 server 'common-accessioning-prod-d.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
+server 'common-accessioning-prod-e.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
+server 'common-accessioning-prod-f.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
+server 'common-accessioning-prod-g.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
+server 'common-accessioning-prod-h.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
 
 Capistrano::OneTimeKey.generate_one_time_key!
 
