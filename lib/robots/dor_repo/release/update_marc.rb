@@ -13,8 +13,12 @@ module Robots
         #
         # @param [String] druid -- the Druid identifier for the object to process
         def perform_work
-          logger.debug "update_marc working on #{druid}"
+          logger.debug "update_marc handing off to dor-services-app job for update to #{druid}"
           object_client.update_marc_record
+
+          # Since the actual update work is completed by dor-services-app in a job,
+          # workflow logging (marking step completed or failed) is done there.
+          LyberCore::ReturnState.new(status: :noop, note: 'Initiated update_marc_record API call.')
         end
       end
     end
