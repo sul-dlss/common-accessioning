@@ -21,7 +21,7 @@ The following workflows are supported by this repository:
 * Dissemination - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/disseminationWF.xml
   * cleans up the workspace after accessioning
 * Release - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/releaseWF.xml
-  * Moves files to PURL and updates the marc record in the ILS
+  * Moves files to PURL and updates the marc record in Folio (adding fields that are needed for SearchWorks indexing and display)
 * Goobi - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/goobiWF.xml
   * informs goobi there are new items
 
