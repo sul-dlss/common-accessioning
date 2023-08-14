@@ -30,6 +30,6 @@ class FileUri
   end
 
   def escape(str)
-    CGI.escape(str).gsub(/\+/, '%20')
+    CGI.escape(str).gsub('+', '%20')
   end
 end
