@@ -31,7 +31,7 @@ module Robots
           apo = Dor::Services::Client.object(apo_id).find
 
           wf = apo.administrative.disseminationWorkflow
-          return wf unless wf == 'disseminationWF'
+          wf unless wf == 'disseminationWF'
         end
       end
     end
