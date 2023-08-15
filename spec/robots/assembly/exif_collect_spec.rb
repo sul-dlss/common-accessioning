@@ -55,9 +55,8 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
     let(:exif) { double('result', mimetype: nil, imagewidth: 7, imageheight: 9) }
 
     before do
-      allow(item).to receive(:item?).and_return(true)
+      allow(item).to receive_messages(item?: true, druid: 'foo:999')
       allow(item).to receive(:load_content_metadata)
-      allow(item).to receive(:druid).and_return('foo:999')
     end
 
     context 'when there are no existing mimetypes and filesizes in file nodes' do
