@@ -35,14 +35,9 @@ RSpec.describe Robots::DorRepo::Accession::UpdateOrcidWork do
           build(:dro)
         end
 
-        before do
-          allow(SulOrcidClient::CocinaSupport).to receive(:cited_orcidids).and_return(['https://sandbox.orcid.org/0000-0003-3437-349X'])
-        end
-
         it 'calls the api' do
           perform
           expect(object_client).to have_received(:update_orcid_work)
-          expect(SulOrcidClient::CocinaSupport).to have_received(:cited_orcidids).with(object.description)
         end
 
         context 'when in the graveyard APO' do
@@ -54,28 +49,11 @@ RSpec.describe Robots::DorRepo::Accession::UpdateOrcidWork do
             )
           end
 
-          before do
-            allow(SulOrcidClient::CocinaSupport).to receive(:cited_orcidids).and_return(['https://sandbox.orcid.org/0000-0003-3437-349X'])
-          end
-
           it 'does not call the API' do
             expect(perform.status).to eq('skipped')
             expect(perform.note).to eq('Object belongs to the SDR graveyard APO')
             expect(object_client).not_to have_received(:update_orcid_work)
           end
-        end
-      end
-
-      context 'without a cited orcid id' do
-        let(:object) { build(:dro) }
-
-        before do
-          allow(SulOrcidClient::CocinaSupport).to receive(:cited_orcidids).and_return([])
-        end
-
-        it 'does not call the api' do
-          expect(perform.status).to eq 'skipped'
-          expect(object_client).not_to have_received(:update_orcid_work)
         end
       end
     end
