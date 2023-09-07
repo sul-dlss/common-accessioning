@@ -86,6 +86,21 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
                                                 version: 1,
                                                 hasMessageDigests: [],
                                                 access: { view: 'dark', download: 'none', controlledDigitalLending: false },
+                                                administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
+                   # This file does not exist in the workspace.
+                   { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                     externalIdentifier: 'bb222cc3333_4',
+                     label: 'Image 4',
+                     version: 1,
+                     structural: { contains: [{ type: 'https://cocina.sul.stanford.edu/models/file',
+                                                externalIdentifier: 'https://cocina.sul.stanford.edu/file/ced39e5f-ff5d-4b76-b688-22369e410f4c',
+                                                label: 'image114.tif',
+                                                filename: 'image114.tif',
+                                                size: 1234,
+                                                version: 1,
+                                                hasMessageDigests: [{ type: 'md5', digest: 'bd440802bd590ce0899dafecc5a5ab2c' },
+                                                                    { type: 'sha1', digest: '6d9f6dc2ca4fd3329619b54a2c6f99a08c088455' }],
+                                                access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                 administrative: { publish: false, sdrPreserve: true, shelve: false } }] } }],
         hasMemberOrders: [],
         isMemberOf: [] }
@@ -126,6 +141,16 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
           {
             type: 'sha1',
             digest: '5c9f6dc2ca4fd3329619b54a2c6f99a08c088444'
+          }
+        ],
+        [
+          {
+            type: 'md5',
+            digest: 'bd440802bd590ce0899dafecc5a5ab2c'
+          },
+          {
+            type: 'sha1',
+            digest: '6d9f6dc2ca4fd3329619b54a2c6f99a08c088455'
           }
         ]
       ]
