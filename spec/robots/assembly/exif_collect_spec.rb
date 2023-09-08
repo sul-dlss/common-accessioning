@@ -10,6 +10,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
     instance_double(Dor::Assembly::Item,
                     cocina_model:,
                     object_client:,
+                    druid:,
                     item?: type == 'item')
   end
   let(:structural) { {} }
@@ -47,8 +48,8 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
     end
   end
 
-  describe '#collect_exif_info' do
-    subject(:result) { robot.send(:collect_exif_info, item, cocina_model) }
+  describe '#collect_exif_infos' do
+    subject(:result) { robot.send(:collect_exif_infos, item, cocina_model) }
 
     let(:item) { Dor::Assembly::Item.new(druid:) }
 
@@ -154,6 +155,17 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
                                                   hasMimeType: 'crappy/again',
                                                   hasMessageDigests: [{ type: 'md5', digest: '0929b8b53d900da1ddd1603ec7f29c36' }],
                                                   access: { view: 'dark', download: 'none', controlledDigitalLending: false },
+                                                  administrative: { publish: false, sdrPreserve: true, shelve: false } },
+                                                { type: 'https://cocina.sul.stanford.edu/models/file',
+                                                  externalIdentifier: 'https://cocina.sul.stanford.edu/file/g0beaed9-42fc-4fa1-9add-d378baedcbf6',
+                                                  label: 'image223.txt',
+                                                  # This file does not exist so exif info should be maintained.
+                                                  filename: 'image223.txt',
+                                                  size: 550,
+                                                  version: 1,
+                                                  hasMimeType: 'text/plain',
+                                                  hasMessageDigests: [{ type: 'md5', digest: '0929b8b53d900da1ddd1603ec7f29c36' }],
+                                                  access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                   administrative: { publish: false, sdrPreserve: true, shelve: false } }] } }],
           hasMemberOrders: [],
           isMemberOf: [] }
@@ -161,22 +173,17 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
 
       let(:druid) { 'druid:cc333dd4444' }
 
-      before do
-        allow(Assembly::ObjectFile).to receive(:new).and_return(
-          instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 63_468, valid_image?: true, exif:),
-          instance_double(Assembly::ObjectFile, mimetype: 'image/jp2', filesize: 465, valid_image?: false)
-        )
-      end
-
       it 'does not overwrite them' do
         file_sets = result
         # check that the file nodes still have bogus size, mimetype
         files = file_sets.flat_map { |fs| fs[:structural][:contains] }
-        expect(files.size).to eq(2)
+        expect(files.size).to eq(3)
         expect(files[0][:size]).to eq(100)
         expect(files[0][:hasMimeType]).to eq('crappy/mimetype')
         expect(files[1][:size]).to eq(500)
         expect(files[1][:hasMimeType]).to eq('crappy/again')
+        expect(files[2][:size]).to eq(550)
+        expect(files[2][:hasMimeType]).to eq('text/plain')
 
         expect(files[0][:presentation]).to be_present
         expect(files[1][:presentation]).not_to be_present
