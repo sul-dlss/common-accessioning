@@ -35,7 +35,6 @@ module Robots
           file_sets
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
         def collect_exif_info(file, filepath)
           # File is not changing, so use existing exif info
           return if !File.exist?(filepath) && file[:size] && file[:hasMimeType]
@@ -49,7 +48,6 @@ module Robots
           #       TIFF, PNG, JPEG, JP2
           file[:presentation] = { height: object_file.exif.imageheight, width: object_file.exif.imagewidth } if object_file.valid_image?
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
       end
     end
   end
