@@ -296,3 +296,14 @@ RSpec/ReceiveMessages: # new in 2.23
   Enabled: true
 RSpec/Rails/NegationBeValid: # new in 2.23
   Enabled: true
+
+RSpec/EmptyMetadata: # new in 2.24
+  Enabled: true
+RSpec/Eq: # new in 2.24
+  Enabled: true
+RSpec/MetadataStyle: # new in 2.24
+  Enabled: true
+RSpec/SpecFilePathFormat: # new in 2.24
+  Enabled: false  # NOTE: we made a spec path shorter
+RSpec/SpecFilePathSuffix: # new in 2.24
+  Enabled: true
