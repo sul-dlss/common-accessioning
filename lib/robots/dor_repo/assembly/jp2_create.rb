@@ -25,6 +25,7 @@ module Robots
         # For each supported image type that is part of specific resource types, generate a jp2 derivative
         # and modify structural metadata to reflect the new file.
         # grab all the file node tuples for each valid resource type that we want to generate derivates for
+        # rubocop:disable Metrics/PerceivedComplexity
         def create_jp2s(assembly_item, cocina_model)
           logger.info("Creating JP2s for #{assembly_item.druid.id}")
           file_sets = cocina_model.structural.to_h.fetch(:contains) # make this a mutable hash
@@ -35,7 +36,12 @@ module Robots
 
             tuples_to_add = []
             files.each do |file|
-              object_file = ::Assembly::ObjectFile.new(assembly_item.path_finder.path_to_content_file(file.fetch(:filename)))
+              filepath = assembly_item.path_finder.path_to_content_file(file.fetch(:filename))
+
+              # Allow for files that are not changing, hence are not present.
+              next unless File.exist?(filepath)
+
+              object_file = ::Assembly::ObjectFile.new(filepath)
 
               next unless object_file.jp2able?
 
@@ -55,6 +61,7 @@ module Robots
 
           file_sets
         end
+        # rubocop:enable Metrics/PerceivedComplexity
 
         def create_jp2(file_node, file_set, assembly_image, cocina_model)
           file_name = if File.exist?(assembly_image.jp2_filename)
