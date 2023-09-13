@@ -245,7 +245,20 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                                   version: 1,
                                                   hasMessageDigests: [{ type: 'md5', digest: '42616f9e6c1b7e7b7a71b4fa0c5ef794' }],
                                                   access: { view: 'world', download: 'none', controlledDigitalLending: false },
-                                                  administrative: { publish: false, sdrPreserve: false, shelve: false } }] } }],
+                                                  administrative: { publish: false, sdrPreserve: false, shelve: false } }] } },
+                     { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                       externalIdentifier: 'ff222cc3333_4',
+                       label: 'Side 5',
+                       version: 1,
+                       structural: { contains: [{ type: 'https://cocina.sul.stanford.edu/models/file',
+                                                  externalIdentifier: 'https://cocina.sul.stanford.edu/file/ddb7881a-2bcd-4d9f-ab41-7f264537ebe6',
+                                                  label: 'image116.tif',
+                                                  filename: 'image116.tif',
+                                                  size: 0,
+                                                  version: 1,
+                                                  hasMessageDigests: [{ type: 'md5', digest: '42616f9e6c1b7e7b7a71b4fa0c5ef794' }],
+                                                  access: { view: 'world', download: 'none', controlledDigitalLending: false },
+                                                  administrative: { publish: false, sdrPreserve: true, shelve: false } }] } }],
           hasMemberOrders: [],
           isMemberOf: [] }
       end
@@ -254,7 +267,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
         allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
       end
 
-      it 'creates jp2 files only for resource type image or page' do
+      it 'creates jp2 files only for resource type image or page that exist' do
         expect(robot).to receive(:create_jp2).twice
         robot.send(:create_jp2s, item, cocina_model)
       end
@@ -309,7 +322,6 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
       before do
         allow(item).to receive(:cm_file_name).and_return(item.path_finder.path_to_metadata_file(Settings.assembly.cm_file_name))
-        allow_any_instance_of(Assembly::ObjectFile).to receive(:jp2able?).and_return(true)
 
         # These files needs to create
         d1 = instance_double(Assembly::Image, path: 'spec/out/image111.jp2')
