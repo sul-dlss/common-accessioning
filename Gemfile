@@ -27,11 +27,6 @@ source 'https://gems.contribsys.com/' do
   gem 'sidekiq-pro'
 end
 
-# openapi_parser is an indirect dependency that's being pinned for now, because 1.0 introduces
-# stricter date-time format parsing, which breaks the test suite
-# see https://app.circleci.com/pipelines/github/sul-dlss/common-accessioning/388/workflows/f4199f50-7566-41c1-9e56-683321958076/jobs/941
-gem 'openapi_parser', '< 1.0'
-
 group :test do
   gem 'equivalent-xml'
   gem 'rspec', '~> 3.0'
