@@ -24,82 +24,124 @@ module Robots
 
         # For each supported image type that is part of specific resource types, generate a jp2 derivative
         # and modify structural metadata to reflect the new file.
-        # grab all the file node tuples for each valid resource type that we want to generate derivates for
         # rubocop:disable Metrics/PerceivedComplexity
         def create_jp2s(assembly_item, cocina_model)
           logger.info("Creating JP2s for #{assembly_item.druid.id}")
           file_sets = cocina_model.structural.to_h.fetch(:contains) # make this a mutable hash
           file_sets.each do |file_set|
-            next unless [Cocina::Models::FileSetType.page, Cocina::Models::FileSetType.image].include?(file_set.fetch(:type))
+            next if skip_fileset?(file_set)
 
-            files = file_set.dig(:structural, :contains)
+            cocina_files = file_set.dig(:structural, :contains)
 
-            tuples_to_add = []
-            files.each do |file|
-              filepath = assembly_item.path_finder.path_to_content_file(file.fetch(:filename))
+            new_cocina_files = cocina_files.dup
+            cocina_files.each do |cocina_file|
+              # If the file cocina file has a mimetype and it is not jp2able, skip it
+              next if skip_cocina_file?(cocina_file)
 
-              # Allow for files that are not changing, hence are not present.
-              next unless File.exist?(filepath)
+              filename = cocina_file.fetch(:filename)
+              filepath = filepath_for(filename, assembly_item)
 
-              object_file = ::Assembly::ObjectFile.new(filepath)
+              # If the file exists and it is not jp2able, skip it
+              next if skip_file?(filepath)
 
-              next unless object_file.jp2able?
+              assembly_image = assembly_image_for(filepath)
+              jp2_filename = jp2_filename_for(filename, assembly_image)
+              jp2_filepath = filepath_for(jp2_filename, assembly_item)
 
-              img = ::Assembly::Image.new(object_file.path)
-              tuples_to_add << [file, img]
+              cocina_jp2_file = find_cocina_jp2_file(cocina_files)
+
+              # If the file exists and there is a jp2 cocina file, skip it
+              next if File.exist?(filepath) && File.exist?(jp2_filepath) && cocina_jp2_file.present?
+
+              # If the file does not exist and there is a jp2 cocina file, skip it
+              next if !File.exist?(filepath) && cocina_jp2_file.present?
+
+              # If the file does not exist and there is no jp2 cocina file, get it from preservation
+              retrieve_from_preservation(assembly_item.druid.id, filename, filepath) unless File.exist?(filepath)
+
+              # If the file exists and there is no jp2 file or there is no jp2 cocina file, delete existing jp2 cocina file, delete existing jp2 file, generate jp2, and add new jp2 cocina file
+              if File.exist?(filepath) && (!File.exist?(jp2_filepath) || cocina_jp2_file.blank?)
+                delete_file(jp2_filepath)
+                delete_cocina_file(cocina_jp2_file, new_cocina_files)
+                create_jp2_file(assembly_image)
+                create_cocina_jp2_file(jp2_filename, cocina_model, new_cocina_files)
+                next
+              end
+
+              raise NotImplementedError, "Unhandled condition for #{filename}. This indicates a gap in the robot code."
             end
-
-            if tuples_to_add.present?
-              # Remove existing jp2 nodes
-              files.delete_if { |file| file.fetch(:filename).ends_with?('.jp2') }
-            end
-
-            tuples_to_add.each do |(file, assembly_image)|
-              create_jp2(file, file_set, assembly_image, cocina_model)
-            end
+            file_set[:structural][:contains] = new_cocina_files
           end
 
           file_sets
         end
         # rubocop:enable Metrics/PerceivedComplexity
 
-        def create_jp2(file_node, file_set, assembly_image, cocina_model)
-          file_name = if File.exist?(assembly_image.jp2_filename)
-                        # if we have an existing jp2 with the same basename as the tiff -- don't fail, but do log it
-                        #  this can happen if a user provides jp2 files as part of the accessioning process
-                        #  (for example, if they were generated in a specific way ahead of time).
-                        #  in this case, we do not want to overwrite the files provided with newly derived jp2s
-                        message = "WARNING: Did not create jp2 for #{assembly_image.path} -- file already exists"
-                        logger.warn(message)
-                        new_jp2_file_name(file_node, assembly_image.jp2_filename, assembly_image.path)
-                      else
-                        tmp_folder = Settings.assembly.tmp_folder
-                        jp2 = assembly_image.create_jp2(overwrite: false, tmp_folder:)
-                        new_jp2_file_name(file_node, jp2.path, assembly_image.path)
-                      end
-          add_jp2_file_node(file_set, cocina_model, file_name)
+        def find_cocina_jp2_file(cocina_files)
+          cocina_files.find { |cocina_file| cocina_file[:filename].ends_with?('.jp2') }
         end
 
-        # generate new filename for jp2 file node in content metadata by replacing filename in base file node with new jp2 filename
-        def new_jp2_file_name(file_node, jp2_path, tiff_path)
-          file_node.fetch(:filename).gsub(File.basename(tiff_path), File.basename(jp2_path))
+        def filepath_for(filename, assembly_item)
+          assembly_item.path_finder.path_to_content_file(filename)
         end
 
-        def add_jp2_file_node(file_set, cocina_model, file_name)
-          file_attributes = {
+        def jp2_filename_for(filename, assembly_image)
+          filename.gsub(File.basename(assembly_image.path), File.basename(assembly_image.jp2_filename))
+        end
+
+        def skip_fileset?(file_set)
+          [Cocina::Models::FileSetType.page, Cocina::Models::FileSetType.image].exclude?(file_set.fetch(:type))
+        end
+
+        def skip_cocina_file?(cocina_file)
+          cocina_file[:hasMimeType].present? && ::Assembly::VALID_IMAGE_MIMETYPES.exclude?(cocina_file[:hasMimeType])
+        end
+
+        def skip_file?(filepath)
+          File.exist?(filepath) && !::Assembly::ObjectFile.new(filepath).jp2able?
+        end
+
+        def assembly_image_for(filepath)
+          object_file = ::Assembly::ObjectFile.new(filepath)
+          ::Assembly::Image.new(object_file.path)
+        end
+
+        def delete_file(filepath)
+          FileUtils.rm_f(filepath)
+        end
+
+        def delete_cocina_file(cocina_file, new_cocina_files)
+          new_cocina_files.delete(cocina_file) if cocina_file.present?
+        end
+
+        def create_jp2_file(assembly_image)
+          assembly_image.create_jp2(overwrite: false, tmp_folder: Settings.assembly.tmp_folder)
+        end
+
+        def create_cocina_jp2_file(filename, cocina_model, new_cocina_files)
+          new_cocina_files << {
             type: 'https://cocina.sul.stanford.edu/models/file',
             externalIdentifier: "https://cocina.sul.stanford.edu/file/#{SecureRandom.uuid}",
             version: cocina_model.version,
-            label: file_name,
-            filename: file_name,
+            label: filename,
+            filename:,
             hasMessageDigests: [],
             hasMimeType: 'image/jp2',
             administrative: { sdrPreserve: false, publish: true, shelve: true },
             access: Dor::FileSets.file_access(cocina_model.access)
           }
+        end
 
-          # Adds a file node representing the new jp2 file.
-          file_set.dig(:structural, :contains) << file_attributes
+        def retrieve_from_preservation(druid, filename, filepath)
+          File.open(filepath, 'wb') do |file_writer|
+            preservation_client.objects.content(druid:,
+                                                filepath: filename,
+                                                on_data: proc { |data, _count| file_writer.write data })
+          end
+        end
+
+        def preservation_client
+          @preservation_client ||= Preservation::Client.configure(url: Settings.preservation_catalog.url, token: Settings.preservation_catalog.token)
         end
       end
     end

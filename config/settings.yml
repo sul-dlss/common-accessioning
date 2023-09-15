@@ -36,3 +36,8 @@ redis:
   url: ~
 
 purl_url: 'https://purl-example.stanford.edu'
+
+preservation_catalog:
+  url: 'https://preservation-catalog-stage-01.stanford.edu'
+  token: 'mint-token-with-target-preservation-catalog-rake-generate-token'
+
