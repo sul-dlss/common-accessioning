@@ -45,10 +45,8 @@ module Robots
           # File is not changing, so use existing checksums
           return if md5_node && sha1_node && !File.exist?(filepath)
 
-          object_file = ::Assembly::ObjectFile.new(filepath)
-
           # compute checksums
-          checksums = { md5: object_file.md5, sha1: object_file.sha1 }
+          checksums = generate_checksums(filepath)
 
           # if we have any existing checksum nodes, compare them all against the checksums we just computed, and raise an error if any fail
           if md5_node
@@ -66,6 +64,18 @@ module Robots
         # compare existing checksum nodes with computed checksum, return false if there are any mismatches, otherwise return true
         def checksums_equal?(existing_checksum_node, computed_checksum)
           existing_checksum_node[:digest].casecmp(computed_checksum).zero?
+        end
+
+        def generate_checksums(filepath)
+          md5 = Digest::MD5.new
+          sha1 = Digest::SHA1.new
+          File.open(filepath, 'r') do |stream|
+            while (buffer = stream.read(8192))
+              md5.update(buffer)
+              sha1.update(buffer)
+            end
+          end
+          { md5: md5.hexdigest, sha1: sha1.hexdigest }
         end
       end
     end
