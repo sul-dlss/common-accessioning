@@ -15,6 +15,7 @@ gem 'druid-tools', '~> 2.1'
 gem 'honeybadger'
 gem 'lyber-core', '~> 7.1'
 gem 'nokogiri'
+gem 'preservation-client'
 gem 'pry'
 gem 'pry-byebug', platform: %i[ruby_20 ruby_21]
 gem 'rake'
