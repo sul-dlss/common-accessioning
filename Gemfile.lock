@@ -79,7 +79,7 @@ GEM
       capistrano-one_time_key
       capistrano-shared_configs
     docile (1.4.0)
-    dor-services-client (12.18.0)
+    dor-services-client (13.0.0)
       activesupport (>= 4.2, < 8)
       cocina-models (~> 0.91.0)
       deprecation
@@ -155,10 +155,10 @@ GEM
       multi_json
     jwt (2.7.1)
     language_server-protocol (3.17.0.3)
-    lyber-core (7.1.0)
+    lyber-core (7.2.0)
       activesupport
       config
-      dor-services-client (~> 12.10)
+      dor-services-client (~> 13.0)
       dor-workflow-client (~> 5.0)
       druid-tools
       honeybadger
@@ -321,7 +321,7 @@ DEPENDENCIES
   capistrano-bundler (~> 1.1)
   config (~> 2.2)
   dlss-capistrano
-  dor-services-client (~> 12.15)
+  dor-services-client (~> 13.0)
   dor-workflow-client (~> 5.0)
   druid-tools (~> 2.1)
   dry-struct (~> 1.0)
