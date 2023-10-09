@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'bundler/setup'
+require 'active_support' # Required as of Rails 7.1
 Bundler.require(:default)
 
 loader = Zeitwerk::Loader.new
