@@ -25,9 +25,11 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   describe '#perform' do
     subject(:perform) { test_perform(robot, druid) }
 
+    let(:return_status) { perform.status }
+
     context 'when there is no special dissemniation workflow' do
       it 'cleans up' do
-        perform
+        expect(return_status).to eq 'noop'
         expect(workspace_client).to have_received(:cleanup).with(workflow: 'accessionWF', lane_id: 'default')
       end
     end
