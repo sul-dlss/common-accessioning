@@ -27,8 +27,8 @@ RSpec.describe PreservedFileUris do
               },
               {
                 externalIdentifier: '222-2',
-                label: 'not-this.pdf',
-                filename: 'not-this.pdf',
+                label: 'not preserved',
+                filename: 'folder1PuSu/story5a.txt',
                 type: Cocina::Models::ObjectType.file,
                 version: 1,
                 access: {},
@@ -44,6 +44,16 @@ RSpec.describe PreservedFileUris do
                 access: {},
                 administrative: { publish: true, sdrPreserve: true, shelve: true },
                 hasMessageDigests: []
+              },
+              {
+                externalIdentifier: '222-2',
+                label: 'not in workspace',
+                filename: 'not-in-workdspace.pdf',
+                type: Cocina::Models::ObjectType.file,
+                version: 1,
+                access: {},
+                administrative: { publish: true, sdrPreserve: true, shelve: true },
+                hasMessageDigests: []
               }
             ]
           }
@@ -53,7 +63,7 @@ RSpec.describe PreservedFileUris do
   end
 
   let(:filename1) { 'folder1PuSu/story1u.txt' } # rubocop:disable RSpec/IndexedLet
-  let(:filename2) { 'folder1PuSu/story2u.txt' } # rubocop:disable RSpec/IndexedLet
+  let(:filename2) { 'folder1PuSu/story2rr.txt' } # rubocop:disable RSpec/IndexedLet
 
   before do
     # For File URIs, need to use absolute paths
