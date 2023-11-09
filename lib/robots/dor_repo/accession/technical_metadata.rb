@@ -19,7 +19,7 @@ module Robots
           file_uris = PreservedFileUris.new(druid, cocina_object)
 
           # skip if metadata-only change
-          return LyberCore::ReturnState.new(status: :skipped, note: 'change is metadata-only') if metadata_only?(file_uris.filepaths)
+          return LyberCore::ReturnState.new(status: :skipped, note: 'change is metadata-only') if file_uris.filepaths.empty?
 
           invoke_techmd_service(file_uris)
 
@@ -35,11 +35,6 @@ module Robots
                               'Content-Type' => 'application/json',
                               'Authorization' => "Bearer #{Settings.tech_md_service.token}")
           raise "Technical-metadata-service returned #{resp.status} when requesting techmd for #{druid}: #{resp.body}" unless resp.status == 200
-        end
-
-        def metadata_only?(filepaths)
-          # Assume metadata only if no files exist
-          filepaths.all? { |filepath| !File.exist?(filepath) }
         end
       end
     end
