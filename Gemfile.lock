@@ -145,7 +145,7 @@ GEM
       activesupport (>= 3.0, < 8.0)
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
-    faraday (2.7.11)
+    faraday (2.7.12)
       base64
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
@@ -295,7 +295,7 @@ GEM
     sshkit (1.21.6)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
-    sul_orcid_client (0.4.0)
+    sul_orcid_client (0.4.1)
       activesupport (>= 4.2, < 8)
       cocina-models (~> 0.90)
       faraday
