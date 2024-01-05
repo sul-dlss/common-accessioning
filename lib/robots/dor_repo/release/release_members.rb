@@ -17,16 +17,19 @@ module Robots
           logger.debug "release-members working on #{druid}"
 
           return unless cocina_object.collection?
+          return unless add_wf_to_members?
 
-          publish_collection
+          members.each { |member| create_release_workflow(member) }
         end
 
         private
 
-        def publish_collection
-          member_service = Dor::Release::MemberService.new(druid:)
-          add_workflow_to_members(member_service.items) if add_wf_to_members?
-          add_workflow_to_members(member_service.sub_collections)
+        def members
+          object_client.members.select { |member| published?(member) }
+        end
+
+        def published?(member)
+          workflow_service.lifecycle(druid: member.externalIdentifier, milestone_name: 'published', version: member.version).present?
         end
 
         # Here's an example of the kinds of tags we're dealing with:
@@ -39,26 +42,8 @@ module Robots
                        .values.map(&:what).any? { |x| x == 'collection' }
         end
 
-        # iterate through any item members and add workflows
-        def add_workflow_to_members(members)
-          members.each do |member|
-            create_release_workflow(member.externalIdentifier)
-          end
-        end
-
-        def add_workflow_to_sub_collections(member_service)
-          member_service.sub_collections&.each do |sub_collection|
-            create_release_workflow(sub_collection['druid'])
-          end
-        end
-
-        def create_release_workflow(druid)
-          logger.debug "...adding workflow releaseWF for #{druid}"
-          object_client = Dor::Services::Client.object(druid)
-
-          # initiate workflow by making workflow service call
-          current_version = object_client.version.current
-          workflow_service.create_workflow_by_name(druid, 'releaseWF', version: current_version, lane_id:)
+        def create_release_workflow(member)
+          workflow_service.create_workflow_by_name(member.externalIdentifier, 'releaseWF', version: member.version, lane_id:)
         end
       end
     end
