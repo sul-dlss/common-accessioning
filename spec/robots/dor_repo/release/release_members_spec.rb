@@ -7,8 +7,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
 
   let(:robot) { described_class.new }
   let(:druid) { 'druid:bb222cc3333' }
-  let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: cocina_model, members:) }
-  let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
+  let(:object_client) { instance_double(Dor::Services::Client::Object, find: cocina_model, members:) }
   let(:members) { [] }
   let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
   let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process:) }
@@ -16,6 +15,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
     allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
+    allow(workflow_client).to receive(:lifecycle).and_return(true, true, true, false)
   end
 
   context 'when the model is an item' do
@@ -55,11 +55,11 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       let(:release_tags) { [release_tag1] }
 
       let(:members) do
-        [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'collection')]
+        [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', version: 1)]
       end
 
-      it 'runs for a collection but never add workflow or ask for item members' do
-        expect(workflow_client).to receive(:create_workflow_by_name).once # one workflow added for the sub-collection
+      it 'does not add workflow for item members' do
+        expect(workflow_client).not_to receive(:create_workflow_by_name)
         perform
       end
     end
@@ -69,11 +69,11 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       let(:release_tag2) { { to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket' } } # rubocop:disable RSpec/IndexedLet
       let(:release_tags) { [release_tag1, release_tag2] }
       let(:members) do
-        [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'collection')]
+        [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', version: 1)]
       end
 
-      it 'runs for a collection but never adds workflow or ask for item members' do
-        expect(workflow_client).to receive(:create_workflow_by_name).once # one workflow added for the sub-collection
+      it 'does not add workflow for item members' do
+        expect(workflow_client).not_to receive(:create_workflow_by_name)
         perform
       end
     end
@@ -83,11 +83,11 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       let(:release_tag2) { { to: 'Searchworks', release: false, what: 'self', date: '2020-02-07 19:34:43 UTC', who: 'jkalchik' } } # rubocop:disable RSpec/IndexedLet
       let(:release_tags) { [release_tag1, release_tag2] }
       let(:members) do
-        [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'collection')]
+        [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', version: 1)]
       end
 
-      it 'runs for a collection but never adds workflow or ask for item members' do
-        expect(workflow_client).to receive(:create_workflow_by_name).once # one workflow added for the sub-collection
+      it 'does not add workflow for item members' do
+        expect(workflow_client).not_to receive(:create_workflow_by_name)
         perform
       end
     end
@@ -97,15 +97,15 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       let(:release_tags) { [release_tag1] }
       let(:members) do
         [
-          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'item'),
-          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb023nj3137', type: 'item'),
-          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb027yn4436', type: 'item'),
-          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb048rn5648', type: 'item')
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', version: 1),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb023nj3137', version: 1),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb027yn4436', version: 1),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb048rn5648', version: 1)
         ]
       end
 
       it 'runs for a collection and execute the item_members method' do
-        expect(workflow_client).to receive(:create_workflow_by_name).exactly(4).times # four workflows added, one for each item
+        expect(workflow_client).to receive(:create_workflow_by_name).exactly(3).times # 3 workflows added, one for each published item
 
         perform
       end
@@ -117,35 +117,16 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       let(:release_tags) { [release_tag1, release_tag2] }
       let(:members) do
         [
-          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'item'),
-          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb023nj3137', type: 'item'),
-          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb027yn4436', type: 'item'),
-          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb048rn5648', type: 'item')
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', version: 1),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb023nj3137', version: 1),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb027yn4436', version: 1),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb048rn5648', version: 1)
         ]
       end
 
       it 'runs for a collection and execute the item_members method' do
-        expect(workflow_client).to receive(:create_workflow_by_name).exactly(4).times # four workflows added, one for each item
+        expect(workflow_client).to receive(:create_workflow_by_name).exactly(3).times # 3 workflows added, one for each published item
         perform
-      end
-    end
-
-    context 'with sub collections' do
-      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } }
-      let(:release_tags) { [release_tag1] }
-
-      context 'with only collections' do
-        let(:members) do
-          [
-            Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', type: 'collection'),
-            Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb023nj3137', type: 'collection')
-          ]
-        end
-
-        it 'runs for a collection and execute the sub_collection method' do
-          expect(workflow_client).to receive(:create_workflow_by_name).twice # two workflows added, one for each collection
-          perform
-        end
       end
     end
   end
