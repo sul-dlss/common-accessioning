@@ -331,7 +331,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       end
     end
 
-    context 'when the image file exists and there is a jp2 file' do
+    context 'when the image file exists and there is a jp2 file but no jp2 cocina file' do
       let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.tif" }
       let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.jp2" }
 
@@ -353,7 +353,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
           isMemberOf: [] }
       end
 
-      it 'replaces the jp2 cocina file and creates a jp2 file' do
+      it 'creates a jp2 cocina file' do
         expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.jp2")).to be true
         expect(file_sets).to eq(
           [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
@@ -379,12 +379,12 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                         access: { view: 'world', download: 'none', controlledDigitalLending: false },
                                         administrative: { publish: true, sdrPreserve: false, shelve: true } }] } }]
         )
-        expect(assembly_image).to have_received(:create_jp2)
-        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.jp2")).to be false
+        expect(assembly_image).not_to have_received(:create_jp2)
+        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.jp2")).to be true
       end
     end
 
-    context 'when the hierarchical image file exists and there is a jp2 file' do
+    context 'when the hierarchical image file exists and there is a jp2 file but no jp2 cocina file' do
       let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/sub/image113.tif" }
       let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/sub/image113.jp2" }
 
@@ -406,7 +406,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
           isMemberOf: [] }
       end
 
-      it 'replaces the jp2 cocina file and creates a jp2 file' do
+      it 'adds the jp2 cocina file' do
         expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/sub/image113.jp2")).to be true
         expect(file_sets).to eq(
           [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
@@ -432,12 +432,12 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                         access: { view: 'world', download: 'none', controlledDigitalLending: false },
                                         administrative: { publish: true, sdrPreserve: false, shelve: true } }] } }]
         )
-        expect(assembly_image).to have_received(:create_jp2)
-        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/sub/image113.jp2")).to be false
+        expect(assembly_image).not_to have_received(:create_jp2)
+        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/sub/image113.jp2")).to be true
       end
     end
 
-    context 'when the image file does not exist and there is no jp2 cocina file' do
+    context 'when the image file does not exist and there is no jp2 file' do
       let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image114.tif" }
       let(:structural) do
         { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',

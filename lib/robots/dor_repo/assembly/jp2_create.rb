@@ -3,7 +3,7 @@
 module Robots
   module DorRepo
     module Assembly
-      class Jp2Create < Robots::DorRepo::Assembly::Base
+      class Jp2Create < Robots::DorRepo::Assembly::Base # rubocop:disable Metrics/ClassLength
         def initialize
           super('assemblyWF', 'jp2-create')
         end
@@ -28,7 +28,7 @@ module Robots
         def create_jp2s(assembly_item, cocina_model)
           logger.info("Creating JP2s for #{assembly_item.druid.id}")
           file_sets = cocina_model.structural.to_h.fetch(:contains) # make this a mutable hash
-          file_sets.each do |file_set|
+          file_sets.each do |file_set| # rubocop:disable Metrics/BlockLength
             next if skip_fileset?(file_set)
 
             cocina_files = file_set.dig(:structural, :contains)
@@ -59,11 +59,17 @@ module Robots
               # If the file does not exist and there is no jp2 cocina file, get it from preservation
               retrieve_from_preservation(assembly_item.druid.id, filename, filepath) unless File.exist?(filepath)
 
-              # If the file exists and there is no jp2 file or there is no jp2 cocina file, delete existing jp2 cocina file, delete existing jp2 file, generate jp2, and add new jp2 cocina file
-              if File.exist?(filepath) && (!File.exist?(jp2_filepath) || cocina_jp2_file.blank?)
+              # If the file exists and there is no jp2 file, delete existing jp2 cocina file, delete existing jp2 file, generate jp2, and add new jp2 cocina file
+              if File.exist?(filepath) && !File.exist?(jp2_filepath)
                 delete_file(jp2_filepath)
                 delete_cocina_file(cocina_jp2_file, new_cocina_files)
                 create_jp2_file(assembly_image)
+                create_cocina_jp2_file(jp2_filename, cocina_model, new_cocina_files)
+                next
+              end
+
+              # If the file exists and jp2 file exists and there is no jp2 cocina file, add new jp2 cocina file
+              if File.exist?(filepath) && cocina_jp2_file.blank?
                 create_cocina_jp2_file(jp2_filename, cocina_model, new_cocina_files)
                 next
               end
