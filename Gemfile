@@ -6,22 +6,21 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gem 'activesupport', '~> 7.0'
 gem 'assembly-image', '~> 2.0' # ruby-vips is used by 2.0.0 for improved image processing
 gem 'assembly-objectfile', '~> 2.1'
-gem 'config', '~> 2.2'
+gem 'config'
 gem 'dor-services-client', '~> 14.0'
 gem 'dor-workflow-client', '~> 7.0'
 gem 'dry-struct', '~> 1.0'
 gem 'dry-types', '~> 1.1'
-gem 'druid-tools', '~> 2.1'
+gem 'druid-tools'
 gem 'honeybadger'
 gem 'lyber-core', '~> 7.3'
 gem 'nokogiri'
 gem 'preservation-client'
 gem 'pry'
-gem 'pry-byebug', platform: %i[ruby_20 ruby_21]
 gem 'rake'
 gem 'sidekiq', '~> 7.0'
 gem 'slop'
-gem 'sul_orcid_client', '~> 0.3'
+gem 'sul_orcid_client'
 gem 'zeitwerk', '~> 2.1'
 
 source 'https://gems.contribsys.com/' do
@@ -44,6 +43,7 @@ end
 
 group :development, :test do
   gem 'byebug'
+  gem 'pry-byebug', platform: %i[ruby_20 ruby_21]
   gem 'rubocop'
   gem 'rubocop-rspec'
 end
