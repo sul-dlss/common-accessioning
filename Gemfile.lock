@@ -336,11 +336,11 @@ DEPENDENCIES
   byebug
   capistrano (~> 3.0)
   capistrano-bundler (~> 1.1)
-  config (~> 2.2)
+  config
   dlss-capistrano
   dor-services-client (~> 14.0)
   dor-workflow-client (~> 7.0)
-  druid-tools (~> 2.1)
+  druid-tools
   dry-struct (~> 1.0)
   dry-types (~> 1.1)
   equivalent-xml
@@ -359,7 +359,7 @@ DEPENDENCIES
   sidekiq-pro!
   simplecov
   slop
-  sul_orcid_client (~> 0.3)
+  sul_orcid_client
   webmock
   zeitwerk (~> 2.1)
 
