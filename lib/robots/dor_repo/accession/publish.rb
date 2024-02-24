@@ -13,7 +13,7 @@ module Robots
         def perform_work
           return LyberCore::ReturnState.new(status: :skipped, note: 'Admin policy objects are not published') if cocina_object.admin_policy?
 
-          # This is an asynchronous result. It will set the publish workflow to complete when it is done.
+          # Calls asynchronous process, which will set the publish workflow step to complete when it is done.
           object_client.publish(workflow: 'accessionWF', lane_id:)
           LyberCore::ReturnState.new(status: :noop, note: 'Initiated publish API call.')
         end

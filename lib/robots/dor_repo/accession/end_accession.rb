@@ -11,11 +11,10 @@ module Robots
         def perform_work
           current_version = object_client.version.current
 
-          # Search for the specialized workflow
+          # Is there a specialized dissemination workflow?  (used by web archive workflow)
           next_dissemination_wf = special_dissemination_wf
           workflow_service.create_workflow_by_name(druid, next_dissemination_wf, version: current_version, lane_id:) if next_dissemination_wf.present?
 
-          # Call cleanup
           # Note that this used to be handled by the disseminationWF, which is no longer used.
           object_client.workspace.cleanup(workflow: 'accessionWF', lane_id:)
           LyberCore::ReturnState.new(status: :noop, note: 'Initiated cleanup API call.')
@@ -23,7 +22,7 @@ module Robots
 
         private
 
-        # This returns any optional workflow such as wasDisseminationWF
+        # This returns any optional dissemination workflow such as wasDisseminationWF
         def special_dissemination_wf
           apo_id = cocina_object.administrative.hasAdminPolicy
           raise "#{cocina_object.externalIdentifier} doesn't have a valid apo" if apo_id.nil?
