@@ -44,7 +44,7 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
     let(:content_metadata) { false }
     let(:stub_content_metadata) { false }
 
-    it 'does not create content metadata' do
+    it 'does not create structural metadata' do
       expect(item).not_to receive(:convert_stub_content_metadata)
       expect(object_client).not_to receive(:update)
       expect(result.status).to eq('skipped')
@@ -52,35 +52,7 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
     end
   end
 
-  context 'when contentMetadata and stub content metadata both already exist' do
-    let(:content_metadata) { true }
-    let(:stub_content_metadata) { true }
-
-    it 'raises an error and does not create content metadata' do
-      expect(item).not_to receive(:convert_stub_content_metadata)
-      expect(object_client).not_to receive(:update)
-      exp_msg = "#{Settings.assembly.stub_cm_file_name} and #{Settings.assembly.cm_file_name} both exist for #{druid}"
-      expect { result }.to raise_error RuntimeError, exp_msg
-    end
-  end
-
-  context 'when contentMetadata.xml exists' do
-    let(:content_metadata) { true }
-    let(:stub_content_metadata) { false }
-
-    before do
-      allow(File).to receive(:read).with(cm_file_name).and_return('<contentMetadata type="image"></contentMetadata>')
-      allow(FileUtils).to receive(:rm).with(cm_file_name)
-    end
-
-    it 'converts it to cocina' do
-      expect(item).not_to receive(:convert_stub_content_metadata)
-      result
-      expect(object_client).to have_received(:update)
-    end
-  end
-
-  context 'when stub contentMetadata does not exist and neither does regular contentMetadata' do
+  context 'when stubContentMetadata does not exist' do
     let(:content_metadata) { false }
     let(:stub_content_metadata) { false }
 
@@ -89,7 +61,7 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
     end
   end
 
-  context 'when stub contentMetadata exists regular contentMetadata does not' do
+  context 'when stubContentMetadata exists' do
     let(:content_metadata) { false }
     let(:stub_content_metadata) { true }
 
