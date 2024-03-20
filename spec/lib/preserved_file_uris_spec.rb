@@ -48,12 +48,12 @@ RSpec.describe PreservedFileUris do
               {
                 externalIdentifier: '222-2',
                 label: 'not in workspace',
-                filename: 'not-in-workdspace.pdf',
+                filename: 'not-in-workspace.pdf',
                 type: Cocina::Models::ObjectType.file,
                 version: 1,
                 access: {},
                 administrative: { publish: true, sdrPreserve: true, shelve: true },
-                hasMessageDigests: []
+                hasMessageDigests: [{ type: 'md5', digest: '789' }]
               }
             ]
           }
@@ -78,7 +78,8 @@ RSpec.describe PreservedFileUris do
     it {
       expect(uris).to eq [
         PreservedFileUris::UriMd5.new("#{prefix}#{filename1}", '123'),
-        PreservedFileUris::UriMd5.new("#{prefix}#{filename2}", '')
+        PreservedFileUris::UriMd5.new("#{prefix}#{filename2}", ''),
+        PreservedFileUris::UriMd5.new("#{prefix}not-in-workspace.pdf", '789')
       ]
     }
   end
@@ -88,7 +89,7 @@ RSpec.describe PreservedFileUris do
 
     let(:prefix) { "#{root}/dd/116/zh/0343/dd116zh0343/content/" }
 
-    it { is_expected.to eq ["#{prefix}#{filename1}", "#{prefix}#{filename2}"] }
+    it { is_expected.to eq ["#{prefix}#{filename1}", "#{prefix}#{filename2}", "#{prefix}not-in-workspace.pdf"] }
   end
 
   describe '.content_dir' do
