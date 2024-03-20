@@ -37,8 +37,6 @@ class PreservedFileUris
   def filepath_uris
     @filepath_uris ||= filename_uris
                        .map { |filename_uri| FilepathUri.new(File.join(content_dir, filename_uri.filename), filename_uri.uri) }
-                       # Skip if file doesn't exist indicating it is not being changed.
-                       .select { |filepath_uri| File.exist?(filepath_uri.filepath) }
   end
 
   def filename_uris
