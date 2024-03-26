@@ -7,7 +7,9 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
 
   let(:robot) { described_class.new }
   let(:druid) { 'druid:bb222cc3333' }
-  let(:object_client) { instance_double(Dor::Services::Client::Object, find: cocina_model, members:) }
+  let(:release_tags) { [] }
+  let(:release_tag_client) { instance_double(Dor::Services::Client::ReleaseTags, list: release_tags) }
+  let(:object_client) { instance_double(Dor::Services::Client::Object, find: cocina_model, members:, release_tags: release_tag_client) }
   let(:members) { [] }
   let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
   let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process:) }
@@ -44,14 +46,13 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     let(:cocina_model) do
       build(:collection, id: 'druid:bc123df4567').new(
         administrative: {
-          hasAdminPolicy: 'druid:xx999xx9999',
-          releaseTags: release_tags
+          hasAdminPolicy: 'druid:xx999xx9999'
         }
       )
     end
 
     context 'when the collection is released to self only' do
-      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } }
+      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
       let(:release_tags) { [release_tag1] }
 
       let(:members) do
@@ -65,8 +66,8 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'when there are multiple targets but they are all released to self only' do
-      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } } # rubocop:disable RSpec/IndexedLet
-      let(:release_tag2) { { to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket' } } # rubocop:disable RSpec/IndexedLet
+      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') } # rubocop:disable RSpec/IndexedLet
+      let(:release_tag2) { Cocina::Models::ReleaseTag.new(to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket') } # rubocop:disable RSpec/IndexedLet
       let(:release_tags) { [release_tag1, release_tag2] }
       let(:members) do
         [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', version: 1)]
@@ -79,8 +80,8 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'with multiple tags for a single target' do
-      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'self', date: '2019-03-09 19:34:43 UTC', who: 'hfrost ' } } # rubocop:disable RSpec/IndexedLet
-      let(:release_tag2) { { to: 'Searchworks', release: false, what: 'self', date: '2020-02-07 19:34:43 UTC', who: 'jkalchik' } } # rubocop:disable RSpec/IndexedLet
+      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'self', date: '2019-03-09 19:34:43 UTC', who: 'hfrost ') } # rubocop:disable RSpec/IndexedLet
+      let(:release_tag2) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: false, what: 'self', date: '2020-02-07 19:34:43 UTC', who: 'jkalchik') } # rubocop:disable RSpec/IndexedLet
       let(:release_tags) { [release_tag1, release_tag2] }
       let(:members) do
         [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', version: 1)]
@@ -93,7 +94,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'when the collection is not released to self' do
-      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } }
+      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
       let(:release_tags) { [release_tag1] }
       let(:members) do
         [
@@ -112,8 +113,8 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
     end
 
     context 'when there are multiple targets and at least one of the release targets is not released to self' do
-      let(:release_tag1) { { to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae' } } # rubocop:disable RSpec/IndexedLet
-      let(:release_tag2) { { to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket' } } # rubocop:disable RSpec/IndexedLet
+      let(:release_tag1) { Cocina::Models::ReleaseTag.new(to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') } # rubocop:disable RSpec/IndexedLet
+      let(:release_tag2) { Cocina::Models::ReleaseTag.new(to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket') } # rubocop:disable RSpec/IndexedLet
       let(:release_tags) { [release_tag1, release_tag2] }
       let(:members) do
         [
