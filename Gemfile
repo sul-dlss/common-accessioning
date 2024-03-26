@@ -7,7 +7,7 @@ gem 'activesupport', '~> 7.0'
 gem 'assembly-image', '~> 2.0' # ruby-vips is used by 2.0.0 for improved image processing
 gem 'assembly-objectfile', '~> 2.1'
 gem 'config'
-gem 'dor-services-client', '~> 14.0'
+gem 'dor-services-client', '~> 14.4'
 gem 'dor-workflow-client', '~> 7.0'
 gem 'dry-struct', '~> 1.0'
 gem 'dry-types', '~> 1.1'

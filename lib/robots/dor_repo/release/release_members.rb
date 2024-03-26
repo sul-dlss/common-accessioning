@@ -36,7 +36,7 @@ module Robots
         #   https://argo.stanford.edu/view/druid:fh138mm2023
         # @return [boolean] returns true if the most recent releaseTags for any target is "collection"
         def add_wf_to_members?
-          cocina_object.administrative.releaseTags
+          object_client.release_tags.list
                        .group_by(&:to)
                        .each_with_object({}) { |(key, v), out| out[key] = v.max_by(&:date) }
                        .values.map(&:what).any? { |x| x == 'collection' }
