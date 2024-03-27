@@ -13,12 +13,14 @@ module Robots
           return LyberCore::ReturnState.new(status: :skipped, note: 'object is not an item') unless cocina_object.dro?
           return LyberCore::ReturnState.new(status: :skipped, note: 'object has no files') if cocina_object.structural.nil? || cocina_object.structural.contains.blank?
 
+          # This is the list of files that are marked for preservation, but still in the dor workspace
           file_uris = PreservedFileUris.new(druid, cocina_object)
 
           return LyberCore::ReturnState.new(status: :skipped, note: 'change is metadata-only') if metadata_only?(file_uris.filepaths)
 
           invoke_techmd_service(file_uris)
 
+          # The TechnicalMetadataWorkflowJob in sul-dlss/technical-metadata will complete this workflow step.
           LyberCore::ReturnState.new(status: :noop, note: 'Initiated technical metadata generation from technical-metadata-service.')
         end
 
