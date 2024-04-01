@@ -20,7 +20,6 @@ gem 'pry'
 gem 'rake'
 gem 'sidekiq', '~> 7.0'
 gem 'slop'
-gem 'sul_orcid_client'
 gem 'zeitwerk', '~> 2.1'
 
 source 'https://gems.contribsys.com/' do
