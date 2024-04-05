@@ -9,15 +9,13 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
   let(:bare_druid) { 'bb222cc3333' }
   let(:druid) { "druid:#{bare_druid}" }
   let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
-  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process:) }
   let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, create: nil) }
-  let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
+  let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, close: true) }
   let(:object_client) do
     instance_double(Dor::Services::Client::Object, version: version_client, workspace: workspace_client, find: object)
   end
 
   before do
-    allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
   end
 
@@ -28,8 +26,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
       test_perform(robot, druid)
       expect(workspace_client).to have_received(:create)
         .with(source: 'spec/test_input2/bb/222/cc/3333')
-      expect(workflow_client).to have_received(:create_workflow_by_name)
-        .with(druid, 'accessionWF', version: '1', lane_id: 'default')
+      expect(version_client).to have_received(:close)
     end
   end
 
@@ -39,8 +36,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
     it 'initiates accessioning, but does not initialize the workspace' do
       test_perform(robot, druid)
       expect(workspace_client).not_to have_received(:create)
-      expect(workflow_client).to have_received(:create_workflow_by_name)
-        .with(druid, 'accessionWF', version: '1', lane_id: 'default')
+      expect(version_client).to have_received(:close)
     end
   end
 end
