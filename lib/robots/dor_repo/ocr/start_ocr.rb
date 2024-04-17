@@ -9,9 +9,10 @@ module Robots
           super('ocrWF', 'start-ocr')
         end
 
-        # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          # open version if possible
+          return LyberCore::ReturnState.new(status: :noop, note: 'Object is already open.') if object_client.version.status.open? # object is currently open
+
+          object_client.version.open
           true
         end
       end

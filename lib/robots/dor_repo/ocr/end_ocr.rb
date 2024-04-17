@@ -9,9 +9,8 @@ module Robots
           super('ocrWF', 'end-ocr')
         end
 
-        # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          # close version
+          object_client.version.close
           true
         end
       end
