@@ -32,9 +32,8 @@ describe Robots::DorRepo::Ocr::StartOcr do
   context 'when the object is already opened' do
     let(:version_open) { true }
 
-    it 'does nothing' do
-      expect(test_perform(robot, druid)).to be_a LyberCore::ReturnState
-      expect(version_client).not_to have_received(:open)
+    it 'raises an error' do
+      expect { test_perform(robot, druid) }.to raise_error('Object is already open')
     end
   end
 end

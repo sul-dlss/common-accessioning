@@ -10,7 +10,7 @@ module Robots
         end
 
         def perform_work
-          return LyberCore::ReturnState.new(status: :noop, note: 'Object is already open.') if object_client.version.status.open? # object is currently open
+          raise 'Object is already open' if object_client.version.status.open?
 
           object_client.version.open
           true
