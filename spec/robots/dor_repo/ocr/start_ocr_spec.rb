@@ -7,7 +7,7 @@ describe Robots::DorRepo::Ocr::StartOcr do
   let(:robot) { described_class.new }
 
   let(:object) { build(:dro, id: druid) }
-  let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, create: nil) }
+  let(:workspace_client) { instance_double(Dor::Services::Client::Workspace) }
   let(:version_client) do
     instance_double(Dor::Services::Client::ObjectVersion, open: true,
                                                           status: instance_double(Dor::Services::Client::ObjectVersion::VersionStatus, open?: version_open))

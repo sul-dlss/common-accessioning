@@ -27,3 +27,4 @@ spec/fixtures/assembly
 spec/fixtures/export
 spec/fixtures/workspace/*/*/*/*/*/temp/
 workflow_service.log.*
+*.local.yml
