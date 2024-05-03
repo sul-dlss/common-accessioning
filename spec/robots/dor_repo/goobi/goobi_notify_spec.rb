@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Robots::DorRepo::Goobi::GoobiNotify do
+RSpec.describe Robots::DorRepo::Goobi::GoobiNotify do
   let(:druid) { 'druid:bb222cc3333' }
   let(:robot) { described_class.new }
 

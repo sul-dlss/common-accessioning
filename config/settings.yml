@@ -1,13 +1,13 @@
 # Graveyard Admin Policy
 graveyard_admin_policy:
-  druid: 'druid:kg712km1576' # This value varies by environment and is managed in shared_configs
+  druid: "druid:kg712km1576" # This value varies by environment and is managed in shared_configs
 
 dor_services:
-  url:  'https://dor-services-test.stanford.test'
+  url: "https://dor-services-test.stanford.test"
   token: secret-token
 
 assembly:
-  root_dir:  # directories to search for content that should be acted upon by the robots
+  root_dir: # directories to search for content that should be acted upon by the robots
     - spec/test_input
     - spec/test_input2
   stub_cm_file_name: stubContentMetadata.xml # the name of the stub contentMetadata file
@@ -18,8 +18,8 @@ sdr:
   local_workspace_root: /dor/workspace
 
 tech_md_service:
-  url: 'https://dor-techmd-test.stanford.test'
-  token: 'rake-generate-token-me'
+  url: "https://dor-techmd-test.stanford.test"
+  token: "rake-generate-token-me"
 
 # Used by Dor::DigitalStacksService, Dor::PublishMetadataService, and Dor::ShelvingService
 stacks:
@@ -27,16 +27,19 @@ stacks:
 
 workflow:
   url: https://example.com/workflow/
-  logfile: 'log/workflow_service.log'
-  shift_age: 'weekly'
+  logfile: "log/workflow_service.log"
+  shift_age: "weekly"
   timeout: 60
 
 redis:
   url: ~
 
-purl_url: 'https://purl-example.stanford.edu'
+purl_url: "https://purl-example.stanford.edu"
+
+purl_fetcher:
+  url: "https://purl-fetcher.example.edu"
+  token: "fake-token"
 
 preservation_catalog:
-  url: 'https://preservation-catalog-stage-01.stanford.edu'
-  token: 'mint-token-with-target-preservation-catalog-rake-generate-token'
-
+  url: "https://preservation-catalog-stage-01.stanford.edu"
+  token: "mint-token-with-target-preservation-catalog-rake-generate-token"
