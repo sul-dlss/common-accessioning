@@ -29,7 +29,26 @@ The following workflows are supported by this repository:
 * Caption - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/captionWF.xml
   * Performs captioning for audio/video content
 
-## For developers
+## Developers
+
+### Configuration
+
+Install `libvips` and `exiftool`, typically via `brew`.  These are pre-requisites for running the assemblyWF step that creates derivative JP2s.
+
+The credentials for SideKiq Pro must be set on your laptop (e.g., in `.bash_profile`): `export BUNDLE_GEMS__CONTRIBSYS__COM=xxxx:xxxx`
+
+You can get this value from the servers, just SSH into one of the app servers and echo the value:
+```
+echo $BUNDLE_GEMS__CONTRIBSYS__COM
+```
+
+Install the gems
+```
+bundle install
+```
+
+### Run the development stack
+
 It's possible to invoke the jobs manually or have an interactive shell:
 
 From the root of the robot project:
@@ -44,10 +63,25 @@ Running a single robot step manually (without checking current workflow status):
 $ ./bin/run_robot --druid druid:12345 --environment production Accession::Publish
 ```
 
-Note that `libvips` and `exiftool` are pre-requisites for running the assemblyWF step that creates derivative JP2s.
+### Testing
 
-## Running tests
-A simple "rake" should do everything you need
+A simple "rake" should do everything you need, which will run both rubocop and rspec.
+
+```
+rake
+```
+
+or just rubocop
+
+```
+rubocop
+```
+
+or just the tests
+
+```
+rspec
+```
 
 ## Deployment
 
