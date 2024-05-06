@@ -24,6 +24,10 @@ The following workflows are supported by this repository:
   * Moves files to PURL and updates the marc record in Folio (adding fields that are needed for SearchWorks indexing and display)
 * Goobi - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/goobiWF.xml
   * informs goobi there are new items
+* OCR - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/ocrWF.xml
+  * Performs OCR for images/PDFs/related content
+* Caption - https://github.com/sul-dlss/workflow-server-rails/blob/main/config/workflows/captionWF.xml
+  * Performs captioning for audio/video content
 
 ## For developers
 It's possible to invoke the jobs manually or have an interactive shell:
@@ -40,7 +44,7 @@ Running a single robot step manually (without checking current workflow status):
 $ ./bin/run_robot --druid druid:12345 --environment production Accession::Publish
 ```
 
-Note that `libvips` is a pre-requisite for running the assemblyWF step that creates derivative JP2s.
+Note that `libvips` and `exiftool` are pre-requisites for running the assemblyWF step that creates derivative JP2s.
 
 ## Running tests
 A simple "rake" should do everything you need
