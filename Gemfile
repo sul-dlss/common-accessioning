@@ -13,7 +13,7 @@ gem 'dry-struct', '~> 1.0'
 gem 'dry-types', '~> 1.1'
 gem 'druid-tools'
 gem 'honeybadger'
-gem 'lyber-core', '~> 7.3'
+gem 'lyber-core', '~> 7.5' # 7.5.0 has the ability to set and return workflow context
 gem 'nokogiri'
 gem 'preservation-client'
 gem 'pry'

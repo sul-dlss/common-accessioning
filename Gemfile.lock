@@ -146,11 +146,11 @@ GEM
     jsonpath (1.1.5)
       multi_json
     language_server-protocol (3.17.0.3)
-    lyber-core (7.4.2)
+    lyber-core (7.5.0)
       activesupport
       config
       dor-services-client (~> 14.0)
-      dor-workflow-client
+      dor-workflow-client (>= 7.4)
       druid-tools
       honeybadger
       sidekiq (~> 7.0)
@@ -310,7 +310,7 @@ DEPENDENCIES
   dry-types (~> 1.1)
   equivalent-xml
   honeybadger
-  lyber-core (~> 7.3)
+  lyber-core (~> 7.5)
   nokogiri
   preservation-client
   pry

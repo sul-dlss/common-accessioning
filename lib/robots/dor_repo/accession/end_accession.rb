@@ -8,6 +8,7 @@ module Robots
           super('accessionWF', 'end-accession')
         end
 
+        # rubocop:disable Metrics/AbcSize
         def perform_work
           current_version = object_client.version.current
 
@@ -17,8 +18,16 @@ module Robots
 
           # Note that this used to be handled by the disseminationWF, which is no longer used.
           object_client.workspace.cleanup(workflow: 'accessionWF', lane_id:)
+
+          # Start OCR text extraction workflow if needed
+          # Note: the "workflow" object that is providing the context is a LyberCore::Workflow class
+          # It is provided by the LyberCore::Robot superclass via lyber-core gem
+          # see https://github.com/sul-dlss/lyber-core/blob/main/lib/lyber_core/robot.rb and https://github.com/sul-dlss/lyber-core/blob/main/lib/lyber_core/workflow.rb
+          workflow_service.create_workflow_by_name(druid, 'ocrWF', version: current_version, lane_id:) if Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context: workflow.context).required?
+
           LyberCore::ReturnState.new(status: :noop, note: 'Initiated cleanup API call.')
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
 
