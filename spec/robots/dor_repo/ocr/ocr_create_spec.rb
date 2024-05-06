@@ -7,6 +7,6 @@ describe Robots::DorRepo::Ocr::OcrCreate do
   let(:robot) { described_class.new }
 
   it 'runs the OCR create robot' do
-    expect(test_perform(robot, druid)).to be true
+    expect(test_perform(robot, druid)).to be_a(LyberCore::ReturnState)
   end
 end
