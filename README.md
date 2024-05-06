@@ -40,11 +40,12 @@ Running a single robot step manually (without checking current workflow status):
 $ ./bin/run_robot --druid druid:12345 --environment production Accession::Publish
 ```
 
-Note that `libvips` is a pre-requisite for running the assemblyWF step that creates derivative JP2s.
-
 ## Running tests
-A simple "rake" should do everything you need
+
+Both `libvips` and `exiftool` are required for running the tests. Both should be installable using your package manager (apt, brew, etc).
+
+A simple "rake" should then do everything you need.
 
 ## Deployment
 
-See `Capfile` for deployment instructions
+See `Capfile` for deployment instructions.
