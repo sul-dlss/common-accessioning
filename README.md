@@ -83,6 +83,32 @@ or just the tests
 rspec
 ```
 
+### Working on the console
+
+During development, it can be useful to work with the objects available to the robots.  You can most easily do this on a server with content, such as stage.
+This allows you to explore the data models and actions available.
+
+```
+cap stage ssh
+ROBOT_ENVIRONMENT=production bin/console
+
+druid='druid:qv402bt5465'
+workflow_name='accessionWF'
+process='end-accession'
+
+object_client = Dor::Services::Client.object(druid)
+cocina_object = object_client.find
+workflow_service = LyberCore::WorkflowClientFactory.build(logger: nil)
+workflow = LyberCore::Workflow.new(workflow_service:,druid:,workflow_name:,process:)
+
+cocina_object.type
+=> "https://cocina.sul.stanford.edu/models/book"
+cocina_object.structural.contains.size
+=> 17
+workflow.status
+=> "completed"
+
+```
 ## Deployment
 
 See `Capfile` for deployment instructions
