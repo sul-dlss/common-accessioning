@@ -12,11 +12,13 @@ module Dor
       end
 
       def required?
-        return false unless cocina_object.dro? # only items can be OCR'd
+        # only items can be OCR'd
+        return false unless cocina_object.dro?
 
+        # only specific content types can be OCR'd
         return false unless allowed_object_types.include? cocina_object.type
 
-        # user has indicated that OCR should be run (set as workflow_context)
+        # checks if user has indicated that OCR should be run (set as workflow_context)
         return false unless workflow_context['runOCR']
 
         # TODO: check for required input files for OCR? (skip if none found) e.g. by mimetype
