@@ -21,16 +21,43 @@ module Dor
         # checks if user has indicated that OCR should be run (set as workflow_context)
         return false unless workflow_context['runOCR']
 
-        # TODO: check for required input files for OCR? (skip if none found) e.g. by mimetype
-        # Tterate over all files in cocina_object.structural.contains, looking at mimetypes
-        # if there are no files that are correct mimetype
+        # check to be sure there are actually files to be OCRed
+        return false unless filenames_to_ocr.any?
 
         # TODO: check for any files that have "manuallyCorrected" in cocina structural (then skip)
 
         true
       end
 
+      # return a list of filenames that should be OCR'd
+      # iterate over all files in cocina_object.structural.contains, looking at mimetypes
+      # return a list of filenames that are correct mimetype
+      def filenames_to_ocr
+        cocina_files.select { |file| allowed_mimetypes.include? file.hasMimeType }.map(&:filename)
+      end
+
+      # iterate through cocina strutural contains and return all File objects
+      def cocina_files
+        [].tap do |files|
+          cocina_object.structural.contains.each do |fileset|
+            fileset.structural.contains.each do |file|
+              files << file
+            end
+          end
+        end
+      end
+
       private
+
+      # defines the mimetypes types for which files for which OCR can possibly be run
+      def allowed_mimetypes
+        %w[
+          application/pdf
+          image/tiff
+          image/jp2
+          image/jpeg
+        ]
+      end
 
       # defines the object types for which OCR can possibly be run
       def allowed_object_types
