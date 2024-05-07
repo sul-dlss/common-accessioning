@@ -16,6 +16,9 @@ assembly:
 
 sdr:
   local_workspace_root: /dor/workspace
+  abbyy_ticket_path: /tmp
+  abbyy_output_path: /tmp
+  abbyy_result_path: /tmp
 
 tech_md_service:
   url: 'https://dor-techmd-test.stanford.test'

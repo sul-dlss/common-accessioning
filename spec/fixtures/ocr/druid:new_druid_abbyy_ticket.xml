@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<XmlTicket>
+  <ExportParams DocumentSeparationMethod="OneFilePerImage" XMLResultPublishingMethod="XMLResultToFolder">
+    <ExportFormat OutputFileFormat="PDFA" OutputFlowType="SharedFolder" PdfAComplianceMode="PDFAM_PdfA_2u" PdfVersion="Version17" Scenario="MaxQuality" UseImprovedCompression="true" MRCMode="Normal" PdfUACompatible="true">
+      <OutputLocation>/tmp</OutputLocation>
+      <FileExistsAction>Overwrite</FileExistsAction>
+      <NamingRule>&lt;FileName&gt;.&lt;Ext&gt;</NamingRule>
+    </ExportFormat>
+    <XMLResultLocation>/tmp</XMLResultLocation>
+  </ExportParams>
+  <InputFile Name="filename3.PDF"/>
+  <InputFile Name="filename4.pdf"/>
+</XmlTicket>
