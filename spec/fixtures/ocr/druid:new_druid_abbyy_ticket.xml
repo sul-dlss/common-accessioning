@@ -2,7 +2,7 @@
 <XmlTicket>
   <ExportParams DocumentSeparationMethod="OneFilePerImage" XMLResultPublishingMethod="XMLResultToFolder">
     <ExportFormat OutputFileFormat="PDFA" OutputFlowType="SharedFolder" PdfAComplianceMode="PDFAM_PdfA_2u" PdfVersion="Version17" Scenario="MaxQuality" UseImprovedCompression="true" MRCMode="Normal" PdfUACompatible="true">
-      <OutputLocation>/tmp</OutputLocation>
+      <OutputLocation>/tmp/druid:new_druid</OutputLocation>
       <FileExistsAction>Overwrite</FileExistsAction>
       <NamingRule>&lt;FileName&gt;.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
