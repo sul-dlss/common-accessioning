@@ -11,6 +11,12 @@ module Dor
         @druid = druid
       end
 
+      def write_xml_ticket
+        File.write(abbyy_ticket_filepath, xml_ticket)
+      end
+
+      private
+
       def abbyy_ticket_filepath
         File.join(Settings.sdr.abbyy_ticket_path, "#{druid}.xml")
       end
@@ -59,7 +65,7 @@ module Dor
       end
 
       def xml_ticket
-        xml = "<?xml version='1.0'?>
+        "<?xml version='1.0'?>
         <XmlTicket>
           <ExportParams DocumentSeparationMethod='OneFilePerImage' XMLResultPublishingMethod='XMLResultToFolder'>
             #{pdf_files? ? pdfa_output : image_abbyy}
@@ -67,7 +73,6 @@ module Dor
           </ExportParams>
           #{input_filepaths_field}
         </XmlTicket>"
-        File.write(abbyy_ticket_filepath, xml)
       end
     end
   end
