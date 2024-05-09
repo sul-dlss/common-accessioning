@@ -15,56 +15,61 @@ RSpec.describe Dor::TextExtraction::Ocr do
   let(:jpg_file) { instance_double(Cocina::Models::File, hasMimeType: 'image/jpeg', filename: 'file2.jpg') }
   let(:text_file) { instance_double(Cocina::Models::File, hasMimeType: 'text/plain', filename: 'file3.txt') }
 
-  describe '#required?' do
+  describe '#possible?' do
     context 'when the object is not a DRO' do
       let(:cocina_object) { instance_double(Cocina::Models::DRO, dro?: false, type: object_type) }
-      let(:workflow_context) { { 'runOCR' => true } }
 
-      it 'returns false even if context includes runOCR' do
-        expect(ocr.required?).to be false
+      it 'returns false' do
+        expect(ocr.possible?).to be false
       end
     end
 
     context 'when the object is a DRO' do
       let(:cocina_object) { instance_double(Cocina::Models::DRO, dro?: true, type: object_type, structural:) }
 
-      context 'when workflow context does not include runOCR' do
-        it 'returns false' do
-          expect(ocr.required?).to be false
-        end
-      end
-
       context 'when the object type is one that does not require OCR' do
         let(:object_type) { 'https://cocina.sul.stanford.edu/models/media' }
 
         it 'returns false' do
-          expect(ocr.required?).to be false
+          expect(ocr.possible?).to be false
         end
       end
 
-      context 'when workflow context includes runOCR' do
-        let(:workflow_context) { { 'runOCR' => true } }
+      context 'when the object has no files that can be OCRed' do
+        let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [text_file]) }
+        let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [text_file, text_file]) }
 
-        it 'returns true' do
-          expect(ocr.required?).to be true
+        it 'returns false' do
+          expect(ocr.required?).to be false
         end
+      end
+    end
+  end
 
-        context 'when the object type is one that does not require OCR' do
-          let(:object_type) { 'https://cocina.sul.stanford.edu/models/media' }
+  describe '#required?' do
+    let(:cocina_object) { instance_double(Cocina::Models::DRO, dro?: true, type: object_type) }
 
-          it 'returns false' do
-            expect(ocr.required?).to be false
-          end
-        end
+    context 'when workflow context includes runOCR as true' do
+      let(:workflow_context) { { 'runOCR' => true } }
 
-        context 'when the object has no files that can be OCRed' do
-          let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [text_file]) }
-          let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [text_file, text_file]) }
+      it 'returns true' do
+        expect(ocr.required?).to be true
+      end
+    end
 
-          it 'returns false' do
-            expect(ocr.required?).to be false
-          end
-        end
+    context 'when workflow context includes runOCR as false' do
+      let(:workflow_context) { { 'runOCR' => false } }
+
+      it 'returns false' do
+        expect(ocr.required?).to be false
+      end
+    end
+
+    context 'when workflow context is emptye' do
+      let(:workflow_context) { {} }
+
+      it 'returns false' do
+        expect(ocr.required?).to be false
       end
     end
   end
@@ -73,7 +78,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
     let(:cocina_object) { instance_double(Cocina::Models::DRO, structural:) }
 
     it 'returns a list of filenames that should be OCRed' do
-      expect(ocr.filenames_to_ocr).to eq(['file1.pdf', 'file2.jpg'])
+      expect(ocr.send(:filenames_to_ocr)).to eq(['file1.pdf', 'file2.jpg'])
     end
   end
 
@@ -81,7 +86,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
     let(:cocina_object) { instance_double(Cocina::Models::DRO, structural:) }
 
     it 'returns a list of all filenames' do
-      expect(ocr.cocina_files).to eq([pdf_file, jpg_file, text_file])
+      expect(ocr.send(:cocina_files)).to eq([pdf_file, jpg_file, text_file])
     end
   end
 end

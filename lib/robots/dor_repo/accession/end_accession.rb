@@ -19,11 +19,18 @@ module Robots
           # Note that this used to be handled by the disseminationWF, which is no longer used.
           object_client.workspace.cleanup(workflow: 'accessionWF', lane_id:)
 
-          # Start OCR text extraction workflow if needed
-          # Note: the "workflow" object that is providing the context is a LyberCore::Workflow class
+          # NOTE: the "workflow" object that is providing the context is a LyberCore::Workflow class
           # It is provided by the LyberCore::Robot superclass via lyber-core gem
           # see https://github.com/sul-dlss/lyber-core/blob/main/lib/lyber_core/robot.rb and https://github.com/sul-dlss/lyber-core/blob/main/lib/lyber_core/workflow.rb
-          workflow_service.create_workflow_by_name(druid, 'ocrWF', version: current_version, lane_id:) if Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context: workflow.context).required?
+          ocr = Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context: workflow.context)
+
+          if ocr.required?
+            # user asked for OCR but the object is not OCRable
+            raise 'Object cannot be OCRd' unless ocr.possible?
+
+            # start OCR workflow
+            workflow_service.create_workflow_by_name(druid, 'ocrWF', version: current_version, lane_id:)
+          end
 
           # TODO: Start captionioning text extraction workflow if needed
           # workflow_service.create_workflow_by_name(druid, 'captioningWF', version: current_version, lane_id:) if Dor::TextExtraction::Captioning.new(cocina_object:, workflow_context: workflow.context).required?

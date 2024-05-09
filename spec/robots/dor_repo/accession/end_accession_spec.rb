@@ -16,7 +16,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   let(:apo_object_client) { instance_double(Dor::Services::Client::Object, find: apo) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
   let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, cleanup: true) }
-  let(:ocr) { instance_double(Dor::TextExtraction::Ocr, required?: false) }
+  let(:ocr) { instance_double(Dor::TextExtraction::Ocr, possible?: true, required?: false) }
 
   before do
     allow(Dor::TextExtraction::Ocr).to receive(:new).and_return(ocr)
@@ -36,19 +36,29 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
         expect(workspace_client).to have_received(:cleanup).with(workflow: 'accessionWF', lane_id: 'default')
       end
 
-      context 'when OCR is not required' do
+      context 'when OCR is possible but not required' do
+        let(:ocr) { instance_double(Dor::TextExtraction::Ocr, possible?: true, required?: false) }
+
         it 'does not start ocrWF' do
           perform
           expect(workflow_client).not_to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: '1', lane_id: 'default')
         end
       end
 
-      context 'when OCR is required' do
-        let(:ocr) { instance_double(Dor::TextExtraction::Ocr, required?: true) }
+      context 'when OCR is required and possible' do
+        let(:ocr) { instance_double(Dor::TextExtraction::Ocr, possible?: true, required?: true) }
 
         it 'starts ocrWF' do
           perform
           expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: '1', lane_id: 'default')
+        end
+      end
+
+      context 'when OCR is required but not possible' do
+        let(:ocr) { instance_double(Dor::TextExtraction::Ocr, possible?: false, required?: true) }
+
+        it 'raises an exception' do
+          expect { perform }.to raise_error(RuntimeError, 'Object cannot be OCRd')
         end
       end
     end
