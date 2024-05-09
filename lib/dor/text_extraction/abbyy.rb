@@ -37,7 +37,7 @@ module Dor
         "<ExportFormat OutputFileFormat='ALTO' OutputFlowType='SharedFolder' FormatVersion='3_1' CoordinatesParticularity='Words' WriteWordConfidence='true'>
           <OutputLocation>#{output_file_path}</OutputLocation>
           <FileExistsAction>Overwrite</FileExistsAction>
-          <NamingRule>&lt;FileName&gt;.&lt;Ext&gt;</NamingRule>
+          <NamingRule>#{druid}.&lt;Ext&gt;</NamingRule>
         </ExportFormat>"
       end
 
@@ -45,7 +45,7 @@ module Dor
         "<ExportFormat OutputFileFormat='Text' OutputFlowType='SharedFolder' EncodingType='UTF8'>
           <OutputLocation>#{output_file_path}</OutputLocation>
           <FileExistsAction>Overwrite</FileExistsAction>
-          <NamingRule>&lt;FileName&gt;.&lt;Ext&gt;</NamingRule>
+          <NamingRule>#{druid}.&lt;Ext&gt;</NamingRule>
         </ExportFormat>"
       end
 
@@ -56,7 +56,7 @@ module Dor
                        PdfUACompatible='true'>
           <OutputLocation>#{output_file_path}</OutputLocation>
           <FileExistsAction>Overwrite</FileExistsAction>
-          <NamingRule>&lt;FileName&gt;.&lt;Ext&gt;</NamingRule>
+          <NamingRule>#{druid}.&lt;Ext&gt;</NamingRule>
         </ExportFormat>"
       end
 
@@ -67,7 +67,7 @@ module Dor
       def xml_ticket
         "<?xml version='1.0'?>
         <XmlTicket>
-          <ExportParams DocumentSeparationMethod='OneFilePerImage' XMLResultPublishingMethod='XMLResultToFolder'>
+          <ExportParams XMLResultPublishingMethod='XMLResultToFolder'>
             #{pdf_files? ? pdfa_output : image_abbyy}
             <XMLResultLocation>#{Settings.sdr.abbyy_result_path.encode(xml: :text)}</XMLResultLocation>
           </ExportParams>

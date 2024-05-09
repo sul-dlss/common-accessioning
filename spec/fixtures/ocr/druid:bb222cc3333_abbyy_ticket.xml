@@ -1,23 +1,23 @@
 <?xml version='1.0'?>
 <XmlTicket>
-  <ExportParams DocumentSeparationMethod='OneFilePerImage' XMLResultPublishingMethod='XMLResultToFolder'>
+  <ExportParams XMLResultPublishingMethod='XMLResultToFolder'>
     <ExportFormat OutputFileFormat='PDFA' OutputFlowType='SharedFolder'
                 PdfAComplianceMode='PDFAM_PdfA_2u' PdfVersion='Version17'
                 Scenario='MaxQuality' UseImprovedCompression='true' MRCMode='Normal'
                 PdfUACompatible='true'>
       <OutputLocation>/tmp/druid:bb222cc3333</OutputLocation>
       <FileExistsAction>Overwrite</FileExistsAction>
-      <NamingRule>&lt;FileName&gt;.&lt;Ext&gt;</NamingRule>
+      <NamingRule>druid:bb222cc3333.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
     <ExportFormat OutputFileFormat='ALTO' OutputFlowType='SharedFolder' FormatVersion='3_1' CoordinatesParticularity='Words' WriteWordConfidence='true'>
       <OutputLocation>/tmp/druid:bb222cc3333</OutputLocation>
       <FileExistsAction>Overwrite</FileExistsAction>
-      <NamingRule>&lt;FileName&gt;.&lt;Ext&gt;</NamingRule>
+      <NamingRule>druid:bb222cc3333.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
     <ExportFormat OutputFileFormat='Text' OutputFlowType='SharedFolder' EncodingType='UTF8'>
       <OutputLocation>/tmp/druid:bb222cc3333</OutputLocation>
       <FileExistsAction>Overwrite</FileExistsAction>
-      <NamingRule>&lt;FileName&gt;.&lt;Ext&gt;</NamingRule>
+      <NamingRule>druid:bb222cc3333.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
     <XMLResultLocation>/tmp</XMLResultLocation>
   </ExportParams>
