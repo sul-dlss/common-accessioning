@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<XmlTicket>
+  <ExportParams XMLResultPublishingMethod="XMLResultToFolder">
+    <ExportFormat OutputFileFormat="PDFA" OutputFlowType="SharedFolder" PdfAComplianceMode="PDFAM_PdfA_2u" PdfVersion="Version17" Scenario="MaxQuality" UseImprovedCompression="true" MRCMode="Normal" PdfUACompatible="true">
+      <OutputLocation>/tmp/druid:new_druid</OutputLocation>
+      <FileExistsAction>Overwrite</FileExistsAction>
+      <NamingRule>druid:new_druid.&lt;Ext&gt;</NamingRule>
+    </ExportFormat>
+    <XMLResultLocation>/tmp</XMLResultLocation>
+  </ExportParams>
+  <InputFile Name="filename3.PDF"/>
+  <InputFile Name="filename4.pdf"/>
+</XmlTicket>
