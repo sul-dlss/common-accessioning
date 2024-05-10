@@ -10,8 +10,7 @@ module Robots
           super('assemblyWF', 'content-metadata-create')
         end
 
-        # generate the content metadata for this object based on some logic of whether
-        # stub or regular content metadata already exists
+        # Generate the structural metadata for this object from stub content metadata (if present).
         def perform_work
           return LyberCore::ReturnState.new(status: :skipped, note: 'object is not an item') unless assembly_item.item? # not an item, skip
 
