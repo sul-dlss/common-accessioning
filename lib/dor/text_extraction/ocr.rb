@@ -37,18 +37,27 @@ module Dor
       # iterate over all files in cocina_object.structural.contains, looking at mimetypes
       # return a list of filenames that are correct mimetype
       def filenames_to_ocr
-        cocina_files.select { |file| allowed_mimetypes.include? file.hasMimeType }.map(&:filename)
+        ocr_files.map(&:filename)
       end
 
       # iterate through cocina strutural contains and return all File objects
-      def cocina_files
+      def ocr_files
         [].tap do |files|
+          matchtype = cocina_object.type == 'https://cocina.sul.stanford.edu/models/book' ? 'page' : cocina_object.type.split('/')[-1]
           cocina_object.structural.contains.each do |fileset|
-            fileset.structural.contains.each do |file|
-              files << file
-            end
+            next unless fileset.type.include?(matchtype)
+
+            files << ocr_file(fileset)
           end
         end
+      end
+
+      def ocr_file(fileset)
+        perservedfiles = fileset.structural.contains.select { |file| file.administrative.sdrPreserve && allowed_mimetypes.include?(file.hasMimeType) }
+        return perservedfiles[0] if perservedfiles.one?
+
+        perservedfiles = perservedfiles.sort_by { |pfile| allowed_mimetypes.index(pfile.hasMimeType) }
+        perservedfiles[0]
       end
 
       # TODO: refine list of allowed mimetypes for OCR
@@ -56,10 +65,10 @@ module Dor
       # defines the mimetypes types for which files for which OCR can possibly be run
       def allowed_mimetypes
         %w[
-          application/pdf
           image/tiff
-          image/jp2
           image/jpeg
+          image/jp2
+          application/pdf
         ]
       end
 

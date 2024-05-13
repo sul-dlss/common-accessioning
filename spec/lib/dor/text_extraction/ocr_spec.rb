@@ -7,13 +7,15 @@ RSpec.describe Dor::TextExtraction::Ocr do
   let(:object_type) { 'https://cocina.sul.stanford.edu/models/image' }
   let(:workflow_context) { {} }
   let(:structural) { instance_double(Cocina::Models::DROStructural, contains: [first_fileset, second_fileset]) }
-  let(:first_fileset) { instance_double(Cocina::Models::FileSet, structural: first_fileset_structural) }
-  let(:second_fileset) { instance_double(Cocina::Models::FileSet, structural: second_fileset_structural) }
+  let(:first_fileset) { instance_double(Cocina::Models::FileSet, type: 'https://cocina.sul.stanford.edu/models/resources/document', structural: first_fileset_structural) }
+  let(:second_fileset) { instance_double(Cocina::Models::FileSet, type: 'https://cocina.sul.stanford.edu/models/resources/image', structural: second_fileset_structural) }
   let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [pdf_file]) }
-  let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [jpg_file, text_file]) }
-  let(:pdf_file) { instance_double(Cocina::Models::File, hasMimeType: 'application/pdf', filename: 'file1.pdf') }
-  let(:jpg_file) { instance_double(Cocina::Models::File, hasMimeType: 'image/jpeg', filename: 'file2.jpg') }
-  let(:text_file) { instance_double(Cocina::Models::File, hasMimeType: 'text/plain', filename: 'file3.txt') }
+  let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [jpg_file, tif_file, text_file]) }
+  let(:pdf_file) { instance_double(Cocina::Models::File, administrative: sdr_info, hasMimeType: 'application/pdf', filename: 'file1.pdf') }
+  let(:jpg_file) { instance_double(Cocina::Models::File, administrative: sdr_info, hasMimeType: 'image/jpeg', filename: 'file2.jpg') }
+  let(:tif_file) { instance_double(Cocina::Models::File, administrative: sdr_info, hasMimeType: 'image/tiff', filename: 'file2.tif') }
+  let(:text_file) { instance_double(Cocina::Models::File, administrative: sdr_info, hasMimeType: 'text/plain', filename: 'file3.txt') }
+  let(:sdr_info) { instance_double(Cocina::Models::FileAdministrative, sdrPreserve: true) }
 
   describe '#possible?' do
     context 'when the object is not a DRO' do
@@ -75,18 +77,18 @@ RSpec.describe Dor::TextExtraction::Ocr do
   end
 
   describe '#filenames_to_ocr' do
-    let(:cocina_object) { instance_double(Cocina::Models::DRO, structural:) }
+    let(:cocina_object) { instance_double(Cocina::Models::DRO, structural:, type: object_type) }
 
     it 'returns a list of filenames that should be OCRed' do
-      expect(ocr.send(:filenames_to_ocr)).to eq(['file1.pdf', 'file2.jpg'])
+      expect(ocr.send(:filenames_to_ocr)).to eq(['file2.tif'])
     end
   end
 
-  describe '#cocina_files' do
-    let(:cocina_object) { instance_double(Cocina::Models::DRO, structural:) }
+  describe '#ocr_files' do
+    let(:cocina_object) { instance_double(Cocina::Models::DRO, structural:, type: 'https://cocina.sul.stanford.edu/models/document') }
 
     it 'returns a list of all filenames' do
-      expect(ocr.send(:cocina_files)).to eq([pdf_file, jpg_file, text_file])
+      expect(ocr.send(:ocr_files)).to eq([pdf_file])
     end
   end
 end
