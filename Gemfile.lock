@@ -310,7 +310,7 @@ DEPENDENCIES
   dry-types (~> 1.1)
   equivalent-xml
   honeybadger
-  lyber-core (~> 7.3)
+  lyber-core (~> 7.5)
   nokogiri
   preservation-client
   pry
