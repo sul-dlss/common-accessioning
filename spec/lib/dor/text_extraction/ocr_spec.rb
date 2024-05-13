@@ -40,7 +40,15 @@ RSpec.describe Dor::TextExtraction::Ocr do
         let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [text_file, text_file]) }
 
         it 'returns false' do
-          expect(ocr.required?).to be false
+          expect(ocr.possible?).to be false
+        end
+      end
+
+      context 'when the object has files that can be OCRed' do
+        let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [jpg_file]) }
+
+        it 'returns true' do
+          expect(ocr.possible?).to be true
         end
       end
     end
@@ -65,7 +73,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
       end
     end
 
-    context 'when workflow context is emptye' do
+    context 'when workflow context is empty' do
       let(:workflow_context) { {} }
 
       it 'returns false' do
