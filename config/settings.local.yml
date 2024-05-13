@@ -1,3 +1,0 @@
-# can be useful if you want to point to a localhost workserver-server-rails
-workflow:
-  url: http://localhost:3000
