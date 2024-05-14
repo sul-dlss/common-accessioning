@@ -67,7 +67,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
       end
     end
 
-    context 'when workflow context is emptye' do
+    context 'when workflow context is empty' do
       let(:workflow_context) { {} }
 
       it 'returns false' do

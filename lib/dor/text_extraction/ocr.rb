@@ -27,7 +27,7 @@ module Dor
       end
 
       def required?
-        # checks if user has indicated that OCR should be run (set as workflow_context)
+        # checks if user has indicated that OCR should be run (sent as workflow_context)
         workflow_context['runOCR'] || false
       end
 
@@ -40,10 +40,9 @@ module Dor
         ocr_files.map(&:filename)
       end
 
-      # iterate through cocina strutural contains and return all File objects
+      # iterate through cocina strutural contains and return all File objects for files that need to be OCRed
       def ocr_files
         [].tap do |files|
-          matchtype = cocina_object.type == 'https://cocina.sul.stanford.edu/models/book' ? 'page' : cocina_object.type.split('/')[-1]
           cocina_object.structural.contains.each do |fileset|
             next unless fileset.type.include?(matchtype)
 
@@ -60,9 +59,9 @@ module Dor
         perservedfiles[0]
       end
 
-      # TODO: refine list of allowed mimetypes for OCR
-      # TODO: may use ordering of mimetypes to preferentially select files for OCR
       # defines the mimetypes types for which files for which OCR can possibly be run
+      # preferentially select files for OCR by ordering of mimetypes below
+      # TODO: refine list of allowed mimetypes for OCR
       def allowed_mimetypes
         %w[
           image/tiff
@@ -72,14 +71,22 @@ module Dor
         ]
       end
 
+      # maps the allowed content types to the resource type we will look for files in
       # TODO: refine list of allowed object types for OCR
-      # defines the object types for which OCR can possibly be run
+      def resource_type_mapping
+        {
+          'https://cocina.sul.stanford.edu/models/book' => 'page',
+          'https://cocina.sul.stanford.edu/models/document' => 'document',
+          'https://cocina.sul.stanford.edu/models/image' => 'image'
+        }
+      end
+
+      def matchtype
+        resource_type_mapping[cocina_object.type]
+      end
+
       def allowed_object_types
-        %w[
-          https://cocina.sul.stanford.edu/models/book
-          https://cocina.sul.stanford.edu/models/document
-          https://cocina.sul.stanford.edu/models/image
-        ]
+        resource_type_mapping.keys
       end
     end
   end
