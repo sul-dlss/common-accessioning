@@ -27,7 +27,7 @@ module Dor
       end
 
       def required?
-        # checks if user has indicated that OCR should be run (set as workflow_context)
+        # checks if user has indicated that OCR should be run (sent as workflow_context)
         workflow_context['runOCR'] || false
       end
 
@@ -37,40 +37,58 @@ module Dor
       # iterate over all files in cocina_object.structural.contains, looking at mimetypes
       # return a list of filenames that are correct mimetype
       def filenames_to_ocr
-        cocina_files.select { |file| allowed_mimetypes.include? file.hasMimeType }.map(&:filename)
+        ocr_files.map(&:filename)
       end
 
-      # iterate through cocina strutural contains and return all File objects
-      def cocina_files
+      # iterate through cocina strutural contains and return all File objects for files that need to be OCRed
+      def ocr_files
         [].tap do |files|
           cocina_object.structural.contains.each do |fileset|
-            fileset.structural.contains.each do |file|
-              files << file
-            end
+            next unless fileset.type.include?(matchtype)
+
+            files << ocr_file(fileset)
           end
         end
       end
 
-      # TODO: refine list of allowed mimetypes for OCR
-      # TODO: may use ordering of mimetypes to preferentially select files for OCR
+      # filter down fileset files to those in preservation and are allowedmimetypes
+      # if there are more than one allowed mimetype, grab the preferred type
+      def ocr_file(fileset)
+        perservedfiles = fileset.structural.contains.select { |file| file.administrative.sdrPreserve && allowed_mimetypes.include?(file.hasMimeType) }
+        return perservedfiles[0] if perservedfiles.one?
+
+        perservedfiles = perservedfiles.sort_by { |pfile| allowed_mimetypes.index(pfile.hasMimeType) }
+        perservedfiles[0]
+      end
+
       # defines the mimetypes types for which files for which OCR can possibly be run
+      # preferentially select files for OCR by ordering of mimetypes below
+      # TODO: refine list of allowed mimetypes for OCR
       def allowed_mimetypes
         %w[
-          application/pdf
           image/tiff
-          image/jp2
           image/jpeg
+          image/jp2
+          application/pdf
         ]
       end
 
+      # maps the allowed content types to the resource type we will look for files in
       # TODO: refine list of allowed object types for OCR
-      # defines the object types for which OCR can possibly be run
+      def resource_type_mapping
+        {
+          'https://cocina.sul.stanford.edu/models/book' => 'page',
+          'https://cocina.sul.stanford.edu/models/document' => 'document',
+          'https://cocina.sul.stanford.edu/models/image' => 'image'
+        }
+      end
+
+      def matchtype
+        resource_type_mapping[cocina_object.type]
+      end
+
       def allowed_object_types
-        %w[
-          https://cocina.sul.stanford.edu/models/book
-          https://cocina.sul.stanford.edu/models/document
-          https://cocina.sul.stanford.edu/models/image
-        ]
+        resource_type_mapping.keys
       end
     end
   end
