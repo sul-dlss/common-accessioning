@@ -1,0 +1,207 @@
+<XmlResult ImageProcessingProfileId="" UseImageClassifier="false" Priority="Normal" OCRTimeout="0"
+  PagesSlice="25" PageNumToRecognizeForSingleInputFile="-1" AllowJoinDocumentsOnVerification="false"
+  AllowJoinDocumentsOnIndexing="false" DisablePageSliceForDigitalDocuments="true"
+  WorkflowTicketId="74486" Id="{0301CD7D-7347-41C9-AE2C-A418419EA410}"
+  AllowExtractJobWithFailedDocuments="true" JobId="74486" Type="Normal" IsFailed="false"
+  HasFailedDocuments="false" Date="10.05.2024 09:07:34.093652"
+  ProcessDate="10.05.2024 09:07:34.206483" PublishingTime="10.05.2024 09:09:22.043384"
+  Duration="107913" ProcessDuration="107800" PublishingDuration="0" WorkflowId="19"
+  WorkflowName="SDR-OCR-QA" VerificationTime="0" IndexingTime="0">
+  <ImageProcessingProfile Id="FRS14EMPTY-4BA96E2B-EA58-42BD-BD65-A231D13398A6" Name="No processing"
+    Predefined="true" AutoDetectBookPages="false" TiffMaxBrokenLastLinesCount="1"
+    BackgroundColorDetectionType="Auto" red="255" green="255" blue="255">
+    <UsedByWorkflow>SDR-OCR-STAGE</UsedByWorkflow>
+    <UsedByWorkflow>SDR-OCR-PROD</UsedByWorkflow>
+    <UsedByWorkflow>SDR-OCR-QA</UsedByWorkflow>
+  </ImageProcessingProfile>
+  <PdfProcessingParams PdfDetectionMode="FilesWithVisibleText" DetectOnFirstPageWithText="false"
+    DetectOnEachPage="true" DetectBadEncoding="false" MinimumTextLevelWhiteList="OcrText"
+    DontModifyDocumentsWithDigitalSignature="false"
+    DiscardJobWithDocumentsWithDigitalSignature="false" KeepAnnotationsInPdf="false"
+    ProcessPdfAsBlackTexted="false" CanProcessXfa="false" CanProcessIncorrectPdf="true" />
+  <RecognitionParams RecognitionQuality="Thorough" LookForBarcodes="false"
+    UseBarcodesClassifier="false" VerificationMode="NoVerification" RecognitionMode="FullPage"
+    AllowedFontsMode="Default" ProhibitHiddenTextDetection="true" ProhibitTableDetection="false"
+    ProhibitPictureDetection="false" ExtractUncoveredXTextAfterAnalysis="false"
+    AlwaysUseDefaultDAMode="true" AlwaysLookForVerticalTexts="false" SpecialRecognitionMode="None"
+    UsePullXTextAndRecognizeRest="true" DocumentAnalysisSpeedQualityMode="Default"
+    AllowUnformattedTextSynthesisMode="true">
+    <TextType>Normal</TextType>
+    <TextType>Typewriter</TextType>
+    <Language>English</Language>
+    <Language>French</Language>
+    <Language>German</Language>
+    <Language>Mixed</Language>
+    <Language>Spanish</Language>
+    <UserPatternsAndLanguages />
+  </RecognitionParams>
+  <ExportParams DocumentSeparationMethod="MergeIntoSingleFile"
+    IsSortingBeforeDocumentSeparationReqired="false" DeleteBlankPages="false"
+    XMLResultPublishingMethod="XMLResultToFolder" IsExportSrcEdocAllowed="true">
+    <SeparationScriptLanguage></SeparationScriptLanguage>
+    <PublishingScriptLanguage></PublishingScriptLanguage>
+    <FailedScriptLanguage></FailedScriptLanguage>
+    <ExportFormat Id="{C4571B33-3F18-4351-AE70-F531FCA40477}" OutputFileFormat="PDFA"
+      KeepLastModifiedDate="false" CleanupSummaryRequired="false" OutputFlowType="SharedFolder"
+      ExportMode="ImageOnText" Quality="45" PictureResolution="-1" UseExplicitDocumentInfo="false"
+      UseOriginalPaperSize="true" UseShadowsCorrectedPageSize="false"
+      KeepOriginalHeadersFooters="true" WriteAnnotations="true" PdfVersion="Version17"
+      PdfAComplianceMode="PDFAM_PdfA_2u" Scenario="MaxQuality" UseImprovedCompression="true"
+      MRCMode="Normal" UseOriginalImageFile="false" FilterBackgroundTextures="false"
+      CreateOutlines="false" PreservePdfOutlines="false" ColorControlType="PCCT_SaveColoration"
+      KeepPictures="true" EmbedFonts="false" PdfFontMode="BPFM_UseFontsFromIText"
+      EnableFastWebView="false" AttachSourceFiles="false" useKashidaAlign="true"
+      CreateOCGroups="false" PdfUACompatible="true" UseCommonJBIGDictionary="false"
+      UseFindAndFilterTypographicRaster="false" UseSmartColorityDetection="false"
+      SavePageLabels="false" FitPageContentToFixedSize="true" SaveAsPdfPortfolioExp="false"
+      ToPdfAConvertion="Strict" FailIfCantConvert="false">
+      <OutputLocation>/tmp/OUTPUT/bb222cc3333</OutputLocation>
+      <ExportToSourceLibrary>false</ExportToSourceLibrary>
+      <AddLibraryPrefixToOutputFolder>false</AddLibraryPrefixToOutputFolder>
+      <KeepLibraryStructureInOutputFolder>true</KeepLibraryStructureInOutputFolder>
+      <FileExistsAction>Overwrite</FileExistsAction>
+      <NamingRule>bb222cc3333.&lt;Ext&gt;</NamingRule>
+      <PageStamps>
+        <BatesCounter NumberOfDigits="5" StartingNumber="1"
+          ContinuousNumberingThroughSubfolders="false" UpdateStartingNumber="false" />
+      </PageStamps>
+    </ExportFormat>
+    <ExportFormat Id="{61E1FC99-7BCC-48A9-ADD4-026B533807E4}" OutputFileFormat="ALTO"
+      KeepLastModifiedDate="false" CleanupSummaryRequired="false" OutputFlowType="SharedFolder"
+      FormatVersion="3_1" CoordinatesParticularity="Words" FormattingMode="Plain"
+      MeasurementUnit="Pixel" WriteOriginalImageCoordinates="false"
+      WriteRenderedImageCoordinates="false" ShrinkNestedRectCoordinates="false"
+      WriteWordConfidence="true">
+      <OutputLocation>/tmp/OUTPUT/bb222cc3333</OutputLocation>
+      <ExportToSourceLibrary>false</ExportToSourceLibrary>
+      <AddLibraryPrefixToOutputFolder>false</AddLibraryPrefixToOutputFolder>
+      <KeepLibraryStructureInOutputFolder>true</KeepLibraryStructureInOutputFolder>
+      <FileExistsAction>Overwrite</FileExistsAction>
+      <NamingRule>bb222cc3333.&lt;Ext&gt;</NamingRule>
+    </ExportFormat>
+    <ExportFormat Id="{1956595A-2DEE-4A79-886B-1D212B0A3B43}" OutputFileFormat="Text"
+      KeepLastModifiedDate="false" CleanupSummaryRequired="false" OutputFlowType="SharedFolder"
+      CodePage="NULL_CODE_PAGE" EncodingType="UTF8" UsePageBreakCharacters="false"
+      KeepOriginalHeadersFooters="true" InsertEmptyLineBetweenParagraphs="false"
+      KeepLineBreaks="false">
+      <OutputLocation>/tmp/OUTPUT/bb222cc3333</OutputLocation>
+      <ExportToSourceLibrary>false</ExportToSourceLibrary>
+      <AddLibraryPrefixToOutputFolder>false</AddLibraryPrefixToOutputFolder>
+      <KeepLibraryStructureInOutputFolder>true</KeepLibraryStructureInOutputFolder>
+      <FileExistsAction>Overwrite</FileExistsAction>
+      <NamingRule>bb222cc3333.&lt;Ext&gt;</NamingRule>
+    </ExportFormat>
+    <XMLResultLocation>/tmp/RESULTXML</XMLResultLocation>
+    <EmptyPageDetectionSettings maxBarcodesCount="0" maxBlackSquaresCount="1"
+      maxTextObjectsCount="0" maxBlacknessPercentage="-1" autodetectKernelRect="true"
+      kernelMargins.Bottom="0" kernelMargins.Left="0" kernelMargins.Right="0" kernelMargins.Top="0"
+      maxAlphabetLettersCount="-1" />
+  </ExportParams>
+  <IndexingSettings />
+  <InputEventsSettings>
+    <OnFileReceivedByStation Timeout="10">
+      <IsEnabled>false</IsEnabled>
+      <Language></Language>
+      <Text><![CDATA[]]></Text>
+    </OnFileReceivedByStation>
+  </InputEventsSettings>
+  <CustomOfficeConvertionParams IsEnabled="false" OfficeType="Undefined" FileFormat="PDF"
+    CreatePDFA="true" AutoFit="false" AdaptPageSize="true" AdaptFitToPagesWide="false"
+    UseSynchronousMode="false" MaxConvertProcesses="0" UseExtendedErrorMessages="false"
+    PreprocessorOptions="11">
+    <UserSessionData UserProfilePath="" UserNameWithDomain="" UserPassword=""
+      NeedLoadUserProfile="false" WaitingTimeoutSeconds="360" SessionRunType="Undefined" />
+    <CustomOfficeApplications WordFilesMask="" ExcelFilesMask="" PowerPointFilesMask=""
+      VisioFilesMask="" />
+  </CustomOfficeConvertionParams>
+  <DigitalBornDocumentsAooModuleSettings IsEnabled="true" OfficeType="AbbyyOpenOffice"
+    FileFormat="PDF" CreatePDFA="true" AutoFit="false" AdaptPageSize="true"
+    AdaptFitToPagesWide="false" UseSynchronousMode="false" MaxConvertProcesses="0"
+    UseExtendedErrorMessages="false" PreprocessorOptions="11">
+    <UserSessionData UserProfilePath="" UserNameWithDomain="" UserPassword=""
+      NeedLoadUserProfile="false" WaitingTimeoutSeconds="180" SessionRunType="Current" />
+    <CustomOfficeApplications WordFilesMask="" ExcelFilesMask="" PowerPointFilesMask=""
+      VisioFilesMask="" />
+  </DigitalBornDocumentsAooModuleSettings>
+  <Name>bb222cc3333.xml</Name>
+  <UserName>unknown</UserName>
+  <UserProperty></UserProperty>
+  <VerificationUserNameRestrictions />
+  <IndexingUserNameRestrictions />
+  <VerificationUserName></VerificationUserName>
+  <IndexingUserName></IndexingUserName>
+  <Statistics TotalCharacters="5063" UncertainCharacters="269" PagesArea="3" />
+  <InputFile FileName="bb222cc3333_00_0001.tif" IsTreatAsNormalTextPdf="false" InternalFileId=""
+    Id="2343264" CopiedAsIs="false" FileModificationTime="10.05.2024 09:06:10.419542">
+    <Statistics TotalCharacters="318" UncertainCharacters="106" PagesArea="1" />
+    <Page Id="{07B12786-2F04-49E3-8B52-0186FBC35582}" PageNumber="0">
+      <Statistics TotalCharacters="318" UncertainCharacters="106" PagesArea="1" />
+      <Message Type="Warning" Code="12" ComputerName="DPGLAB-OCR-A"
+        Time="10.05.2024 09:07:45.340677">
+        <Params>bb222cc3333_00_0001.tif</Params>
+        <Params>1</Params>
+        <Params>Image resolution is suspicious, estimated resolution is 1200</Params>
+        <Text>File 'bb222cc3333_00_0001.tif', page 1: Image resolution is suspicious, estimated
+          resolution is 1200</Text>
+      </Message>
+      <Message Type="Warning" Code="12" ComputerName="DPGLAB-OCR-A"
+        Time="10.05.2024 09:07:52.217803">
+        <Params>bb222cc3333_00_0001.tif</Params>
+        <Params>1</Params>
+        <Params>Please make sure the right OCR languages are selected for the document.</Params>
+        <Text>File 'bb222cc3333_00_0001.tif', page 1: Please make sure the right OCR languages are
+          selected for the document.</Text>
+      </Message>
+    </Page>
+  </InputFile>
+  <InputFile FileName="bb222cc3333_00_0002.tif" IsTreatAsNormalTextPdf="false" InternalFileId=""
+    Id="2343265" CopiedAsIs="false" FileModificationTime="10.05.2024 09:06:50.237738">
+    <Statistics TotalCharacters="1724" UncertainCharacters="128" PagesArea="1" />
+    <Page Id="{AA6E3CBE-6319-4B17-999C-5A11636DF4D9}" PageNumber="0">
+      <Statistics TotalCharacters="1724" UncertainCharacters="128" PagesArea="1" />
+    </Page>
+  </InputFile>
+  <InputFile FileName="bb222cc3333_00_0003.tif" IsTreatAsNormalTextPdf="false" InternalFileId=""
+    Id="2343266" CopiedAsIs="false" FileModificationTime="10.05.2024 09:07:33.499777">
+    <Statistics TotalCharacters="3021" UncertainCharacters="35" PagesArea="1" />
+    <Page Id="{6EA2792A-14D5-4F0D-8925-8336CFD3164F}" PageNumber="0">
+      <Statistics TotalCharacters="3021" UncertainCharacters="35" PagesArea="1" />
+    </Page>
+  </InputFile>
+  <XmlTicketFiles FileName="bb222cc3333.xml" IsTreatAsNormalTextPdf="false" InternalFileId=""
+    Id="2343267" CopiedAsIs="false" FileModificationTime="10.05.2024 09:06:02.278643" />
+  <JobDocument Name="bb222cc3333_00_0001.tif, bb222cc3333_00_0002.tif, bb222cc3333_00_0003.tif"
+    Id="{A0E2B334-065F-44C7-AA2D-AC5B9EA9355E}" VerificationTime="0" IndexingTime="0">
+    <IsFailed>false</IsFailed>
+    <OutputDocuments OutputLocation="/tmp/OUTPUT/bb222cc3333"
+      ExportFormatId="{C4571B33-3F18-4351-AE70-F531FCA40477}" ExportFormat="PDFA"
+      OutputFlowType="SharedFolder">
+      <FileName>bb222cc3333.pdf</FileName>
+    </OutputDocuments>
+    <OutputDocuments OutputLocation="/tmp/OUTPUT/bb222cc3333"
+      ExportFormatId="{61E1FC99-7BCC-48A9-ADD4-026B533807E4}" ExportFormat="ALTO"
+      OutputFlowType="SharedFolder">
+      <FileName>bb222cc3333.xml</FileName>
+    </OutputDocuments>
+    <OutputDocuments OutputLocation="/tmp/OUTPUT/bb222cc3333"
+      ExportFormatId="{1956595A-2DEE-4A79-886B-1D212B0A3B43}" ExportFormat="Text"
+      OutputFlowType="SharedFolder">
+      <FileName>bb222cc3333.txt</FileName>
+    </OutputDocuments>
+    <Pages>
+      <FileId>2343264</FileId>
+      <PageId>{07B12786-2F04-49E3-8B52-0186FBC35582}</PageId>
+    </Pages>
+    <Pages>
+      <FileId>2343265</FileId>
+      <PageId>{AA6E3CBE-6319-4B17-999C-5A11636DF4D9}</PageId>
+    </Pages>
+    <Pages>
+      <FileId>2343266</FileId>
+      <PageId>{6EA2792A-14D5-4F0D-8925-8336CFD3164F}</PageId>
+    </Pages>
+    <VerificationUserName></VerificationUserName>
+    <IndexingUserName></IndexingUserName>
+    <Statistics TotalCharacters="5063" UncertainCharacters="269" PagesArea="3" />
+  </JobDocument>
+</XmlResult>
