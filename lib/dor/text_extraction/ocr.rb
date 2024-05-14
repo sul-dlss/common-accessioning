@@ -51,6 +51,8 @@ module Dor
         end
       end
 
+      # filter down fileset files to those in preservation and are allowedmimetypes
+      # if there are more than one allowed mimetype, grab the preferred type
       def ocr_file(fileset)
         perservedfiles = fileset.structural.contains.select { |file| file.administrative.sdrPreserve && allowed_mimetypes.include?(file.hasMimeType) }
         return perservedfiles[0] if perservedfiles.one?
