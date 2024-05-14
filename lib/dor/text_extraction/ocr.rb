@@ -48,7 +48,7 @@ module Dor
 
             files << ocr_file(fileset)
           end
-        end
+        end.compact
       end
 
       # filter down fileset files to those in preservation and are allowedmimetypes
