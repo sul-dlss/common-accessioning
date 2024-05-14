@@ -11,7 +11,6 @@ module Robots
 
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          # copy files from Preservation to the shared ABBYY mount
           # create XML ticket for ABBYY in shared mount
 
           # Leave this step running until the OCR monitoring job marks it as complete

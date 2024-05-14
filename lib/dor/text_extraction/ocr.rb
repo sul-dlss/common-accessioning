@@ -31,14 +31,14 @@ module Dor
         workflow_context['runOCR'] || false
       end
 
-      private
-
       # return a list of filenames that should be OCR'd
       # iterate over all files in cocina_object.structural.contains, looking at mimetypes
       # return a list of filenames that are correct mimetype
       def filenames_to_ocr
         ocr_files.map(&:filename)
       end
+
+      private
 
       # iterate through cocina strutural contains and return all File objects for files that need to be OCRed
       def ocr_files
