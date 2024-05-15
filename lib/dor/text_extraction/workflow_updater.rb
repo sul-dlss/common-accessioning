@@ -19,8 +19,8 @@ module Dor
       end
 
       # Notify SDR that the OCR workflow step failed
-      def mark_ocr_errored(druid)
-        @client.update_status(druid:, workflow:, process: step, status: 'error')
+      def mark_ocr_errored(druid, error_message:)
+        @client.update_status(druid:, workflow:, process: step, status: 'error', note: error_message)
       end
     end
   end

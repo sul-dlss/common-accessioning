@@ -9,6 +9,12 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
   let(:workflow_updater) { instance_double(Dor::TextExtraction::WorkflowUpdater) }
   let(:listener_options) { {} }
   let(:file_watcher) { described_class.new(workflow_updater:, listener_options:) }
+  let(:errors_xml) do
+    <<~XML
+      <Message Type="Error"><Text>Error one</Text></Message>
+      <Message Type="Error"><Text>Error two</Text></Message>
+    XML
+  end
 
   before do
     allow(Settings.sdr).to receive_messages(
@@ -29,9 +35,9 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
 
     it 'notifies SDR when an exception result is created' do
       file_watcher.start
-      create_abbyy_result(abbyy_exceptions_path, druid:, success: false)
+      create_abbyy_result(abbyy_exceptions_path, druid:, success: false, contents: errors_xml)
       file_watcher.stop
-      expect(workflow_updater).to have_received(:mark_ocr_errored).with(druid)
+      expect(workflow_updater).to have_received(:mark_ocr_errored).with(druid, error_message: "Error one\nError two")
     end
   end
 
@@ -48,10 +54,10 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
 
     it 'notifies SDR when an exception result is created' do
       file_watcher.start
-      create_abbyy_result(abbyy_exceptions_path, druid:, success: false)
+      create_abbyy_result(abbyy_exceptions_path, druid:, success: false, contents: errors_xml)
       sleep(1) # Allow enough time to poll the filesystem
       file_watcher.stop
-      expect(workflow_updater).to have_received(:mark_ocr_errored).with(druid)
+      expect(workflow_updater).to have_received(:mark_ocr_errored).with(druid, error_message: "Error one\nError two")
     end
   end
 end

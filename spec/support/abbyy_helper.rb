@@ -21,11 +21,11 @@ shared_context 'with abbyy dir' do
   attr_reader :abbyy_root_path, :abbyy_result_xml_path, :abbyy_exceptions_path
 end
 
-# Create a stub ABBYY result file
-def create_abbyy_result(base_path, druid:, run_index: 0, success: true)
+# Create a stub ABBYY result file with optional error status, contents, etc.
+def create_abbyy_result(base_path, druid:, run_index: 0, success: true, contents: '')
   index_tag = run_index.positive? ? '.%04d'.format(run_index) : ''
   filename = File.join(base_path, "#{druid}#{index_tag}.xml.result.xml")
-  change_fs(:added, filename, "<XmlResult IsFailed=\"#{!success}\"></XmlResult>")
+  change_fs(:added, filename, "<XmlResult IsFailed=\"#{!success}\">#{contents}</XmlResult>")
 end
 
 ### Below are adapted from Listen's spec/support/acceptance_helpers.rb ###

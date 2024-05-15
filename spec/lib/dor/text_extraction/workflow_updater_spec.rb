@@ -20,9 +20,9 @@ describe Dor::TextExtraction::WorkflowUpdater do
   end
 
   describe '#mark_ocr_errored' do
-    it 'calls the workflow client to set error status' do
-      updater.mark_ocr_errored(druid)
-      expect(client).to have_received(:update_status).with(druid:, workflow:, process: step, status: 'error')
+    it 'calls the workflow client to set error status and message' do
+      updater.mark_ocr_errored(druid, error_message: 'Something went wrong')
+      expect(client).to have_received(:update_status).with(druid:, workflow:, process: step, status: 'error', note: 'Something went wrong')
     end
   end
 end
