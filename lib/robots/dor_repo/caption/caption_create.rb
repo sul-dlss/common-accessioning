@@ -12,7 +12,9 @@ module Robots
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
           # do the caption creation by calling out to Whisper
-          true
+
+          # Leave this step running until the Whisper monitoring job marks it as complete
+          LyberCore::ReturnState.new(status: :noop, note: 'Initiated Whisper captioning.')
         end
       end
     end
