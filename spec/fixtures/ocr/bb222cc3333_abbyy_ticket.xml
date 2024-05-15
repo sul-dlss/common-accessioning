@@ -5,19 +5,19 @@
                 PdfAComplianceMode='PDFAM_PdfA_2u' PdfVersion='Version17'
                 Scenario='MaxQuality' UseImprovedCompression='true' MRCMode='Normal'
                 PdfUACompatible='true'>
-      <OutputLocation>/tmp/druid:bb222cc3333</OutputLocation>
+      <OutputLocation>/tmp/bb222cc3333</OutputLocation>
       <FileExistsAction>Overwrite</FileExistsAction>
-      <NamingRule>druid:bb222cc3333.&lt;Ext&gt;</NamingRule>
+      <NamingRule>bb222cc3333.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
     <ExportFormat OutputFileFormat='ALTO' OutputFlowType='SharedFolder' FormatVersion='3_1' CoordinatesParticularity='Words' WriteWordConfidence='true'>
-      <OutputLocation>/tmp/druid:bb222cc3333</OutputLocation>
+      <OutputLocation>/tmp/bb222cc3333</OutputLocation>
       <FileExistsAction>Overwrite</FileExistsAction>
-      <NamingRule>druid:bb222cc3333.&lt;Ext&gt;</NamingRule>
+      <NamingRule>bb222cc3333.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
     <ExportFormat OutputFileFormat='Text' OutputFlowType='SharedFolder' EncodingType='UTF8'>
-      <OutputLocation>/tmp/druid:bb222cc3333</OutputLocation>
+      <OutputLocation>/tmp/bb222cc3333</OutputLocation>
       <FileExistsAction>Overwrite</FileExistsAction>
-      <NamingRule>druid:bb222cc3333.&lt;Ext&gt;</NamingRule>
+      <NamingRule>bb222cc3333.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
     <XMLResultLocation>/tmp</XMLResultLocation>
   </ExportParams>

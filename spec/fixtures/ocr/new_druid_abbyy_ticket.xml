@@ -2,9 +2,9 @@
 <XmlTicket>
   <ExportParams XMLResultPublishingMethod="XMLResultToFolder">
     <ExportFormat OutputFileFormat="PDFA" OutputFlowType="SharedFolder" PdfAComplianceMode="PDFAM_PdfA_2u" PdfVersion="Version17" Scenario="MaxQuality" UseImprovedCompression="true" MRCMode="Normal" PdfUACompatible="true">
-      <OutputLocation>/tmp/druid:new_druid</OutputLocation>
+      <OutputLocation>/tmp/new_druid</OutputLocation>
       <FileExistsAction>Overwrite</FileExistsAction>
-      <NamingRule>druid:new_druid.&lt;Ext&gt;</NamingRule>
+      <NamingRule>new_druid.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
     <XMLResultLocation>/tmp</XMLResultLocation>
   </ExportParams>
