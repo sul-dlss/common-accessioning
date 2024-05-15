@@ -8,6 +8,6 @@
     </ExportFormat>
     <XMLResultLocation>/tmp</XMLResultLocation>
   </ExportParams>
-  <InputFile Name="filename3.PDF"/>
-  <InputFile Name="filename4.pdf"/>
+  <InputFile Name="new_druid\filename3.PDF"/>
+  <InputFile Name="new_druid\filename4.pdf"/>
 </XmlTicket>

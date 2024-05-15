@@ -16,10 +16,14 @@ module Dor
           File.write(file_path, xml)
         end
 
+        def file_path
+          File.join(Settings.sdr.abbyy_ticket_path, "#{bare_druid}.xml")
+        end
+
         private
 
-        def file_path
-          File.join(Settings.sdr.abbyy_ticket_path, "#{druid}.xml")
+        def bare_druid
+          @bare_druid ||= druid.split(':').last
         end
 
         def image_output
@@ -31,14 +35,14 @@ module Dor
         end
 
         def output_file_path
-          File.join(Settings.sdr.abbyy_output_path, druid).encode(xml: :text)
+          File.join(Settings.sdr.abbyy_output_path, bare_druid).encode(xml: :text)
         end
 
         def alto_output
           "<ExportFormat OutputFileFormat='ALTO' OutputFlowType='SharedFolder' FormatVersion='3_1' CoordinatesParticularity='Words' WriteWordConfidence='true'>
             <OutputLocation>#{output_file_path}</OutputLocation>
             <FileExistsAction>Overwrite</FileExistsAction>
-            <NamingRule>#{druid}.&lt;Ext&gt;</NamingRule>
+            <NamingRule>#{bare_druid}.&lt;Ext&gt;</NamingRule>
           </ExportFormat>"
         end
 
@@ -46,7 +50,7 @@ module Dor
           "<ExportFormat OutputFileFormat='Text' OutputFlowType='SharedFolder' EncodingType='UTF8'>
             <OutputLocation>#{output_file_path}</OutputLocation>
             <FileExistsAction>Overwrite</FileExistsAction>
-            <NamingRule>#{druid}.&lt;Ext&gt;</NamingRule>
+            <NamingRule>#{bare_druid}.&lt;Ext&gt;</NamingRule>
           </ExportFormat>"
         end
 
@@ -57,12 +61,17 @@ module Dor
                         PdfUACompatible='true'>
             <OutputLocation>#{output_file_path}</OutputLocation>
             <FileExistsAction>Overwrite</FileExistsAction>
-            <NamingRule>#{druid}.&lt;Ext&gt;</NamingRule>
+            <NamingRule>#{bare_druid}.&lt;Ext&gt;</NamingRule>
           </ExportFormat>"
         end
 
         def input_filepaths_field
-          filepaths.map { |filename| "<InputFile Name=#{filename.encode(xml: :attr)}/>" }.join("\n")
+          # windows filepath since Abbyy service runs on a Windows machine
+          filepaths.map do |filename|
+            filename = filename.gsub('/', '\\')
+            path = "#{bare_druid}\\#{filename}"
+            "<InputFile Name=#{path.encode(xml: :attr)}/>"
+          end.join("\n")
         end
 
         def xml
