@@ -18,7 +18,7 @@ describe Robots::DorRepo::Ocr::EndOcr do
   end
 
   it 'closes the object' do
-    expect(test_perform(robot, druid)).to be true
+    test_perform(robot, druid)
     expect(version_client).to have_received(:close)
   end
 end

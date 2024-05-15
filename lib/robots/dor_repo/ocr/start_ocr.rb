@@ -12,8 +12,7 @@ module Robots
         def perform_work
           raise 'Object is already open' if object_client.version.status.open?
 
-          object_client.version.open
-          true
+          object_client.version.open(description: 'Start OCR workflow')
         end
       end
     end
