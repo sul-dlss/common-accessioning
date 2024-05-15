@@ -11,7 +11,6 @@ module Robots
 
         def perform_work
           object_client.version.close
-          true
         end
       end
     end

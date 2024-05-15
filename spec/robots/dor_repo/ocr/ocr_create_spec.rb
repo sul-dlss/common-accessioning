@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 describe Robots::DorRepo::Ocr::OcrCreate do
+  subject(:perform) { test_perform(robot, druid) }
+
   let(:druid) { 'druid:bb222cc3333' }
   let(:robot) { described_class.new }
 
   it 'runs the OCR create robot' do
-    expect(test_perform(robot, druid)).to be_a(LyberCore::ReturnState)
+    expect(perform.status).to eq 'noop'
   end
 end

@@ -7,6 +7,6 @@ describe Robots::DorRepo::Ocr::SplitOcrXml do
   let(:robot) { described_class.new }
 
   it 'runs the split OCR XML robot' do
-    expect(test_perform(robot, druid)).to be true
+    expect(test_perform(robot, druid)).to be_nil
   end
 end

@@ -12,7 +12,6 @@ module Robots
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
           # split single document OCR XML into page level OCR XML
-          true
         end
       end
     end

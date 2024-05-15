@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Robots::DorRepo::Ocr::StartOcr do
+  subject(:perform) { test_perform(robot, druid) }
+
   let(:druid) { 'druid:bb222cc3333' }
   let(:robot) { described_class.new }
 
@@ -24,7 +26,7 @@ describe Robots::DorRepo::Ocr::StartOcr do
     let(:version_open) { false }
 
     it 'opens the object' do
-      expect(test_perform(robot, druid)).to be true
+      perform
       expect(version_client).to have_received(:open)
     end
   end
@@ -33,7 +35,7 @@ describe Robots::DorRepo::Ocr::StartOcr do
     let(:version_open) { true }
 
     it 'raises an error' do
-      expect { test_perform(robot, druid) }.to raise_error('Object is already open')
+      expect { perform }.to raise_error('Object is already open')
     end
   end
 end

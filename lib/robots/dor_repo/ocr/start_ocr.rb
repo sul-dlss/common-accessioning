@@ -13,7 +13,6 @@ module Robots
           raise 'Object is already open' if object_client.version.status.open?
 
           object_client.version.open
-          true
         end
       end
     end
