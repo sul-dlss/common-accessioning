@@ -2,7 +2,7 @@
 
 module Dor
   module TextExtraction
-    class Abbyy
+    module Abbyy
       # Build Abbyy tickets for processing
       class Ticket
         attr_reader :filepaths, :druid
@@ -74,32 +74,6 @@ module Dor
             </ExportParams>
             #{input_filepaths_field}
           </XmlTicket>"
-        end
-      end
-
-      # Parses .xml.result.xml file that gets created when Abbyy sees a XMLTICKET
-      class Results
-        attr_reader :result_path
-
-        def initialize(result_path:)
-          @result_path = result_path
-        end
-
-        def success?
-          xml_contents = Nokogiri::XML(File.read(result_path))
-          xml_contents.at('@IsFailed').text == 'false'
-        end
-
-        def failure_messages
-          xml_contents = Nokogiri::XML(File.read(result_path))
-          errors = xml_contents.xpath("//Message[@Type='Error']//Text")
-          errors&.map(&:text)
-        end
-
-        def output_docs
-          xml_contents = Nokogiri::XML(File.read(result_path))
-          output_docs = xml_contents.xpath('//OutputDocuments')
-          output_docs.map { |doc| File.join(doc.xpath('@OutputLocation').text, doc.xpath('FileName').text) }
         end
       end
     end
