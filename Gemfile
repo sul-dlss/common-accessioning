@@ -37,12 +37,13 @@ end
 group :development do
   gem 'capistrano', '~> 3.0'
   gem 'capistrano-bundler', '~> 1.1'
+  gem 'debug'
   gem 'dlss-capistrano', require: false
+  gem "ruby-debug-completion"
 end
 
 group :development, :test do
-  gem 'byebug'
-  gem 'pry-byebug', platform: %i[ruby_20 ruby_21]
   gem 'rubocop'
   gem 'rubocop-rspec'
 end
+
