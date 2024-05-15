@@ -19,6 +19,7 @@ sdr:
   abbyy_ticket_path: /tmp
   abbyy_output_path: /tmp
   abbyy_result_path: /tmp
+  abbyy_exception_path: /tmp
 
 tech_md_service:
   url: 'https://dor-techmd-test.stanford.test'

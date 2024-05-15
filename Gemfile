@@ -21,6 +21,7 @@ gem 'rake'
 gem 'sidekiq', '~> 7.0'
 gem 'slop'
 gem 'zeitwerk', '~> 2.1'
+gem "listen", "~> 3.9" # used for watching ABBYY OCR output directories
 
 source 'https://gems.contribsys.com/' do
   gem 'sidekiq-pro'
