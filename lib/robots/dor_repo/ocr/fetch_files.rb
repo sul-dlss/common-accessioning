@@ -6,7 +6,7 @@ module Robots
       # Fetch files in need of OCR from Preservation
       class FetchFiles < LyberCore::Robot
         def initialize
-          super('ocrWF', 'ocr-fetch-files')
+          super('ocrWF', 'fetch-files')
         end
 
         def perform_work
