@@ -22,17 +22,15 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
 
     before { allow(Honeybadger).to receive(:notify) }
 
-    it 'does not notify Honeybadger' do
-      perform
-      expect(Honeybadger).not_to have_received(:notify)
+    it 'does not raise' do
+      expect { perform }.not_to raise_error
     end
 
     context 'when object is still open' do
       let(:version_open) { true }
 
-      it 'notifies Honeybadger' do
-        perform
-        expect(Honeybadger).to have_received(:notify).once.with('[WARNING] Accessioning has been started with an object that is still open')
+      it 'raises an error' do
+        expect { perform }.to raise_error 'Accessioning has been started with an object that is still open'
       end
     end
   end

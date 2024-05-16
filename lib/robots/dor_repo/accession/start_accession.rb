@@ -10,7 +10,7 @@ module Robots
         end
 
         def perform_work
-          Honeybadger.notify('[WARNING] Accessioning has been started with an object that is still open') if object_client.version.status.open?
+          raise 'Accessioning has been started with an object that is still open' if object_client.version.status.open?
         end
       end
     end
