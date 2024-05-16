@@ -14,7 +14,7 @@ module Dor
         delegate :start, :pause, :stop, to: :listener
 
         # rubocop:disable Metrics/AbcSize
-        def initialize(workflow_updater: nil, listener_options: {})
+        def initialize(logger: nil, workflow_updater: nil, listener_options: {})
           @result_xml_path = Settings.sdr.abbyy.local_result_path
           @exceptions_path = Settings.sdr.abbyy.local_exception_path
 
@@ -23,6 +23,7 @@ module Dor
           raise ArgumentError, "ABBYY exceptions path '#{exceptions_path}' is not a directory" unless File.directory?(exceptions_path)
 
           # Set up the workflow updater and listener
+          @logger = logger || Logger.new($stdout)
           @workflow_updater = workflow_updater || Dor::TextExtraction::WorkflowUpdater.new
           @listener_options = default_listener_options.merge(listener_options)
         end
@@ -50,11 +51,13 @@ module Dor
 
         # Notify SDR that the OCR workflow step completed successfully
         def process_success(results)
+          @logger.info "Found successful OCR results for druid:#{results.druid} at #{results.result_path}"
           @workflow_updater.mark_ocr_completed(results.druid)
         end
 
         # Notify SDR that the OCR workflow step failed
         def process_failure(results)
+          @logger.info "Found failed OCR results for druid:#{results.druid} at #{results.result_path}"
           @workflow_updater.mark_ocr_errored(results.druid, error_message: results.failure_messages.join("\n"))
         end
       end

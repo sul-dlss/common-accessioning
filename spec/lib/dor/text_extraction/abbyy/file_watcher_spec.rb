@@ -6,9 +6,10 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
   include_context 'with abbyy dir'
 
   let(:druid) { 'ab123cd4567' }
+  let(:logger) { instance_double(Logger) }
   let(:workflow_updater) { instance_double(Dor::TextExtraction::WorkflowUpdater) }
   let(:listener_options) { {} }
-  let(:file_watcher) { described_class.new(workflow_updater:, listener_options:) }
+  let(:file_watcher) { described_class.new(logger:, workflow_updater:, listener_options:) }
   let(:errors_xml) do
     <<~XML
       <Message Type="Error"><Text>Error one</Text></Message>
@@ -21,6 +22,7 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
       local_result_path: abbyy_result_xml_path,
       local_exception_path: abbyy_exceptions_path
     )
+    allow(logger).to receive(:info)
     allow(workflow_updater).to receive(:mark_ocr_completed)
     allow(workflow_updater).to receive(:mark_ocr_errored)
   end
