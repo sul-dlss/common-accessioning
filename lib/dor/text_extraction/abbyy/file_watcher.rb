@@ -13,9 +13,10 @@ module Dor
         # exit after starting in order for the listener's thread to keep running
         delegate :start, :pause, :stop, to: :listener
 
+        # rubocop:disable Metrics/AbcSize
         def initialize(workflow_updater: nil, listener_options: {})
-          @result_xml_path = Settings.sdr.abbyy_result_path
-          @exceptions_path = Settings.sdr.abbyy_exception_path
+          @result_xml_path = Settings.sdr.abbyy.local_result_path
+          @exceptions_path = Settings.sdr.abbyy.local_exception_path
 
           # Ensure the ABBYY directories exist
           raise ArgumentError, "ABBYY result XML path '#{result_xml_path}' is not a directory" unless File.directory?(result_xml_path)
@@ -25,6 +26,7 @@ module Dor
           @workflow_updater = workflow_updater || Dor::TextExtraction::WorkflowUpdater.new
           @listener_options = default_listener_options.merge(listener_options)
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
 

@@ -17,9 +17,9 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
   end
 
   before do
-    allow(Settings.sdr).to receive_messages(
-      abbyy_result_path: abbyy_result_xml_path,
-      abbyy_exception_path: abbyy_exceptions_path
+    allow(Settings.sdr.abbyy).to receive_messages(
+      local_result_path: abbyy_result_xml_path,
+      local_exception_path: abbyy_exceptions_path
     )
     allow(workflow_updater).to receive(:mark_ocr_completed)
     allow(workflow_updater).to receive(:mark_ocr_errored)

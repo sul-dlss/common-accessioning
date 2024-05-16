@@ -146,10 +146,10 @@ describe Robots::DorRepo::Ocr::FetchFiles do
       it 'writes the two files' do
         expect(objects_client).to have_received(:content).twice
 
-        file1 = File.join(Settings.sdr.abbyy_ticket_path, 'bb222cc3333', 'image111.tif')
+        file1 = File.join(Settings.sdr.abbyy.local_ticket_path, 'bb222cc3333', 'image111.tif')
         expect(File.read(file1)).to eq('Content for: image111.tif')
 
-        file2 = File.join(Settings.sdr.abbyy_ticket_path, 'bb222cc3333', 'image112.tif')
+        file2 = File.join(Settings.sdr.abbyy.local_ticket_path, 'bb222cc3333', 'image112.tif')
         expect(File.read(file2)).to eq('Content for: image112.tif')
       end
     end
