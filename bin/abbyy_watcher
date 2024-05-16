@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Continually monitor ABBYY directories and report job status to SDR
+
+require_relative '../config/boot'
+
+# Set log level with LOG_LEVEL; share the logger across the stack
+logger = Logger.new(STDOUT, progname: 'abbyy_watcher', level: ENV['LOG_LEVEL'] || 'INFO')
+updater = Dor::TextExtraction::WorkflowUpdater.new(logger:)
+Listen.logger = logger
+
+# Set up the watcher and enable polling since we're accessing the Samba share
+# If the ABBYY directories aren't set up correctly, bail out
+begin
+  watcher = Dor::TextExtraction::Abbyy::FileWatcher.new(logger:, workflow_updater: updater, listener_options: { force_polling: true })
+rescue ArgumentError => e
+  logger.fatal e.message
+  exit Errno::ENOENT::Errno
+end
+
+# Run forever; clean up & exit when signalled (e.g. with CTRL-C)
+begin
+  logger.info 'Starting...'
+  logger.info "Watching #{watcher.result_xml_path} and #{watcher.exceptions_path} for ABBYY result XML files"
+  watcher.start
+  sleep
+rescue SignalException
+  logger.info 'Exiting...'
+  watcher.stop
+  exit
+end
