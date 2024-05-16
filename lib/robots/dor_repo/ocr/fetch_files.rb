@@ -46,7 +46,7 @@ module Robots
         end
 
         def preservation_client
-          @preservation_client ||= Preservation::Client.configure(url: Settings.preservation_catalog_url, token: Settings.preservation_catalog.token)
+          @preservation_client ||= Preservation::Client.configure(url: Settings.preservation_catalog.url, token: Settings.preservation_catalog.token)
         end
       end
     end
