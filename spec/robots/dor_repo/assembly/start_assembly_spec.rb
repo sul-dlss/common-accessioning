@@ -22,17 +22,15 @@ RSpec.describe Robots::DorRepo::Assembly::StartAssembly do
 
     before { allow(Honeybadger).to receive(:notify) }
 
-    it 'does not notify Honeybadger' do
-      perform
-      expect(Honeybadger).not_to have_received(:notify)
+    it 'does not raise' do
+      expect { perform }.not_to raise_error
     end
 
     context 'when object is not open' do
       let(:version_open) { false }
 
       it 'notifies Honeybadger' do
-        perform
-        expect(Honeybadger).to have_received(:notify).once.with('[WARNING] Assembly has been started with an object that is not open')
+        expect { perform }.to raise_error 'Assembly has been started with an object that is not open'
       end
     end
   end
