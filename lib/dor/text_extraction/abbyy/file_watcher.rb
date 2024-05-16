@@ -4,6 +4,9 @@ module Dor
   module TextExtraction
     module Abbyy
       # Watch jobs ABBYY is processing via the filesystem and report back to SDR
+      # NOTE: in production, this class is run as a background process on the worker servers
+      # See bin/abbyy_watcher for the script that starts this class
+      # See lib/capistrano/tasks/abbyy_watcher_systemd.cap for the systemd service definition
       class FileWatcher
         attr_reader :result_xml_path, :exceptions_path
 
