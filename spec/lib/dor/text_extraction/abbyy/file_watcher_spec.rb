@@ -6,7 +6,7 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
   include_context 'with abbyy dir'
 
   let(:bare_druid) { 'ab123cd4567' }
-  let(:druid) { "druid:#{bare_druid}"}
+  let(:druid) { "druid:#{bare_druid}" }
   let(:logger) { instance_double(Logger) }
   let(:workflow_updater) { instance_double(Dor::TextExtraction::WorkflowUpdater) }
   let(:listener_options) { {} }
