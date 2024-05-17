@@ -20,8 +20,6 @@ RSpec.describe Robots::DorRepo::Assembly::StartAssembly do
   describe '#perform' do
     subject(:perform) { test_perform(robot, druid) }
 
-    before { allow(Honeybadger).to receive(:notify) }
-
     it 'does not raise' do
       expect { perform }.not_to raise_error
     end
