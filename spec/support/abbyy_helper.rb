@@ -7,18 +7,21 @@ shared_context 'with abbyy dir' do
       # Set up ABBYY directories for results and exceptions
       result_xml_path = File.join(dir, 'RESULTXML')
       exceptions_path = File.join(dir, 'EXCEPTIONS')
+      xml_ticket_path = File.join(dir, 'INPUT')
       Dir.mkdir(result_xml_path)
       Dir.mkdir(exceptions_path)
+      Dir.mkdir(xml_ticket_path)
 
       # Make the directories available to the test
       @abbyy_root_path = dir
       @abbyy_result_xml_path = result_xml_path
       @abbyy_exceptions_path = exceptions_path
+      @abbyy_xml_ticket_path = xml_ticket_path
       example.run
     end
   end
 
-  attr_reader :abbyy_root_path, :abbyy_result_xml_path, :abbyy_exceptions_path
+  attr_reader :abbyy_root_path, :abbyy_result_xml_path, :abbyy_exceptions_path, :abbyy_xml_ticket_path
 end
 
 # Create a stub ABBYY result file with optional error status, contents, etc.
