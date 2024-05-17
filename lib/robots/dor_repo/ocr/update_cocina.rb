@@ -6,7 +6,7 @@ module Robots
       # Update the cocina structural metadata with the OCR files
       class UpdateCocina < LyberCore::Robot
         def initialize
-          super('ocrWF', 'xml-ticket-create')
+          super('ocrWF', 'update-cocina')
         end
 
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
