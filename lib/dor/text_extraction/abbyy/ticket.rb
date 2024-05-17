@@ -17,7 +17,7 @@ module Dor
         end
 
         def file_path
-          File.join(Settings.sdr.abbyy_ticket_path, "#{bare_druid}.xml")
+          File.join(Settings.sdr.abbyy.local_ticket_path, "#{bare_druid}.xml")
         end
 
         private
@@ -35,7 +35,7 @@ module Dor
         end
 
         def output_file_path
-          File.join(Settings.sdr.abbyy_output_path, bare_druid).encode(xml: :text)
+          File.join(Settings.sdr.abbyy.remote_output_path, bare_druid).encode(xml: :text)
         end
 
         def alto_output
@@ -79,7 +79,7 @@ module Dor
           <XmlTicket>
             <ExportParams XMLResultPublishingMethod='XMLResultToFolder'>
               #{pdf_files? ? pdfa_output : image_output}
-              <XMLResultLocation>#{Settings.sdr.abbyy_result_path.encode(xml: :text)}</XMLResultLocation>
+              <XMLResultLocation>#{Settings.sdr.abbyy.remote_result_path.encode(xml: :text)}</XMLResultLocation>
             </ExportParams>
             #{input_filepaths_field}
           </XmlTicket>"

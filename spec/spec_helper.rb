@@ -31,6 +31,9 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = '.rspec_status'
 end
 
+# Require all support files
+Dir["#{__dir__}/support/**/*.rb"].each { |f| require f }
+
 # Use rsync to create a copy of the test_input directory that we can modify.
 def clone_test_input(destination)
   source = 'spec/test_input'

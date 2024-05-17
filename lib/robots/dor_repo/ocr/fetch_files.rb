@@ -34,7 +34,7 @@ module Robots
         def abbyy_path(filename)
           # NOTE: if files of type "file" were allowed here we would have to
           # deal with file hierarchy (subdirectories)
-          Pathname.new(File.join(Settings.sdr.abbyy_ticket_path, bare_druid, filename))
+          Pathname.new(File.join(Settings.sdr.abbyy.local_ticket_path, bare_druid, filename))
         end
 
         def ocrable_filenames
