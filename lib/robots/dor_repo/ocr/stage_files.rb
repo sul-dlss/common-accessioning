@@ -6,7 +6,7 @@ module Robots
       # Copy OCR files from ABBYY output folder to the workspace
       class StageFiles < LyberCore::Robot
         def initialize
-          super('ocrWF', 'xml-ticket-create')
+          super('ocrWF', 'stage-files')
         end
 
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
