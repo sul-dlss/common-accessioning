@@ -5,7 +5,8 @@ require 'spec_helper'
 describe Dor::TextExtraction::Abbyy::Ticket do
   let(:druid) { 'druid:bb222cc3333' }
   let(:bare_druid) { druid.split(':').last }
-  let(:abbyy) { described_class.new(filepaths:, druid:) }
+  let(:abbyy) { described_class.new(filepaths:, druid:, ocr_languages:) }
+  let(:ocr_languages) { nil }
   let(:ticket_xml) { abbyy.send(:xml) }
   let(:fixture_path) { File.join(File.absolute_path('spec/fixtures/ocr'), "#{bare_druid}_abbyy_ticket.xml") }
 
@@ -38,7 +39,8 @@ describe Dor::TextExtraction::Abbyy::Ticket do
 
   context 'when the files are not images' do
     let(:filepaths) { %w[filename3.PDF filename4.pdf] }
-    let(:druid) { 'druid:new_druid' }
+    let(:druid) { 'druid:bc123df4567' }
+    let(:ocr_languages) { %w[English Spanish German] }
 
     it 'creates xml for files for pdfs' do
       expect(ticket_xml).to be_equivalent_to File.read(fixture_path)

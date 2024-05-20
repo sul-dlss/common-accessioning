@@ -5,11 +5,12 @@ module Dor
     module Abbyy
       # Build Abbyy tickets for processing
       class Ticket
-        attr_reader :filepaths, :druid
+        attr_reader :filepaths, :druid, :ocr_languages
 
-        def initialize(filepaths:, druid:)
+        def initialize(filepaths:, druid:, ocr_languages:)
           @filepaths = filepaths
           @druid = druid
+          @ocr_languages = ocr_languages || []
         end
 
         def write_xml
@@ -36,6 +37,16 @@ module Dor
 
         def output_file_path
           File.join(Settings.sdr.abbyy.remote_output_path, bare_druid).encode(xml: :text)
+        end
+
+        def language_xml
+          return '' if ocr_languages.empty?
+
+          language_tags = ocr_languages.map { |lang| "<Language>#{lang}</Language>" }.join("\n")
+          "<RecognitionParams RecognitionQuality='Balanced' RecognitionMode='FullPage' UsePullXTextAndRecognizeRest='false' LanguageDetectMode='Always'>
+          <TextType>Normal</TextType>
+          #{language_tags}
+          </RecognitionParams>"
         end
 
         def alto_output
@@ -77,6 +88,7 @@ module Dor
         def xml
           "<?xml version='1.0'?>
           <XmlTicket>
+            #{language_xml}
             <ExportParams XMLResultPublishingMethod='XMLResultToFolder'>
               #{pdf_files? ? pdfa_output : image_output}
               <XMLResultLocation>#{Settings.sdr.abbyy.remote_result_path.encode(xml: :text)}</XMLResultLocation>

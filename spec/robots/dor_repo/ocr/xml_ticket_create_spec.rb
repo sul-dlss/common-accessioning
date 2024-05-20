@@ -16,9 +16,10 @@ describe Robots::DorRepo::Ocr::XmlTicketCreate do
   end
   let(:cocina_model) { build(:dro, id: druid).new(structural: {}, type: object_type, access: { view: 'world' }) }
   let(:object_type) { 'https://cocina.sul.stanford.edu/models/image' }
-  let(:workflow_context) { { 'runOCR' => true } }
+  let(:workflow_context) { { runOCR: true } }
   let(:workflow) { instance_double(LyberCore::Workflow, context: workflow_context) }
   let(:fixture_path) { File.join(File.absolute_path('spec/fixtures/ocr'), "#{bare_druid}_abbyy_ticket.xml") }
+  let(:filenames) { ['filename1.jp2', 'filename2.jp2', 'filename3.jp2'] }
 
   before do
     allow(Settings.sdr.abbyy).to receive_messages(
@@ -27,7 +28,7 @@ describe Robots::DorRepo::Ocr::XmlTicketCreate do
       local_ticket_path: abbyy_xml_ticket_path
     )
     allow(Dor::TextExtraction::Ocr).to receive(:new).and_return(ocr)
-    allow(ocr).to receive(:filenames_to_ocr).and_return(['filename1.jp2', 'filename2.jp2', 'filename3.jp2'])
+    allow(ocr).to receive(:filenames_to_ocr).and_return(filenames)
     allow(Dor::Services::Client).to receive(:object).and_return(dsa_object_client)
     allow(LyberCore::Workflow).to receive(:new).and_return(workflow)
   end
@@ -37,5 +38,20 @@ describe Robots::DorRepo::Ocr::XmlTicketCreate do
     xml_file = File.join(abbyy_xml_ticket_path, "#{bare_druid}.xml")
     expect(File.exist?(xml_file)).to be true
     expect(File.read(xml_file)).to be_equivalent_to File.read(fixture_path)
+  end
+
+  context 'when robot has user inputed languages' do
+    let(:bare_druid) { 'bc123df4567' }
+    let(:druid) { "druid:#{bare_druid}" }
+    let(:workflow_context) { { runOCR: true, ocrLanguages: %w[English Spanish German] } }
+    let(:filenames) { ['filename3.PDF', 'filename4.pdf'] }
+    let(:object_type) { 'https://cocina.sul.stanford.edu/models/document' }
+
+    it 'renders ticket with correct languages' do
+      perform
+      xml_file = File.join(abbyy_xml_ticket_path, "#{bare_druid}.xml")
+      expect(File.exist?(xml_file)).to be true
+      expect(File.read(xml_file)).to be_equivalent_to File.read(fixture_path)
+    end
   end
 end
