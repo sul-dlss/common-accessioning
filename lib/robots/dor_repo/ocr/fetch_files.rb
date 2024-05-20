@@ -19,11 +19,7 @@ module Robots
           ocrable_filenames.each do |filename|
             path = abbyy_path(filename)
             path.parent.mkpath unless path.parent.directory?
-            path.open('wb') do |file_writer|
-              preservation_client.objects.content(druid:,
-                                                  filepath: filename,
-                                                  on_data: proc { |data, _count| file_writer.write(data) })
-            end
+            raise "Unable to find #{druid}" unless write_file_with_retries(druid:, filename:, path:, max_tries: 3)
           end
         end
 
@@ -43,6 +39,41 @@ module Robots
 
         def ocr
           @ocr = Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context: workflow.context)
+        end
+
+        # Fetch an item's file from Preservation and write it to disk. Since
+        # we've observed inconsistency in QA and Stage with the NFS volumes
+        # where files are written we recheck.
+        # rubocop:disable Metrics/MethodLength
+        def write_file_with_retries(druid:, filename:, path:, max_tries:)
+          tries = 0
+          written = false
+          begin
+            written = fetch_file(druid:, filename:, path:)
+          rescue Faraday::ResourceNotFound
+            tries += 1
+            logger.warn("received NotFoundError from Preservation try ##{tries}")
+
+            sleep(2**tries)
+
+            retry unless tries > max_tries
+          end
+
+          written
+        end
+        # rubocop:enable Metrics/MethodLength
+
+        def fetch_file(druid:, filename:, path:)
+          path.open('wb') do |file_writer|
+            logger.info("fetching #{filename} for #{druid} and saving to #{path}")
+            preservation_client.objects.content(
+              druid:,
+              filepath: filename,
+              on_data: proc { |data, _count| file_writer.write(data) }
+            )
+          end
+
+          true
         end
 
         def preservation_client
