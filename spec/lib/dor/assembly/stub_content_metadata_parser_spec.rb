@@ -51,6 +51,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     externalIdentifier: 'https://cocina.sul.stanford.edu/file/1',
                     label: 'page1.tif',
                     filename: 'page1.tif', version: 1, hasMessageDigests: [],
+                    sdrGeneratedText: false, correctedForAccessibility: false,
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                     administrative: { publish: false, sdrPreserve: true, shelve: false }
                   }, {
@@ -58,6 +59,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     externalIdentifier: 'https://cocina.sul.stanford.edu/file/2',
                     label: 'page1.txt',
                     filename: 'page1.txt', version: 1, hasMessageDigests: [],
+                    sdrGeneratedText: false, correctedForAccessibility: false,
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                     administrative: { publish: false, sdrPreserve: false, shelve: false }
                   }
@@ -74,6 +76,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     externalIdentifier: 'https://cocina.sul.stanford.edu/file/3',
                     label: 'page2.tif',
                     filename: 'page2.tif', version: 1, hasMessageDigests: [],
+                    sdrGeneratedText: false, correctedForAccessibility: false,
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                     administrative: { publish: false, sdrPreserve: true, shelve: false }
                   }, {
@@ -82,6 +85,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     label: 'some_filename.txt',
                     filename: 'some_filename.txt', version: 1,
                     use: 'transcription', hasMessageDigests: [],
+                    sdrGeneratedText: false, correctedForAccessibility: false,
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                     administrative: { publish: false, sdrPreserve: true, shelve: false }
                   }
@@ -96,6 +100,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     type: 'https://cocina.sul.stanford.edu/models/file',
                     externalIdentifier: 'https://cocina.sul.stanford.edu/file/5',
                     label: 'whole_book.pdf', filename: 'whole_book.pdf', version: 1, hasMessageDigests: [],
+                    sdrGeneratedText: false, correctedForAccessibility: false,
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                     administrative: { publish: false, sdrPreserve: false, shelve: false }
                   }
@@ -134,6 +139,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     externalIdentifier: 'https://cocina.sul.stanford.edu/file/1',
                     label: 'page1.tif',
                     filename: 'page1.tif', version: 1, hasMessageDigests: [],
+                    sdrGeneratedText: false, correctedForAccessibility: false,
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                     administrative: { publish: false, sdrPreserve: true, shelve: false }
                   }, {
@@ -141,6 +147,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     externalIdentifier: 'https://cocina.sul.stanford.edu/file/2',
                     label: 'page1.txt',
                     filename: 'page1.txt', version: 1, hasMessageDigests: [],
+                    sdrGeneratedText: false, correctedForAccessibility: false,
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                     administrative: { publish: false, sdrPreserve: false, shelve: false }
                   }
@@ -157,6 +164,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     externalIdentifier: 'https://cocina.sul.stanford.edu/file/3',
                     label: 'page2.tif',
                     filename: 'page2.tif', version: 1, hasMessageDigests: [],
+                    sdrGeneratedText: false, correctedForAccessibility: false,
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                     administrative: { publish: false, sdrPreserve: true, shelve: false }
                   }, {
@@ -165,6 +173,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     label: 'some_filename.txt',
                     filename: 'some_filename.txt', version: 1,
                     use: 'transcription', hasMessageDigests: [],
+                    sdrGeneratedText: false, correctedForAccessibility: false,
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                     administrative: { publish: false, sdrPreserve: true, shelve: false }
                   }
@@ -179,6 +188,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                     type: 'https://cocina.sul.stanford.edu/models/file',
                     externalIdentifier: 'https://cocina.sul.stanford.edu/file/5',
                     label: 'whole_book.pdf', filename: 'whole_book.pdf', version: 1, hasMessageDigests: [],
+                    sdrGeneratedText: false, correctedForAccessibility: false,
                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                     administrative: { publish: false, sdrPreserve: false, shelve: false }
                   }
