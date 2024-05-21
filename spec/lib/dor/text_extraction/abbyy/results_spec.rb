@@ -27,7 +27,7 @@ describe Dor::TextExtraction::Abbyy::Results do
   end
 
   context 'when results do not render' do
-    let(:druid) { 'new_druid' }
+    let(:druid) { 'bc123df4567' }
 
     it { is_expected.not_to be_success }
 
@@ -38,7 +38,7 @@ describe Dor::TextExtraction::Abbyy::Results do
     it 'does not have output documents' do
       output_docs = results.output_docs
       expect(output_docs.length).to be 1
-      expect(output_docs).to eq ['/tmp/EXCEPTIONS/new_druid.xml']
+      expect(output_docs).to eq ['/tmp/EXCEPTIONS/bc123df4567.xml']
     end
   end
 end

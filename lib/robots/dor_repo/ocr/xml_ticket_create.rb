@@ -11,8 +11,9 @@ module Robots
 
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          filepaths = Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context: workflow.context).filenames_to_ocr
-          Dor::TextExtraction::Abbyy::Ticket.new(filepaths:, druid:).write_xml
+          workflow_context = workflow.context
+          filepaths = Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context:).filenames_to_ocr
+          Dor::TextExtraction::Abbyy::Ticket.new(filepaths:, druid:, ocr_languages: workflow_context[:ocrLanguages]).write_xml
         end
       end
     end
