@@ -44,5 +44,14 @@ namespace :abbyy_watcher_systemd do
       end
     end
   end
+
+  desc 'Check that the abbyy_watcher systemd service is running'
+  task :status do
+    on fetch(:abbyy_watcher_server) do
+      within release_path do
+        execute 'systemctl --user status abbyy_watcher'
+      end
+    end
+  end
 end
 # rubocop:enable Metrics/BlockLength
