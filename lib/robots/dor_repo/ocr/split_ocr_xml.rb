@@ -11,7 +11,9 @@ module Robots
 
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          # split single document OCR XML into page level OCR XML
+          base_output_path = Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context: workflow_service).abbyy_output_path
+          alto_path = File.join(base_output_path, "#{bare_druid}.xml")
+          Dor::TextExtraction::Abbyy::SplitAlto.new(alto_path:).write_files
         end
       end
     end

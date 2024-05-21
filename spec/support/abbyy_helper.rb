@@ -8,20 +8,23 @@ shared_context 'with abbyy dir' do
       result_xml_path = File.join(dir, 'RESULTXML')
       exceptions_path = File.join(dir, 'EXCEPTIONS')
       xml_ticket_path = File.join(dir, 'INPUT')
+      abbyy_output_path = File.join(dir, 'OUTPUT')
       Dir.mkdir(result_xml_path)
       Dir.mkdir(exceptions_path)
       Dir.mkdir(xml_ticket_path)
+      Dir.mkdir(abbyy_output_path)
 
       # Make the directories available to the test
       @abbyy_root_path = dir
       @abbyy_result_xml_path = result_xml_path
       @abbyy_exceptions_path = exceptions_path
       @abbyy_xml_ticket_path = xml_ticket_path
+      @abbyy_output_path = abbyy_output_path
       example.run
     end
   end
 
-  attr_reader :abbyy_root_path, :abbyy_result_xml_path, :abbyy_exceptions_path, :abbyy_xml_ticket_path
+  attr_reader :abbyy_root_path, :abbyy_result_xml_path, :abbyy_exceptions_path, :abbyy_xml_ticket_path, :abbyy_output_path
 end
 
 # Create a stub ABBYY result file with optional error status, contents, etc.
@@ -29,6 +32,12 @@ def create_abbyy_result(base_path, druid:, run_index: 0, success: true, contents
   index_tag = run_index.positive? ? '.%04d'.format(run_index) : ''
   filename = File.join(base_path, "#{druid}#{index_tag}.xml.result.xml")
   change_fs(:added, filename, "<XmlResult IsFailed=\"#{!success}\">#{contents}</XmlResult>")
+end
+
+def copy_abbyy_alto(output_path:, contents:, druid:)
+  Dir.mkdir(output_path)
+  filename = File.join(output_path, "#{druid}.xml")
+  change_fs(:added, filename, contents)
 end
 
 ### Below are adapted from Listen's spec/support/acceptance_helpers.rb ###

@@ -30,7 +30,16 @@ module Dor
 
         def output_docs
           output_docs = xml_contents.xpath('//OutputDocuments')
-          output_docs.map { |doc| File.join(doc.xpath('@OutputLocation').text, doc.xpath('FileName').text) }
+          {}.tap do |structural|
+            output_docs.each do |doc|
+              doc_type = doc.xpath('@ExportFormat').text.downcase
+              structural[doc_type] = File.join(doc.xpath('@OutputLocation').text, doc.xpath('FileName').text)
+            end
+          end
+        end
+
+        def alto_doc
+          output_docs['alto']
         end
 
         private
