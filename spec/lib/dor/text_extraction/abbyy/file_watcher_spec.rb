@@ -40,7 +40,7 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
       file_watcher.start
       create_abbyy_result(abbyy_exceptions_path, druid: bare_druid, success: false, contents: errors_xml)
       file_watcher.stop
-      expect(workflow_updater).to have_received(:mark_ocr_errored).with(druid, error_message: "Error one\nError two")
+      expect(workflow_updater).to have_received(:mark_ocr_errored).with(druid, error_msg: "Error one\nError two")
     end
   end
 
@@ -60,7 +60,7 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
       create_abbyy_result(abbyy_exceptions_path, druid: bare_druid, success: false, contents: errors_xml)
       sleep(1) # Allow enough time to poll the filesystem
       file_watcher.stop
-      expect(workflow_updater).to have_received(:mark_ocr_errored).with(druid, error_message: "Error one\nError two")
+      expect(workflow_updater).to have_received(:mark_ocr_errored).with(druid, error_msg: "Error one\nError two")
     end
   end
 end

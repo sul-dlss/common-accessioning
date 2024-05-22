@@ -61,7 +61,7 @@ module Dor
         # Notify SDR that the OCR workflow step failed
         def process_failure(results)
           @logger.info "Found failed OCR results for druid:#{results.druid} at #{results.result_path}"
-          @workflow_updater.mark_ocr_errored("druid:#{results.druid}", error_message: results.failure_messages.join("\n"))
+          @workflow_updater.mark_ocr_errored("druid:#{results.druid}", error_msg: results.failure_messages.join("\n"))
         end
       end
     end
