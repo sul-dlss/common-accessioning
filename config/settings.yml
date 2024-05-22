@@ -47,3 +47,7 @@ purl_url: 'https://purl-example.stanford.edu'
 preservation_catalog:
   url: 'https://preservation-catalog-stage-01.stanford.edu'
   token: 'mint-token-with-target-preservation-catalog-rake-generate-token'
+
+purl_fetcher:
+  url: 'https://purl-fetcher-stage-01.stanford.edu'
+  token: 'mint-token-with-target-purl-fetcher-rake-generate-token'

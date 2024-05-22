@@ -7,14 +7,43 @@ RSpec.describe Robots::DorRepo::Release::ReleasePublish do
 
   let(:druid) { 'bb222cc3333' }
   let(:robot) { described_class.new }
-  let(:object_client) { instance_double(Dor::Services::Client::Object, publish: true) }
+  let(:object_client) { instance_double(Dor::Services::Client::Object, release_tags: release_tags_client) }
+  let(:release_tags_client) { instance_double(Dor::Services::Client::ReleaseTags, list: release_tags) }
+  let(:release_tags) do
+    [
+      Cocina::Models::ReleaseTag.new(
+        to: 'Searchworks',
+        what: 'self',
+        date: '2014-08-30T01:06:28.000+00:00',
+        who: 'petucket',
+        release: true
+      ),
+      Cocina::Models::ReleaseTag.new(
+        to: 'Purl sitemap',
+        what: 'self',
+        date: '2014-08-30T01:06:28.000+00:00',
+        who: 'petucket',
+        release: true
+      ),
+      Cocina::Models::ReleaseTag.new(
+        to: 'Earthworks',
+        what: 'self',
+        date: '2014-08-30T01:06:28.000+00:00',
+        who: 'petucket',
+        release: false
+      )
+    ]
+  end
 
   before do
     allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
+    allow(PurlFetcher::Client).to receive(:configure)
+    allow(PurlFetcher::Client::ReleaseTags).to receive(:release)
   end
 
-  it 'calls the publish metadata service with the dor item' do
-    expect(perform.status).to eq 'noop'
-    expect(object_client).to have_received(:publish)
+  it 'calls purl fetcher with the release tags' do
+    perform
+    expect(PurlFetcher::Client).to have_received(:configure).with(url: Settings.purl_fetcher.url, token: Settings.purl_fetcher.token)
+    expect(PurlFetcher::Client::ReleaseTags).to have_received(:release).with(druid:, index: ['Searchworks', 'Purl sitemap'], delete: ['Earthworks'])
   end
 end

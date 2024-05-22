@@ -4,7 +4,7 @@
 module Robots
   module DorRepo
     module Release
-      # Sends updated metadata to PURL. Specifically stuff in identityMetadata
+      # Sends release tags to Purl Fetcher
       class ReleasePublish < LyberCore::Robot
         def initialize
           super('releaseWF', 'release-publish')
@@ -16,10 +16,20 @@ module Robots
         # @param [String] druid -- the Druid identifier for the object to process
         def perform_work
           logger.debug "release-publish working on #{druid}"
-          # This is an async result and it will have a callback.
-          object_client.publish(workflow: 'releaseWF')
 
-          LyberCore::ReturnState.new(status: :noop, note: 'Initiated publish API call.')
+          index = targets_for(release: true)
+          delete = targets_for(release: false)
+
+          PurlFetcher::Client.configure(url: Settings.purl_fetcher.url, token: Settings.purl_fetcher.token)
+          PurlFetcher::Client::ReleaseTags.release(druid:, index:, delete:)
+        end
+
+        def release_tags
+          @release_tags ||= object_client.release_tags.list
+        end
+
+        def targets_for(release:)
+          release_tags.select { |tag| tag.release == release }.map(&:to)
         end
       end
     end
