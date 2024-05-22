@@ -5,7 +5,7 @@ module Dor
     module Abbyy
       # Parses .xml.result.xml file that gets created when Abbyy sees a XMLTICKET
       class Results
-        attr_reader :result_path, :druid, :run_index
+        attr_reader :result_path, :druid, :run_index, :software_name, :software_version
 
         # Naming convention for result XML files:
         # ab123cd4567.xml.result.xml
@@ -23,12 +23,22 @@ module Dor
           Results.new(result_path: result_files.last, logger:) unless result_files.empty?
         end
 
+
+        # Class variables so we can use the last value if we don't have ALTO to check
+        @last_software_name = nil
+        @last_software_version = nil
+        class << self
+          attr_accessor :last_software_name, :last_software_version
+        end
+
         def initialize(result_path:, logger: nil)
           @result_path = result_path
           druid, run_index = RESULT_FILE_PATTERN.match(File.basename(result_path)).captures
           @druid = druid
           @run_index = (run_index || 0).to_i
           @logger = logger || Logger.new($stdout)
+          @software_name = processing_metadata[:software_name] || self.class.last_software_name
+          @software_version = processing_metadata[:software_version] || self.class.last_software_version
         end
 
         def success?
@@ -36,8 +46,7 @@ module Dor
         end
 
         def failure_messages
-          errors = xml_contents.xpath("//Message[@Type='Error']//Text")
-          errors&.map(&:text)
+          xml_contents.xpath("//Message[@Type='Error']//Text")&.map(&:text)
         end
 
         def output_docs
@@ -97,6 +106,25 @@ module Dor
         def local_output_dir(windows_dir)
           windows_dir.sub(Settings.sdr.abbyy.remote_output_path, Settings.sdr.abbyy.local_output_path)
         end
+
+        # Software and version used to do OCR processing, found in ALTO output
+        # rubocop:disable Metrics/AbcSize
+        def processing_metadata
+          alto_xml = Nokogiri::XML(File.read(alto_doc)).remove_namespaces!
+          metadata = alto_xml.xpath('//OCRProcessing//ocrProcessingStep').first
+          software_name = metadata.xpath('//softwareName').text
+          software_version = metadata.xpath('//softwareVersion').text
+          return {} if software_name.empty? || software_version.empty?
+
+          # Set class variables so other instances can use them
+          self.class.last_software_name = software_name
+          self.class.last_software_version = software_version
+
+          { software_name:, software_version: }
+        rescue StandardError
+          {}
+        end
+        # rubocop:enable Metrics/AbcSize
       end
     end
   end

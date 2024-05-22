@@ -26,6 +26,14 @@ sdr:
     local_output_path: /tmp
     local_exception_path: /tmp
 
+# Used by Dor::Event::Client
+rabbitmq:
+  enabled: false
+  vhost: /
+  hostname: localhost
+  username: guest
+  password: guest
+
 tech_md_service:
   url: 'https://dor-techmd-test.stanford.test'
   token: 'rake-generate-token-me'

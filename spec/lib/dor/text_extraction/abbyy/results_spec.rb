@@ -29,6 +29,13 @@ describe Dor::TextExtraction::Abbyy::Results do
   end
 
   context 'when results successfully render' do
+    let(:alto_xml) { File.read(File.join(File.absolute_path('spec/fixtures/ocr'), "#{druid}_abbyy_alto.xml")) }
+
+    before do
+      allow(File).to receive(:read).and_call_original
+      allow(File).to receive(:read).with("/tmp/OUTPUT/#{druid}/#{druid}.xml").and_return(alto_xml)
+    end
+
     it { is_expected.to be_success }
 
     it 'does not have failure messages' do
@@ -109,10 +116,25 @@ describe Dor::TextExtraction::Abbyy::Results do
       expect(File.exist?(File.join(workspace_dir, 'file1.xml'))).to be true
       expect(File.exist?(File.join(workspace_dir, 'file2.xml'))).to be true
     end
+
+    it 'records the software name and version' do
+      expect(results.software_name).to eq 'ABBYY FineReader Server'
+      expect(results.software_version).to eq '14.0'
+    end
+
+    it 'stores the last seen software name and version' do
+      expect(described_class.last_software_name).to eq 'ABBYY FineReader Server'
+      expect(described_class.last_software_version).to eq '14.0'
+    end
   end
 
   context 'when results do not render' do
     let(:druid) { 'bc123df4567' }
+
+    before do
+      described_class.last_software_name = 'ABBYY FineReader Server'
+      described_class.last_software_version = '14.0'
+    end
 
     it { is_expected.not_to be_success }
 
@@ -128,6 +150,11 @@ describe Dor::TextExtraction::Abbyy::Results do
 
     it 'does not have an alto doc' do
       expect(results.alto_doc).to be_nil
+    end
+
+    it 'remembers the last seen software name and version' do
+      expect(results.software_name).to eq 'ABBYY FineReader Server'
+      expect(results.software_version).to eq '14.0'
     end
   end
 end
