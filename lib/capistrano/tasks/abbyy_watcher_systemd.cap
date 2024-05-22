@@ -1,0 +1,57 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/BlockLength
+namespace :abbyy_watcher_systemd do
+  desc 'Update abbyy_watcher systemd service file'
+  task :setup do
+    on fetch(:abbyy_watcher_server) do
+      within release_path do
+        # Ensure the directory for systemd service definitions exists
+        execute 'mkdir -p /opt/app/lyberadmin/.config/systemd/user'
+
+        # Generate the systemd service file for abbyy_watcher
+        str = <<~SYSTEMD
+          [Unit]
+          Description=Watch for changes on ABBYY fileshare and report to SDR
+
+          [Service]
+          Type=simple
+          Environment="BUNDLE_GEMFILE=#{release_path}/Gemfile"
+          Environment="ROBOT_ENVIRONMENT=production"
+          ExecStart=/usr/local/rvm/bin/rvm default do bundle exec #{release_path}/bin/abbyy_watcher
+          Restart=always
+          RestartSec=3
+          StandardOutput=syslog
+          StandardError=syslog
+          SyslogIdentifier=abbyy_watcher
+
+          [Install]
+          WantedBy=multi-user.target
+        SYSTEMD
+
+        # Upload the systemd service file
+        upload! StringIO.new(str), '/opt/app/lyberadmin/.config/systemd/user/abbyy_watcher.service'
+      end
+    end
+  end
+
+  desc 'Reinstall and restart the abbyy_watcher systemd service to pick up changes'
+  task :reload do
+    on fetch(:abbyy_watcher_server) do
+      within release_path do
+        execute 'systemctl --user daemon-reload'
+        execute 'systemctl --user restart abbyy_watcher'
+      end
+    end
+  end
+
+  desc 'Check that the abbyy_watcher systemd service is running'
+  task :status do
+    on fetch(:abbyy_watcher_server) do
+      within release_path do
+        execute 'systemctl --user status abbyy_watcher'
+      end
+    end
+  end
+end
+# rubocop:enable Metrics/BlockLength

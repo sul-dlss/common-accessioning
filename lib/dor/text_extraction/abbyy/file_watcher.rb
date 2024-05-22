@@ -4,6 +4,9 @@ module Dor
   module TextExtraction
     module Abbyy
       # Watch jobs ABBYY is processing via the filesystem and report back to SDR
+      # NOTE: in production, this class is run as a background process on the worker servers
+      # See bin/abbyy_watcher for the script that starts this class
+      # See lib/capistrano/tasks/abbyy_watcher_systemd.cap for the systemd service definition
       class FileWatcher
         attr_reader :result_xml_path, :exceptions_path
 
@@ -14,7 +17,7 @@ module Dor
         delegate :start, :pause, :stop, to: :listener
 
         # rubocop:disable Metrics/AbcSize
-        def initialize(workflow_updater: nil, listener_options: {})
+        def initialize(logger: nil, workflow_updater: nil, listener_options: {})
           @result_xml_path = Settings.sdr.abbyy.local_result_path
           @exceptions_path = Settings.sdr.abbyy.local_exception_path
 
@@ -23,6 +26,7 @@ module Dor
           raise ArgumentError, "ABBYY exceptions path '#{exceptions_path}' is not a directory" unless File.directory?(exceptions_path)
 
           # Set up the workflow updater and listener
+          @logger = logger || Logger.new($stdout)
           @workflow_updater = workflow_updater || Dor::TextExtraction::WorkflowUpdater.new
           @listener_options = default_listener_options.merge(listener_options)
         end
@@ -50,12 +54,14 @@ module Dor
 
         # Notify SDR that the OCR workflow step completed successfully
         def process_success(results)
-          @workflow_updater.mark_ocr_completed(results.druid)
+          @logger.info "Found successful OCR results for druid:#{results.druid} at #{results.result_path}"
+          @workflow_updater.mark_ocr_completed("druid:#{results.druid}")
         end
 
         # Notify SDR that the OCR workflow step failed
         def process_failure(results)
-          @workflow_updater.mark_ocr_errored(results.druid, error_message: results.failure_messages.join("\n"))
+          @logger.info "Found failed OCR results for druid:#{results.druid} at #{results.result_path}"
+          @workflow_updater.mark_ocr_errored("druid:#{results.druid}", error_message: results.failure_messages.join("\n"))
         end
       end
     end
