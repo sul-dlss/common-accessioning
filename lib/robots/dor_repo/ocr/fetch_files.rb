@@ -27,14 +27,14 @@ module Robots
           end
         end
 
-        def bare_druid
-          druid.split(':').last
-        end
-
         def abbyy_path(filename)
           # NOTE: if files of type "file" were allowed here we would have to
           # deal with file hierarchy (subdirectories)
-          Pathname.new(File.join(Settings.sdr.abbyy.local_ticket_path, bare_druid, filename))
+          Pathname.new(File.join(abbyy_input_path, filename))
+        end
+
+        def abbyy_input_path
+          @abbyy_input_path ||= Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context: workflow.context).abbyy_input_path
         end
 
         def ocrable_filenames

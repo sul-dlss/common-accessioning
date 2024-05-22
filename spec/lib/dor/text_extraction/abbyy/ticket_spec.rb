@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Dor::TextExtraction::Abbyy::Ticket do
   let(:druid) { 'druid:bb222cc3333' }
-  let(:bare_druid) { druid.split(':').last }
+  let(:bare_druid) { druid.delete_prefix('druid:') }
   let(:abbyy) { described_class.new(filepaths:, druid:, ocr_languages:) }
   let(:ocr_languages) { nil }
   let(:ticket_xml) { abbyy.send(:xml) }

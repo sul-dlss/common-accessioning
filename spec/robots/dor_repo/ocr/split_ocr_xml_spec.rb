@@ -10,7 +10,7 @@ describe Robots::DorRepo::Ocr::SplitOcrXml do
   let(:druid) { 'druid:bb222cc3333' }
   let(:bare_druid) { 'bb222cc3333' }
   let(:robot) { described_class.new }
-  let(:alto_path) { File.join(File.absolute_path('spec/fixtures/ocr'), "#{druid.split(':')[-1]}_abbyy_alto.xml") }
+  let(:alto_path) { File.join(File.absolute_path('spec/fixtures/ocr'), "#{bare_druid}_abbyy_alto.xml") }
   let(:contents) { File.read(alto_path) }
   let(:output_path) { File.join(abbyy_output_path, bare_druid) }
 
