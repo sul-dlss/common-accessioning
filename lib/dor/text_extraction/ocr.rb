@@ -4,11 +4,20 @@ module Dor
   module TextExtraction
     # Determine if OCR is required and possible for a given object
     class Ocr
-      attr_reader :cocina_object, :workflow_context
+      attr_reader :cocina_object, :workflow_context, :bare_druid
 
       def initialize(params = {})
         @cocina_object = params[:cocina_object]
         @workflow_context = params[:workflow_context]
+        @bare_druid = cocina_object.externalIdentifier.delete_prefix('druid:')
+      end
+
+      def abbyy_output_path
+        File.join(Settings.sdr.abbyy.local_output_path, bare_druid)
+      end
+
+      def abbyy_input_path
+        File.join(Settings.sdr.abbyy.local_ticket_path, bare_druid)
       end
 
       def possible?

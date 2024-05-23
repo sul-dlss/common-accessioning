@@ -15,6 +15,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
   let(:jpg_file) { build_file(true, 'file2.jpg') }
   let(:tif_file) { build_file(true, 'file2.tif') }
   let(:text_file) { build_file(true, 'file3.txt') }
+  let(:druid) { 'druid:bc123df4567' }
 
   def build_file(sdr_peserve, filename)
     extension = File.extname(filename)
@@ -25,7 +26,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
 
   describe '#possible?' do
     context 'when the object is not a DRO' do
-      let(:cocina_object) { instance_double(Cocina::Models::DRO, dro?: false, type: object_type) }
+      let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: false, type: object_type) }
 
       it 'returns false' do
         expect(ocr.possible?).to be false
@@ -33,7 +34,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
     end
 
     context 'when the object is a DRO' do
-      let(:cocina_object) { instance_double(Cocina::Models::DRO, dro?: true, type: object_type, structural:) }
+      let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: true, type: object_type, structural:) }
 
       context 'when the object type is one that does not require OCR' do
         let(:object_type) { 'https://cocina.sul.stanford.edu/models/media' }
@@ -63,7 +64,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
   end
 
   describe '#required?' do
-    let(:cocina_object) { instance_double(Cocina::Models::DRO, dro?: true, type: object_type) }
+    let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: true, type: object_type) }
 
     context 'when workflow context includes runOCR as true' do
       let(:workflow_context) { { 'runOCR' => true } }
@@ -91,7 +92,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
   end
 
   describe '#filenames_to_ocr' do
-    let(:cocina_object) { instance_double(Cocina::Models::DRO, structural:, type: object_type) }
+    let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, structural:, type: object_type) }
 
     it 'returns a list of filenames that should be OCRed' do
       expect(ocr.send(:filenames_to_ocr)).to eq(['file2.tif'])
@@ -107,7 +108,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
   end
 
   describe '#ocr_files' do
-    let(:cocina_object) { instance_double(Cocina::Models::DRO, structural:, type: 'https://cocina.sul.stanford.edu/models/document') }
+    let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, structural:, type: 'https://cocina.sul.stanford.edu/models/document') }
 
     it 'returns a list of all filenames' do
       expect(ocr.send(:ocr_files)).to eq([pdf_file])

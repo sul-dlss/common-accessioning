@@ -23,6 +23,7 @@ sdr:
     # Unix-style paths for the common-accessioning VM, used to manage files
     local_ticket_path: /tmp
     local_result_path: /tmp
+    local_output_path: /tmp
     local_exception_path: /tmp
 
 tech_md_service:

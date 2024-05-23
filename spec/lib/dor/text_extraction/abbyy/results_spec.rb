@@ -22,7 +22,11 @@ describe Dor::TextExtraction::Abbyy::Results do
     it 'does have output documents' do
       output_docs = results.output_docs
       expect(output_docs.length).to be 3
-      expect(output_docs).to eq ['/tmp/OUTPUT/bb222cc3333/bb222cc3333.pdf', '/tmp/OUTPUT/bb222cc3333/bb222cc3333.xml', '/tmp/OUTPUT/bb222cc3333/bb222cc3333.txt']
+      expect(output_docs).to eq({ 'pdfa' => '/tmp/OUTPUT/bb222cc3333/bb222cc3333.pdf', 'alto' => '/tmp/OUTPUT/bb222cc3333/bb222cc3333.xml', 'text' => '/tmp/OUTPUT/bb222cc3333/bb222cc3333.txt' })
+    end
+
+    it 'does have an alto doc' do
+      expect(results.alto_doc).to eq '/tmp/OUTPUT/bb222cc3333/bb222cc3333.xml'
     end
   end
 
@@ -38,7 +42,11 @@ describe Dor::TextExtraction::Abbyy::Results do
     it 'does not have output documents' do
       output_docs = results.output_docs
       expect(output_docs.length).to be 1
-      expect(output_docs).to eq ['/tmp/EXCEPTIONS/bc123df4567.xml']
+      expect(output_docs).to eq({ 'noconversion' => '/tmp/EXCEPTIONS/bc123df4567.xml' })
+    end
+
+    it 'does not have an alto doc' do
+      expect(results.alto_doc).to be_nil
     end
   end
 end

@@ -5,11 +5,11 @@ module Dor
     module Abbyy
       # Build Abbyy tickets for processing
       class Ticket
-        attr_reader :filepaths, :druid, :ocr_languages
+        attr_reader :filepaths, :ocr_languages, :bare_druid
 
         def initialize(filepaths:, druid:, ocr_languages:)
           @filepaths = filepaths
-          @druid = druid
+          @bare_druid = druid.delete_prefix('druid:')
           @ocr_languages = ocr_languages || []
         end
 
@@ -22,10 +22,6 @@ module Dor
         end
 
         private
-
-        def bare_druid
-          @bare_druid ||= druid.split(':').last
-        end
 
         def image_output
           [pdfa_output, alto_output, text_output].join("\n")
