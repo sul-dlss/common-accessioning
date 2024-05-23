@@ -119,15 +119,16 @@ describe Robots::DorRepo::Ocr::FetchFiles do
     allow(Dor::Services::Client).to receive(:object).and_return(dsa_object_client)
     allow(Preservation::Client).to receive(:configure).and_return(pres_client)
     allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
-    allow(objects_client).to receive(:content) do |*args|
-      filepath = args.first.fetch(:filepath)
-      args.first.fetch(:on_data).call("Content for: #{filepath}")
-    end
   end
 
   describe '#perform' do
     context 'with two image files' do
       before do
+        allow(objects_client).to receive(:content) do |*args|
+          filepath = args.first.fetch(:filepath)
+          args.first.fetch(:on_data).call("Content for: #{filepath}")
+        end
+
         test_perform(robot, druid)
       end
 
@@ -145,6 +146,31 @@ describe Robots::DorRepo::Ocr::FetchFiles do
 
       it 'writes the two files' do
         expect(objects_client).to have_received(:content).twice
+
+        file1 = File.join(Settings.sdr.abbyy.local_ticket_path, 'bb222cc3333', 'image111.tif')
+        expect(File.read(file1)).to eq('Content for: image111.tif')
+
+        file2 = File.join(Settings.sdr.abbyy.local_ticket_path, 'bb222cc3333', 'image112.tif')
+        expect(File.read(file2)).to eq('Content for: image112.tif')
+      end
+    end
+
+    context 'when preservation is still processing' do
+      before do
+        count = 0
+        allow(objects_client).to receive(:content) do |*args|
+          count += 1
+          raise Faraday::ResourceNotFound, 'druid not available yet' unless count > 2
+
+          filepath = args.first.fetch(:filepath)
+          args.first.fetch(:on_data).call("Content for: #{filepath}")
+        end
+
+        test_perform(robot, druid)
+      end
+
+      it 'writes the two files' do
+        expect(objects_client).to have_received(:content).exactly(4).times
 
         file1 = File.join(Settings.sdr.abbyy.local_ticket_path, 'bb222cc3333', 'image111.tif')
         expect(File.read(file1)).to eq('Content for: image111.tif')
