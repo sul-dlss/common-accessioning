@@ -18,6 +18,8 @@ describe Dor::TextExtraction::Abbyy::Ticket do
   let(:ticket_xml) { abbyy.send(:xml) }
   let(:fixture_path) { File.join(File.absolute_path('spec/fixtures/ocr'), "#{bare_druid}_abbyy_ticket.xml") }
 
+  before { FileUtils.mkdir_p(File.dirname(abbyy.file_path)) }
+
   context 'when the files are images' do
     let(:filepaths) { %w[filename1.jp2 filename2.jp2 filename3.jp2] }
 

@@ -26,11 +26,7 @@ module Robots
         def abbyy_path(filename)
           # NOTE: if files of type "file" were allowed here we would have to
           # deal with file hierarchy (subdirectories)
-          Pathname.new(File.join(abbyy_input_path, filename))
-        end
-
-        def abbyy_input_path
-          @abbyy_input_path ||= Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context: workflow.context).abbyy_input_path
+          Pathname.new(File.join(ocr.abbyy_input_path, filename))
         end
 
         def ocrable_filenames
@@ -38,7 +34,7 @@ module Robots
         end
 
         def ocr
-          @ocr = Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context: workflow.context)
+          @ocr ||= Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context: workflow.context)
         end
 
         # Fetch an item's file from Preservation and write it to disk. Since

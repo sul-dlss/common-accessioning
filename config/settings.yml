@@ -21,9 +21,9 @@ sdr:
     remote_output_path: /tmp
     remote_result_path: /tmp
     # Unix-style paths for the common-accessioning VM, used to manage files
-    local_ticket_path: /tmp
+    local_ticket_path: /tmp/input
     local_result_path: /tmp
-    local_output_path: /tmp
+    local_output_path: /tmp/output
     local_exception_path: /tmp
 
 tech_md_service:

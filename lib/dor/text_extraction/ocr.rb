@@ -8,7 +8,7 @@ module Dor
 
       def initialize(params = {})
         @cocina_object = params[:cocina_object]
-        @workflow_context = params[:workflow_context]
+        @workflow_context = params[:workflow_context] || {}
         @bare_druid = cocina_object.externalIdentifier.delete_prefix('druid:')
       end
 
@@ -18,6 +18,20 @@ module Dor
 
       def abbyy_input_path
         File.join(Settings.sdr.abbyy.local_ticket_path, bare_druid)
+      end
+
+      def cleanup
+        if Dir.exist?(abbyy_input_path)
+          raise "#{abbyy_input_path} is not empty" unless Dir.empty?(abbyy_input_path)
+
+          FileUtils.rm_rf(abbyy_input_path)
+        end
+
+        return true unless Dir.exist?(abbyy_output_path)
+
+        raise "#{abbyy_output_path} is not empty" unless Dir.empty?(abbyy_output_path)
+
+        FileUtils.rm_rf(abbyy_output_path)
       end
 
       def possible?
