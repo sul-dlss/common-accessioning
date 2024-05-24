@@ -5,21 +5,21 @@
                 PdfAComplianceMode='PDFAM_PdfA_2u' PdfVersion='Version17'
                 Scenario='MaxQuality' UseImprovedCompression='true' MRCMode='Normal'
                 PdfUACompatible='true'>
-      <OutputLocation>/tmp/bb222cc3333</OutputLocation>
+      <OutputLocation>E:\AbbyyShare\sdr-ocr-qa\OUTPUT/bb222cc3333</OutputLocation>
       <FileExistsAction>Overwrite</FileExistsAction>
       <NamingRule>bb222cc3333.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
     <ExportFormat OutputFileFormat='ALTO' OutputFlowType='SharedFolder' FormatVersion='3_1' CoordinatesParticularity='Words' WriteWordConfidence='true'>
-      <OutputLocation>/tmp/bb222cc3333</OutputLocation>
+      <OutputLocation>E:\AbbyyShare\sdr-ocr-qa\OUTPUT/bb222cc3333</OutputLocation>
       <FileExistsAction>Overwrite</FileExistsAction>
       <NamingRule>bb222cc3333.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
     <ExportFormat OutputFileFormat='Text' OutputFlowType='SharedFolder' EncodingType='UTF8'>
-      <OutputLocation>/tmp/bb222cc3333</OutputLocation>
+        <OutputLocation>E:\AbbyyShare\sdr-ocr-qa\OUTPUT/bb222cc3333</OutputLocation>
       <FileExistsAction>Overwrite</FileExistsAction>
       <NamingRule>bb222cc3333.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
-    <XMLResultLocation>/tmp</XMLResultLocation>
+    <XMLResultLocation>E:\AbbyyShare\sdr-ocr-qa\RESULTXML</XMLResultLocation>
   </ExportParams>
   <InputFile Name='bb222cc3333\filename1.jp2'/>
   <InputFile Name='bb222cc3333\filename2.jp2'/>

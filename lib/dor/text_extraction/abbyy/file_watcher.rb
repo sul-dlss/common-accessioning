@@ -45,7 +45,7 @@ module Dor
         # Controlled by the `start`, `pause`, and `stop` methods
         def listener
           @listener ||= Listen.to(result_xml_path, exceptions_path, **@listener_options) do |_modified, added, _removed|
-            results = added.map { |path| Dor::TextExtraction::Abbyy::Results.new(result_path: path) }
+            results = added.map { |path| Dor::TextExtraction::Abbyy::Results.new(result_path: path, logger: @logger) }
             successes, failures = results.partition(&:success?)
             successes.each(&method(:process_success))
             failures.each(&method(:process_failure))

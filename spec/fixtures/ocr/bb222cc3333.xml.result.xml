@@ -55,7 +55,7 @@
       UseFindAndFilterTypographicRaster="false" UseSmartColorityDetection="false"
       SavePageLabels="false" FitPageContentToFixedSize="true" SaveAsPdfPortfolioExp="false"
       ToPdfAConvertion="Strict" FailIfCantConvert="false">
-      <OutputLocation>/tmp/OUTPUT/bb222cc3333</OutputLocation>
+      <OutputLocation>E:\AbbyyShare\sdr-ocr-qa\OUTPUT/bb222cc3333</OutputLocation>
       <ExportToSourceLibrary>false</ExportToSourceLibrary>
       <AddLibraryPrefixToOutputFolder>false</AddLibraryPrefixToOutputFolder>
       <KeepLibraryStructureInOutputFolder>true</KeepLibraryStructureInOutputFolder>
@@ -72,7 +72,8 @@
       MeasurementUnit="Pixel" WriteOriginalImageCoordinates="false"
       WriteRenderedImageCoordinates="false" ShrinkNestedRectCoordinates="false"
       WriteWordConfidence="true">
-      <OutputLocation>/tmp/OUTPUT/bb222cc3333</OutputLocation>
+      <OutputLocation>E:\AbbyyShare\sdr-ocr-qa\OUTPUT/bb222cc3333</OutputLocation>
+      <ExportToSourceLibrary>false</ExportToSourceLibrary>
       <ExportToSourceLibrary>false</ExportToSourceLibrary>
       <AddLibraryPrefixToOutputFolder>false</AddLibraryPrefixToOutputFolder>
       <KeepLibraryStructureInOutputFolder>true</KeepLibraryStructureInOutputFolder>
@@ -84,14 +85,14 @@
       CodePage="NULL_CODE_PAGE" EncodingType="UTF8" UsePageBreakCharacters="false"
       KeepOriginalHeadersFooters="true" InsertEmptyLineBetweenParagraphs="false"
       KeepLineBreaks="false">
-      <OutputLocation>/tmp/OUTPUT/bb222cc3333</OutputLocation>
+      <OutputLocation>E:\AbbyyShare\sdr-ocr-qa\OUTPUT/bb222cc3333</OutputLocation>
       <ExportToSourceLibrary>false</ExportToSourceLibrary>
       <AddLibraryPrefixToOutputFolder>false</AddLibraryPrefixToOutputFolder>
       <KeepLibraryStructureInOutputFolder>true</KeepLibraryStructureInOutputFolder>
       <FileExistsAction>Overwrite</FileExistsAction>
       <NamingRule>bb222cc3333.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
-    <XMLResultLocation>/tmp/RESULTXML</XMLResultLocation>
+    <XMLResultLocation>E:\AbbyyShare\sdr-ocr-qa\RESULTXML</XMLResultLocation>
     <EmptyPageDetectionSettings maxBarcodesCount="0" maxBlackSquaresCount="1"
       maxTextObjectsCount="0" maxBlacknessPercentage="-1" autodetectKernelRect="true"
       kernelMargins.Bottom="0" kernelMargins.Left="0" kernelMargins.Right="0" kernelMargins.Top="0"
@@ -173,17 +174,17 @@
   <JobDocument Name="bb222cc3333_00_0001.tif, bb222cc3333_00_0002.tif, bb222cc3333_00_0003.tif"
     Id="{A0E2B334-065F-44C7-AA2D-AC5B9EA9355E}" VerificationTime="0" IndexingTime="0">
     <IsFailed>false</IsFailed>
-    <OutputDocuments OutputLocation="/tmp/OUTPUT/bb222cc3333"
+    <OutputDocuments OutputLocation="E:\AbbyyShare\sdr-ocr-qa\OUTPUT/bb222cc3333"
       ExportFormatId="{C4571B33-3F18-4351-AE70-F531FCA40477}" ExportFormat="PDFA"
       OutputFlowType="SharedFolder">
       <FileName>bb222cc3333.pdf</FileName>
     </OutputDocuments>
-    <OutputDocuments OutputLocation="/tmp/OUTPUT/bb222cc3333"
+    <OutputDocuments OutputLocation="E:\AbbyyShare\sdr-ocr-qa\OUTPUT/bb222cc3333"
       ExportFormatId="{61E1FC99-7BCC-48A9-ADD4-026B533807E4}" ExportFormat="ALTO"
       OutputFlowType="SharedFolder">
       <FileName>bb222cc3333.xml</FileName>
     </OutputDocuments>
-    <OutputDocuments OutputLocation="/tmp/OUTPUT/bb222cc3333"
+    <OutputDocuments OutputLocation="E:\AbbyyShare\sdr-ocr-qa\OUTPUT/bb222cc3333"
       ExportFormatId="{1956595A-2DEE-4A79-886B-1D212B0A3B43}" ExportFormat="Text"
       OutputFlowType="SharedFolder">
       <FileName>bb222cc3333.txt</FileName>
