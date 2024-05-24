@@ -15,6 +15,7 @@ gem 'druid-tools'
 gem 'honeybadger'
 gem 'lyber-core', '~> 7.5' # 7.5.0 has the ability to set and return workflow context
 gem 'nokogiri'
+gem 'purl_fetcher-client'
 gem 'preservation-client'
 gem 'pry'
 gem 'rake'
@@ -47,4 +48,3 @@ group :development, :test do
   gem 'rubocop'
   gem 'rubocop-rspec'
 end
-
