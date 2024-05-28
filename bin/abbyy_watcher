@@ -7,16 +7,21 @@ require_relative '../config/boot'
 
 # Set log level with LOG_LEVEL; share the logger across the stack
 logger = Logger.new(STDOUT, progname: 'abbyy_watcher', level: ENV['LOG_LEVEL'] || 'INFO')
-updater = Dor::TextExtraction::WorkflowUpdater.new(logger:)
+workflow_updater = Dor::TextExtraction::WorkflowUpdater.new(logger:)
 Listen.logger = logger
 
 # Set up the watcher and enable polling since we're accessing the Samba share
 # If the ABBYY directories aren't set up correctly, bail out
 begin
-  watcher = Dor::TextExtraction::Abbyy::FileWatcher.new(logger:, workflow_updater: updater, listener_options: { force_polling: true })
+  watcher = Dor::TextExtraction::Abbyy::FileWatcher.new(logger:, workflow_updater:, listener_options: { force_polling: true })
 rescue ArgumentError => e
   logger.fatal e.message
+  Honeybadger.notify(e)
   exit Errno::ENOENT::Errno
+rescue StandardError => e
+  logger.fatal e.message
+  Honeybadger.notify(e)
+  exit Errno::ENOMSG::Errno # cause is unknown/unexpected, hence the generic error
 end
 
 # Run forever; clean up & exit when signalled (e.g. with CTRL-C)
@@ -25,8 +30,14 @@ begin
   logger.info "Watching #{watcher.result_xml_path} and #{watcher.exceptions_path} for ABBYY result XML files"
   watcher.start
   sleep
-rescue SignalException
-  logger.info 'Exiting...'
+rescue SignalException => e
+  errno = SystemCallError.new(e.message, e.signo)
+  logger.info "Received signal #{e.signo} (#{errno.detailed_message}). Exiting..."
+  # This is the standard way of stopping this process, so no Honeybadger alert
   watcher.stop
-  exit
+  exit e.signo
+rescue StandardError => e
+  logger.fatal e.message
+  Honeybadger.notify(e)
+  exit Errno::ENOMSG::Errno # cause is unknown/unexpected, hence the generic error
 end

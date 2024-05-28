@@ -157,6 +157,8 @@ describe Robots::DorRepo::Ocr::FetchFiles do
 
     context 'when preservation is still processing' do
       before do
+        allow(robot).to receive(:sleep) # effectively make the sleep a no-op so that the test doesn't take so long due to retries and backoff
+
         count = 0
         allow(objects_client).to receive(:content) do |*args|
           count += 1
@@ -177,6 +179,32 @@ describe Robots::DorRepo::Ocr::FetchFiles do
 
         file2 = File.join(Settings.sdr.abbyy.local_ticket_path, 'bb222cc3333', 'image112.tif')
         expect(File.read(file2)).to eq('Content for: image112.tif')
+      end
+
+      context 'when retries are exhausted before the files show up on the preservation NFS mount' do
+        before do
+          allow(Honeybadger).to receive(:notify)
+          allow(robot.logger).to receive(:error)
+          allow(robot).to receive(:sleep) # effectively make the sleep a no-op so that the test doesn't take so long due to retries and backoff
+
+          allow(objects_client).to receive(:content) do |*args|
+            raise Faraday::ResourceNotFound, 'druid not available yet' if args.first.fetch(:filepath) == 'image112.tif'
+
+            filepath = args.first.fetch(:filepath)
+            args.first.fetch(:on_data).call("Content for: #{filepath}")
+          end
+        end
+
+        it 'writes the first file but raises when it is unable to fetch the second' do
+          expect { test_perform(robot, druid) }.to raise_error('Unable to fetch image112.tif for druid:bb222cc3333')
+
+          file1 = File.join(Settings.sdr.abbyy.local_ticket_path, 'bb222cc3333', 'image111.tif')
+          expect(File.read(file1)).to eq('Content for: image111.tif')
+          context = { druid:, filename: 'image112.tif', path: File.join(Settings.sdr.abbyy.local_ticket_path, 'bb222cc3333', 'image112.tif'), max_tries: 3 }
+          expect(robot.logger).to have_received(:error).with("Exceeded max_tries attempting to fetch file for OCR: #{context}")
+          expect(Honeybadger).to have_received(:notify).with('Exceeded max_tries attempting to fetch file for OCR', context:)
+          expect(robot).to have_received(:sleep).with(8) # should have hit max backoff time of 2^3 seconds
+        end
       end
     end
   end

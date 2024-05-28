@@ -11,10 +11,11 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
   let(:workflow_updater) { instance_double(Dor::TextExtraction::WorkflowUpdater) }
   let(:listener_options) { {} }
   let(:file_watcher) { described_class.new(logger:, workflow_updater:, listener_options:) }
+  let(:failure_messages) { ['Error one', 'Error two'] }
   let(:errors_xml) do
     <<~XML
-      <Message Type="Error"><Text>Error one</Text></Message>
-      <Message Type="Error"><Text>Error two</Text></Message>
+      <Message Type="Error"><Text>#{failure_messages[0]}</Text></Message>
+      <Message Type="Error"><Text>#{failure_messages[1]}</Text></Message>
     XML
   end
 
@@ -26,6 +27,7 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
     allow(logger).to receive(:info)
     allow(workflow_updater).to receive(:mark_ocr_completed)
     allow(workflow_updater).to receive(:mark_ocr_errored)
+    allow(Honeybadger).to receive(:notify)
   end
 
   context 'with polling disabled' do
@@ -41,6 +43,13 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
       create_abbyy_result(abbyy_exceptions_path, druid: bare_druid, success: false, contents: errors_xml)
       file_watcher.stop
       expect(workflow_updater).to have_received(:mark_ocr_errored).with(druid, error_msg: "Error one\nError two")
+
+      # We use a regex to match the result file path because it's in a containing temp directory for which we don't know the path
+      result_file_path_regexp = Regexp.escape("#{abbyy_exceptions_path}/#{bare_druid}.xml.result.xml")
+      failure_messages_regexp = Regexp.escape(failure_messages.join('; '))
+      expect(logger).to have_received(:info).with(/Found failed OCR results for #{druid} at .*#{result_file_path_regexp}: #{failure_messages_regexp}/)
+      context = { druid:, result_path: a_string_matching(/.*#{result_file_path_regexp}/), failure_messages: }
+      expect(Honeybadger).to have_received(:notify).with('Found failed OCR results', context:)
     end
   end
 
@@ -61,6 +70,13 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
       sleep(1) # Allow enough time to poll the filesystem
       file_watcher.stop
       expect(workflow_updater).to have_received(:mark_ocr_errored).with(druid, error_msg: "Error one\nError two")
+
+      # We use a regex to match the result file path because it's in a containing temp directory for which we don't know the path
+      result_file_path_regexp = Regexp.escape("#{abbyy_exceptions_path}/#{bare_druid}.xml.result.xml")
+      failure_messages_regexp = Regexp.escape(failure_messages.join('; '))
+      expect(logger).to have_received(:info).with(/Found failed OCR results for #{druid} at .*#{result_file_path_regexp}: #{failure_messages_regexp}/)
+      context = { druid:, result_path: a_string_matching(/.*#{result_file_path_regexp}/), failure_messages: }
+      expect(Honeybadger).to have_received(:notify).with('Found failed OCR results', context:)
     end
   end
 end

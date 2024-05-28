@@ -19,7 +19,7 @@ module Robots
           ocrable_filenames.each do |filename|
             path = abbyy_path(filename)
             path.parent.mkpath unless path.parent.directory?
-            raise "Unable to find #{druid}" unless write_file_with_retries(druid:, filename:, path:, max_tries: 3)
+            raise "Unable to fetch #{filename} for #{druid}" unless write_file_with_retries(druid:, filename:, path:, max_tries: 3)
           end
         end
 
@@ -57,6 +57,10 @@ module Robots
             sleep(2**tries)
 
             retry unless tries > max_tries
+
+            context = { druid:, filename:, path: path.to_s, max_tries: }
+            logger.error("Exceeded max_tries attempting to fetch file for OCR: #{context}")
+            Honeybadger.notify('Exceeded max_tries attempting to fetch file for OCR', context:)
           end
 
           written
