@@ -9,22 +9,25 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
   let(:druid) { "druid:#{bare_druid}" }
   let(:logger) { instance_double(Logger) }
   let(:workflow_updater) { instance_double(Dor::TextExtraction::WorkflowUpdater) }
-  let(:event_client) { class_double(Dor::Event::Client) }
+  let(:object_client) { instance_double(Dor::Services::Client::Object) }
+  let(:events_client) { instance_double(Dor::Services::Client::Events) }
   let(:listener_options) { { force_polling: true } }
-  let(:file_watcher) { described_class.new(logger:, workflow_updater:, event_client:, listener_options:) }
+  let(:file_watcher) { described_class.new(logger:, listener_options:) }
 
   before do
     allow(Settings.sdr.abbyy).to receive_messages(
       local_result_path: abbyy_result_xml_path,
       local_exception_path: abbyy_exceptions_path
     )
-    allow(Settings.rabbitmq).to receive(:enabled).and_return(true)
-    allow(logger).to receive(:info)
-    allow(workflow_updater).to receive(:mark_ocr_completed)
-    allow(workflow_updater).to receive(:mark_ocr_errored)
+    allow(Dor::TextExtraction::WorkflowUpdater).to receive(:new).and_return(workflow_updater)
     allow(Honeybadger).to receive(:notify)
-    allow(event_client).to receive(:create)
-    allow(event_client).to receive(:configure)
+    allow(Dor::Services::Client).to receive(:configure)
+    allow(Dor::Services::Client).to receive(:object).and_return(object_client)
+    allow(workflow_updater).to receive(:mark_ocr_errored)
+    allow(workflow_updater).to receive(:mark_ocr_completed)
+    allow(object_client).to receive(:events).and_return(events_client)
+    allow(events_client).to receive(:create)
+    allow(logger).to receive(:info)
   end
 
   context 'when a succesful result is created' do
@@ -55,9 +58,8 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
     end
 
     it 'publishes an event' do
-      expect(event_client).to have_received(:create).with(
+      expect(events_client).to have_received(:create).with(
         {
-          druid:,
           type: 'ocr_success',
           data: a_hash_including({ software_name: 'ABBYY FineReader Server', software_version: '14.0' })
         }
@@ -92,9 +94,8 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
     end
 
     it 'publishes an event' do
-      expect(event_client).to have_received(:create).with(
+      expect(events_client).to have_received(:create).with(
         {
-          druid:,
           type: 'ocr_errored',
           data: a_hash_including({ software_name: 'ABBYY FineReader Server', software_version: '14.0', errors: failure_messages })
         }

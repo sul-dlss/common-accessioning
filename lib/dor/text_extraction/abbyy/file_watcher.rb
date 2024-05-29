@@ -19,11 +19,10 @@ module Dor
         # exit after starting in order for the listener's thread to keep running
         delegate :start, :pause, :stop, to: :listener
 
-        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        # rubocop:disable Metrics/AbcSize
         def initialize(
           logger: Logger.new($stdout),
-          workflow_updater: Dor::TextExtraction::WorkflowUpdater.new,
-          event_client: Dor::Event::Client,
+          workflow_updater: Dor::TextExtraction::WorkflowUpdater,
           listener_options: {}
         )
           # Set up the ABBYY directories
@@ -34,19 +33,11 @@ module Dor
 
           # Set up the services and listener
           @logger = logger
-          @workflow_updater = workflow_updater
-          @event_client = event_client
+          @workflow_updater = workflow_updater.new(logger:)
           @listener_options = default_listener_options.merge(listener_options)
-
-          # Configure the event service
-          @event_client.configure(
-            hostname: ENV.fetch('SDR_EVENTS_MQ_HOSTNAME', Settings.rabbitmq.hostname),
-            vhost: ENV.fetch('SDR_EVENTS_MQ_VHOST', Settings.rabbitmq.vhost),
-            username: ENV.fetch('SDR_EVENTS_MQ_USERNAME', Settings.rabbitmq.username),
-            password: ENV.fetch('SDR_EVENTS_MQ_PASSWORD', Settings.rabbitmq.password)
-          )
+          Dor::Services::Client.configure(logger:, url: Settings.dor_services.url, token: Settings.dor_services.token)
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize
 
         private
 
