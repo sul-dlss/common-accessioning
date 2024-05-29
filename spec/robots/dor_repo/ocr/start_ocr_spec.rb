@@ -17,13 +17,18 @@ describe Robots::DorRepo::Ocr::StartOcr do
   let(:object_client) do
     instance_double(Dor::Services::Client::Object, version: version_client, workspace: workspace_client, find: object)
   end
+  let(:ocr) do
+    instance_double(Dor::TextExtraction::Ocr, possible?: possible)
+  end
 
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
+    allow(Dor::TextExtraction::Ocr).to receive(:new).and_return(ocr)
   end
 
-  context 'when the object is not opened' do
+  context 'when the object is not opened and is possible to OCR' do
     let(:version_open) { false }
+    let(:possible) { true }
 
     it 'opens the object' do
       perform
@@ -31,8 +36,18 @@ describe Robots::DorRepo::Ocr::StartOcr do
     end
   end
 
+  context 'when the object is not opened and is not possible to OCR' do
+    let(:version_open) { false }
+    let(:possible) { false }
+
+    it 'raise an error' do
+      expect { perform }.to raise_error('No files available or invalid object for OCR')
+    end
+  end
+
   context 'when the object is already opened' do
     let(:version_open) { true }
+    let(:possible) { true }
 
     it 'raises an error' do
       expect { perform }.to raise_error('Object is already open')
