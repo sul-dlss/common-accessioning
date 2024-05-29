@@ -34,7 +34,7 @@ module Robots
         end
 
         def ocrable_filenames
-          @ocrable_filenames ||= ocr.required? && ocr.possible? ? ocr.filenames_to_ocr : []
+          @ocrable_filenames ||= ocr.filenames_to_ocr
         end
 
         def ocr
