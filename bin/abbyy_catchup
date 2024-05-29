@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Manually update the OCR workflow status for all items that ABBYY knows about
+
+# This script is intended to be run in production only, in the event of a failure
+# of the ABBYY watcher background service. It will check the ABBYY filesystem
+# for any items that have been processed and update the workflow status for
+# those items accordingly, so that any events that occurred while the service
+# was down will be reflected in the system.
+
+# The script should be run on a single VM only. Which VM is not important, since
+# the ABBYY filesystem is shared across all common-accessioning VMs.
+
+require_relative '../config/boot'
+
+# Set up the watcher and logger
+logger = Logger.new(STDOUT, progname: 'abbyy_catchup', level: ENV['LOG_LEVEL'] || 'INFO')
+watcher = Dor::TextExtraction::Abbyy::FileWatcher.new(logger:)
+
+# Get all results from the result and exception paths
+result_files = Dir.glob("#{watcher.result_xml_path}/**/*.result.xml") + Dir.glob("#{watcher.exceptions_path}/**/*.result.xml")
+results = result_files.map { |f| Dor::TextExtraction::Abbyy::Results.new(result_path: f) }
+successes, failures = results.partition(&:success?)
+
+# Manually process the successes and failures; continue on error
+successes.each do |result|
+  watcher.process_success(result)
+rescue Dor::WorkflowException, Dor::Services::Client::Error => e
+  logger.error e.message
+  next
+end
+failures.each do |result|
+  watcher.process_failure(result)
+rescue Dor::WorkflowException, Dor::Services::Client::Error => e
+  logger.error e.message
+  next
+end
