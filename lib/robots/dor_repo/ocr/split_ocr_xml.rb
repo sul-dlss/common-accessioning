@@ -13,6 +13,8 @@ module Robots
         def perform_work
           base_output_path = Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context: workflow_service).abbyy_output_path
           alto_path = File.join(base_output_path, "#{bare_druid}.xml")
+          return unless File.exist?(alto_path)
+
           Dor::TextExtraction::Abbyy::SplitAlto.new(alto_path:).write_files
         end
       end

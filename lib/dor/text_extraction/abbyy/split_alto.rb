@@ -40,10 +40,13 @@ module Dor
             end
           end
         end
+
+        def page_filenames
+          @page_filenames ||= doc.css('//sourceImageInformation').children.select(&:element?).map(&:text)
+        end
         # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
         def split_to_files
-          page_filenames = doc.css('//fileIdentifier').map(&:text)
           pages = doc.css('//Page')
           {}.tap do |file_hash|
             pages.each_with_index do |page, i|

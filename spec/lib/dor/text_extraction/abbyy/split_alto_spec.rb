@@ -15,4 +15,12 @@ describe Dor::TextExtraction::Abbyy::SplitAlto do
   it 'expects output path to be same as alto_path' do
     expect(results.send(:output_path, 'bb222cc3333_00_0001.xml')).to include 'spec/fixtures/ocr/bb222cc3333_00_0001.xml'
   end
+
+  context 'when alto sourceImageInformation is in different format' do
+    let(:druid) { 'bb999cc1111' }
+
+    it 'splits into a single file' do
+      expect(results.send(:split_to_files).keys).to eq ['example.xml']
+    end
+  end
 end

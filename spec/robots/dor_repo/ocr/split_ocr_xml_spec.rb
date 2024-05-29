@@ -37,4 +37,9 @@ describe Robots::DorRepo::Ocr::SplitOcrXml do
     expect(created_files).to eq ['bb222cc3333_00_0001.xml', 'bb222cc3333_00_0002.xml', 'bb222cc3333_00_0003.xml']
     expect(created_files.all? { |file| File.exist?(File.join(output_path, file)) }).to be true
   end
+
+  it 'there is no file' do
+    created_files = test_perform(robot, druid)
+    expect(created_files).to be_nil
+  end
 end
