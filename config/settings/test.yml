@@ -1,2 +1,9 @@
 workflow:
   url: 'http://workflow.example.com/workflow'
+
+sdr:
+  local_workspace_root: /dor/workspace
+  abbyy:
+    # Windows-style paths for the ABBYY machine, referenced in XML tickets
+    remote_output_path: E:\AbbyyShare\sdr-ocr-qa\OUTPUT
+    remote_result_path: E:\AbbyyShare\sdr-ocr-qa\RESULTXML

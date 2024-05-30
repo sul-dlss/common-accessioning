@@ -9,9 +9,18 @@ module Robots
           super('ocrWF', 'stage-files')
         end
 
-        # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          # Copy OCR files from ABBYY output folder to the workspace
+          workspace_dir = object_client.workspace.create(content: true)
+          move_files(workspace_dir)
+        end
+
+        private
+
+        def move_files(workspace_dir)
+          content_dir = File.join(workspace_dir, 'content')
+
+          abbyy_results = Dor::TextExtraction::Abbyy::Results.find_latest(druid:, logger:)
+          abbyy_results.move_result_files(content_dir)
         end
       end
     end

@@ -3,6 +3,14 @@
 require 'spec_helper'
 
 describe Dor::TextExtraction::Abbyy::Ticket do
+  include_context 'with abbyy dir'
+
+  before do
+    allow(Settings.sdr.abbyy).to receive_messages(
+      local_ticket_path: abbyy_xml_ticket_path
+    )
+  end
+
   let(:druid) { 'druid:bb222cc3333' }
   let(:bare_druid) { druid.delete_prefix('druid:') }
   let(:abbyy) { described_class.new(filepaths:, druid:, ocr_languages:) }
