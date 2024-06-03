@@ -22,7 +22,6 @@ GEM
       public_suffix (>= 2.0.2, < 6.0)
     airbrussh (1.5.2)
       sshkit (>= 1.6.1, != 1.7.0)
-    amq-protocol (2.3.2)
     assembly-image (2.1.2)
       activesupport (> 6.1)
       assembly-objectfile (>= 1.6.4)
@@ -40,9 +39,6 @@ GEM
     bundler-audit (0.9.1)
       bundler (>= 1.2.0, < 3)
       thor (~> 1.0)
-    bunny (2.22.0)
-      amq-protocol (~> 2.3, >= 2.3.1)
-      sorted_set (~> 1, >= 1.0.2)
     capistrano (3.18.1)
       airbrussh (>= 1.0.0)
       i18n
@@ -98,10 +94,6 @@ GEM
       capistrano-shared_configs
       ed25519
     docile (1.4.0)
-    dor-event-client (1.0.0)
-      activesupport (>= 4.2, < 8)
-      bunny (~> 2.17)
-      zeitwerk (~> 2.1)
     dor-services-client (14.11.0)
       activesupport (>= 4.2, < 8)
       cocina-models (~> 0.97.0)
@@ -236,7 +228,6 @@ GEM
     rb-inotify (0.11.1)
       ffi (~> 1.0)
     rb_sys (0.9.97)
-    rbtree (0.4.6)
     rdoc (6.7.0)
       psych (>= 4.0.0)
     redis-client (0.22.2)
@@ -290,7 +281,6 @@ GEM
     ruby-progressbar (1.13.0)
     ruby-vips (2.2.1)
       ffi (~> 1.12)
-    set (1.1.0)
     sidekiq (7.2.4)
       concurrent-ruby (< 2)
       connection_pool (>= 2.3.0)
@@ -303,9 +293,6 @@ GEM
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
     slop (4.10.1)
-    sorted_set (1.0.3)
-      rbtree
-      set (~> 1.0)
     sshkit (1.22.2)
       base64
       mutex_m
@@ -342,7 +329,6 @@ DEPENDENCIES
   config
   debug
   dlss-capistrano
-  dor-event-client (~> 1.0)
   dor-services-client (~> 14.4)
   dor-workflow-client (~> 7.0)
   druid-tools

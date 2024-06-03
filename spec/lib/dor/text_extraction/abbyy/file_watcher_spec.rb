@@ -80,9 +80,6 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
     end
 
     before do
-      # Set the last software name and version so we can test that they are included in the event
-      Dor::TextExtraction::Abbyy::Results.last_software_name = 'ABBYY FineReader Server'
-      Dor::TextExtraction::Abbyy::Results.last_software_version = '14.0'
       file_watcher.start
       create_abbyy_result(abbyy_exceptions_path, druid: bare_druid, success: false, contents: errors_xml)
       sleep(1) # Allow enough time to poll the filesystem
@@ -97,7 +94,7 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
       expect(events_client).to have_received(:create).with(
         {
           type: 'ocr_errored',
-          data: a_hash_including({ software_name: 'ABBYY FineReader Server', software_version: '14.0', errors: failure_messages })
+          data: a_hash_including({ software_name: 'ABBYY FineReader Server', errors: failure_messages })
         }
       )
     end

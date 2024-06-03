@@ -23,22 +23,14 @@ module Dor
           Results.new(result_path: result_files.last, logger:) unless result_files.empty?
         end
 
-
-        # Class variables so we can use the last value if we don't have ALTO to check
-        @last_software_name = nil
-        @last_software_version = nil
-        class << self
-          attr_accessor :last_software_name, :last_software_version
-        end
-
         def initialize(result_path:, logger: nil)
           @result_path = result_path
           druid, run_index = RESULT_FILE_PATTERN.match(File.basename(result_path)).captures
           @druid = druid
           @run_index = (run_index || 0).to_i
           @logger = logger || Logger.new($stdout)
-          @software_name = processing_metadata[:software_name] || self.class.last_software_name
-          @software_version = processing_metadata[:software_version] || self.class.last_software_version
+          @software_name = processing_metadata[:software_name] || 'ABBYY FineReader Server'
+          @software_version = processing_metadata[:software_version]
         end
 
         def success?
@@ -108,23 +100,20 @@ module Dor
         end
 
         # Software and version used to do OCR processing, found in ALTO output
-        # rubocop:disable Metrics/AbcSize
         def processing_metadata
+          return {} unless File.exist? alto_doc # PDFs don't have ALTO, so just bail out
+
           alto_xml = Nokogiri::XML(File.read(alto_doc)).remove_namespaces!
           metadata = alto_xml.xpath('//OCRProcessing//ocrProcessingStep').first
-          software_name = metadata.xpath('//softwareName').text
-          software_version = metadata.xpath('//softwareVersion').text
-          return {} if software_name.empty? || software_version.empty?
 
-          # Set class variables so other instances can use them
-          self.class.last_software_name = software_name
-          self.class.last_software_version = software_version
-
-          { software_name:, software_version: }
-        rescue StandardError
+          {
+            software_name: metadata.xpath('//softwareName').text,
+            software_version: metadata.xpath('//softwareVersion').text
+          }
+        rescue StandardError # If we can't parse the ALTO, log it and move on
+          Honeybadger.notify('Failed to parse processing metadata from ALTO XML', context: { alto_doc: })
           {}
         end
-        # rubocop:enable Metrics/AbcSize
       end
     end
   end
