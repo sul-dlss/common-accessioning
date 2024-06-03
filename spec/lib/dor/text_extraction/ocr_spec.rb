@@ -154,10 +154,10 @@ RSpec.describe Dor::TextExtraction::Ocr do
         FileUtils.touch(File.join(ocr.abbyy_output_path, 'file1.txt'))
       end
 
-      it 'raises an error but still deletes the input path' do
-        expect { ocr.cleanup }.to raise_error("#{ocr.abbyy_output_path} is not empty")
+      it 'removes both folders' do
+        ocr.cleanup
         expect(Dir.exist?(ocr.abbyy_input_path)).to be false
-        expect(Dir.exist?(ocr.abbyy_output_path)).to be true
+        expect(Dir.exist?(ocr.abbyy_output_path)).to be false
       end
     end
 

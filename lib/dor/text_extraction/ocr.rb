@@ -30,8 +30,6 @@ module Dor
 
         return true unless Dir.exist?(abbyy_output_path)
 
-        raise "#{abbyy_output_path} is not empty" unless Dir.empty?(abbyy_output_path)
-
         FileUtils.rm_rf(abbyy_output_path)
 
         FileUtils.rm_f(Abbyy::Ticket.new(filepaths: [], druid: cocina_object.externalIdentifier).file_path) # remove XML ticket file
