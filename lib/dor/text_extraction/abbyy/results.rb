@@ -64,6 +64,9 @@ module Dor
             dest_path = File.join(destination_dir, File.basename(path))
             @logger.info("moving #{path} to #{dest_path}")
             FileUtils.mv(path, dest_path)
+            # ensure that the file can be read by anyone so that preservation_robots can read it
+            # during preservationIngestWF transfer-object which runs as user pres
+            FileUtils.chmod('u=wr,g=wr,o=r', dest_path)
           end
         end
 
@@ -73,6 +76,7 @@ module Dor
         # NOTE: the multiple page Abbyy OCR file is NOT accessioned.
         def paths_to_move
           paths = (output_docs.values + split_ocr_paths).uniq
+          @logger.info("found these candidate paths to move: #{paths}")
           paths.reject { |path| path.end_with?("#{druid}.xml") }
         end
 
