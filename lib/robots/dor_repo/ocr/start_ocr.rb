@@ -28,7 +28,8 @@ module Robots
           note = 'No files available or invalid object for OCR'
           workflow = workflow_service.workflow(pid: druid, workflow_name:)
           # get all of the incomplete steps, except for ourself (start-ocr), we will set that with the usual ReturnState
-          incomplete_steps = workflow.incomplete_processes.map(&:name).reject { |step| step == 'start-ocr' }
+          # and set them to skipped in inverse order (last one gets skipped first to avoid any later steps running)
+          incomplete_steps = workflow.incomplete_processes.map(&:name).reject { |step| step == 'start-ocr' }.reverse
           incomplete_steps.each { |process| workflow_service.update_status(druid:, workflow: workflow_name, process:, status:, note:) }
           LyberCore::ReturnState.new(status: status.to_sym, note:)
         end

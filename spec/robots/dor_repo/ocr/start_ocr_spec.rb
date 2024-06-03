@@ -56,7 +56,7 @@ describe Robots::DorRepo::Ocr::StartOcr do
       allow(workflow_client).to receive(:update_status)
     end
 
-    it 'sets all steps (except self) in the workflow to waiting and returns status of skipped for self' do
+    it 'sets all steps (except self) in the workflow to skipped and returns status of skipped for self' do
       perform
       expect(workflow_client).not_to have_received(:update_status).with(druid:, workflow:, process: 'start-ocr', status:, note:)
       expect(workflow_client).to have_received(:update_status).with(druid:, workflow:, process: 'fetch-files', status:, note:)
