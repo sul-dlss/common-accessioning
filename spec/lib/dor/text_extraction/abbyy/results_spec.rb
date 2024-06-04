@@ -64,7 +64,8 @@ describe Dor::TextExtraction::Abbyy::Results do
       results.move_result_files(workspace_dir)
       expect(File.exist?(File.join(workspace_dir, 'bb222cc3333.txt'))).to be true
       expect(File.exist?(File.join(workspace_dir, 'bb222cc3333.pdf'))).to be true
-      expect(File.exist?(File.join(workspace_dir, 'bb222cc3333.xml'))).to be true
+      # we don't accession the full Abbyy OCR XML file
+      expect(File.exist?(File.join(workspace_dir, 'bb222cc3333.xml'))).to be false
     end
   end
 
@@ -76,17 +77,37 @@ describe Dor::TextExtraction::Abbyy::Results do
       end
       FileUtils.touch(File.join(abbyy_output_path, 'bb222cc3333', 'bb222cc3333_001.xml'))
       FileUtils.touch(File.join(abbyy_output_path, 'bb222cc3333', 'bb222cc3333_002.xml'))
-      FileUtils.touch(File.join(abbyy_output_path, 'bb222cc3333', 'random-file.xml'))
     end
 
     it 'can move files' do
       results.move_result_files(workspace_dir)
       expect(File.exist?(File.join(workspace_dir, 'bb222cc3333.txt'))).to be true
       expect(File.exist?(File.join(workspace_dir, 'bb222cc3333.pdf'))).to be true
-      expect(File.exist?(File.join(workspace_dir, 'bb222cc3333.xml'))).to be true
+      # we don't accession the full Abbyy OCR XML file
+      expect(File.exist?(File.join(workspace_dir, 'bb222cc3333.xml'))).to be false
       expect(File.exist?(File.join(workspace_dir, 'bb222cc3333_001.xml'))).to be true
       expect(File.exist?(File.join(workspace_dir, 'bb222cc3333_002.xml'))).to be true
-      expect(File.exist?(File.join(workspace_dir, 'random-file.xml'))).to be false
+    end
+  end
+
+  context 'when there are file specific XML files' do
+    before do
+      results.output_docs.each_value do |path|
+        FileUtils.mkdir_p(File.dirname(path))
+        FileUtils.touch(path)
+      end
+      FileUtils.touch(File.join(abbyy_output_path, 'bb222cc3333', 'file1.xml'))
+      FileUtils.touch(File.join(abbyy_output_path, 'bb222cc3333', 'file2.xml'))
+    end
+
+    it 'can move files' do
+      results.move_result_files(workspace_dir)
+      expect(File.exist?(File.join(workspace_dir, 'bb222cc3333.txt'))).to be true
+      expect(File.exist?(File.join(workspace_dir, 'bb222cc3333.pdf'))).to be true
+      # we don't accession the full Abbyy OCR XML file
+      expect(File.exist?(File.join(workspace_dir, 'bb222cc3333.xml'))).to be false
+      expect(File.exist?(File.join(workspace_dir, 'file1.xml'))).to be true
+      expect(File.exist?(File.join(workspace_dir, 'file2.xml'))).to be true
     end
   end
 

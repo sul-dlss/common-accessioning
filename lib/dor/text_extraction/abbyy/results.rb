@@ -59,8 +59,7 @@ module Dor
           output_dir = Pathname.new(destination_dir)
           raise "Directory #{output_dir} doesn't exist, please make it first." unless output_dir.directory?
 
-          paths = output_docs.values + split_ocr_paths
-          paths.each do |path|
+          paths_to_move.each do |path|
             dest_path = File.join(destination_dir, File.basename(path))
             @logger.info("moving #{path} to #{dest_path}")
             FileUtils.mv(path, dest_path)
@@ -69,11 +68,18 @@ module Dor
 
         private
 
+        # Return all the output file paths that need to be moved.
+        # NOTE: the multiple page Abbyy OCR file is NOT accessioned.
+        def paths_to_move
+          paths = (output_docs.values + split_ocr_paths).uniq
+          paths.reject { |path| path.end_with?("#{druid}.xml") }
+        end
+
         # Return any Alto XML files in the output directory that have been split out from a larger one.
         def split_ocr_paths
           output_dir = local_output_dir(xml_contents.xpath('//OutputDocuments[1]/@OutputLocation').text)
           Dir.entries(output_dir)
-             .filter { |filename| filename.match('_\d\d\d.xml$') }
+             .filter { |filename| filename.match('.+\.xml$') }
              .map { |filename| File.join(output_dir, filename) }
         end
 
