@@ -43,6 +43,5 @@ set :sidekiq_systemd_use_hooks, true
 # update shared_configs before restarting app
 before 'deploy:publishing', 'shared_configs:update'
 
-# update abbyy watcher systemd service each deploy
-before 'deploy:publishing', 'abbyy_watcher_systemd:setup'
-before 'deploy:publishing', 'abbyy_watcher_systemd:reload'
+# restart abbyy watcher systemd service each deploy
+before 'deploy:publishing', 'abbyy_watcher_systemd:restart'
