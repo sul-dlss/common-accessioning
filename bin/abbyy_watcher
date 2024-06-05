@@ -7,13 +7,12 @@ require_relative '../config/boot'
 
 # Set log level with LOG_LEVEL; share the logger across the stack
 logger = Logger.new(STDOUT, progname: 'abbyy_watcher', level: ENV['LOG_LEVEL'] || 'INFO')
-workflow_updater = Dor::TextExtraction::WorkflowUpdater.new(logger:)
 Listen.logger = logger
 
 # Set up the watcher and enable polling since we're accessing the Samba share
 # If the ABBYY directories aren't set up correctly, bail out
 begin
-  watcher = Dor::TextExtraction::Abbyy::FileWatcher.new(logger:, workflow_updater:, listener_options: { force_polling: true })
+  watcher = Dor::TextExtraction::Abbyy::FileWatcher.new(logger:, listener_options: { force_polling: true })
 rescue ArgumentError => e
   logger.fatal e.message
   Honeybadger.notify(e)

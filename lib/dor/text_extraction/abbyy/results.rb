@@ -5,7 +5,7 @@ module Dor
     module Abbyy
       # Parses .xml.result.xml file that gets created when Abbyy sees a XMLTICKET
       class Results
-        attr_reader :result_path, :druid, :run_index
+        attr_reader :result_path, :druid, :run_index, :software_name, :software_version
 
         # Naming convention for result XML files:
         # ab123cd4567.xml.result.xml
@@ -29,6 +29,8 @@ module Dor
           @druid = druid
           @run_index = (run_index || 0).to_i
           @logger = logger || Logger.new($stdout)
+          @software_name = processing_metadata[:software_name] || 'ABBYY FineReader Server'
+          @software_version = processing_metadata[:software_version]
         end
 
         def success?
@@ -36,8 +38,7 @@ module Dor
         end
 
         def failure_messages
-          errors = xml_contents.xpath("//Message[@Type='Error']//Text")
-          errors&.map(&:text)
+          xml_contents.xpath("//Message[@Type='Error']//Text")&.map(&:text)
         end
 
         def output_docs
@@ -96,6 +97,22 @@ module Dor
         # Return the local Unix path for the Abbyy Windows output directory
         def local_output_dir(windows_dir)
           windows_dir.sub(Settings.sdr.abbyy.remote_output_path, Settings.sdr.abbyy.local_output_path)
+        end
+
+        # Software and version used to do OCR processing, found in ALTO output
+        def processing_metadata
+          return {} unless File.exist? alto_doc # PDFs don't have ALTO, so just bail out
+
+          alto_xml = Nokogiri::XML(File.read(alto_doc)).remove_namespaces!
+          metadata = alto_xml.xpath('//OCRProcessing//ocrProcessingStep').first
+
+          {
+            software_name: metadata.xpath('//softwareName').text,
+            software_version: metadata.xpath('//softwareVersion').text
+          }
+        rescue StandardError # If we can't parse the ALTO, log it and move on
+          Honeybadger.notify('Failed to parse processing metadata from ALTO XML', context: { alto_doc: })
+          {}
         end
       end
     end

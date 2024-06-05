@@ -29,6 +29,16 @@ describe Dor::TextExtraction::Abbyy::Results do
   end
 
   context 'when results successfully render' do
+    let(:alto_path) { "#{abbyy_output_path}/bb222cc3333/bb222cc3333.xml" }
+    let(:alto_xml) { File.read(File.join(File.absolute_path('spec/fixtures/ocr'), "#{druid}_abbyy_alto.xml")) }
+
+    before do
+      allow(File).to receive(:exist?).and_call_original
+      allow(File).to receive(:exist?).with(alto_path).and_return(true)
+      allow(File).to receive(:read).and_call_original
+      allow(File).to receive(:read).with(alto_path).and_return(alto_xml)
+    end
+
     it { is_expected.to be_success }
 
     it 'does not have failure messages' do
@@ -48,6 +58,11 @@ describe Dor::TextExtraction::Abbyy::Results do
     it 'can be found by druid' do
       found = described_class.find_latest(druid:)
       expect(found.druid).to eq druid
+    end
+
+    it 'records the software name and version' do
+      expect(results.software_name).to eq 'ABBYY FineReader Server'
+      expect(results.software_version).to eq '14.0'
     end
   end
 
@@ -128,6 +143,10 @@ describe Dor::TextExtraction::Abbyy::Results do
 
     it 'does not have an alto doc' do
       expect(results.alto_doc).to be_nil
+    end
+
+    it 'uses the default software name' do
+      expect(results.software_name).to eq 'ABBYY FineReader Server'
     end
   end
 end

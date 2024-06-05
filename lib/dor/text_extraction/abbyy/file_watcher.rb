@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'socket'
+require 'active_support/core_ext/object/blank'
+
 module Dor
   module TextExtraction
     module Abbyy
@@ -17,18 +20,22 @@ module Dor
         delegate :start, :pause, :stop, to: :listener
 
         # rubocop:disable Metrics/AbcSize
-        def initialize(logger: nil, workflow_updater: nil, listener_options: {})
+        def initialize(
+          logger: Logger.new($stdout),
+          workflow_updater: Dor::TextExtraction::WorkflowUpdater,
+          listener_options: {}
+        )
+          # Set up the ABBYY directories
           @result_xml_path = Settings.sdr.abbyy.local_result_path
           @exceptions_path = Settings.sdr.abbyy.local_exception_path
-
-          # Ensure the ABBYY directories exist
           raise ArgumentError, "ABBYY result XML path '#{result_xml_path}' is not a directory" unless File.directory?(result_xml_path)
           raise ArgumentError, "ABBYY exceptions path '#{exceptions_path}' is not a directory" unless File.directory?(exceptions_path)
 
-          # Set up the workflow updater and listener
-          @logger = logger || Logger.new($stdout)
-          @workflow_updater = workflow_updater || Dor::TextExtraction::WorkflowUpdater.new
+          # Set up the services and listener
+          @logger = logger
+          @workflow_updater = workflow_updater.new(logger:)
           @listener_options = default_listener_options.merge(listener_options)
+          Dor::Services::Client.configure(logger:, url: Settings.dor_services.url, token: Settings.dor_services.token)
         end
         # rubocop:enable Metrics/AbcSize
 
@@ -56,6 +63,7 @@ module Dor
         def process_success(results)
           @logger.info "Found successful OCR results for druid:#{results.druid} at #{results.result_path}"
           @workflow_updater.mark_ocr_completed("druid:#{results.druid}")
+          create_event(type: 'ocr_success', results:)
         end
 
         # Notify SDR that the OCR workflow step failed
@@ -64,6 +72,25 @@ module Dor
           context = { druid: "druid:#{results.druid}", result_path: results.result_path, failure_messages: results.failure_messages }
           Honeybadger.notify('Found failed OCR results', context:)
           @workflow_updater.mark_ocr_errored("druid:#{results.druid}", error_msg: results.failure_messages.join("\n"))
+          create_event(type: 'ocr_errored', results:)
+        end
+
+        # Publish to the SDR event service with processing information
+        def create_event(type:, results:)
+          Dor::Services::Client.object("druid:#{results.druid}").events.create(
+            type:,
+            data: {
+              host:,
+              invoked_by: 'abbyy_watcher',
+              software_name: results.software_name,
+              software_version: results.software_version,
+              errors: results.failure_messages
+            }.compact_blank
+          )
+        end
+
+        def host
+          @host ||= Socket.gethostname
         end
       end
     end
