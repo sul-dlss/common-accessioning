@@ -76,7 +76,6 @@ module Dor
         # NOTE: the multiple page Abbyy OCR file is NOT accessioned.
         def paths_to_move
           paths = (output_docs.values + split_ocr_paths).uniq
-          @logger.info("found these candidate paths to move: #{paths}")
           paths.reject { |path| path.end_with?("#{druid}.xml") }
         end
 

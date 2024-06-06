@@ -43,6 +43,7 @@ module Dor
         content_dir.children.sort.each do |file|
           next if file.basename.to_s.start_with?('.')
 
+          # document and image content types have Item level .pdf and .txt files added as new resources
           if file.basename.to_s.match(/#{bare_druid}\.(pdf|txt)$/)
             add_file_to_new_resource(file)
           else
