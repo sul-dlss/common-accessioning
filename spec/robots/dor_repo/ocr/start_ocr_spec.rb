@@ -24,7 +24,7 @@ describe Robots::DorRepo::Ocr::StartOcr do
     allow(Dor::TextExtraction::Ocr).to receive(:new).and_return(ocr)
   end
 
-  context 'when the object is not opened and is possible to OCR' do
+  context 'when the object is not opened and it is possible to OCR' do
     let(:version_open) { false }
     let(:possible) { true }
 
@@ -34,7 +34,7 @@ describe Robots::DorRepo::Ocr::StartOcr do
     end
   end
 
-  context 'when the object is not opened and is not possible to OCR' do
+  context 'when the object is not opened and it is not possible to OCR' do
     let(:version_open) { false }
     let(:possible) { false }
     let(:note) { 'No files available or invalid object for OCR' }
@@ -70,8 +70,9 @@ describe Robots::DorRepo::Ocr::StartOcr do
     let(:version_open) { true }
     let(:possible) { true }
 
-    it 'raises an error' do
-      expect { perform }.to raise_error('Object is already open')
+    it 'does nothing' do
+      perform
+      expect(version_client).not_to have_received(:open)
     end
   end
 end

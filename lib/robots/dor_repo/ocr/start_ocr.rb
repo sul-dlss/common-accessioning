@@ -10,10 +10,8 @@ module Robots
         end
 
         def perform_work
-          raise 'Object is already open' if object_client.version.status.open?
-
           if Dor::TextExtraction::Ocr.new(cocina_object:).possible?
-            object_client.version.open(description: 'Start OCR workflow')
+            object_client.version.open(description: 'Start OCR workflow') unless object_client.version.status.open?
           else
             skip_workflow
           end
