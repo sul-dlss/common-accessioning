@@ -16,6 +16,12 @@ describe Dor::TextExtraction::CocinaUpdater do
       }
     )
   end
+  # DruidTools needs to return the workspace_dir set up by "with workspace dir" context
+  let(:druid_tools) do
+    instance_double(DruidTools::Druid, id: bare_druid, content_dir: workspace_content_dir)
+  end
+
+  before { allow(DruidTools::Druid).to receive(:new).and_return(druid_tools) }
 
   context 'when there is a single image' do
     let(:item_type) { Cocina::Models::ObjectType.image }
@@ -52,7 +58,7 @@ describe Dor::TextExtraction::CocinaUpdater do
       create_pdf_file("#{bare_druid}.pdf")
       create_txt_file("#{bare_druid}.txt")
 
-      described_class.update(dro:, workspace_dir:)
+      described_class.update(dro:)
     end
 
     it 'first resource has expected number of files' do
@@ -171,7 +177,7 @@ describe Dor::TextExtraction::CocinaUpdater do
       create_pdf_file("#{bare_druid}.pdf")
       create_txt_file("#{bare_druid}.txt")
 
-      described_class.update(dro:, workspace_dir:)
+      described_class.update(dro:)
     end
 
     it 'has expected number of resources' do
@@ -256,7 +262,7 @@ describe Dor::TextExtraction::CocinaUpdater do
       create_pdf_file("#{bare_druid}.pdf")
       create_txt_file("#{bare_druid}.txt")
 
-      described_class.update(dro:, workspace_dir:)
+      described_class.update(dro:)
     end
 
     it 'has expected number of resources' do
@@ -322,7 +328,7 @@ describe Dor::TextExtraction::CocinaUpdater do
     before do
       create_pdf_file("#{bare_druid}.pdf")
 
-      described_class.update(dro:, workspace_dir:)
+      described_class.update(dro:)
     end
 
     it 'has expected number of resources' do
@@ -387,7 +393,7 @@ describe Dor::TextExtraction::CocinaUpdater do
     before do
       create_xml_file('page1.xml')
 
-      described_class.update(dro:, workspace_dir:)
+      described_class.update(dro:)
     end
 
     context 'when existing ocr was SDR generated and has not been corrected' do

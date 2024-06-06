@@ -18,15 +18,13 @@ module Dor
     # rubocop:disable Style/ClassLength
     class CocinaUpdater
       # @param dro [Cocina::Models::Dro] the object metadata to update in place
-      # @param workspace_dir [String] the path where the new files to add are
-      def self.update(dro:, workspace_dir:)
-        CocinaUpdater.new(dro:, workspace_dir:).update
+      def self.update(dro:)
+        CocinaUpdater.new(dro:).update
       end
 
-      def initialize(dro:, workspace_dir:)
+      def initialize(dro:)
         @dro = dro
         @new_resources = []
-        @workspace_dir = Pathname.new(workspace_dir)
       end
 
       def update
@@ -207,11 +205,15 @@ module Dor
       end
 
       def bare_druid
-        @bare_druid ||= DruidTools::Druid.new(@dro.externalIdentifier).id
+        druid_tools.id
       end
 
       def content_dir
-        @workspace_dir / 'content'
+        Pathname.new(druid_tools.content_dir)
+      end
+
+      def druid_tools
+        @druid_tools ||= DruidTools::Druid.new(@dro.externalIdentifier, Settings.sdr.local_workspace_root)
       end
 
       def document?

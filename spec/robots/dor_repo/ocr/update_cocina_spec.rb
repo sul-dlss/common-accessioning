@@ -12,7 +12,7 @@ describe Robots::DorRepo::Ocr::UpdateCocina do
 
   # DruidTools needs to return the workspace_dir set up by "with workspace dir" context
   let(:druid_tools) do
-    instance_double(DruidTools::Druid, id: bare_druid, path: workspace_dir)
+    instance_double(DruidTools::Druid, id: bare_druid, content_dir: workspace_content_dir)
   end
 
   let(:dsa_object_client) do
