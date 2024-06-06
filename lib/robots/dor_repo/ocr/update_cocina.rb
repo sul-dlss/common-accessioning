@@ -9,9 +9,11 @@ module Robots
           super('ocrWF', 'update-cocina')
         end
 
-        # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          # update cocina structural metadata with OCR files
+          Dor::TextExtraction::CocinaUpdater.update(dro: cocina_object)
+          object_client.update(params: cocina_object)
+
+          cocina_object
         end
       end
     end

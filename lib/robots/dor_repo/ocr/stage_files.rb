@@ -10,7 +10,7 @@ module Robots
         end
 
         def perform_work
-          workspace_dir = object_client.workspace.create(content: true)
+          workspace_dir = object_client.workspace.create(content: true, metadata: true)
           move_files(workspace_dir)
         end
 
