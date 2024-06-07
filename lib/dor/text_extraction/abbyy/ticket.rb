@@ -7,10 +7,10 @@ module Dor
       class Ticket
         attr_reader :filepaths, :ocr_languages, :bare_druid
 
-        def initialize(filepaths:, druid:, ocr_languages:)
+        def initialize(filepaths:, druid:, ocr_languages: [])
           @filepaths = filepaths
           @bare_druid = druid.delete_prefix('druid:')
-          @ocr_languages = ocr_languages || []
+          @ocr_languages = ocr_languages
         end
 
         def write_xml
@@ -36,7 +36,7 @@ module Dor
         end
 
         def language_xml
-          return '' if ocr_languages.empty?
+          return '' if ocr_languages.blank?
 
           language_tags = ocr_languages.map { |lang| "<Language>#{lang}</Language>" }.join("\n")
           "<RecognitionParams RecognitionQuality='Balanced' RecognitionMode='FullPage' UsePullXTextAndRecognizeRest='false' LanguageDetectMode='Always'>

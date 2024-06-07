@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Dor::TextExtraction::Ocr do
   let(:ocr) { described_class.new(cocina_object:, workflow_context:) }
+  let(:ticket) { Dor::TextExtraction::Abbyy::Ticket.new(filepaths: [], druid:) }
   let(:object_type) { 'https://cocina.sul.stanford.edu/models/image' }
   let(:workflow_context) { {} }
   let(:structural) { instance_double(Cocina::Models::DROStructural, contains: [first_fileset, second_fileset]) }
@@ -112,6 +113,66 @@ RSpec.describe Dor::TextExtraction::Ocr do
 
     it 'returns a list of all filenames' do
       expect(ocr.send(:ocr_files)).to eq([pdf_file])
+    end
+  end
+
+  describe '#cleanup' do
+    let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: true, type: object_type, structural:) }
+
+    # start with a clean slate, we will create directories and files to cleanup for each scenario
+    before do
+      FileUtils.rm_rf(ocr.abbyy_input_path)
+      FileUtils.rm_rf(ocr.abbyy_output_path)
+      FileUtils.rm_f(ticket.file_path)
+    end
+
+    context 'when no input or output folders or xml file' do
+      it 'does nothing' do
+        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path].each { |path| expect(File.exist?(path)).to be false }
+        expect(ocr.cleanup).to be true
+      end
+    end
+
+    context 'when input folder is not empty' do
+      before do
+        FileUtils.mkdir_p(ocr.abbyy_input_path)
+        FileUtils.mkdir_p(ocr.abbyy_output_path)
+        FileUtils.touch(File.join(ocr.abbyy_input_path, 'file1.txt'))
+      end
+
+      it 'raises an error' do
+        expect { ocr.cleanup }.to raise_error("#{ocr.abbyy_input_path} is not empty")
+        expect(Dir.exist?(ocr.abbyy_input_path)).to be true
+        expect(Dir.exist?(ocr.abbyy_output_path)).to be true
+      end
+    end
+
+    context 'when output folder is not empty' do
+      before do
+        FileUtils.mkdir_p(ocr.abbyy_input_path)
+        FileUtils.mkdir_p(ocr.abbyy_output_path)
+        FileUtils.touch(File.join(ocr.abbyy_output_path, 'file1.txt'))
+      end
+
+      it 'removes both folders' do
+        ocr.cleanup
+        expect(Dir.exist?(ocr.abbyy_input_path)).to be false
+        expect(Dir.exist?(ocr.abbyy_output_path)).to be false
+      end
+    end
+
+    context 'when input and output folders are empty and xml ticket file exists' do
+      before do
+        FileUtils.mkdir_p(ocr.abbyy_input_path)
+        FileUtils.mkdir_p(ocr.abbyy_output_path)
+        FileUtils.touch(ticket.file_path)
+      end
+
+      it 'removes both folders and the XML ticket file' do
+        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path].each { |path| expect(File.exist?(path)).to be true }
+        ocr.cleanup
+        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path].each { |path| expect(File.exist?(path)).to be false }
+      end
     end
   end
 end

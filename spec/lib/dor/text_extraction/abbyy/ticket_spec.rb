@@ -9,6 +9,7 @@ describe Dor::TextExtraction::Abbyy::Ticket do
     allow(Settings.sdr.abbyy).to receive_messages(
       local_ticket_path: abbyy_xml_ticket_path
     )
+    FileUtils.mkdir_p(File.dirname(abbyy.file_path))
   end
 
   let(:druid) { 'druid:bb222cc3333' }

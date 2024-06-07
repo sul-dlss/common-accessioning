@@ -8,7 +8,7 @@ module Dor
 
       def initialize(params = {})
         @cocina_object = params[:cocina_object]
-        @workflow_context = params[:workflow_context]
+        @workflow_context = params[:workflow_context] || {}
         @bare_druid = cocina_object.externalIdentifier.delete_prefix('druid:')
       end
 
@@ -19,6 +19,22 @@ module Dor
       def abbyy_input_path
         File.join(Settings.sdr.abbyy.local_ticket_path, bare_druid)
       end
+
+      # rubocop:disable Metrics/AbcSize
+      def cleanup
+        if Dir.exist?(abbyy_input_path)
+          raise "#{abbyy_input_path} is not empty" unless Dir.empty?(abbyy_input_path)
+
+          FileUtils.rm_rf(abbyy_input_path)
+        end
+
+        return true unless Dir.exist?(abbyy_output_path)
+
+        FileUtils.rm_rf(abbyy_output_path)
+
+        FileUtils.rm_f(Abbyy::Ticket.new(filepaths: [], druid: cocina_object.externalIdentifier).file_path) # remove XML ticket file
+      end
+      # rubocop:enable Metrics/AbcSize
 
       def possible?
         # only items can be OCR'd

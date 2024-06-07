@@ -11,8 +11,6 @@ module Robots
 
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          # create XML ticket for ABBYY in shared mount
-
           # Leave this step running until the OCR monitoring job marks it as complete
           LyberCore::ReturnState.new(status: :noop, note: 'Initiated ABBYY OCRing.')
         end
