@@ -102,9 +102,9 @@ module Dor
       # TODO: refine list of allowed object types for OCR
       def resource_type_mapping
         {
-          'https://cocina.sul.stanford.edu/models/book' => 'page',
-          'https://cocina.sul.stanford.edu/models/document' => 'document',
-          'https://cocina.sul.stanford.edu/models/image' => 'image'
+          Cocina::Models::ObjectType.book => 'page',
+          Cocina::Models::ObjectType.document => 'document',
+          Cocina::Models::ObjectType.image => 'image'
         }
       end
 

@@ -109,7 +109,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
   end
 
   describe '#ocr_files' do
-    let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, structural:, type: 'https://cocina.sul.stanford.edu/models/document') }
+    let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, structural:, type: Cocina::Models::ObjectType.document) }
 
     it 'returns a list of all filenames' do
       expect(ocr.send(:ocr_files)).to eq([pdf_file])
