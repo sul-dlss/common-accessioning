@@ -6,9 +6,9 @@ module Dor
     class Ocr
       attr_reader :cocina_object, :workflow_context, :bare_druid
 
-      def initialize(params = {})
-        @cocina_object = params[:cocina_object]
-        @workflow_context = params[:workflow_context] || {}
+      def initialize(cocina_object:, workflow_context: {})
+        @cocina_object = cocina_object
+        @workflow_context = workflow_context
         @bare_druid = cocina_object.externalIdentifier.delete_prefix('druid:')
       end
 
