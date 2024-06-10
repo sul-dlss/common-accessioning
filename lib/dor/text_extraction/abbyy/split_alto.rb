@@ -30,10 +30,10 @@ module Dor
           Nokogiri::XML::Builder.new do |xml|
             xml.alto(namespaces) do
               xml.Description do
-                doc.css('//MeasurementUnit').each { |node| xml.parent << node }
-                doc.css('//OCRProcessing').each { |node| xml.parent << node }
+                doc.css('//MeasurementUnit').each { |node| xml.parent << node.dup }
+                doc.css('//OCRProcessing').each { |node| xml.parent << node.dup }
               end
-              doc.css('//Styles').each { |node| xml.parent << node }
+              doc.css('//Styles').each { |node| xml.parent << node.dup }
               xml.Layout do
                 xml.parent << page
               end
