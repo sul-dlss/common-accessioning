@@ -24,19 +24,15 @@ module Dor
           File.join(File.dirname(alto_path), filename)
         end
 
-        # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+        # rubocop:disable Metrics/AbcSize
         def xml_structure(page)
           namespaces = { 'xsi:schemaLocation': 'http://www.loc.gov/standards/alto/ns-v3# http://www.loc.gov/alto/v3/alto-3-1.xsd' }.merge(doc.collect_namespaces)
           Nokogiri::XML::Builder.new do |xml|
             xml.alto(namespaces) do
-              xml.Description do
-                doc.css('//MeasurementUnit').each { |node| xml.parent << node.dup }
-                doc.css('//OCRProcessing').each { |node| xml.parent << node.dup }
-              end
+              doc.css('//MeasurementUnit').each { |node| xml.parent << node.dup }
+              doc.css('//OCRProcessing').each { |node| xml.parent << node.dup }
               doc.css('//Styles').each { |node| xml.parent << node.dup }
-              xml.Layout do
-                xml.parent << page
-              end
+              xml.parent << page
             end
           end
         end
@@ -44,7 +40,7 @@ module Dor
         def page_filenames
           @page_filenames ||= doc.css('//sourceImageInformation').children.select(&:element?).map(&:text)
         end
-        # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+        # rubocop:enable Metrics/AbcSize
 
         def split_to_files
           pages = doc.css('//Page')
