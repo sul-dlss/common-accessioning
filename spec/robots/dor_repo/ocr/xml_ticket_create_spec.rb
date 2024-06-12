@@ -45,7 +45,7 @@ describe Robots::DorRepo::Ocr::XmlTicketCreate do
     let(:druid) { "druid:#{bare_druid}" }
     let(:workflow_context) { { runOCR: true, ocrLanguages: %w[English Spanish German] } }
     let(:filenames) { ['filename3.PDF', 'filename4.pdf'] }
-    let(:object_type) { 'https://cocina.sul.stanford.edu/models/document' }
+    let(:object_type) { Cocina::Models::ObjectType.document }
 
     it 'renders ticket with correct languages' do
       perform

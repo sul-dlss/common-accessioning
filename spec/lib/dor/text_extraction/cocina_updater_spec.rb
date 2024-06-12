@@ -176,12 +176,13 @@ describe Dor::TextExtraction::CocinaUpdater do
       create_xml_file('image2.xml')
       create_pdf_file("#{bare_druid}.pdf")
       create_txt_file("#{bare_druid}.txt")
+      create_txt_file('some_new_file.txt')
 
       described_class.update(dro:)
     end
 
     it 'has expected number of resources' do
-      expect(dro.structural.contains.length).to eq 4
+      expect(dro.structural.contains.length).to eq 5
     end
 
     it 'has first resource set correctly' do
@@ -206,6 +207,11 @@ describe Dor::TextExtraction::CocinaUpdater do
     it 'has .txt set correctly' do
       resource = dro.structural.contains[3]
       expect(resource.structural.contains[0].filename).to eq "#{bare_druid}.txt"
+    end
+
+    it 'has a new resource .txt set correctly' do
+      resource = dro.structural.contains[4]
+      expect(resource.structural.contains[0].filename).to eq 'some_new_file.txt'
     end
   end
 
@@ -369,7 +375,17 @@ describe Dor::TextExtraction::CocinaUpdater do
                 type: Cocina::Models::ObjectType.file,
                 version: 1,
                 filename: 'page1.tif',
-                hasMimeType: 'iamge/tiff'
+                hasMimeType: 'image/tiff',
+                hasMessageDigests: [
+                  {
+                    type: 'md5',
+                    digest: 'bogus_md5'
+                  },
+                  {
+                    type: 'sha1',
+                    digest: 'bogus_sha1'
+                  }
+                ]
               },
               {
                 externalIdentifier: "https://cocina.sul.stanford.edu/file/#{bare_druid}_001",
@@ -380,7 +396,17 @@ describe Dor::TextExtraction::CocinaUpdater do
                 hasMimeType: 'application/xml',
                 use: 'transcription',
                 sdrGeneratedText: sdr_generated_text,
-                correctedForAccessibility: corrected_for_accessibility
+                correctedForAccessibility: corrected_for_accessibility,
+                hasMessageDigests: [
+                  {
+                    type: 'md5',
+                    digest: 'bogus_md5'
+                  },
+                  {
+                    type: 'sha1',
+                    digest: 'bogus_sha1'
+                  }
+                ]
               }
             ]
           }
@@ -400,8 +426,13 @@ describe Dor::TextExtraction::CocinaUpdater do
       let(:sdr_generated_text) { true }
       let(:corrected_for_accessibility) { false }
 
-      it 'did not add a new file to the resource' do
+      it 'did not add a new file to the resource, instead replaced it' do
         expect(dro.structural.contains[0].structural.contains.length).to eq 2
+        expect(dro.structural.contains[0].structural.contains[1].label).to eq 'page1.xml' # this is the first page
+        # but the externalIdentifier and shas should be different than the original in our mocked cocina above
+        expect(dro.structural.contains[0].structural.contains[1].externalIdentifier).not_to eq "https://cocina.sul.stanford.edu/file/#{bare_druid}_001"
+        expect(dro.structural.contains[0].structural.contains[1].hasMessageDigests[0].attributes).not_to eq({ type: 'md5', digest: 'bogus_md5' })
+        expect(dro.structural.contains[0].structural.contains[1].hasMessageDigests[1].attributes).not_to eq({ type: 'sha1', digest: 'bogus_sha1' })
       end
 
       it 'did not delete the OCR file in the workspace' do
@@ -415,6 +446,11 @@ describe Dor::TextExtraction::CocinaUpdater do
 
       it 'did not add a new file to the resource' do
         expect(dro.structural.contains[0].structural.contains.length).to eq 2
+        expect(dro.structural.contains[0].structural.contains[1].label).to eq 'page1.xml' # this is the first page
+        # the externalIdentifier and shas are the same as the original in our mocked cocina above
+        expect(dro.structural.contains[0].structural.contains[1].externalIdentifier).to eq "https://cocina.sul.stanford.edu/file/#{bare_druid}_001"
+        expect(dro.structural.contains[0].structural.contains[1].hasMessageDigests[0].attributes).to eq({ type: 'md5', digest: 'bogus_md5' })
+        expect(dro.structural.contains[0].structural.contains[1].hasMessageDigests[1].attributes).to eq({ type: 'sha1', digest: 'bogus_sha1' })
       end
 
       it 'removed the OCR file from the workspace' do
@@ -433,6 +469,128 @@ describe Dor::TextExtraction::CocinaUpdater do
       it 'removed the OCR file from the workspace' do
         expect(File.exist?(workspace_content_file)).to be false
       end
+    end
+  end
+
+  context 'when existing files include item level pdf and txt' do
+    let(:item_type) { Cocina::Models::ObjectType.image }
+    let(:resource_type) { Cocina::Models::FileSetType.image }
+    let(:sdr_generated_text) { true }
+    let(:corrected_for_accessibility) { false }
+
+    let(:original_resources) do
+      [
+        {
+          externalIdentifier: "#{bare_druid}_1",
+          label: 'Page 1',
+          type: resource_type,
+          version: 1,
+          structural: {
+            contains: [
+              {
+                externalIdentifier: "https://cocina.sul.stanford.edu/file/#{bare_druid}_001",
+                label: 'page1.tif',
+                type: Cocina::Models::ObjectType.file,
+                version: 1,
+                filename: 'page1.tif',
+                hasMimeType: 'image/tiff',
+                hasMessageDigests: [
+                  {
+                    type: 'md5',
+                    digest: 'bogus_md5'
+                  },
+                  {
+                    type: 'sha1',
+                    digest: 'bogus_sha1'
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          externalIdentifier: "#{bare_druid}_2",
+          label: 'Full PDF',
+          type: Cocina::Models::FileSetType.object,
+          version: 1,
+          structural: {
+            contains: [
+              {
+                externalIdentifier: "https://cocina.sul.stanford.edu/file/#{bare_druid}_002",
+                label: "#{bare_druid}.pdf",
+                type: Cocina::Models::ObjectType.file,
+                version: 1,
+                filename: "#{bare_druid}.pdf",
+                hasMimeType: 'application/pdf',
+                sdrGeneratedText: sdr_generated_text,
+                correctedForAccessibility: corrected_for_accessibility,
+                hasMessageDigests: [
+                  {
+                    type: 'md5',
+                    digest: '007dde971e903caeadf868c12701c6eb'
+                  },
+                  {
+                    type: 'sha1',
+                    digest: '2324cf4b602e0b35c013c60f726c93425813d177'
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          externalIdentifier: "#{bare_druid}_3",
+          label: 'Plain text OCR (uncorrected)',
+          type: Cocina::Models::FileSetType.object,
+          version: 1,
+          structural: {
+            contains: [
+              {
+                externalIdentifier: "https://cocina.sul.stanford.edu/file/#{bare_druid}_003",
+                label: "#{bare_druid}.txt",
+                type: Cocina::Models::ObjectType.file,
+                version: 1,
+                filename: "#{bare_druid}.txt",
+                sdrGeneratedText: sdr_generated_text,
+                correctedForAccessibility: corrected_for_accessibility,
+                hasMimeType: 'text/plain',
+                hasMessageDigests: [
+                  {
+                    type: 'md5',
+                    digest: '007dde971e903caeadf868c12701c6eb'
+                  },
+                  {
+                    type: 'sha1',
+                    digest: '2324cf4b602e0b35c013c60f726c93425813d177'
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    end
+
+    before do
+      create_xml_file('page1.xml')
+      create_pdf_file("#{bare_druid}.pdf")
+      create_txt_file("#{bare_druid}.txt")
+
+      described_class.update(dro:)
+    end
+
+    it 'did not create new resources for the .txt and .pdf files' do
+      expect(dro.structural.contains.length).to eq 3
+    end
+
+    it 'updated the pdf file with latest content' do
+      expect(dro.structural.contains[1].structural.contains[0].hasMessageDigests[0].digest).to eq('c2efa63399a94c7d77dc5dba28feb79e')
+      expect(dro.structural.contains[1].structural.contains[0].hasMessageDigests[1].digest).to eq('1e7cedba14bc2687cd520943d2ebbe939e79b8b2')
+    end
+
+    it 'updated the text file with the latest content' do
+      expect(dro.structural.contains[2].structural.contains[0].hasMessageDigests[0].digest).to eq('6d98df7e7b6faa698f3458714e2d0eee')
+      expect(dro.structural.contains[2].structural.contains[0].hasMessageDigests[1].digest).to eq('8dbc9709e00f49523566107de23e4e603aab5f70')
     end
   end
 end

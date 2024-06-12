@@ -10,7 +10,7 @@ module Robots
         end
 
         def perform_work
-          Dor::TextExtraction::CocinaUpdater.update(dro: cocina_object)
+          Dor::TextExtraction::CocinaUpdater.update(dro: cocina_object, logger:)
           object_client.update(params: cocina_object)
 
           cocina_object
