@@ -30,8 +30,7 @@ module Dor
 
         return true unless Dir.exist?(abbyy_output_path)
 
-        # TODO: uncomment this line after tests complete
-        # FileUtils.rm_rf(abbyy_output_path)
+        FileUtils.rm_rf(abbyy_output_path)
 
         FileUtils.rm_f(Abbyy::Ticket.new(filepaths: [], druid: cocina_object.externalIdentifier).file_path) # remove XML ticket file
       end
