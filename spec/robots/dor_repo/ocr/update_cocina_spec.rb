@@ -52,16 +52,33 @@ describe Robots::DorRepo::Ocr::UpdateCocina do
     allow(Dor::Services::Client).to receive(:object).and_return(dsa_object_client)
 
     allow(DruidTools::Druid).to receive(:new).and_return(druid_tools)
-
-    # setup a fake OCR file in the workspace directory which matches the name of
-    # the image file in the Cocina
-    FileUtils.touch(File.join(workspace_content_dir, 'image1.xml'))
   end
 
-  it 'runs the update cocina robot' do
-    new_cocina = test_perform(robot, druid)
-    new_file = new_cocina.structural.contains[0].structural.contains[1]
-    expect(new_file.filename).to eq 'image1.xml'
-    expect(new_file.use).to eq 'transcription'
+  context 'with an xml file' do
+    before do
+      # setup a fake OCR file in the workspace directory which matches the name of the image file in the Cocina
+      FileUtils.cp('spec/fixtures/ocr/001.xml', File.join(workspace_content_dir, 'image1.xml'))
+    end
+
+    it 'runs the update cocina robot and sets the transcription role' do
+      new_cocina = test_perform(robot, druid)
+      new_file = new_cocina.structural.contains[0].structural.contains[1]
+      expect(new_file.filename).to eq 'image1.xml'
+      expect(new_file.use).to eq 'transcription'
+    end
+  end
+
+  context 'with a txt file' do
+    before do
+      # setup a fake OCR file in the workspace directory which matches the name of the image file in the Cocina
+      FileUtils.cp('spec/fixtures/ocr/001.txt', File.join(workspace_content_dir, 'image1.txt'))
+    end
+
+    it 'runs the update cocina robot and does not set the transcription role' do
+      new_cocina = test_perform(robot, druid)
+      new_file = new_cocina.structural.contains[0].structural.contains[1]
+      expect(new_file.filename).to eq 'image1.txt'
+      expect(new_file.use).to be_nil
+    end
   end
 end

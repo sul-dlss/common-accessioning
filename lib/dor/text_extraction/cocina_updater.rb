@@ -169,7 +169,7 @@ module Dor
         Cocina::Models::File.new(
           externalIdentifier: file_identifier,
           label: object_file.filename,
-          use: 'transcription',
+          use: use(object_file),
           sdrGeneratedText: true,
           correctedForAccessibility: false,
           type: Cocina::Models::ObjectType.file,
@@ -189,6 +189,11 @@ module Dor
           view: 'world',
           download: 'world'
         }
+      end
+
+      # set the use attribute based on the mimetype (only XML and PDF OCR files will have a use attribute set to 'transcription')
+      def use(object_file)
+        %w[application/pdf application/xml].include?(object_file.mimetype) ? 'transcription' : nil
       end
 
       def administrative
