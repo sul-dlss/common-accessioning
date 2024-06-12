@@ -78,7 +78,7 @@ describe Dor::TextExtraction::CocinaUpdater do
       file = resource1_files[1]
       expect(file.label).to eq 'image1.txt'
       expect(file.filename).to eq 'image1.txt'
-      expect(file.use).to eq 'transcription'
+      expect(file.use).to be_nil
       expect(file.sdrGeneratedText).to be true
       expect(file.correctedForAccessibility).to be false
       expect(file.access.view).to be 'world'
