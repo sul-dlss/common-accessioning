@@ -29,7 +29,6 @@ module Dor
           namespaces = { 'xsi:schemaLocation': 'http://www.loc.gov/standards/alto/ns-v3# http://www.loc.gov/alto/v3/alto-3-1.xsd' }.merge(doc.collect_namespaces)
           Nokogiri::XML::Builder.new do |xml|
             xml.alto(namespaces) do
-              doc.css('//MeasurementUnit').each { |node| xml.parent << node.dup }
               doc.css('//OCRProcessing').each { |node| xml.parent << node.dup }
               doc.css('//Styles').each { |node| xml.parent << node.dup }
               xml.parent << page
