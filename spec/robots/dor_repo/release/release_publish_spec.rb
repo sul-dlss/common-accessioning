@@ -11,21 +11,21 @@ RSpec.describe Robots::DorRepo::Release::ReleasePublish do
   let(:release_tags_client) { instance_double(Dor::Services::Client::ReleaseTags, list: release_tags) }
   let(:release_tags) do
     [
-      Cocina::Models::ReleaseTag.new(
+      Dor::Services::Client::ReleaseTag.new(
         to: 'Searchworks',
         what: 'self',
         date: '2014-08-30T01:06:28.000+00:00',
         who: 'petucket',
         release: true
       ),
-      Cocina::Models::ReleaseTag.new(
+      Dor::Services::Client::ReleaseTag.new(
         to: 'Purl sitemap',
         what: 'self',
         date: '2014-08-30T01:06:28.000+00:00',
         who: 'petucket',
         release: true
       ),
-      Cocina::Models::ReleaseTag.new(
+      Dor::Services::Client::ReleaseTag.new(
         to: 'Earthworks',
         what: 'self',
         date: '2014-08-30T01:06:28.000+00:00',
