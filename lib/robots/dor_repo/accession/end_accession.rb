@@ -31,7 +31,7 @@ module Robots
             # start OCR workflow
             # Note: since the first step of ocrWF opens the version, we want the new ocrWF to be associated
             #       with the next object version
-            workflow_service.create_workflow_by_name(druid, 'ocrWF', version: (current_version.to_i + 1).to_s, lane_id:)
+            workflow_service.create_workflow_by_name(druid, 'ocrWF', version: (current_version.to_i + 1), lane_id:)
           end
 
           # TODO: Start captionioning text extraction workflow if needed
