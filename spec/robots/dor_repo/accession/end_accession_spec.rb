@@ -41,7 +41,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
         it 'does not start ocrWF' do
           perform
-          expect(workflow_client).not_to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: '1', lane_id: 'default')
+          expect(workflow_client).not_to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default')
         end
       end
 
@@ -50,7 +50,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
         it 'starts ocrWF' do
           perform
-          expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: '1', lane_id: 'default')
+          expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default')
         end
       end
 

@@ -29,7 +29,9 @@ module Robots
             raise 'Object cannot be OCRd' unless ocr.possible?
 
             # start OCR workflow
-            workflow_service.create_workflow_by_name(druid, 'ocrWF', version: current_version, lane_id:)
+            # Note: since the first step of ocrWF opens the version, we want the new ocrWF to be associated
+            #       with the next object version
+            workflow_service.create_workflow_by_name(druid, 'ocrWF', version: (current_version.to_i + 1), lane_id:)
           end
 
           # TODO: Start captionioning text extraction workflow if needed
