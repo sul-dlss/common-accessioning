@@ -11,7 +11,10 @@ module Robots
 
         def perform_work
           if Dor::TextExtraction::Ocr.new(cocina_object:).possible?
-            object_client.version.open(description: 'Start OCR workflow') unless object_client.version.status.open?
+            # assume the object is accessioned and open the version to avoid a race condition, since
+            # this workflow is typically started by the last step of accessionWF, so the object
+            # might still be considered in accessioning
+            object_client.version.open(description: 'Start OCR workflow', assume_accessioned: true) unless object_client.version.status.open?
           else
             skip_workflow
           end
