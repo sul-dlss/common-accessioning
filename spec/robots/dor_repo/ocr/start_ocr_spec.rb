@@ -40,28 +40,21 @@ describe Robots::DorRepo::Ocr::StartOcr do
     let(:note) { 'No files available or invalid object for OCR' }
     let(:workflow) { 'ocrWF' }
     let(:status) { 'skipped' }
-    let(:workflow_client) { instance_double(Dor::Workflow::Client, workflow: workflow_response) }
-    let(:workflow_response) { instance_double(Dor::Workflow::Response::Workflow, incomplete_processes: [start_ocr, fetch_files, ocr_create, end_ocr]) }
+    let(:workflow_client) { instance_double(Dor::Workflow::Client) }
     # NOTE: this is just mocking a workflow response, it doesn't actually have to be fully accurate
     # we just need to expect we will update the status of all steps except start-ocr
-    let(:start_ocr) { instance_double(Dor::Workflow::Response::Process, name: 'start-ocr') }
-    let(:fetch_files) { instance_double(Dor::Workflow::Response::Process, name: 'fetch-files') }
-    let(:ocr_create) { instance_double(Dor::Workflow::Response::Process, name: 'ocr-create') }
-    let(:end_ocr) { instance_double(Dor::Workflow::Response::Process, name: 'end-ocr') }
+    let(:skip_all) { instance_double(Dor::Workflow::Response, name: 'skip-all') }
 
     let(:return_status) { perform.status }
 
     before do
       allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
-      allow(workflow_client).to receive(:update_status)
+      allow(workflow_client).to receive(:skip_all)
     end
 
-    it 'sets all steps (except self) in the workflow to skipped and returns status of skipped for self' do
+    it 'sets sends a skip_all request to dor-client-workflow' do
       perform
-      expect(workflow_client).not_to have_received(:update_status).with(druid:, workflow:, process: 'start-ocr', status:, note:)
-      expect(workflow_client).to have_received(:update_status).with(druid:, workflow:, process: 'fetch-files', status:, note:)
-      expect(workflow_client).to have_received(:update_status).with(druid:, workflow:, process: 'ocr-create', status:, note:)
-      expect(workflow_client).to have_received(:update_status).with(druid:, workflow:, process: 'end-ocr', status:, note:)
+      expect(workflow_client).to have_received(:skip_all).with(druid:, workflow:, note:)
       expect(return_status).to eq status
     end
   end
