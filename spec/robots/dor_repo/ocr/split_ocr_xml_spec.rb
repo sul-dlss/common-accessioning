@@ -31,14 +31,19 @@ describe Robots::DorRepo::Ocr::SplitOcrXml do
     )
   end
 
-  it 'creates 3 xml files' do
-    copy_abbyy_alto(output_path:, contents:, druid: bare_druid)
-    test_perform(robot, druid)
-    created_files = %w[bb222cc3333_00_0001.xml bb222cc3333_00_0002.xml bb222cc3333_00_0003.xml]
-    expect(created_files.all? { |file| File.exist?(File.join(output_path, file)) }).to be true
+  context 'when a full object XML file exists' do
+    it 'creates 3 xml files' do
+      copy_abbyy_alto(output_path:, contents:, druid: bare_druid)
+      expect(perform).to be true
+      created_files = %w[bb222cc3333_00_0001.xml bb222cc3333_00_0002.xml bb222cc3333_00_0003.xml]
+      expect(created_files.all? { |file| File.exist?(File.join(output_path, file)) }).to be true
+    end
   end
 
-  it 'there is no file' do
-    expect { test_perform(robot, druid) }.to raise_error(RuntimeError)
+  context 'when there is no full object XML file' do
+    it 'skips with a note' do
+      expect(perform.status).to eq('skipped')
+      expect(perform.note).to eq('No full object XML file')
+    end
   end
 end
