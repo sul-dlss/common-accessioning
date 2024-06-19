@@ -11,12 +11,27 @@ module Robots
 
         def perform_work
           if Dor::TextExtraction::Ocr.new(cocina_object:).possible?
-            object_client.version.open(description: 'Start OCR workflow') unless object_client.version.status.open?
+            open_object unless object_client.version.status.open?
           else
             # skip all steps in the WF with note
             note = 'No files available or invalid object for OCR'
             workflow_service.skip_all(druid:, workflow: 'ocrWF', note:)
             LyberCore::ReturnState.new(status: 'skipped', note:)
+          end
+        end
+
+        private
+
+        def open_object
+          tries = 0
+          begin
+            object_client.version.open(description: 'Start OCR workflow')
+          rescue Dor::Services::Client::Error => e
+            tries += 1
+            raise e unless tries < 3
+
+            Honeybadger.notify('[NOTE] Problem opening object version at start of ocrWF', context: { druid:, tries:, error: e })
+            retry
           end
         end
       end
