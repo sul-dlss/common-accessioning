@@ -30,7 +30,7 @@ module Robots
             tries += 1
             raise e unless tries < 3
 
-            Honeybadger.notify("[NOTE] Problem opening object version at start of ocrWF for #{druid}", context: { druid:, tries:, error: e })
+            Honeybadger.notify('[NOTE] Problem opening object version at start of ocrWF', context: { druid:, tries:, error: e })
             retry
           end
         end
