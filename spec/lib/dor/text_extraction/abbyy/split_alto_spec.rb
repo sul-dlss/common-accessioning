@@ -25,6 +25,8 @@ describe Dor::TextExtraction::Abbyy::SplitAlto do
   end
 
   describe '.page_filenames' do
+    before { results.send(:fetch_common_nodes) }
+
     it 'finds the three filenames' do
       expect(results.send(:page_filenames)).to eq ['bb222cc3333_00_0001.tif', 'bb222cc3333_00_0002.tif', 'bb222cc3333_00_0003.tif']
     end
