@@ -9,7 +9,7 @@ module Dor
 
         def initialize(alto_path:)
           @alto_path = alto_path
-          @doc = Nokogiri::XML(File.read(alto_path))
+          @doc = Nokogiri::XML::parse(File.read(alto_path))
         end
 
         def write_files
