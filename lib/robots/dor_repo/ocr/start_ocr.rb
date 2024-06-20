@@ -28,6 +28,8 @@ module Robots
             object_client.version.open(description: 'Start OCR workflow')
           rescue Dor::Services::Client::Error => e
             tries += 1
+            sleep(2**tries)
+
             raise e unless tries < 3
 
             Honeybadger.notify('[NOTE] Problem opening object version at start of ocrWF', context: { druid:, tries:, error: e })
