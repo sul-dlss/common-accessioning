@@ -32,6 +32,7 @@ def create_abbyy_result(base_path, druid:, run_index: 0, success: true, contents
   index_tag = run_index.positive? ? '.%04d'.format(run_index) : ''
   filename = File.join(base_path, "#{druid}#{index_tag}.xml.result.xml")
   change_fs(:added, filename, "<XmlResult IsFailed=\"#{!success}\">#{contents}</XmlResult>")
+  filename
 end
 
 def copy_abbyy_alto(output_path:, contents:, druid:)
