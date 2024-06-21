@@ -13,6 +13,7 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
   let(:events_client) { instance_double(Dor::Services::Client::Events) }
   let(:listener_options) { { force_polling: true } }
   let(:file_watcher) { described_class.new(logger:, listener_options:) }
+  let(:xml_data) { Hash.new(path: '') }
 
   before do
     allow(Settings.sdr.abbyy).to receive_messages(
@@ -44,13 +45,17 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
     before do
       file_watcher.start
       copy_abbyy_alto(output_path:, druid: bare_druid, contents: alto_contents)
-      create_abbyy_result(abbyy_result_xml_path, druid: bare_druid, contents: result_contents)
+      xml_data[:path] = create_abbyy_result(abbyy_result_xml_path, druid: bare_druid, contents: result_contents)
       sleep(1) # Allow enough time to poll the filesystem
       file_watcher.stop
     end
 
     it 'updates the OCR workflow' do
       expect(workflow_updater).to have_received(:mark_ocr_completed).with(druid)
+    end
+
+    it 'removes the xml file' do
+      expect(File.exist?(xml_data[:path])).to be false
     end
 
     it 'logs the success' do
@@ -81,13 +86,17 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
 
     before do
       file_watcher.start
-      create_abbyy_result(abbyy_exceptions_path, druid: bare_druid, success: false, contents: errors_xml)
+      xml_data[:path] = create_abbyy_result(abbyy_exceptions_path, druid: bare_druid, success: false, contents: errors_xml)
       sleep(1) # Allow enough time to poll the filesystem
       file_watcher.stop
     end
 
     it 'updates the OCR workflow' do
       expect(workflow_updater).to have_received(:mark_ocr_errored).with(druid, error_msg: "Error one\nError two")
+    end
+
+    it 'removes the xml file' do
+      expect(File.exist?(xml_data[:path])).to be false
     end
 
     it 'publishes an event' do

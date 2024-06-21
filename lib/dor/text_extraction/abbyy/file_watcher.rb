@@ -64,6 +64,7 @@ module Dor
           @logger.info "Found successful OCR results for druid:#{results.druid} at #{results.result_path}"
           @workflow_updater.mark_ocr_completed("druid:#{results.druid}")
           create_event(type: 'ocr_success', results:)
+          FileUtils.rm_f(results.result_path)
         end
 
         # Notify SDR that the OCR workflow step failed
@@ -73,6 +74,7 @@ module Dor
           Honeybadger.notify('Found failed OCR results', context:)
           @workflow_updater.mark_ocr_errored("druid:#{results.druid}", error_msg: results.failure_messages.join("\n"))
           create_event(type: 'ocr_errored', results:)
+          FileUtils.rm_f(results.result_path)
         end
 
         # Publish to the SDR event service with processing information
