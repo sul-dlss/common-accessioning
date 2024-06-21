@@ -12,7 +12,7 @@ module Dor
         # ab123cd4567.xml.0001.result.xml
         RESULT_FILE_PATTERN = /(?<druid>\w+)\.xml(?:\.(?<run_index>\d+))?\.result\.xml/
 
-        # Find the latest Abbyy results XML file by druid, since there coule be more than one.
+        # Find the latest Abbyy results XML file by druid, since there could be more than one.
         # @param druid [String] The druid to use to look for results
         # @param logger [Logger] An optional logger to use
         # @return [Results, nil] The Results object or nil, if one wasn't found.

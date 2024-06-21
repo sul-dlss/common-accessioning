@@ -118,17 +118,21 @@ RSpec.describe Dor::TextExtraction::Ocr do
 
   describe '#cleanup' do
     let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: true, type: object_type, structural:) }
+    let(:result_path) { File.join(Settings.sdr.abbyy.local_result_path, "#{druid}.xml.result.xml") }
+    let(:abbyy_results) { instance_double(Dor::TextExtraction::Abbyy::Results, result_path:) }
 
     # start with a clean slate, we will create directories and files to cleanup for each scenario
     before do
       FileUtils.rm_rf(ocr.abbyy_input_path)
       FileUtils.rm_rf(ocr.abbyy_output_path)
       FileUtils.rm_f(ticket.file_path)
+      FileUtils.rm_f(abbyy_results.result_path)
+      allow(Dor::TextExtraction::Abbyy::Results).to receive(:find_latest).and_return(abbyy_results)
     end
 
     context 'when no input or output folders or xml file' do
       it 'does nothing' do
-        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path].each { |path| expect(File.exist?(path)).to be false }
+        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, abbyy_results.result_path].each { |path| expect(File.exist?(path)).to be false }
         expect(ocr.cleanup).to be true
       end
     end
@@ -161,17 +165,19 @@ RSpec.describe Dor::TextExtraction::Ocr do
       end
     end
 
-    context 'when input and output folders are empty and xml ticket file exists' do
+    context 'when input and output folders are empty and xml ticket and result xml file exists' do
       before do
         FileUtils.mkdir_p(ocr.abbyy_input_path)
         FileUtils.mkdir_p(ocr.abbyy_output_path)
+        FileUtils.mkdir_p(Settings.sdr.abbyy.local_result_path)
         FileUtils.touch(ticket.file_path)
+        FileUtils.touch(abbyy_results.result_path)
       end
 
-      it 'removes both folders and the XML ticket file' do
-        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path].each { |path| expect(File.exist?(path)).to be true }
+      it 'removes both folders and the XML ticket and result files' do
+        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, abbyy_results.result_path].each { |path| expect(File.exist?(path)).to be true }
         ocr.cleanup
-        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path].each { |path| expect(File.exist?(path)).to be false }
+        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, abbyy_results.result_path].each { |path| expect(File.exist?(path)).to be false }
       end
     end
   end

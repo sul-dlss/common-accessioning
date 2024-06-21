@@ -33,13 +33,20 @@ module Dor
         end
 
         # e.g. /abbyy/OUTPUT/ab123cd4567
-        logger.info "Removing empty ABBYY output directory: #{abbyy_output_path}"
+        logger.info "Removing ABBYY output directory: #{abbyy_output_path}"
         FileUtils.rm_rf(abbyy_output_path)
 
         # e.g. /abbyy/INPUT/ab123cd4567.xml
         xml_ticket_file = Abbyy::Ticket.new(filepaths: [], druid: cocina_object.externalIdentifier).file_path
-        logger.info "Removing XML Ticket File: #{abbyy_output_path}"
+        logger.info "Removing XML Ticket File: #{xml_ticket_file}"
         FileUtils.rm_f(xml_ticket_file)
+
+        # e.g. /abbyy/RESULTXML/ab123cd4567.xml.result.xml
+        abbyy_results = Dor::TextExtraction::Abbyy::Results.find_latest(druid: bare_druid, logger:)
+        if abbyy_results # this could be nil if there is no latest result XML file located
+          logger.info "Removing XML Result File: #{abbyy_results.result_path}"
+          FileUtils.rm_f(abbyy_results.result_path)
+        end
 
         true
       end
