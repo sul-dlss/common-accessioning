@@ -4,12 +4,13 @@ module Dor
   module TextExtraction
     # Determine if OCR is required and possible for a given object
     class Ocr
-      attr_reader :cocina_object, :workflow_context, :bare_druid
+      attr_reader :cocina_object, :workflow_context, :bare_druid, :logger
 
-      def initialize(cocina_object:, workflow_context: {})
+      def initialize(cocina_object:, workflow_context: {}, logger: nil)
         @cocina_object = cocina_object
         @workflow_context = workflow_context
         @bare_druid = cocina_object.externalIdentifier.delete_prefix('druid:')
+        @logger = logger || Logger.new($stdout)
       end
 
       def abbyy_output_path
@@ -20,20 +21,29 @@ module Dor
         File.join(Settings.sdr.abbyy.local_ticket_path, bare_druid)
       end
 
+      # rubocop:disable Metrics/MethodLength
       # rubocop:disable Metrics/AbcSize
       def cleanup
         if Dir.exist?(abbyy_input_path)
           raise "#{abbyy_input_path} is not empty" unless Dir.empty?(abbyy_input_path)
 
+          # e.g. /abbyy/INPUT/ab123cd4567
+          logger.info "Removing empty ABBYY input directory: #{abbyy_input_path}"
           FileUtils.rm_rf(abbyy_input_path)
         end
 
-        return true unless Dir.exist?(abbyy_output_path)
-
+        # e.g. /abbyy/OUTPUT/ab123cd4567
+        logger.info "Removing empty ABBYY output directory: #{abbyy_output_path}"
         FileUtils.rm_rf(abbyy_output_path)
 
-        FileUtils.rm_f(Abbyy::Ticket.new(filepaths: [], druid: cocina_object.externalIdentifier).file_path) # remove XML ticket file
+        # e.g. /abbyy/INPUT/ab123cd4567.xml
+        xml_ticket_file = Abbyy::Ticket.new(filepaths: [], druid: cocina_object.externalIdentifier).file_path
+        logger.info "Removing XML Ticket File: #{abbyy_output_path}"
+        FileUtils.rm_f(xml_ticket_file)
+
+        true
       end
+      # rubocop:enable Metrics/MethodLength
       # rubocop:enable Metrics/AbcSize
 
       def possible?

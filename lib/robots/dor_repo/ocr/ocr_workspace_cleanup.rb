@@ -11,7 +11,7 @@ module Robots
 
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          Dor::TextExtraction::Ocr.new(cocina_object:).cleanup
+          Dor::TextExtraction::Ocr.new(cocina_object:, logger:).cleanup
         end
       end
     end
