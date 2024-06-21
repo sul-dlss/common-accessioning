@@ -67,7 +67,6 @@ module Dor
         end
 
         # Notify SDR that the OCR workflow step failed
-        # rubocop:disable Metrics/AbcSize
         def process_failure(results)
           logger.info "Found failed OCR results for druid:#{results.druid} at #{results.result_path}: #{results.failure_messages.join('; ')}"
           context = { druid: "druid:#{results.druid}", result_path: results.result_path, failure_messages: results.failure_messages }
@@ -75,7 +74,6 @@ module Dor
           workflow_updater.mark_ocr_errored("druid:#{results.druid}", error_msg: results.failure_messages.join("\n"))
           create_event(type: 'ocr_errored', results:)
         end
-        # rubocop:enable Metrics/AbcSize
 
         # Publish to the SDR event service with processing information
         def create_event(type:, results:)
