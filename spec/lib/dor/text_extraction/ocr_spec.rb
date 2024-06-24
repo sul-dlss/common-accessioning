@@ -120,6 +120,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
     let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: true, type: object_type, structural:) }
     let(:result_path) { File.join(Settings.sdr.abbyy.local_result_path, "#{druid}.xml.result.xml") }
     let(:abbyy_results) { instance_double(Dor::TextExtraction::Abbyy::Results, result_path:) }
+    let(:abbyy_exception_file) { File.join(Settings.sdr.abbyy.local_exception_path, "#{druid}.xml.result.xml") }
 
     # start with a clean slate, we will create directories and files to cleanup for each scenario
     before do
@@ -127,6 +128,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
       FileUtils.rm_rf(ocr.abbyy_output_path)
       FileUtils.rm_f(ticket.file_path)
       FileUtils.rm_f(abbyy_results.result_path)
+      FileUtils.rm_f(abbyy_exception_file)
       allow(Dor::TextExtraction::Abbyy::Results).to receive(:find_latest).and_return(abbyy_results)
     end
 
@@ -170,14 +172,16 @@ RSpec.describe Dor::TextExtraction::Ocr do
         FileUtils.mkdir_p(ocr.abbyy_input_path)
         FileUtils.mkdir_p(ocr.abbyy_output_path)
         FileUtils.mkdir_p(Settings.sdr.abbyy.local_result_path)
+        FileUtils.mkdir_p(Settings.sdr.abbyy.local_exception_path)
         FileUtils.touch(ticket.file_path)
         FileUtils.touch(abbyy_results.result_path)
+        FileUtils.touch(abbyy_exception_file)
       end
 
       it 'removes both folders and the XML ticket and result files' do
-        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, abbyy_results.result_path].each { |path| expect(File.exist?(path)).to be true }
+        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, abbyy_results.result_path, abbyy_exception_file].each { |path| expect(File.exist?(path)).to be true }
         ocr.cleanup
-        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, abbyy_results.result_path].each { |path| expect(File.exist?(path)).to be false }
+        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, abbyy_results.result_path, abbyy_exception_file].each { |path| expect(File.exist?(path)).to be false }
       end
     end
   end

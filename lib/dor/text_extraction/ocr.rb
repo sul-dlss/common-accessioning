@@ -48,6 +48,13 @@ module Dor
           FileUtils.rm_f(abbyy_results.result_path)
         end
 
+        # e.g. /abbyy/EXCEPTIONS/druid:ab123cd4567.xml.result.xml
+        abbyy_exceptions = Dir.glob("#{Settings.sdr.abbyy.local_exception_path}/*#{bare_druid}*")
+        abbyy_exceptions.each do |abbyy_exception_file|
+          logger.info "Removing XML Exception File: #{abbyy_exception_file}"
+          FileUtils.rm_f(abbyy_exception_file)
+        end
+
         true
       end
       # rubocop:enable Metrics/MethodLength
