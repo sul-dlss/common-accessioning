@@ -3,7 +3,7 @@
 # rubocop:disable Metrics/BlockLength
 namespace :abbyy do
   # ROBOT_ENVIRONMENT=production bundle exec rake abbyy:cleanup
-  desc 'Cleanup empty ABBYY input and output directories and older ABBYY tickets'
+  desc 'Cleanup empty ABBYY input and output directories and older ABBYY tickets (for clearing detritus from e.g. ABBYY runs that errored)'
   task cleanup: :environment do |_task, _args|
     # Delete XML Result files older than 1 week
     result_files = Dir.glob("#{Settings.sdr.abbyy.local_result_path}/*.xml")
@@ -21,7 +21,7 @@ namespace :abbyy do
 
     # Delete ABBYY input directories that are empty and ticket files older than 1 week
     input_entries = Dir.glob("#{Settings.sdr.abbyy.local_ticket_path}/*")
-    puts "Checking ABBYY input folders/files #{Settings.sdr.abbyy.local_ticket_path} for deletion: #{input_entries.size} folders found."
+    puts "Checking ABBYY input folders/files #{Settings.sdr.abbyy.local_ticket_path} for deletion: #{input_entries.size} folders/files found."
     num_deleted = 0
     input_entries.each do |entry|
       if File.directory?(entry) && Dir.empty?(entry)
@@ -32,6 +32,8 @@ namespace :abbyy do
         num_deleted += 1
         puts "Deleting ABBYY ticket file #{entry}"
         FileUtils.rm_f(entry)
+      else
+        puts "skipping #{entry} (if it's a directory, it wasn't empty; if it's a file, it was less than 1 week old)"
       end
     end
     puts "Deleted #{num_deleted} empty input folders or XML files older than 1 week."
