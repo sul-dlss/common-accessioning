@@ -3,6 +3,7 @@
 module Dor
   module TextExtraction
     # Determine if OCR is required and possible for a given object
+    # rubocop:disable Metrics/ClassLength
     class Ocr
       attr_reader :cocina_object, :workflow_context, :bare_druid, :logger
 
@@ -21,14 +22,31 @@ module Dor
         File.join(Settings.sdr.abbyy.local_ticket_path, bare_druid)
       end
 
+      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize
       def cleanup
-        cleanup_input_folder
-        cleanup_output_folder
-        cleanup_xml_ticket
-        cleanup_abbyy_results
-        cleanup_abbyy_exceptions
+        raise "#{abbyy_input_path} is not empty" if Dir.exist?(abbyy_input_path) && !Dir.empty?(abbyy_input_path)
+
+        tries = 0
+        begin
+          cleanup_input_folder
+          cleanup_output_folder
+          cleanup_xml_ticket
+          cleanup_abbyy_results
+          cleanup_abbyy_exceptions
+        rescue SystemCallError => e # SystemCallError is the superclass of all errors raised by system calls, such as Errno::ENOENT from FileUtils.rm_r
+          tries += 1
+          sleep(2**tries)
+
+          raise e unless tries < 3
+
+          Honeybadger.notify('[NOTE] Problem deleting files and folders in ocrWF:ocr-workspace-cleanup', context: { druid: bare_druid, tries:, error: e })
+          retry
+        end
         true
       end
+      # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/AbcSize
 
       def possible?
         # only items can be OCR'd
@@ -62,8 +80,6 @@ module Dor
       # e.g. /abbyy/INPUT/ab123cd4567
       def cleanup_input_folder
         return unless Dir.exist?(abbyy_input_path)
-
-        raise "#{abbyy_input_path} is not empty" unless Dir.empty?(abbyy_input_path)
 
         logger.info "Removing empty ABBYY input directory: #{abbyy_input_path}"
         FileUtils.rm_r(abbyy_input_path)
@@ -158,5 +174,6 @@ module Dor
         resource_type_mapping.keys
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

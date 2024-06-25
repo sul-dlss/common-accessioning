@@ -184,5 +184,39 @@ RSpec.describe Dor::TextExtraction::Ocr do
         [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, abbyy_results.result_path, abbyy_exception_file].each { |path| expect(File.exist?(path)).to be false }
       end
     end
+
+    context 'when there is an input and output folder but there are exceptions' do
+      before do
+        FileUtils.mkdir_p(ocr.abbyy_input_path)
+        FileUtils.mkdir_p(ocr.abbyy_output_path)
+        allow(Honeybadger).to receive(:notify)
+        count = 0
+        allow(FileUtils).to receive(:rm_r) do
+          count += 1
+          raise Errno::ENOENT if count <= num_errors
+        end
+      end
+
+      context 'when the exception occurs two times and then it succeeds' do
+        let(:num_errors) { 2 }
+
+        it 'calls the deletion of the input folder three times and output folder once' do
+          ocr.cleanup
+          expect(Honeybadger).to have_received(:notify).twice # two calls to HB, success occurs third time
+          expect(FileUtils).to have_received(:rm_r).with(ocr.abbyy_input_path).exactly(3).times
+          expect(FileUtils).to have_received(:rm_r).with(ocr.abbyy_output_path).once
+        end
+      end
+
+      context 'when the exception occurs three times' do
+        let(:num_errors) { 3 }
+
+        it 'raises the exception after trying three times' do
+          expect { ocr.cleanup }.to raise_error(Errno::ENOENT)
+          expect(Honeybadger).to have_received(:notify).twice # two calls to HB, exception occurs third time
+          expect(FileUtils).not_to have_received(:rm_r).with(ocr.abbyy_output_path)
+        end
+      end
+    end
   end
 end
