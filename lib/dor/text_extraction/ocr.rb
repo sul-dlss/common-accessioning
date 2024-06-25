@@ -43,13 +43,13 @@ module Dor
 
         # e.g. /abbyy/RESULTXML/ab123cd4567.xml.result.xml
         abbyy_results = Dor::TextExtraction::Abbyy::Results.find_latest(druid: bare_druid, logger:)
-        if abbyy_results # this could be nil if there is no latest result XML file located
+        if abbyy_results # this could be nil if there is no latest result XML file for this druid
           logger.info "Removing XML Result File: #{abbyy_results.result_path}"
           FileUtils.rm_f(abbyy_results.result_path)
         end
 
         # e.g. /abbyy/EXCEPTIONS/druid:ab123cd4567.xml.result.xml
-        abbyy_exceptions = Dir.glob("#{Settings.sdr.abbyy.local_exception_path}/*#{bare_druid}*")
+        abbyy_exceptions = Dir.glob("#{Settings.sdr.abbyy.local_exception_path}/*#{bare_druid}*.xml")
         abbyy_exceptions.each do |abbyy_exception_file|
           logger.info "Removing XML Exception File: #{abbyy_exception_file}"
           FileUtils.rm_f(abbyy_exception_file)

@@ -353,3 +353,8 @@ RSpec/RepeatedSubjectCall: # new in 2.27
   Enabled: true
 RSpec/UndescriptiveLiteralsDescription: # new in 2.29
   Enabled: true
+
+Style/SendWithLiteralMethodName: # new in 1.64
+  Enabled: true
+Style/SuperArguments: # new in 1.64
+  Enabled: true
