@@ -21,44 +21,14 @@ module Dor
         File.join(Settings.sdr.abbyy.local_ticket_path, bare_druid)
       end
 
-      # rubocop:disable Metrics/MethodLength
-      # rubocop:disable Metrics/AbcSize
       def cleanup
-        if Dir.exist?(abbyy_input_path)
-          raise "#{abbyy_input_path} is not empty" unless Dir.empty?(abbyy_input_path)
-
-          # e.g. /abbyy/INPUT/ab123cd4567
-          logger.info "Removing empty ABBYY input directory: #{abbyy_input_path}"
-          FileUtils.rm_rf(abbyy_input_path)
-        end
-
-        # e.g. /abbyy/OUTPUT/ab123cd4567
-        logger.info "Removing ABBYY output directory: #{abbyy_output_path}"
-        FileUtils.rm_rf(abbyy_output_path)
-
-        # e.g. /abbyy/INPUT/ab123cd4567.xml
-        xml_ticket_file = Abbyy::Ticket.new(filepaths: [], druid: cocina_object.externalIdentifier).file_path
-        logger.info "Removing XML Ticket File: #{xml_ticket_file}"
-        FileUtils.rm_f(xml_ticket_file)
-
-        # e.g. /abbyy/RESULTXML/ab123cd4567.xml.result.xml
-        abbyy_results = Dor::TextExtraction::Abbyy::Results.find_latest(druid: bare_druid, logger:)
-        if abbyy_results # this could be nil if there is no latest result XML file for this druid
-          logger.info "Removing XML Result File: #{abbyy_results.result_path}"
-          FileUtils.rm_f(abbyy_results.result_path)
-        end
-
-        # e.g. /abbyy/EXCEPTIONS/druid:ab123cd4567.xml.result.xml
-        abbyy_exceptions = Dir.glob("#{Settings.sdr.abbyy.local_exception_path}/*#{bare_druid}*.xml")
-        abbyy_exceptions.each do |abbyy_exception_file|
-          logger.info "Removing XML Exception File: #{abbyy_exception_file}"
-          FileUtils.rm_f(abbyy_exception_file)
-        end
-
+        cleanup_input_folder
+        cleanup_output_folder
+        cleanup_xml_ticket
+        cleanup_abbyy_results
+        cleanup_abbyy_exceptions
         true
       end
-      # rubocop:enable Metrics/MethodLength
-      # rubocop:enable Metrics/AbcSize
 
       def possible?
         # only items can be OCR'd
@@ -88,6 +58,54 @@ module Dor
       end
 
       private
+
+      # e.g. /abbyy/INPUT/ab123cd4567
+      def cleanup_input_folder
+        return unless Dir.exist?(abbyy_input_path)
+
+        raise "#{abbyy_input_path} is not empty" unless Dir.empty?(abbyy_input_path)
+
+        logger.info "Removing empty ABBYY input directory: #{abbyy_input_path}"
+        FileUtils.rm_r(abbyy_input_path)
+      end
+
+      # e.g. /abbyy/OUTPUT/ab123cd4567
+      def cleanup_output_folder
+        return unless Dir.exist?(abbyy_output_path)
+
+        logger.info "Removing ABBYY output directory: #{abbyy_output_path}"
+        FileUtils.rm_r(abbyy_output_path)
+      end
+
+      # e.g. /abbyy/INPUT/ab123cd4567.xml
+      def cleanup_xml_ticket
+        xml_ticket_file = Abbyy::Ticket.new(filepaths: [], druid: cocina_object.externalIdentifier).file_path
+
+        return unless File.exist?(xml_ticket_file)
+
+        logger.info "Removing XML Ticket File: #{xml_ticket_file}"
+        FileUtils.rm_r(xml_ticket_file)
+      end
+
+      # e.g. /abbyy/RESULTXML/ab123cd4567.xml.result.xml
+      def cleanup_abbyy_results
+        abbyy_results = Dor::TextExtraction::Abbyy::Results.find_latest(druid: bare_druid, logger:)
+
+        # this could be nil if there is no latest result XML file for this druid
+        return unless abbyy_results && File.exist?(abbyy_results.result_path)
+
+        logger.info "Removing XML Result File: #{abbyy_results.result_path}"
+        FileUtils.rm_r(abbyy_results.result_path)
+      end
+
+      # e.g. /abbyy/EXCEPTIONS/druid:ab123cd4567.xml.result.xml
+      def cleanup_abbyy_exceptions
+        abbyy_exceptions = Dir.glob("#{Settings.sdr.abbyy.local_exception_path}/*#{bare_druid}*.xml")
+        abbyy_exceptions.each do |abbyy_exception_file|
+          logger.info "Removing XML Exception File: #{abbyy_exception_file}"
+          FileUtils.rm_r(abbyy_exception_file)
+        end
+      end
 
       # iterate through cocina strutural contains and return all File objects for files that need to be OCRed
       def ocr_files
