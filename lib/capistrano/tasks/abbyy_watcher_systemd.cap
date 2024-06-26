@@ -2,7 +2,7 @@
 
 namespace :abbyy_watcher_systemd do
   desc 'Restart the abbyy_watcher systemd service'
-  task :restart do
+  task restart: ['controlmaster:setup', 'otk:generate'] do
     on fetch(:abbyy_watcher_server) do
       within release_path do
         execute 'sudo systemctl restart abbyy_watcher'
@@ -11,7 +11,7 @@ namespace :abbyy_watcher_systemd do
   end
 
   desc 'Check that the abbyy_watcher systemd service is running'
-  task :status do
+  task status: ['controlmaster:setup', 'otk:generate'] do
     on fetch(:abbyy_watcher_server) do
       within release_path do
         execute 'systemctl status abbyy_watcher'
