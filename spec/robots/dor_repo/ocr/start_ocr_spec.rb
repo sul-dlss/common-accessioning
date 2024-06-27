@@ -47,7 +47,7 @@ describe Robots::DorRepo::Ocr::StartOcr do
         count = 0
         allow(version_client).to receive(:open) do |*_args|
           count += 1
-          raise Dor::Services::Client::Error unless count > 2
+          raise Dor::Services::Client::UnexpectedResponse.new(response: 'nope') unless count > 2
 
           true
         end
@@ -61,10 +61,10 @@ describe Robots::DorRepo::Ocr::StartOcr do
     end
 
     context 'when open version fails and exceeds maximum tries' do
-      before { allow(version_client).to receive(:open).and_raise(Dor::Services::Client::Error) }
+      before { allow(version_client).to receive(:open).and_raise(Dor::Services::Client::UnexpectedResponse.new(response: 'nope')) }
 
       it 'logs to honeybadger and then raises the error' do
-        expect { perform }.to raise_error(Dor::Services::Client::Error)
+        expect { perform }.to raise_error(Dor::Services::Client::UnexpectedResponse)
         expect(version_client).to have_received(:open).thrice # shakespeare coding (all three times fail)
         expect(Honeybadger).to have_received(:notify).twice # two calls to HB for the first two failures
       end
