@@ -26,7 +26,7 @@ module Robots
           tries = 0
           begin
             object_client.version.open(description: 'Start OCR workflow')
-          rescue Dor::Services::Client::Error => e
+          rescue Dor::Services::Client::UnexpectedResponse => e
             tries += 1
             sleep(2**tries)
 
