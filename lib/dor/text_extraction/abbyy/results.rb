@@ -5,7 +5,7 @@ module Dor
     module Abbyy
       # Parses .xml.result.xml file that gets created when Abbyy sees a XMLTICKET
       class Results
-        attr_reader :result_path, :druid, :run_index, :software_name, :software_version
+        attr_reader :result_path, :druid, :software_name, :software_version, :success, :file_list, :failure_messages
 
         # Naming convention for result XML files:
         # ab123cd4567.xml.result.xml
@@ -25,34 +25,29 @@ module Dor
 
         def initialize(result_path:, logger: nil)
           @result_path = result_path
-          druid, run_index = RESULT_FILE_PATTERN.match(File.basename(result_path)).captures
+          druid, _run_index = RESULT_FILE_PATTERN.match(File.basename(result_path)).captures
           @druid = druid
-          @run_index = (run_index || 0).to_i
           @logger = logger || Logger.new($stdout)
-          @software_name = processing_metadata[:software_name] || 'ABBYY FineReader Server'
-          @software_version = processing_metadata[:software_version]
-        end
-
-        def success?
-          xml_contents.at('@IsFailed').text == 'false'
-        end
-
-        def failure_messages
-          xml_contents.xpath("//Message[@Type='Error']//Text")&.map(&:text)
+          @file_list = []
+          @failure_messages = []
+          @software_name = 'ABBYY FineReader Server'
+          parse_xml
         end
 
         def output_docs
-          output_docs = xml_contents.xpath('//OutputDocuments')
           {}.tap do |structural|
-            output_docs.each do |doc|
-              doc_type = doc.xpath('@ExportFormat').text.downcase
-              structural[doc_type] = local_output_path(doc.xpath('@OutputLocation').text, doc.xpath('FileName').text)
+            file_list.each do |doc|
+              structural[doc['ExportFormat'].downcase] = local_output_path(doc['OutputLocation'], doc['FileName'])
             end
           end
         end
 
         def alto_doc
           output_docs['alto']
+        end
+
+        def success?
+          success
         end
 
         # write the result output files to a given directory
@@ -78,14 +73,46 @@ module Dor
 
         # Return any Alto XML files in the output directory that have been split out from a larger one.
         def split_ocr_paths
-          output_dir = local_output_dir(xml_contents.xpath('//OutputDocuments[1]/@OutputLocation').text)
+          output_dir = local_output_dir(file_list.first['OutputLocation'])
           Dir.entries(output_dir)
              .filter { |filename| filename.match('.+\.xml$') }
              .map { |filename| File.join(output_dir, filename) }
         end
 
-        def xml_contents
-          @xml_contents ||= Nokogiri::XML(File.read(result_path))
+        def parse_xml
+          reader = Nokogiri::XML::Reader(File.read(result_path))
+          reader.each do |node|
+            get_file_data(node) if node.attributes.keys.include?('ExportFormat')
+            failures(node) if node.name == 'Message'
+            get_status(node) if node.attributes.keys.include?('IsFailed')
+          end
+          processing_metadata
+        end
+
+        def failures(node)
+          return unless node.attributes['Type'] == 'Error'
+
+          text = node_text(node)
+          return unless text
+
+          @failure_messages.push(node_text(node))
+        end
+
+        def get_status(node)
+          @success = node.attributes['IsFailed'] == 'false'
+        end
+
+        def get_file_data(node)
+          doc_data = node.attributes
+          doc_data['FileName'] = node_text(node)
+          @file_list.push(doc_data) if doc_data['FileName']
+        end
+
+        def node_text(node)
+          @node_text = Nokogiri::XML(node.inner_xml).text
+          return false unless @node_text.present?
+
+          @node_text
         end
 
         # Return the local Unix path for a given Abbyy Windows output directory
@@ -99,21 +126,26 @@ module Dor
           windows_dir.sub(Settings.sdr.abbyy.remote_output_path, Settings.sdr.abbyy.local_output_path)
         end
 
+        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         # Software and version used to do OCR processing, found in ALTO output
         def processing_metadata
           return {} unless File.exist? alto_doc # PDFs don't have ALTO, so just bail out
 
-          alto_xml = Nokogiri::XML(File.read(alto_doc)).remove_namespaces!
-          metadata = alto_xml.xpath('//OCRProcessing//ocrProcessingStep').first
+          Nokogiri::XML::Reader(File.read(alto_doc)).each do |node|
+            next unless node.name == 'processingSoftware'
 
-          {
-            software_name: metadata.xpath('//softwareName').text,
-            software_version: metadata.xpath('//softwareVersion').text
-          }
+            metadata = Nokogiri::XML(node.outer_xml)
+            next unless metadata.at('softwareVersion')
+
+            @software_name = metadata.at('softwareName').text
+            @software_version = metadata.at('softwareVersion').text
+            break
+          end
         rescue StandardError # If we can't parse the ALTO, log it and move on
           Honeybadger.notify('Failed to parse processing metadata from ALTO XML', context: { alto_doc: })
           {}
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
       end
     end
   end
