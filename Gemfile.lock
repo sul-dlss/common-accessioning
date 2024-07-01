@@ -39,7 +39,7 @@ GEM
     bundler-audit (0.9.1)
       bundler (>= 1.2.0, < 3)
       thor (~> 1.0)
-    capistrano (3.18.1)
+    capistrano (3.19.0)
       airbrussh (>= 1.0.0)
       i18n
       rake (>= 10.0.0)
@@ -53,7 +53,7 @@ GEM
     capistrano-one_time_key (0.2.0)
       capistrano (~> 3.0)
     capistrano-shared_configs (0.2.2)
-    cocina-models (0.98.0)
+    cocina-models (0.98.1)
       activesupport
       deprecation
       dry-struct (~> 1.0)
@@ -94,7 +94,7 @@ GEM
       capistrano-shared_configs
       ed25519
     docile (1.4.0)
-    dor-services-client (14.13.0)
+    dor-services-client (14.14.0)
       activesupport (>= 4.2, < 8)
       cocina-models (~> 0.98.0)
       deprecation
@@ -174,7 +174,7 @@ GEM
     mime-types-data (3.2024.0604)
     mini_exiftool (2.11.0)
     mini_portile2 (2.8.7)
-    minitest (5.24.0)
+    minitest (5.24.1)
     moab-versioning (6.1.0)
       druid-tools (>= 1.0.0)
       json
@@ -217,7 +217,7 @@ GEM
     psych (5.1.2)
       stringio
     public_suffix (6.0.0)
-    purl_fetcher-client (1.4.1)
+    purl_fetcher-client (1.5.1)
       activesupport
       faraday (~> 2.1)
     racc (1.8.0)
@@ -235,7 +235,7 @@ GEM
     regexp_parser (2.9.2)
     reline (0.5.9)
       io-console (~> 0.5)
-    rexml (3.3.0)
+    rexml (3.3.1)
       strscan
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
