@@ -25,7 +25,7 @@ module Robots
         end
 
         def release_tags
-          @release_tags ||= object_client.release_tags.list
+          @release_tags ||= object_client.release_tags.list(public: true) # we only want the latest public release tags
         end
 
         def targets_for(release:)

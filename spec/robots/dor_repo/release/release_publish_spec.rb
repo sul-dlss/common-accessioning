@@ -8,7 +8,7 @@ RSpec.describe Robots::DorRepo::Release::ReleasePublish do
   let(:druid) { 'bb222cc3333' }
   let(:robot) { described_class.new }
   let(:object_client) { instance_double(Dor::Services::Client::Object, release_tags: release_tags_client) }
-  let(:release_tags_client) { instance_double(Dor::Services::Client::ReleaseTags, list: release_tags) }
+  let(:release_tags_client) { instance_double(Dor::Services::Client::ReleaseTags) }
   let(:release_tags) do
     [
       Dor::Services::Client::ReleaseTag.new(
@@ -39,6 +39,7 @@ RSpec.describe Robots::DorRepo::Release::ReleasePublish do
     allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
     allow(PurlFetcher::Client).to receive(:configure)
     allow(PurlFetcher::Client::ReleaseTags).to receive(:release)
+    allow(release_tags_client).to receive(:list).with(public: true).and_return(release_tags)
   end
 
   it 'calls purl fetcher with the release tags' do

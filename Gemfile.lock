@@ -93,7 +93,7 @@ GEM
       capistrano-shared_configs
       ed25519
     docile (1.4.0)
-    dor-services-client (14.15.0)
+    dor-services-client (14.16.0)
       activesupport (>= 4.2, < 8)
       cocina-models (~> 0.98.0)
       deprecation
@@ -328,7 +328,7 @@ DEPENDENCIES
   config
   debug
   dlss-capistrano
-  dor-services-client (~> 14.4)
+  dor-services-client (~> 14.6)
   dor-workflow-client (~> 7.0)
   druid-tools
   dry-struct (~> 1.0)
