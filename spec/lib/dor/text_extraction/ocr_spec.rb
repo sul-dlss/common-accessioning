@@ -208,12 +208,12 @@ RSpec.describe Dor::TextExtraction::Ocr do
         end
       end
 
-      context 'when the exception occurs three times' do
-        let(:num_errors) { 3 }
+      context 'when the exception occurs four times' do
+        let(:num_errors) { 4 }
 
         it 'raises the exception after trying three times' do
           expect { ocr.cleanup }.to raise_error(Errno::ENOENT)
-          expect(Honeybadger).to have_received(:notify).twice # two calls to HB, exception occurs third time
+          expect(Honeybadger).to have_received(:notify).thrice # three calls to HB, exception occurs fourth time
           expect(FileUtils).not_to have_received(:rm_r).with(ocr.abbyy_output_path)
         end
       end
