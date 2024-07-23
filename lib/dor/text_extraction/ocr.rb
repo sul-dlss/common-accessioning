@@ -36,9 +36,9 @@ module Dor
           cleanup_abbyy_exceptions
         rescue SystemCallError => e # SystemCallError is the superclass of all errors raised by system calls, such as Errno::ENOENT from FileUtils.rm_r
           tries += 1
-          sleep(2**tries)
+          sleep(3**tries)
 
-          raise e unless tries < 3
+          raise e unless tries < 4
 
           Honeybadger.notify('[NOTE] Problem deleting files and folders in ocrWF:ocr-workspace-cleanup', context: { druid: bare_druid, tries:, error: e })
           retry
