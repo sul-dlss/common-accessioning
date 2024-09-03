@@ -212,7 +212,6 @@ RSpec.describe Dor::TextExtraction::Ocr do
 
         it 'raises the exception after trying three times' do
           expect { ocr.cleanup }.to raise_error(Errno::ENOENT)
-          expect(Honeybadger).to have_received(:notify).once # one call to HB, exception occurs fourth time
           expect(FileUtils).not_to have_received(:rm_r).with(ocr.abbyy_output_path)
         end
       end

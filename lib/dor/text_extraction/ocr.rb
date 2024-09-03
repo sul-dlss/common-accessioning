@@ -23,7 +23,6 @@ module Dor
       end
 
       # rubocop:disable Metrics/MethodLength
-      # rubocop:disable Metrics/AbcSize
       def cleanup
         raise "#{abbyy_input_path} is not empty" if Dir.exist?(abbyy_input_path) && !Dir.empty?(abbyy_input_path)
 
@@ -41,13 +40,11 @@ module Dor
 
           retry if tries < max_tries
 
-          Honeybadger.notify('[NOTE] Problem deleting files and folders in ocrWF:ocr-workspace-cleanup', context: { druid: bare_druid, tries:, error: e })
           raise e
         end
         true
       end
       # rubocop:enable Metrics/MethodLength
-      # rubocop:enable Metrics/AbcSize
 
       def possible?
         # only items can be OCR'd
