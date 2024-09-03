@@ -127,7 +127,7 @@ module Dor
         # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         # Software and version used to do OCR processing, found in ALTO output
         def processing_metadata
-          return {} unless File.exist? alto_doc # PDFs don't have ALTO, so just bail out
+          return {} unless alto_doc && File.exist?(alto_doc) # PDFs don't have ALTO, so just bail out
 
           Nokogiri::XML::Reader(File.read(alto_doc)).each do |node|
             next unless node.name == 'processingSoftware'
@@ -140,7 +140,7 @@ module Dor
             break
           end
         rescue StandardError # If we can't parse the ALTO, log it and move on
-          Honeybadger.notify('Failed to parse processing metadata from ALTO XML', context: { alto_doc: })
+          Honeybadger.notify('Failed to parse processing metadata from ALTO XML', context: { result_path:, alto_doc: })
           {}
         end
         # rubocop:enable Metrics/AbcSize, Metrics/MethodLength

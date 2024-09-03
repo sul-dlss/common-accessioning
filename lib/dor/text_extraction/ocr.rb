@@ -27,7 +27,7 @@ module Dor
         raise "#{abbyy_input_path} is not empty" if Dir.exist?(abbyy_input_path) && !Dir.empty?(abbyy_input_path)
 
         tries = 0
-        max_tries = 3
+        max_tries = 4
         begin
           cleanup_input_folder
           cleanup_output_folder
