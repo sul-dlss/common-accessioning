@@ -28,6 +28,7 @@ module Dor
         raise "#{abbyy_input_path} is not empty" if Dir.exist?(abbyy_input_path) && !Dir.empty?(abbyy_input_path)
 
         tries = 0
+        max_tries = 3
         begin
           cleanup_input_folder
           cleanup_output_folder
@@ -38,10 +39,10 @@ module Dor
           tries += 1
           sleep(3**tries)
 
-          raise e unless tries < 4
+          retry if tries < max_tries
 
           Honeybadger.notify('[NOTE] Problem deleting files and folders in ocrWF:ocr-workspace-cleanup', context: { druid: bare_druid, tries:, error: e })
-          retry
+          raise e
         end
         true
       end
@@ -105,13 +106,13 @@ module Dor
 
       # e.g. /abbyy/RESULTXML/ab123cd4567.xml.result.xml
       def cleanup_abbyy_results
-        abbyy_results = Dor::TextExtraction::Abbyy::Results.find_latest(druid: bare_druid, logger:)
+        result_path = Dor::TextExtraction::Abbyy::Results.find_latest(druid: bare_druid)
 
         # this could be nil if there is no latest result XML file for this druid
-        return unless abbyy_results && File.exist?(abbyy_results.result_path)
+        return unless result_path && File.exist?(result_path)
 
-        logger.info "Removing XML Result File: #{abbyy_results.result_path}"
-        FileUtils.rm_r(abbyy_results.result_path)
+        logger.info "Removing XML Result File: #{result_path}"
+        FileUtils.rm_r(result_path)
       end
 
       # e.g. /abbyy/EXCEPTIONS/druid:ab123cd4567.xml.result.xml

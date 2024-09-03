@@ -119,7 +119,6 @@ RSpec.describe Dor::TextExtraction::Ocr do
   describe '#cleanup' do
     let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: true, type: object_type, structural:) }
     let(:result_path) { File.join(Settings.sdr.abbyy.local_result_path, "#{druid}.xml.result.xml") }
-    let(:abbyy_results) { instance_double(Dor::TextExtraction::Abbyy::Results, result_path:) }
     let(:abbyy_exception_file) { File.join(Settings.sdr.abbyy.local_exception_path, "#{druid}.xml.result.xml") }
 
     # start with a clean slate, we will create directories and files to cleanup for each scenario
@@ -127,14 +126,14 @@ RSpec.describe Dor::TextExtraction::Ocr do
       FileUtils.rm_rf(ocr.abbyy_input_path)
       FileUtils.rm_rf(ocr.abbyy_output_path)
       FileUtils.rm_f(ticket.file_path)
-      FileUtils.rm_f(abbyy_results.result_path)
+      FileUtils.rm_f(result_path)
       FileUtils.rm_f(abbyy_exception_file)
-      allow(Dor::TextExtraction::Abbyy::Results).to receive(:find_latest).and_return(abbyy_results)
+      allow(Dor::TextExtraction::Abbyy::Results).to receive(:find_latest).and_return(result_path)
     end
 
     context 'when no input or output folders or xml file' do
       it 'does nothing' do
-        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, abbyy_results.result_path].each { |path| expect(File.exist?(path)).to be false }
+        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, result_path].each { |path| expect(File.exist?(path)).to be false }
         expect(ocr.cleanup).to be true
       end
     end
@@ -174,14 +173,14 @@ RSpec.describe Dor::TextExtraction::Ocr do
         FileUtils.mkdir_p(Settings.sdr.abbyy.local_result_path)
         FileUtils.mkdir_p(Settings.sdr.abbyy.local_exception_path)
         FileUtils.touch(ticket.file_path)
-        FileUtils.touch(abbyy_results.result_path)
+        FileUtils.touch(result_path)
         FileUtils.touch(abbyy_exception_file)
       end
 
       it 'removes both folders and the XML ticket and result files' do
-        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, abbyy_results.result_path, abbyy_exception_file].each { |path| expect(File.exist?(path)).to be true }
+        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, result_path, abbyy_exception_file].each { |path| expect(File.exist?(path)).to be true }
         ocr.cleanup
-        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, abbyy_results.result_path, abbyy_exception_file].each { |path| expect(File.exist?(path)).to be false }
+        [ocr.abbyy_input_path, ocr.abbyy_output_path, ticket.file_path, result_path, abbyy_exception_file].each { |path| expect(File.exist?(path)).to be false }
       end
     end
 
@@ -202,7 +201,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
 
         it 'calls the deletion of the input folder three times and output folder once' do
           ocr.cleanup
-          expect(Honeybadger).to have_received(:notify).twice # two calls to HB, success occurs third time
+          expect(Honeybadger).not_to have_received(:notify) # no calls to HB, success occurs third time
           expect(FileUtils).to have_received(:rm_r).with(ocr.abbyy_input_path).exactly(3).times
           expect(FileUtils).to have_received(:rm_r).with(ocr.abbyy_output_path).once
         end
@@ -213,7 +212,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
 
         it 'raises the exception after trying three times' do
           expect { ocr.cleanup }.to raise_error(Errno::ENOENT)
-          expect(Honeybadger).to have_received(:notify).thrice # three calls to HB, exception occurs fourth time
+          expect(Honeybadger).to have_received(:notify).once # one call to HB, exception occurs fourth time
           expect(FileUtils).not_to have_received(:rm_r).with(ocr.abbyy_output_path)
         end
       end

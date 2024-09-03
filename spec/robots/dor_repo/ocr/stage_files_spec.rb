@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Robots::DorRepo::Ocr::StageFiles do
   let(:druid) { 'druid:bb222cc3333' }
   let(:robot) { described_class.new }
+  let(:result_path) { '/fake/abbyy/results.xml' }
 
   let(:workspace_client) do
     instance_double(Dor::Services::Client::Workspace, create: '/fake/dor/workspace')
@@ -21,9 +22,10 @@ describe Robots::DorRepo::Ocr::StageFiles do
   context 'when there are files to move' do
     before do
       allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
+      allow(Dor::TextExtraction::Abbyy::Results).to receive(:find_latest).with(druid:).and_return(result_path)
       allow(Dor::TextExtraction::Abbyy::Results)
-        .to receive(:find_latest)
-        .with(hash_including(druid:))
+        .to receive(:new)
+        .with(hash_including(result_path:))
         .and_return(results)
     end
 
