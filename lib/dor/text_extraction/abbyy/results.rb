@@ -14,13 +14,11 @@ module Dor
 
         # Find the latest Abbyy results XML file by druid, since there could be more than one.
         # @param druid [String] The druid to use to look for results
-        # @param logger [Logger] An optional logger to use
-        # @return [Results, nil] The Results object or nil, if one wasn't found.
-        def self.find_latest(druid:, logger: nil)
+        # @return [xml_filepath, nil] The result xml file path or nil, if one wasn't found.
+        def self.find_latest(druid:)
           bare_druid = DruidTools::Druid.new(druid).id
           # NOTE: Dir.glob will sort the filenames in ascending order and we want the last one.
-          result_files = Dir.glob("#{Settings.sdr.abbyy.local_result_path}/#{bare_druid}*.xml")
-          Results.new(result_path: result_files.last, logger:) unless result_files.empty?
+          Dir.glob("#{Settings.sdr.abbyy.local_result_path}/#{bare_druid}*.xml").last
         end
 
         def initialize(result_path:, logger: nil)
@@ -129,7 +127,7 @@ module Dor
         # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         # Software and version used to do OCR processing, found in ALTO output
         def processing_metadata
-          return {} unless File.exist? alto_doc # PDFs don't have ALTO, so just bail out
+          return {} unless alto_doc && File.exist?(alto_doc) # PDFs don't have ALTO, so just bail out
 
           Nokogiri::XML::Reader(File.read(alto_doc)).each do |node|
             next unless node.name == 'processingSoftware'
@@ -142,7 +140,7 @@ module Dor
             break
           end
         rescue StandardError # If we can't parse the ALTO, log it and move on
-          Honeybadger.notify('Failed to parse processing metadata from ALTO XML', context: { alto_doc: })
+          Honeybadger.notify('Failed to parse processing metadata from ALTO XML', context: { result_path:, alto_doc: })
           {}
         end
         # rubocop:enable Metrics/AbcSize, Metrics/MethodLength

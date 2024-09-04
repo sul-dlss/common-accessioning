@@ -55,9 +55,9 @@ describe Dor::TextExtraction::Abbyy::Results do
       expect(results.alto_doc).to eq "#{abbyy_output_path}/bb222cc3333/bb222cc3333.xml"
     end
 
-    it 'can be found by druid' do
-      found = described_class.find_latest(druid:)
-      expect(found.druid).to eq druid
+    it 'can be found by druid and returns file path' do
+      result_path = described_class.find_latest(druid:)
+      expect(result_path).to eq results_file_path
     end
 
     it 'records the software name and version' do

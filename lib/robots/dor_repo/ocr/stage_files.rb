@@ -19,9 +19,10 @@ module Robots
         def move_files(workspace_dir)
           content_dir = File.join(workspace_dir, 'content')
 
-          abbyy_results = Dor::TextExtraction::Abbyy::Results.find_latest(druid:, logger:)
-          raise 'No ABBYY Result XML file found' unless abbyy_results
+          result_path = Dor::TextExtraction::Abbyy::Results.find_latest(druid:)
+          raise 'No ABBYY Result XML file found' unless result_path
 
+          abbyy_results = Dor::TextExtraction::Abbyy::Results.new(result_path:, logger:)
           abbyy_results.move_result_files(content_dir)
         end
       end
