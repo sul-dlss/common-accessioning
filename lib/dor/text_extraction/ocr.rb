@@ -23,11 +23,12 @@ module Dor
       end
 
       # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize
       def cleanup
         raise "#{abbyy_input_path} is not empty" if Dir.exist?(abbyy_input_path) && !Dir.empty?(abbyy_input_path)
 
         tries = 0
-        max_tries = 4
+        max_tries = 5
         begin
           cleanup_input_folder
           cleanup_output_folder
@@ -38,6 +39,8 @@ module Dor
           tries += 1
           sleep(3**tries)
 
+          logger.info "Retrying cleanup after exception #{e.message}"
+
           retry if tries < max_tries
 
           raise e
@@ -45,6 +48,7 @@ module Dor
         true
       end
       # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/AbcSize
 
       def possible?
         # only items can be OCR'd
@@ -79,7 +83,8 @@ module Dor
       def cleanup_input_folder
         return unless Dir.exist?(abbyy_input_path)
 
-        logger.info "Removing empty ABBYY input directory: #{abbyy_input_path}"
+        files = Dir.glob("#{abbyy_input_path}/*")
+        logger.info "Removing ABBYY input directory: #{abbyy_input_path}.  Has #{files.count} files/folders: #{files.join(', ')}."
         FileUtils.rm_r(abbyy_input_path)
       end
 
@@ -87,7 +92,8 @@ module Dor
       def cleanup_output_folder
         return unless Dir.exist?(abbyy_output_path)
 
-        logger.info "Removing ABBYY output directory: #{abbyy_output_path}"
+        files = Dir.glob("#{abbyy_output_path}/*")
+        logger.info "Removing ABBYY output directory: #{abbyy_output_path}.  Has #{files.count} files/folders: #{files.join(', ')}."
         FileUtils.rm_r(abbyy_output_path)
       end
 

@@ -207,10 +207,10 @@ RSpec.describe Dor::TextExtraction::Ocr do
         end
       end
 
-      context 'when the exception occurs four times' do
-        let(:num_errors) { 4 }
+      context 'when the exception occurs five times' do
+        let(:num_errors) { 5 }
 
-        it 'raises the exception after trying three times' do
+        it 'raises the exception after trying four times' do
           expect { ocr.cleanup }.to raise_error(Errno::ENOENT)
           expect(FileUtils).not_to have_received(:rm_r).with(ocr.abbyy_output_path)
         end
