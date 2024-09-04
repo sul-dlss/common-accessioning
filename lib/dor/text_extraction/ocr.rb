@@ -39,7 +39,7 @@ module Dor
           tries += 1
           sleep(3**tries)
 
-          logger.info "Retrying cleanup after exception #{e.message}"
+          logger.info "Retry #{tries} for ocr-workspace-cleanup; after exception #{e.message}"
 
           retry if tries < max_tries
 
@@ -84,7 +84,7 @@ module Dor
         return unless Dir.exist?(abbyy_input_path)
 
         files = Dir.glob("#{abbyy_input_path}/*")
-        logger.info "Removing ABBYY input directory: #{abbyy_input_path}.  Has #{files.count} files/folders: #{files.join(', ')}."
+        logger.info "Removing ABBYY input directory: #{abbyy_input_path}.  Empty: #{Dir.empty?(abbyy_input_path)}. Num files/folders: #{files.count}: #{files.join(', ')}"
         FileUtils.rm_r(abbyy_input_path)
       end
 
@@ -93,7 +93,7 @@ module Dor
         return unless Dir.exist?(abbyy_output_path)
 
         files = Dir.glob("#{abbyy_output_path}/*")
-        logger.info "Removing ABBYY output directory: #{abbyy_output_path}.  Has #{files.count} files/folders: #{files.join(', ')}."
+        logger.info "Removing ABBYY output directory: #{abbyy_output_path}.  Empty: #{Dir.empty?(abbyy_output_path)}. Num files/folders: #{files.count}: #{files.join(', ')}"
         FileUtils.rm_r(abbyy_output_path)
       end
 
