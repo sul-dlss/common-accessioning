@@ -186,11 +186,12 @@ RSpec.describe Dor::TextExtraction::Ocr do
 
     context 'when there is an input and output folder but there are exceptions' do
       before do
+        allow(ocr).to receive(:backoff).and_return(1) # this makes the test run faster
         FileUtils.mkdir_p(ocr.abbyy_input_path)
         FileUtils.mkdir_p(ocr.abbyy_output_path)
         allow(Honeybadger).to receive(:notify)
         count = 0
-        allow(FileUtils).to receive(:rm_r) do
+        allow(FileUtils).to receive(:remove_dir) do
           count += 1
           raise Errno::ENOENT if count <= num_errors
         end
@@ -202,8 +203,8 @@ RSpec.describe Dor::TextExtraction::Ocr do
         it 'calls the deletion of the input folder three times and output folder once' do
           ocr.cleanup
           expect(Honeybadger).not_to have_received(:notify) # no calls to HB, success occurs third time
-          expect(FileUtils).to have_received(:rm_r).with(ocr.abbyy_input_path).exactly(3).times
-          expect(FileUtils).to have_received(:rm_r).with(ocr.abbyy_output_path).once
+          expect(FileUtils).to have_received(:remove_dir).with(ocr.abbyy_input_path, { force: true }).exactly(3).times
+          expect(FileUtils).to have_received(:remove_dir).with(ocr.abbyy_output_path, { force: true }).once
         end
       end
 
@@ -212,7 +213,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
 
         it 'raises the exception after trying four times' do
           expect { ocr.cleanup }.to raise_error(Errno::ENOENT)
-          expect(FileUtils).not_to have_received(:rm_r).with(ocr.abbyy_output_path)
+          expect(FileUtils).not_to have_received(:remove_dir).with(ocr.abbyy_output_path)
         end
       end
     end

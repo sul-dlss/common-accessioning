@@ -37,7 +37,7 @@ module Dor
           cleanup_abbyy_exceptions
         rescue SystemCallError => e # SystemCallError is the superclass of all errors raised by system calls, such as Errno::ENOENT from FileUtils.rm_r
           tries += 1
-          sleep(3**tries)
+          sleep(backoff**tries)
 
           logger.info "Retry #{tries} for ocr-workspace-cleanup; after exception #{e.message}"
 
@@ -79,13 +79,18 @@ module Dor
 
       private
 
+      # we can mock this in tests to speed up tests
+      def backoff
+        3
+      end
+
       # e.g. /abbyy/INPUT/ab123cd4567
       def cleanup_input_folder
         return unless Dir.exist?(abbyy_input_path)
 
         files = Dir.glob("#{abbyy_input_path}/*")
         logger.info "Removing ABBYY input directory: #{abbyy_input_path}.  Empty: #{Dir.empty?(abbyy_input_path)}. Num files/folders: #{files.count}: #{files.join(', ')}"
-        FileUtils.rm_r(abbyy_input_path)
+        FileUtils.remove_dir(abbyy_input_path, force: true)
       end
 
       # e.g. /abbyy/OUTPUT/ab123cd4567
@@ -94,7 +99,7 @@ module Dor
 
         files = Dir.glob("#{abbyy_output_path}/*")
         logger.info "Removing ABBYY output directory: #{abbyy_output_path}.  Empty: #{Dir.empty?(abbyy_output_path)}. Num files/folders: #{files.count}: #{files.join(', ')}"
-        FileUtils.rm_r(abbyy_output_path)
+        FileUtils.remove_dir(abbyy_output_path, force: true)
       end
 
       # e.g. /abbyy/INPUT/ab123cd4567.xml
