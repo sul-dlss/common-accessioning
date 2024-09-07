@@ -90,7 +90,7 @@ module Dor
 
         files = Dir.glob("#{abbyy_input_path}/*")
         logger.info "Removing ABBYY input directory: #{abbyy_input_path}.  Empty: #{Dir.empty?(abbyy_input_path)}. Num files/folders: #{files.count}: #{files.join(', ')}"
-        FileUtils.remove_dir(abbyy_input_path, force: true)
+        FileUtils.remove_dir(abbyy_input_path)
       end
 
       # e.g. /abbyy/OUTPUT/ab123cd4567
@@ -99,7 +99,7 @@ module Dor
 
         files = Dir.glob("#{abbyy_output_path}/*")
         logger.info "Removing ABBYY output directory: #{abbyy_output_path}.  Empty: #{Dir.empty?(abbyy_output_path)}. Num files/folders: #{files.count}: #{files.join(', ')}"
-        FileUtils.remove_dir(abbyy_output_path, force: true)
+        FileUtils.remove_dir(abbyy_output_path)
       end
 
       # e.g. /abbyy/INPUT/ab123cd4567.xml

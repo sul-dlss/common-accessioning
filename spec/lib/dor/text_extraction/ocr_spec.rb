@@ -203,8 +203,8 @@ RSpec.describe Dor::TextExtraction::Ocr do
         it 'calls the deletion of the input folder three times and output folder once' do
           ocr.cleanup
           expect(Honeybadger).not_to have_received(:notify) # no calls to HB, success occurs third time
-          expect(FileUtils).to have_received(:remove_dir).with(ocr.abbyy_input_path, { force: true }).exactly(3).times
-          expect(FileUtils).to have_received(:remove_dir).with(ocr.abbyy_output_path, { force: true }).once
+          expect(FileUtils).to have_received(:remove_dir).with(ocr.abbyy_input_path).exactly(3).times
+          expect(FileUtils).to have_received(:remove_dir).with(ocr.abbyy_output_path).once
         end
       end
 
