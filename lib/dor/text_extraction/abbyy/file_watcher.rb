@@ -75,9 +75,29 @@ module Dor
           create_event(type: 'ocr_errored', results:)
         end
 
+        def host
+          @host ||= Socket.gethostname
+        end
+
+        def event_client
+          # Dor::Event::Client is a Singleton, but since we don't have
+          # a config/initializers/ dir in which to invoke Dor::Event::Client.configure
+          # before anything else runs (as we would for a Rails app), this method with
+          # its memoized variable is the easiest way to make sure the
+          # client is configured once per FileWatcher instance (configure call returns the
+          # Dor::Event::Client singleton).
+          @event_client ||= Dor::Event::Client.configure(
+            hostname: Settings.rabbitmq.hostname,
+            vhost: Settings.rabbitmq.vhost,
+            username: Settings.rabbitmq.username,
+            password: Settings.rabbitmq.password
+          )
+        end
+
         # Publish to the SDR event service with processing information
-        def create_event(type:, results:)
-          Dor::Services::Client.object("druid:#{results.druid}").events.create(
+        def create_event(type:, results:) # rubocop:disable Metrics/MethodLength
+          event_client.create(
+            druid: "druid:#{results.druid}",
             type:,
             data: {
               host:,
@@ -87,10 +107,6 @@ module Dor
               errors: results.failure_messages
             }.compact_blank
           )
-        end
-
-        def host
-          @host ||= Socket.gethostname
         end
       end
     end
