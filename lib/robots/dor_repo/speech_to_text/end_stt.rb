@@ -2,11 +2,11 @@
 
 module Robots
   module DorRepo
-    module Caption
-      # End the captioning process by closing the object version
-      class EndCaption < LyberCore::Robot
+    module SpeechToText
+      # End the speech to text process by closing the object version
+      class EndStt < LyberCore::Robot
         def initialize
-          super('captionWF', 'end-caption')
+          super('speechToTextWF', 'end-stt')
         end
 
         def perform_work

@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-describe Robots::DorRepo::Caption::CaptionCreate do
+describe Robots::DorRepo::SpeechToText::SttCreate do
   subject(:perform) { test_perform(robot, druid) }
 
   let(:druid) { 'druid:bb222cc3333' }
   let(:robot) { described_class.new }
 
-  it 'runs the start caption robot' do
+  it 'runs the stt create robot' do
     expect(perform.status).to eq 'noop'
   end
 end

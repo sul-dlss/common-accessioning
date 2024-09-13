@@ -128,7 +128,7 @@ module Dor
         end
       end
 
-      # iterate through cocina strutural contains and return all File objects for files that need to be OCRed
+      # iterate through cocina structural contains and return all File objects for files that need to be OCRed
       def ocr_files
         [].tap do |files|
           cocina_object.structural.contains.each do |fileset|
@@ -161,8 +161,7 @@ module Dor
         ]
       end
 
-      # maps the allowed content types to the resource type we will look for files in
-      # TODO: refine list of allowed object types for OCR
+      # maps the allowed object types to the resource type we will look for files in
       def resource_type_mapping
         {
           Cocina::Models::ObjectType.book => 'page',

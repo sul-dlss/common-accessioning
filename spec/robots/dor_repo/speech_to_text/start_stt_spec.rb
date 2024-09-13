@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Robots::DorRepo::Ocr::StartOcr do
+describe Robots::DorRepo::SpeechToText::StartStt do
   subject(:perform) { test_perform(robot, druid) }
 
   let(:druid) { 'druid:bb222cc3333' }
@@ -17,14 +17,14 @@ describe Robots::DorRepo::Ocr::StartOcr do
   let(:object_client) do
     instance_double(Dor::Services::Client::Object, version: version_client, workspace: workspace_client, find: object)
   end
-  let(:ocr) { instance_double(Dor::TextExtraction::Ocr, possible?: possible) }
+  let(:stt) { instance_double(Dor::TextExtraction::SpeechToText, possible?: possible) }
 
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
-    allow(Dor::TextExtraction::Ocr).to receive(:new).and_return(ocr)
+    allow(Dor::TextExtraction::SpeechToText).to receive(:new).and_return(stt)
   end
 
-  context 'when the object is not opened and it is possible to OCR' do
+  context 'when the object is not opened and it is possible to run text extraction' do
     let(:version_open) { false }
     let(:possible) { true }
 
@@ -36,15 +36,15 @@ describe Robots::DorRepo::Ocr::StartOcr do
     end
   end
 
-  context 'when the object is not opened and it is not possible to OCR' do
+  context 'when the object is not opened and it is not possible to run text extraction' do
     let(:version_open) { false }
     let(:possible) { false }
-    let(:note) { 'No files available or invalid object for OCR' }
-    let(:workflow) { 'ocrWF' }
+    let(:note) { 'No files available or invalid object for Speech To Text' }
+    let(:workflow) { 'speechToTextWF' }
     let(:status) { 'skipped' }
     let(:workflow_client) { instance_double(Dor::Workflow::Client) }
     # NOTE: this is just mocking a workflow response, it doesn't actually have to be fully accurate
-    # we just need to expect we will update the status of all steps except start-ocr
+    # we just need to expect we will update the status of all steps except start-stt
     let(:skip_all) { instance_double(Dor::Workflow::Response, name: 'skip-all') }
 
     let(:return_status) { perform.status }
