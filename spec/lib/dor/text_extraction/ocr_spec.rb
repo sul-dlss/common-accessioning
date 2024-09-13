@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Dor::TextExtraction::Ocr do
-  let(:ocr) { described_class.new(cocina_object:, workflow_context:) }
+  let(:ocr) { described_class.new(cocina_object:, workflow_context:, backoff: 1) } # setting a backoff of 1 to make testing much faster
   let(:ticket) { Dor::TextExtraction::Abbyy::Ticket.new(filepaths: [], druid:) }
   let(:object_type) { 'https://cocina.sul.stanford.edu/models/image' }
   let(:workflow_context) { {} }

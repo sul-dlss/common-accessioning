@@ -5,13 +5,14 @@ module Dor
     # Determine if OCR is required and possible for a given object
     # rubocop:disable Metrics/ClassLength
     class Ocr
-      attr_reader :cocina_object, :workflow_context, :bare_druid, :logger
+      attr_reader :cocina_object, :workflow_context, :bare_druid, :logger, :backoff
 
-      def initialize(cocina_object:, workflow_context: {}, logger: nil)
+      def initialize(cocina_object:, workflow_context: {}, backoff: 3, logger: nil)
         @cocina_object = cocina_object
         @workflow_context = workflow_context
         @bare_druid = cocina_object.externalIdentifier.delete_prefix('druid:')
         @logger = logger || Logger.new($stdout)
+        @backoff = backoff
       end
 
       def abbyy_output_path
@@ -37,7 +38,7 @@ module Dor
           cleanup_abbyy_exceptions
         rescue SystemCallError => e # SystemCallError is the superclass of all errors raised by system calls, such as Errno::ENOENT from FileUtils.rm_r
           tries += 1
-          sleep(3**tries)
+          sleep(backoff**tries)
 
           logger.info "Retry #{tries} for ocr-workspace-cleanup; after exception #{e.message}"
 
