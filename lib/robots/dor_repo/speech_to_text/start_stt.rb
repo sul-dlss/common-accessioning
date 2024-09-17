@@ -10,6 +10,9 @@ module Robots
         end
 
         def perform_work
+          # TODO: Note that the `possible?` method is not complete until we further refine the mimetypes available
+          # see https://github.com/sul-dlss/common-accessioning/issues/1346
+          # and lib/dor/text_extraction/speech_to_text.rb#allowed_mimetypes
           if Dor::TextExtraction::SpeechToText.new(cocina_object:).possible?
             Dor::TextExtraction::VersionUpdater.open(druid:, description: 'Start SpeechToText workflow', object_client:)
           else

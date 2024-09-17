@@ -66,6 +66,7 @@ module Dor
       # defines the mimetypes types for which speech to text files can possibly be run
       # preferentially select files for speech to text by ordering of mimetypes below
       # TODO: refine list of allowed mimetypes for speech to text
+      # see https://github.com/sul-dlss/common-accessioning/issues/1346
       def allowed_mimetypes
         %w[
           audio/x-wav
