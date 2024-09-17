@@ -25,7 +25,7 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
 
   describe '#possible?' do
     context 'when the object is not a DRO' do
-      let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: false, type: object_type) }
+      let(:cocina_object) { instance_double(Cocina::Models::Collection, externalIdentifier: druid, dro?: false, type: object_type) }
 
       it 'returns false' do
         expect(stt.possible?).to be false
