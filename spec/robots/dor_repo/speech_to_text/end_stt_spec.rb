@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Robots::DorRepo::Caption::EndCaption do
+describe Robots::DorRepo::SpeechToText::EndStt do
   let(:druid) { 'druid:bb222cc3333' }
   let(:robot) { described_class.new }
 
