@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dor::TextExtraction::VersionUpdater do
-  subject(:updater) { described_class.new(druid:, object_client:, description:, max_tries: 3) }
+  let(:updater) { described_class.new(druid:, object_client:, description:, max_tries: 3) }
 
   let(:druid) { 'druid:bb222cc3333' }
   let(:description) { 'Starting OCR' }
@@ -19,6 +19,7 @@ describe Dor::TextExtraction::VersionUpdater do
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
     allow(version_client).to receive(:open)
+    allow(updater).to receive(:sleep) # effectively make the sleep a no-op so that the test doesn't take so long due to retries and backoff
   end
 
   describe '.open' do

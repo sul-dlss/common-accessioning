@@ -13,7 +13,7 @@ module Dor
         @max_tries = max_tries
       end
 
-      def self.open(druid:, object_client:, description: '', max_tries: 3)
+      def self.open(druid:, object_client:, description:, max_tries: 3)
         new(druid:, object_client:, description:, max_tries:).open_object
       end
 
