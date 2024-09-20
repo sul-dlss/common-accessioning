@@ -33,8 +33,8 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
 
     it 'calls the write_file_with_retries method with correct files' do
       expect(perform).to eq ['file1.mov', 'file2.mp3']
-      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file1.mov', cloud_endpoint: 's3://some-bucket/file1.mov', max_tries: 3).once
-      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file2.mp3', cloud_endpoint: 's3://some-bucket/file2.mp3', max_tries: 3).once
+      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file1.mov', bucket: 's3://some-bucket/file1.mov', max_tries: 3).once
+      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file2.mp3', bucket: 's3://some-bucket/file2.mp3', max_tries: 3).once
     end
   end
 
@@ -43,7 +43,7 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
 
     it 'raises an exception' do
       expect { perform }.to raise_error(RuntimeError, 'Unable to fetch file1.mov for druid:bb222cc3333')
-      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file1.mov', cloud_endpoint: 's3://some-bucket/file1.mov', max_tries: 3).once
+      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file1.mov', bucket: 's3://some-bucket/file1.mov', max_tries: 3).once
     end
   end
 end

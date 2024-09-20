@@ -12,7 +12,7 @@ describe Dor::TextExtraction::FileFetcher do
   let(:base_dir) { 'tmp/b22cc3333' }
   let(:file_path) { File.join(base_dir, filename) }
   let(:path) { Pathname.new(file_path) }
-  let(:cloud_endpoint) { 's3://some-bucket/file1.mov' }
+  let(:bucket) { 's3://some-bucket/file1.mov' }
 
   let(:pres_client) do
     instance_double(Preservation::Client, objects: objects_client)
@@ -26,6 +26,8 @@ describe Dor::TextExtraction::FileFetcher do
 
   describe '#write_file_with_retries' do
     context 'when writing to disk' do
+      let(:method) { :file }
+
       context 'when preservation is done' do
         before do
           allow(objects_client).to receive(:content) do |*args|
@@ -35,7 +37,7 @@ describe Dor::TextExtraction::FileFetcher do
         end
 
         it 'writes the file' do
-          file_fetcher.write_file_with_retries(filename:, path:)
+          file_fetcher.write_file_with_retries(filename:, path:, method:)
           expect(Preservation::Client).to have_received(:configure)
           expect(logger).to have_received(:info).once
           expect(objects_client).to have_received(:content).once # success first time!
@@ -57,7 +59,7 @@ describe Dor::TextExtraction::FileFetcher do
         end
 
         it 'writes the file and warns' do
-          file_fetcher.write_file_with_retries(filename:, path:)
+          file_fetcher.write_file_with_retries(filename:, path:, method:)
           expect(Preservation::Client).to have_received(:configure)
           expect(logger).to have_received(:warn).twice
 
@@ -76,10 +78,10 @@ describe Dor::TextExtraction::FileFetcher do
           end
 
           it 'returns false, sends to HB, and logs an error' do
-            written = file_fetcher.write_file_with_retries(filename:, path:)
+            written = file_fetcher.write_file_with_retries(filename:, path:, method:)
             expect(written).to be(false)
 
-            context = { druid:, filename:, path: file_path, cloud_endpoint: nil, max_tries: 3 }
+            context = { druid:, filename:, path: file_path, bucket: nil, max_tries: 3 }
             expect(logger).to have_received(:error).with("Exceeded max_tries attempting to fetch file: #{context}")
             expect(Honeybadger).to have_received(:notify).with('Exceeded max_tries attempting to fetch file', context:)
             expect(file_fetcher).to have_received(:sleep).with(8) # should have hit max backoff time of 2^3 seconds
@@ -89,6 +91,8 @@ describe Dor::TextExtraction::FileFetcher do
     end
 
     context 'when sending to cloud endpoint' do
+      let(:method) { :cloud }
+
       before do
         allow(objects_client).to receive(:content) do |*args|
           filepath = args.first.fetch(:filepath)
@@ -98,7 +102,7 @@ describe Dor::TextExtraction::FileFetcher do
 
       it 'fetches files from perservation and sends to cloud' do
         # TODO: add in actual expectations here when the method is implemented
-        file_fetcher.write_file_with_retries(filename: 'file1.mov', cloud_endpoint:)
+        file_fetcher.write_file_with_retries(filename: 'file1.mov', bucket:, method:)
         expect(logger).to have_received(:info).once
         expect(objects_client).to have_received(:content).once
         expect(Preservation::Client).to have_received(:configure)

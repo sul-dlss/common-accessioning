@@ -12,7 +12,7 @@ module Robots
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
           sttable_filenames.each do |filename|
-            raise "Unable to fetch #{filename} for #{druid}" unless file_fetcher.write_file_with_retries(filename:, cloud_endpoint: cloud_endpoint(filename), max_tries: 3)
+            raise "Unable to fetch #{filename} for #{druid}" unless file_fetcher.write_file_with_retries(filename:, bucket: bucket_path(filename), max_tries: 3)
           end
         end
 
@@ -20,7 +20,7 @@ module Robots
 
         # TODO: implement this method for AWS S3, it will be used by the FileFetcher class
         # it indicates the cloud endpoint to send the file to
-        def cloud_endpoint(filename)
+        def bucket_path(filename)
           "s3://some-bucket/#{filename}"
         end
 
