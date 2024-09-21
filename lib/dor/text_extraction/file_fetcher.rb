@@ -55,7 +55,7 @@ module Dor
         preservation_client.objects.content(
           druid:,
           filepath: filename,
-          on_data: proc { |_data, _count| } # actually send the file to the cloud endpoint
+          on_data: proc { |data, _count| aws_client.put_object(bucket:, key: filename, body: data) }
         )
 
         true # NOTE: return false on failure
@@ -79,6 +79,14 @@ module Dor
 
       def preservation_client
         @preservation_client ||= Preservation::Client.configure(url: Settings.preservation_catalog.url, token: Settings.preservation_catalog.token)
+      end
+
+      def aws_client
+        Aws.config.update({
+                            region: 'your-region',
+                            credentials: Aws::Credentials.new(Settings.aws.access_key_id, Settings.aws.secret_access_key)
+                          })
+        @aws_client ||= Aws::S3::Client.new
       end
     end
   end

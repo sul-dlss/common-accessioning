@@ -8,25 +8,24 @@ describe Dor::TextExtraction::FileFetcher do
   let(:logger) { instance_double(Logger, warn: nil, info: nil, error: nil) }
   let(:druid) { 'druid:bb222cc3333' }
   let(:objects_client) { instance_double(Preservation::Client::Objects) }
-  let(:filename) { 'image111.tif' }
   let(:base_dir) { 'tmp/b22cc3333' }
   let(:file_path) { File.join(base_dir, filename) }
   let(:path) { Pathname.new(file_path) }
-  let(:bucket) { 's3://some-bucket/file1.mov' }
 
-  let(:pres_client) do
-    instance_double(Preservation::Client, objects: objects_client)
-  end
+  let(:pres_client) { instance_double(Preservation::Client, objects: objects_client) }
+  let(:aws_client) { instance_double(Aws::S3::Client, put_object: nil) }
 
   before do
     FileUtils.mkdir_p(base_dir) unless File.directory?(base_dir)
     allow(Preservation::Client).to receive(:configure).and_return(pres_client)
     allow(file_fetcher).to receive(:sleep) # effectively make the sleep a no-op so that the test doesn't take so long due to retries and backoff
+    allow(Aws::S3::Client).to receive(:new).and_return(aws_client)
   end
 
   describe '#write_file_with_retries' do
     context 'when writing to disk' do
       let(:method) { :file }
+      let(:filename) { 'image111.tif' }
 
       context 'when preservation is done' do
         before do
@@ -92,6 +91,7 @@ describe Dor::TextExtraction::FileFetcher do
 
     context 'when sending to cloud endpoint' do
       let(:method) { :cloud }
+      let(:filename) { File.join('bb222cc3333', 'file1.mov') }
 
       before do
         allow(objects_client).to receive(:content) do |*args|
@@ -101,11 +101,10 @@ describe Dor::TextExtraction::FileFetcher do
       end
 
       it 'fetches files from perservation and sends to cloud' do
-        # TODO: add in actual expectations here when the method is implemented
-        file_fetcher.write_file_with_retries(filename: 'file1.mov', bucket:, method:)
+        file_fetcher.write_file_with_retries(filename:, bucket: Settings.aws.base_s3_bucket, method:)
         expect(logger).to have_received(:info).once
         expect(objects_client).to have_received(:content).once
-        expect(Preservation::Client).to have_received(:configure)
+        expect(aws_client).to have_received(:put_object).with(bucket: Settings.aws.base_s3_bucket, body: 'Content for: bb222cc3333/file1.mov', key: 'bb222cc3333/file1.mov').once
       end
     end
   end

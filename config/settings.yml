@@ -52,3 +52,9 @@ preservation_catalog:
 purl_fetcher:
   url: 'https://purl-fetcher-stage-01.stanford.edu'
   token: 'mint-token-with-target-purl-fetcher-rake-generate-token'
+
+# used for the speech-to-text workflow
+aws:
+  access_key_id: 'fake-access'
+  secret_access_key: 'fake-secret'
+  base_s3_bucket: 'speech-to-text-bucket'
