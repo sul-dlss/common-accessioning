@@ -49,7 +49,6 @@ module Dor
       # rubocop:enable Metrics/MethodLength
 
       # fetch a file from preservation and send to cloud endpoint
-      # TODO: implement this method for AWS S3, it will be used for the speech-to-text workflow
       def fetch_and_send_file_to_s3(filename:, bucket:)
         logger.info("fetching #{filename} for #{druid} and sending to #{bucket}")
         preservation_client.objects.content(
