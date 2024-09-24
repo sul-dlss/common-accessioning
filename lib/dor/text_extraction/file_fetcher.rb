@@ -6,9 +6,9 @@ module Dor
     class FileFetcher
       attr_reader :druid, :logger
 
-      def initialize(druid:, logger:)
+      def initialize(druid:, logger: nil)
         @druid = druid
-        @logger = logger
+        @logger = logger || Logger.new($stdout)
       end
 
       # Fetch an item's file from Preservation and write it to disk. Since
@@ -51,11 +51,14 @@ module Dor
       # fetch a file from preservation and send to cloud endpoint
       def fetch_and_send_file_to_s3(filename:, bucket:)
         logger.info("fetching #{filename} for #{druid} and sending to #{bucket}")
-        preservation_client.objects.content(
-          druid:,
-          filepath: filename,
-          on_data: proc { |data, _count| aws_client.put_object(bucket:, key: filename, body: data) }
-        )
+        s3_object = Aws::S3::Object.new(bucket, filename, client: aws_client)
+        s3_object.upload_stream do |upload_stream|
+          preservation_client.objects.content(
+            druid:,
+            filepath: filename,
+            on_data: proc { |data, _count| upload_stream.write(data) }
+          )
+        end
 
         true # NOTE: return false on failure
       end
@@ -82,7 +85,7 @@ module Dor
 
       def aws_client
         Aws.config.update({
-                            region: 'your-region',
+                            region: Settings.aws.region,
                             credentials: Aws::Credentials.new(Settings.aws.access_key_id, Settings.aws.secret_access_key)
                           })
         @aws_client ||= Aws::S3::Client.new

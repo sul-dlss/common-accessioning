@@ -55,6 +55,7 @@ purl_fetcher:
 
 # used for the speech-to-text workflow
 aws:
+  region: 'us-west-2'
   access_key_id: 'fake-access'
   secret_access_key: 'fake-secret'
-  base_s3_bucket: 'speech-to-text-bucket'
+  base_s3_bucket: 'sul-speech-to-text-dev'
