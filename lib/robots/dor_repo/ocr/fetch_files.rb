@@ -12,9 +12,9 @@ module Robots
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
           ocrable_filenames.each do |filename|
-            path = abbyy_path(filename)
-            path.parent.mkpath unless path.parent.directory?
-            raise "Unable to fetch #{filename} for #{druid}" unless file_fetcher.write_file_with_retries(filename:, path:, max_tries: 3)
+            location = abbyy_path(filename)
+            location.parent.mkpath unless location.parent.directory?
+            raise "Unable to fetch #{filename} for #{druid}" unless file_fetcher.write_file_with_retries(filename:, location:, max_tries: 3)
           end
         end
 

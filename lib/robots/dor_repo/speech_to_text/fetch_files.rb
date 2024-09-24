@@ -12,7 +12,9 @@ module Robots
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
           sttable_filenames.each do |filename|
-            raise "Unable to fetch #{filename} for #{druid}" unless file_fetcher.write_file_with_retries(filename: s3_pathname(filename), bucket: Settings.aws.base_s3_bucket, max_tries: 3)
+            s3_filename = s3_pathname(filename)
+            location = Aws::S3::Object.new(bucket_name: Settings.aws.base_s3_bucket, key: s3_filename, client: aws_client)
+            raise "Unable to fetch #{filename} for #{druid}" unless file_fetcher.write_file_with_retries(filename:, location:, max_tries: 3)
           end
         end
 
@@ -20,6 +22,14 @@ module Robots
 
         def s3_pathname(filename)
           File.join(bare_druid, filename)
+        end
+
+        def aws_client
+          Aws.config.update({
+                              region: Settings.aws.region,
+                              credentials: Aws::Credentials.new(Settings.aws.access_key_id, Settings.aws.secret_access_key)
+                            })
+          @aws_client ||= Aws::S3::Client.new
         end
 
         def sttable_filenames
