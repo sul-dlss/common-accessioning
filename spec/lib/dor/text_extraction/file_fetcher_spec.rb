@@ -19,7 +19,7 @@ describe Dor::TextExtraction::FileFetcher do
   end
 
   before do
-    FileUtils.mkdir_p(base_dir) unless File.directory?(base_dir)
+    FileUtils.mkdir_p(base_dir)
     allow(Preservation::Client).to receive(:configure).and_return(pres_client)
     allow(file_fetcher).to receive(:sleep) # effectively make the sleep a no-op so that the test doesn't take so long due to retries and backoff
   end
