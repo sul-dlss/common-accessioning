@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Dor::TextExtraction::Ocr do
-  let(:ocr) { described_class.new(cocina_object:, workflow_context:, backoff: 1) } # setting a backoff of 1 to make testing much faster
+  let(:ocr) { described_class.new(cocina_object:, workflow_context:) }
   let(:ticket) { Dor::TextExtraction::Abbyy::Ticket.new(filepaths: [], druid:) }
   let(:object_type) { 'https://cocina.sul.stanford.edu/models/image' }
   let(:workflow_context) { {} }
@@ -24,6 +24,8 @@ RSpec.describe Dor::TextExtraction::Ocr do
     sdr_value = instance_double(Cocina::Models::FileAdministrative, sdrPreserve: sdr_peserve)
     instance_double(Cocina::Models::File, administrative: sdr_value, hasMimeType: mimetype[extension], filename:)
   end
+
+  before { allow(ocr).to receive(:sleep) } # effectively make the sleep a no-op so that the test doesn't take so long due to retries and backoff
 
   describe '#possible?' do
     context 'when the object is not a DRO' do
