@@ -3,7 +3,7 @@
 module Robots
   module DorRepo
     module SpeechToText
-      # Fetch files in need of OCR from Preservation
+      # Fetch files in need of Speech to Text from Preservation and send to S3
       class FetchFiles < LyberCore::Robot
         def initialize
           super('speechToTextWF', 'fetch-files')
@@ -12,9 +12,7 @@ module Robots
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
           sttable_filenames.each do |filename|
-            s3_filename = s3_pathname(filename)
-            location = Aws::S3::Object.new(bucket_name: Settings.aws.base_s3_bucket, key: s3_filename, client: aws_client)
-            raise "Unable to fetch #{filename} for #{druid}" unless file_fetcher.write_file_with_retries(filename:, location:, max_tries: 3)
+            raise "Unable to fetch #{filename} for #{druid}" unless file_fetcher.write_file_with_retries(filename:, location: aws_provider.bucket.object(s3_pathname(filename)), max_tries: 3)
           end
         end
 
@@ -24,12 +22,8 @@ module Robots
           File.join(bare_druid, filename)
         end
 
-        def aws_client
-          Aws.config.update({
-                              region: Settings.aws.region,
-                              credentials: Aws::Credentials.new(Settings.aws.access_key_id, Settings.aws.secret_access_key)
-                            })
-          @aws_client ||= Aws::S3::Client.new
+        def aws_provider
+          @aws_provider ||= Dor::TextExtraction::AwsProvider.new(region: Settings.aws.region, access_key_id: Settings.aws.access_key_id, secret_access_key: Settings.aws.secret_access_key)
         end
 
         def sttable_filenames

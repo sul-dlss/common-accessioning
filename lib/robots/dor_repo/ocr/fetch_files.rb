@@ -3,7 +3,7 @@
 module Robots
   module DorRepo
     module Ocr
-      # Fetch files in need of OCR from Preservation
+      # Fetch files in need of OCR from Preservation and save to local ABBYY workspace
       class FetchFiles < LyberCore::Robot
         def initialize
           super('ocrWF', 'fetch-files')
