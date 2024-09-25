@@ -24,7 +24,6 @@ module Dor
         tries = 0
         written = false
         begin
-          # debugger
           written = if location.is_a?(String) || location.is_a?(Pathname)
                       fetch_and_write_file_to_disk(filename:, path: Pathname.new(location))
                     elsif location.is_a?(Aws::S3::Object)
