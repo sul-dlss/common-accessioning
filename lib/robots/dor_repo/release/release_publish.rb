@@ -17,6 +17,8 @@ module Robots
         def perform_work
           logger.debug "release-publish working on #{druid}"
 
+          return LyberCore::ReturnState.new(status: :skipped, note: 'item is dark so it cannot be published') if cocina_object.dro? && cocina_object.access.view == 'dark'
+
           index = targets_for(release: true)
           delete = targets_for(release: false)
 
