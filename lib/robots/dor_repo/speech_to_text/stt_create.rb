@@ -29,19 +29,17 @@ module Robots
         end
 
         def send_sqs_message
-          # Define the queue URL and message body
-          queue_url = Settings.aws.sqs_queue_url
           message_body = {
             druid:
           }.merge(whisper_options).to_json
 
           # Send the message to the SQS queue
           aws_provider.sqs.send_message({
-                                          queue_url:,
+                                          queue_url: aws_provider.sqs_new_job_queue_url,
                                           message_body:
                                         })
 
-          logger.info("Sent SQS message for druid #{druid} to queue #{queue_url}")
+          logger.info("Sent SQS message for druid #{druid} to queue #{aws_provider.sqs_new_job_queue_url}")
         end
 
         def whisper_options

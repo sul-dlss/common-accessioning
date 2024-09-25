@@ -17,12 +17,12 @@ describe Robots::DorRepo::SpeechToText::SttCreate do
     let(:message_body) { { druid:, options: { model: 'large', max_line_count: 80, beam_size: 10 } }.to_json }
 
     before do
-      allow(aws_client).to receive(:send_message).with({ queue_url: Settings.aws.sqs_queue_url, message_body: }).and_return(true)
+      allow(aws_client).to receive(:send_message).with({ queue_url: Settings.aws.speech_to_text.sqs_new_job_queue_url, message_body: }).and_return(true)
     end
 
     it 'sends SQS messages but does not complete the step' do
       expect(perform.status).to eq 'noop'
-      expect(aws_client).to have_received(:send_message).with({ queue_url: Settings.aws.sqs_queue_url, message_body: }).once
+      expect(aws_client).to have_received(:send_message).with({ queue_url: Settings.aws.speech_to_text.sqs_new_job_queue_url, message_body: }).once
     end
   end
 
