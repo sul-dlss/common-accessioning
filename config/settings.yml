@@ -59,3 +59,4 @@ aws:
   access_key_id: 'fake-access'
   secret_access_key: 'fake-secret'
   base_s3_bucket: 'sul-speech-to-text-dev'
+  sqs_queue_url: 'https://sqs.us-west-2.amazonaws.com/queue_url'

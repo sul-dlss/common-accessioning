@@ -25,6 +25,11 @@ module Dor
         Settings.aws.base_s3_bucket
       end
 
+      # @return [::Aws::SQS::Client]
+      def sqs
+        @sqs ||= ::Aws::SQS::Client.new(aws_client_args)
+      end
+
       # @return [::Aws::S3::Resource]
       def resource
         ::Aws::S3::Resource.new(aws_client_args)

@@ -46,6 +46,9 @@ GEM
       aws-sdk-core (~> 3, >= 3.207.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
+    aws-sdk-sqs (1.86.0)
+      aws-sdk-core (~> 3, >= 3.207.0)
+      aws-sigv4 (~> 1.5)
     aws-sigv4 (1.10.0)
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.2.0)
@@ -344,6 +347,7 @@ DEPENDENCIES
   assembly-image (~> 2.0)
   assembly-objectfile (~> 2.1)
   aws-sdk-s3
+  aws-sdk-sqs
   capistrano (~> 3.0)
   capistrano-bundler (~> 1.1)
   config
