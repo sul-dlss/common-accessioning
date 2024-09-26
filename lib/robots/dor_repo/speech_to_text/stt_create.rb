@@ -4,7 +4,7 @@ module Robots
   module DorRepo
     module SpeechToText
       # Call the speech to text service to generate text
-      class SttCreate < LyberCore::Robot
+      class SttCreate < Dor::TextExtraction::Robot
         def initialize
           super('speechToTextWF', 'stt-create')
         end
@@ -23,10 +23,6 @@ module Robots
         end
 
         private
-
-        def aws_provider
-          @aws_provider ||= Dor::TextExtraction::AwsProvider.new(region: Settings.aws.region, access_key_id: Settings.aws.access_key_id, secret_access_key: Settings.aws.secret_access_key)
-        end
 
         def send_sqs_message
           message_body = {
