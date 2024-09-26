@@ -60,4 +60,5 @@ aws:
   secret_access_key: 'fake-secret'
   speech_to_text:
     base_s3_bucket: 'sul-speech-to-text-dev' # default bucket for storing speech-to-text file
-    sqs_new_job_queue_url: 'https://sqs.us-west-2.amazonaws.com/queue_url' # queue to send new speech-to-text jobs
+    sqs_todo_queue_url: 'https://sqs.us-west-2.amazonaws.com/queue_url' # queue to send new speech-to-text jobs
+    sqs_done_queue_url: 'https://sqs.us-west-2.amazonaws.com/queue_url_done' # queue to receive completed speech-to-text jobs

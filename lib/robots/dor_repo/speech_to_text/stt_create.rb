@@ -30,16 +30,22 @@ module Robots
 
         def send_sqs_message
           message_body = {
-            druid:
+            id: SecureRandom.uuid,
+            druid:,
+            media:
           }.merge(whisper_options).to_json
 
           # Send the message to the SQS queue
           aws_provider.sqs.send_message({
-                                          queue_url: aws_provider.sqs_new_job_queue_url,
+                                          queue_url: aws_provider.sqs_todo_queue_url,
                                           message_body:
                                         })
 
-          logger.info("Sent SQS message for druid #{druid} to queue #{aws_provider.sqs_new_job_queue_url}")
+          logger.info("Sent SQS message for druid #{druid} to queue #{aws_provider.sqs_todo_queue_url}")
+        end
+
+        def media
+          Dor::TextExtraction::SpeechToText.new(cocina_object:, workflow_context: workflow.context).filenames_to_stt
         end
 
         def whisper_options

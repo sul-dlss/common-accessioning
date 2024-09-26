@@ -26,8 +26,13 @@ module Dor
       end
 
       # @return [String]
-      def sqs_new_job_queue_url
-        Settings.aws.speech_to_text.sqs_new_job_queue_url
+      def sqs_todo_queue_url
+        Settings.aws.speech_to_text.sqs_todo_queue_url
+      end
+
+      # @return [String]
+      def sqs_done_queue_url
+        Settings.aws.speech_to_text.sqs_done_queue_url
       end
 
       # @return [::Aws::SQS::Client]

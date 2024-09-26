@@ -23,11 +23,7 @@ module Robots
         end
 
         def sttable_filenames
-          @sttable_filenames ||= speech_to_text.filenames_to_stt
-        end
-
-        def speech_to_text
-          @speech_to_text ||= Dor::TextExtraction::SpeechToText.new(cocina_object:, workflow_context: workflow.context)
+          Dor::TextExtraction::SpeechToText.new(cocina_object:, workflow_context: workflow.context).filenames_to_stt
         end
 
         def file_fetcher

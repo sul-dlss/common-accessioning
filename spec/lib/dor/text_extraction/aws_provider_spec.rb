@@ -6,7 +6,8 @@ describe Dor::TextExtraction::AwsProvider do
   let(:access_key_id) { 'some_key' }
   let(:secret_access_key) { 'secret' }
   let(:bucket_name) { Settings.aws.speech_to_text.base_s3_bucket }
-  let(:sqs_new_job_queue_url) { Settings.aws.speech_to_text.sqs_new_job_queue_url }
+  let(:sqs_todo_queue_url) { Settings.aws.speech_to_text.sqs_todo_queue_url }
+  let(:sqs_done_queue_url) { Settings.aws.speech_to_text.sqs_done_queue_url }
 
   describe '.bucket_name' do
     it 'returns value from Settings' do
@@ -14,9 +15,15 @@ describe Dor::TextExtraction::AwsProvider do
     end
   end
 
-  describe '.sqs_new_job_queue_url' do
+  describe '.sqs_todo_queue_url' do
     it 'returns value from Settings' do
-      expect(provider.sqs_new_job_queue_url).to eq sqs_new_job_queue_url
+      expect(provider.sqs_todo_queue_url).to eq sqs_todo_queue_url
+    end
+  end
+
+  describe '.sqs_done_queue_url' do
+    it 'returns value from Settings' do
+      expect(provider.sqs_done_queue_url).to eq sqs_done_queue_url
     end
   end
 
