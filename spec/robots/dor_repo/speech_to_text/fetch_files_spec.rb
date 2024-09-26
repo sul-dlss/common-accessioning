@@ -6,6 +6,7 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
   subject(:perform) { test_perform(robot, druid) }
 
   let(:druid) { 'druid:bb222cc3333' }
+  let(:bare_druid) { 'bb222cc3333' }
   let(:robot) { described_class.new }
   let(:file_fetcher) { instance_double(Dor::TextExtraction::FileFetcher, write_file_with_retries: written) }
   let(:stt) { instance_double(Dor::TextExtraction::SpeechToText, filenames_to_stt: ['file1.mov', 'file2.mp3']) }
@@ -20,12 +21,18 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
   let(:workflow_process) do
     instance_double(Dor::Workflow::Response::Process, lane_id: 'lane1', context: { 'runSpeechToText' => true })
   end
+  let(:aws_client) { instance_double(Aws::S3::Client) }
+  let(:mov_location) { instance_double(Aws::S3::Object, bucket_name: Settings.aws.base_s3_bucket, key: "#{bare_druid}/file1.mov", client: aws_client) }
+  let(:mp3_location) { instance_double(Aws::S3::Object, bucket_name: Settings.aws.base_s3_bucket, key: "#{bare_druid}/file2.mp3", client: aws_client) }
 
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(dsa_object_client)
     allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     allow(Dor::TextExtraction::FileFetcher).to receive(:new).and_return(file_fetcher)
     allow(Dor::TextExtraction::SpeechToText).to receive(:new).and_return(stt)
+    allow(Aws::S3::Client).to receive(:new).and_return(aws_client)
+    allow(Aws::S3::Object).to receive(:new).with(bucket_name: Settings.aws.base_s3_bucket, key: "#{bare_druid}/file1.mov", client: aws_client).and_return(mov_location)
+    allow(Aws::S3::Object).to receive(:new).with(bucket_name: Settings.aws.base_s3_bucket, key: "#{bare_druid}/file2.mp3", client: aws_client).and_return(mp3_location)
   end
 
   context 'when fetching files is successful' do
@@ -33,8 +40,8 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
 
     it 'calls the write_file_with_retries method with correct files' do
       expect(perform).to eq ['file1.mov', 'file2.mp3']
-      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file1.mov', bucket: 's3://some-bucket/file1.mov', max_tries: 3).once
-      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file2.mp3', bucket: 's3://some-bucket/file2.mp3', max_tries: 3).once
+      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file1.mov', location: mov_location, max_tries: 3).once
+      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file2.mp3', location: mp3_location, max_tries: 3).once
     end
   end
 
@@ -43,7 +50,7 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
 
     it 'raises an exception' do
       expect { perform }.to raise_error(RuntimeError, 'Unable to fetch file1.mov for druid:bb222cc3333')
-      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file1.mov', bucket: 's3://some-bucket/file1.mov', max_tries: 3).once
+      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file1.mov', location: mov_location, max_tries: 3).once
     end
   end
 end

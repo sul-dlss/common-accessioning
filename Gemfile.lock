@@ -32,6 +32,22 @@ GEM
       mini_exiftool
     ast (2.4.2)
     attr_extras (7.1.0)
+    aws-eventstream (1.3.0)
+    aws-partitions (1.977.0)
+    aws-sdk-core (3.207.0)
+      aws-eventstream (~> 1, >= 1.3.0)
+      aws-partitions (~> 1, >= 1.651.0)
+      aws-sigv4 (~> 1.9)
+      jmespath (~> 1, >= 1.6.1)
+    aws-sdk-kms (1.92.0)
+      aws-sdk-core (~> 3, >= 3.207.0)
+      aws-sigv4 (~> 1.5)
+    aws-sdk-s3 (1.164.0)
+      aws-sdk-core (~> 3, >= 3.207.0)
+      aws-sdk-kms (~> 1)
+      aws-sigv4 (~> 1.5)
+    aws-sigv4 (1.10.0)
+      aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.2.0)
     bcrypt_pbkdf (1.1.1)
     bigdecimal (3.1.8)
@@ -155,6 +171,7 @@ GEM
     irb (1.14.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
+    jmespath (1.6.2)
     json (2.7.2)
     jsonpath (1.1.5)
       multi_json
@@ -326,6 +343,7 @@ DEPENDENCIES
   activesupport (~> 7.0)
   assembly-image (~> 2.0)
   assembly-objectfile (~> 2.1)
+  aws-sdk-s3
   capistrano (~> 3.0)
   capistrano-bundler (~> 1.1)
   config

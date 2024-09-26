@@ -34,8 +34,8 @@ describe Robots::DorRepo::Ocr::FetchFiles do
 
     it 'calls the write_file_with_retries method with correct files' do
       expect(perform).to eq ['file1.txt', 'file2.pdf']
-      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file1.txt', path: Pathname.new("#{abbyy_input_path}/file1.txt"), max_tries: 3).once
-      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file2.pdf', path: Pathname.new("#{abbyy_input_path}/file2.pdf"), max_tries: 3).once
+      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file1.txt', location: Pathname.new("#{abbyy_input_path}/file1.txt"), max_tries: 3).once
+      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file2.pdf', location: Pathname.new("#{abbyy_input_path}/file2.pdf"), max_tries: 3).once
     end
   end
 
@@ -44,7 +44,7 @@ describe Robots::DorRepo::Ocr::FetchFiles do
 
     it 'raises an exception' do
       expect { perform }.to raise_error(RuntimeError, 'Unable to fetch file1.txt for druid:bb222cc3333')
-      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file1.txt', path: Pathname.new("#{abbyy_input_path}/file1.txt"), max_tries: 3).once
+      expect(file_fetcher).to have_received(:write_file_with_retries).with(filename: 'file1.txt', location: Pathname.new("#{abbyy_input_path}/file1.txt"), max_tries: 3).once
     end
   end
 end

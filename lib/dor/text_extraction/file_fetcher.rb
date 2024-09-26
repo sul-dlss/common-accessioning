@@ -6,9 +6,9 @@ module Dor
     class FileFetcher
       attr_reader :druid, :logger
 
-      def initialize(druid:, logger:)
+      def initialize(druid:, logger: nil)
         @druid = druid
-        @logger = logger
+        @logger = logger || Logger.new($stdout)
       end
 
       # Fetch an item's file from Preservation and write it to disk. Since
@@ -16,20 +16,20 @@ module Dor
       # where files are written, we need to recheck.
       # This method will retry fetching the file up to `max_tries` times.
       # @param [String] filename the filename to fetch
-      # @param [Pathname] path the path to write the file to (leave off if sending to cloud)
-      # @param [String] bucket the S3 bucket to write the file to (leave off if sending to disk)
-      # @param [Symbol] method (could be :file or :cloud), default to :file
+      # @param [Object] location to write the file (could be a Pathname object, a string representing a local path, or an S3Object for AWS)
       # @param [Integer] max_tries the number of times to retry fetching the file
       # @return [Boolean] true if the file was fetched and written, false otherwise
       # rubocop:disable Metrics/MethodLength
-      def write_file_with_retries(filename:, max_tries: 3, path: nil, bucket: nil, method: :file)
+      def write_file_with_retries(filename:, location:, max_tries: 3)
         tries = 0
         written = false
         begin
-          written = if method == :file
-                      fetch_and_write_file_to_disk(filename:, path:)
+          written = if location.is_a?(String) || location.is_a?(Pathname)
+                      fetch_and_write_file_to_disk(filename:, path: Pathname.new(location))
+                    elsif location.is_a?(Aws::S3::Object)
+                      fetch_and_send_file_to_s3(filename:, s3_object: location)
                     else
-                      fetch_and_send_file_to_s3(filename:, bucket:)
+                      raise "Unknown location type: #{location.class}"
                     end
         rescue Faraday::ResourceNotFound
           tries += 1
@@ -39,7 +39,11 @@ module Dor
 
           retry unless tries > max_tries
 
-          context = { druid:, filename:, path: path.to_s, bucket:, max_tries: }
+          context = { druid:, filename:, max_tries: }.tap do |ctx|
+            ctx[:path] = location.to_s if location.is_a?(Pathname) || location.is_a?(String)
+            ctx[:bucket] = location.bucket_name if location.is_a?(Aws::S3::Object)
+          end
+
           logger.error("Exceeded max_tries attempting to fetch file: #{context}")
           Honeybadger.notify('Exceeded max_tries attempting to fetch file', context:)
         end
@@ -49,14 +53,15 @@ module Dor
       # rubocop:enable Metrics/MethodLength
 
       # fetch a file from preservation and send to cloud endpoint
-      # TODO: implement this method for AWS S3, it will be used for the speech-to-text workflow
-      def fetch_and_send_file_to_s3(filename:, bucket:)
-        logger.info("fetching #{filename} for #{druid} and sending to #{bucket}")
-        preservation_client.objects.content(
-          druid:,
-          filepath: filename,
-          on_data: proc { |_data, _count| } # actually send the file to the cloud endpoint
-        )
+      def fetch_and_send_file_to_s3(filename:, s3_object:)
+        logger.info("fetching #{filename} for #{druid} and sending to #{s3_object.bucket_name}")
+        s3_object.upload_stream do |upload_stream|
+          preservation_client.objects.content(
+            druid:,
+            filepath: filename,
+            on_data: proc { |data, _count| upload_stream.write(data) }
+          )
+        end
 
         true # NOTE: return false on failure
       end
