@@ -20,6 +20,7 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
   let(:text_file) { build_file(true, true, 'file1.txt') }
   let(:text_file2) { build_file(true, true, 'file2.txt') }
   let(:druid) { 'druid:bc123df4567' }
+  let(:bare_druid) { 'bc123df4567' }
 
   def build_file(sdr_preserve, shelve, filename)
     extension = File.extname(filename)
@@ -108,6 +109,15 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
 
     it 'returns a list of all filenames' do
       expect(stt.send(:stt_files)).to eq([m4a_file, mp4_file])
+    end
+  end
+
+  describe '#job_id' do
+    let(:cocina_object) { instance_double(Cocina::Models::DRO, version:, externalIdentifier: druid, dro?: true, type: object_type) }
+    let(:version) { 3 }
+
+    it 'returns the job_id for the STT job' do
+      expect(stt.job_id).to eq("#{bare_druid}-v#{version}")
     end
   end
 end

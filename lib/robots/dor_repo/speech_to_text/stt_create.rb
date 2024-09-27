@@ -27,8 +27,7 @@ module Robots
         def send_sqs_message
           message_body = {
             id: job_id,
-            druid:,
-            media:
+            druid:
           }.merge(whisper_options).to_json
 
           # Send the message to the SQS queue
@@ -37,15 +36,11 @@ module Robots
                                           message_body:
                                         })
 
-          logger.info("Sent SQS message for druid #{druid} to queue #{aws_provider.sqs_todo_queue_url}")
+          logger.info("Sent SQS message for druid #{druid} to queue #{aws_provider.sqs_todo_queue_url} with job_id #{job_id}")
         end
 
         def job_id
-          @job_id ||= SecureRandom.uuid
-        end
-
-        def media
-          Dor::TextExtraction::SpeechToText.new(cocina_object:, workflow_context: workflow.context).filenames_to_stt
+          @job_id ||= Dor::TextExtraction::SpeechToText.new(cocina_object:).job_id
         end
 
         # pulled from config, could later be overriden by settings in the workflow context
