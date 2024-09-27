@@ -6,20 +6,25 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
   let(:stt) { described_class.new(cocina_object:, workflow_context:) }
   let(:object_type) { 'https://cocina.sul.stanford.edu/models/media' }
   let(:workflow_context) { {} }
-  let(:structural) { instance_double(Cocina::Models::DROStructural, contains: [first_fileset, second_fileset]) }
-  let(:first_fileset) { instance_double(Cocina::Models::FileSet, type: 'https://cocina.sul.stanford.edu/models/resources/file', structural: first_fileset_structural) }
-  let(:second_fileset) { instance_double(Cocina::Models::FileSet, type: 'https://cocina.sul.stanford.edu/models/resources/file', structural: second_fileset_structural) }
-  let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [wav_file]) }
-  let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [mp4_file]) }
-  let(:wav_file) { build_file(true, 'file1.wav') }
-  let(:mp4_file) { build_file(true, 'file1.mp4') }
-  let(:text_file) { build_file(true, 'file1.txt') }
+  let(:structural) { instance_double(Cocina::Models::DROStructural, contains: [first_fileset, second_fileset, third_fileset]) }
+  let(:first_fileset) { instance_double(Cocina::Models::FileSet, type: 'https://cocina.sul.stanford.edu/models/resources/audio', structural: first_fileset_structural) }
+  let(:second_fileset) { instance_double(Cocina::Models::FileSet, type: 'https://cocina.sul.stanford.edu/models/resources/video', structural: second_fileset_structural) }
+  let(:third_fileset) { instance_double(Cocina::Models::FileSet, type: 'https://cocina.sul.stanford.edu/models/resources/file', structural: third_fileset_structural) }
+  let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [m4a_file, text_file]) }
+  let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [mp4_file, mp4_file_not_shelved, mp4_file_not_preserved]) }
+  let(:third_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [text_file2]) }
+  let(:m4a_file) { build_file(true, true, 'file1.m4a') }
+  let(:mp4_file) { build_file(true, true, 'file1.mp4') }
+  let(:mp4_file_not_shelved) { build_file(true, false, 'file2.mp4') }
+  let(:mp4_file_not_preserved) { build_file(false, true, 'file3.mp4') }
+  let(:text_file) { build_file(true, true, 'file1.txt') }
+  let(:text_file2) { build_file(true, true, 'file2.txt') }
   let(:druid) { 'druid:bc123df4567' }
 
-  def build_file(sdr_peserve, filename)
+  def build_file(sdr_preserve, shelve, filename)
     extension = File.extname(filename)
-    mimetype = { '.wav' => 'audio/x-wav', '.mp4' => 'video/mp4', '.txt' => 'text/plain' }
-    sdr_value = instance_double(Cocina::Models::FileAdministrative, sdrPreserve: sdr_peserve)
+    mimetype = { '.m4a' => 'audio/mp4', '.mp4' => 'video/mp4', '.txt' => 'text/plain' }
+    sdr_value = instance_double(Cocina::Models::FileAdministrative, sdrPreserve: sdr_preserve, shelve:)
     instance_double(Cocina::Models::File, administrative: sdr_value, hasMimeType: mimetype[extension], filename:)
   end
 
@@ -53,7 +58,7 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
       end
 
       context 'when the object has files that can be STTed' do
-        let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [wav_file]) }
+        let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [m4a_file]) }
 
         it 'returns true' do
           expect(stt.possible?).to be true
@@ -94,7 +99,7 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
     let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, structural:, type: object_type) }
 
     it 'returns a list of filenames that should be STTed' do
-      expect(stt.send(:filenames_to_stt)).to eq(['file1.wav', 'file1.mp4'])
+      expect(stt.send(:filenames_to_stt)).to eq(['file1.m4a', 'file1.mp4'])
     end
   end
 
@@ -102,7 +107,7 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
     let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, structural:, type: object_type) }
 
     it 'returns a list of all filenames' do
-      expect(stt.send(:stt_files)).to eq([wav_file, mp4_file])
+      expect(stt.send(:stt_files)).to eq([m4a_file, mp4_file])
     end
   end
 end

@@ -46,50 +46,35 @@ module Dor
       def stt_files
         [].tap do |files|
           cocina_object.structural.contains.each do |fileset|
-            next unless fileset.type.include?(matchtype)
+            next unless allowed_resource_types.include? fileset.type
 
-            files << stt_file(fileset)
+            files << stt_files_in_fileset(fileset)
           end
-        end.compact
+        end.flatten.compact
       end
 
-      # filter down fileset files to those in preservation and are allowedmimetypes
-      # if there are more than one allowed mimetype, grab the preferred type
-      def stt_file(fileset)
-        perservedfiles = fileset.structural.contains.select { |file| file.administrative.sdrPreserve && allowed_mimetypes.include?(file.hasMimeType) }
-        return perservedfiles[0] if perservedfiles.one?
-
-        perservedfiles = perservedfiles.sort_by { |pfile| allowed_mimetypes.index(pfile.hasMimeType) }
-        perservedfiles[0]
+      # filter down fileset files to those in preservation, that are shelved and are of an allowed mimetypes
+      # return all of them
+      def stt_files_in_fileset(fileset)
+        fileset.structural.contains.select { |file| file.administrative.sdrPreserve && file.administrative.shelve && allowed_mimetypes.include?(file.hasMimeType) }
       end
 
       # defines the mimetypes types for which speech to text files can possibly be run
-      # preferentially select files for speech to text by ordering of mimetypes below
-      # TODO: refine list of allowed mimetypes for speech to text
-      # see https://github.com/sul-dlss/common-accessioning/issues/1346
       def allowed_mimetypes
         %w[
-          audio/x-wav
           audio/mp4
           video/mp4
-          video/mpeg
-          video/quicktime
         ]
       end
 
-      # maps the allowed object types to the resource type we will look for files in
-      def resource_type_mapping
-        {
-          Cocina::Models::ObjectType.media => 'file'
-        }
+      # the allowed structural metadata resources types that can contain files that can be stt'd
+      def allowed_resource_types
+        ['https://cocina.sul.stanford.edu/models/resources/audio', 'https://cocina.sul.stanford.edu/models/resources/video']
       end
 
-      def matchtype
-        resource_type_mapping[cocina_object.type]
-      end
-
+      # the allowed objects that can have speech to text run on them
       def allowed_object_types
-        resource_type_mapping.keys
+        [Cocina::Models::ObjectType.media]
       end
     end
   end
