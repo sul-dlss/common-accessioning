@@ -18,7 +18,7 @@ module Robots
           # Leave this step running until the Whisper monitoring job marks it as complete
           LyberCore::ReturnState.new(status: :noop, note: 'Initiated SpeechToText.')
         rescue StandardError => e
-          Honeybadger.notify('Problem sending SQS Message to AWS for SpeechToText', context: { druid:, error: e })
+          Honeybadger.notify('Problem sending SQS Message to AWS for SpeechToText', context: { druid:, job_id:, error: e })
           raise "Error sending SQS message: #{e.message}"
         end
 
@@ -26,7 +26,7 @@ module Robots
 
         def send_sqs_message
           message_body = {
-            id: SecureRandom.uuid,
+            id: job_id,
             druid:,
             media:
           }.merge(whisper_options).to_json
@@ -40,18 +40,17 @@ module Robots
           logger.info("Sent SQS message for druid #{druid} to queue #{aws_provider.sqs_todo_queue_url}")
         end
 
+        def job_id
+          @job_id ||= SecureRandom.uuid
+        end
+
         def media
           Dor::TextExtraction::SpeechToText.new(cocina_object:, workflow_context: workflow.context).filenames_to_stt
         end
 
+        # pulled from config, could later be overriden by settings in the workflow context
         def whisper_options
-          {
-            options: {
-              model: 'large',
-              max_line_count: 80,
-              beam_size: 10
-            }
-          }
+          Settings.speech_to_text.whisper.to_h
         end
       end
     end
