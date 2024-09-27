@@ -4,7 +4,7 @@ module Robots
   module DorRepo
     module SpeechToText
       # Fetch files in need of Speech to Text from Preservation and send to S3
-      class FetchFiles < LyberCore::Robot
+      class FetchFiles < Dor::TextExtraction::Robot
         def initialize
           super('speechToTextWF', 'fetch-files')
         end
@@ -18,16 +18,8 @@ module Robots
 
         private
 
-        def aws_provider
-          @aws_provider ||= Dor::TextExtraction::AwsProvider.new(region: Settings.aws.region, access_key_id: Settings.aws.access_key_id, secret_access_key: Settings.aws.secret_access_key)
-        end
-
         def sttable_filenames
-          @sttable_filenames ||= speech_to_text.filenames_to_stt
-        end
-
-        def speech_to_text
-          @speech_to_text ||= Dor::TextExtraction::SpeechToText.new(cocina_object:, workflow_context: workflow.context)
+          Dor::TextExtraction::SpeechToText.new(cocina_object:, workflow_context: workflow.context).filenames_to_stt
         end
 
         def file_fetcher

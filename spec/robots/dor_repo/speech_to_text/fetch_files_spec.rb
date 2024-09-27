@@ -22,8 +22,8 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
     instance_double(Dor::Workflow::Response::Process, lane_id: 'lane1', context: { 'runSpeechToText' => true })
   end
   let(:aws_client) { instance_double(Aws::S3::Client) }
-  let(:mov_location) { instance_double(Aws::S3::Object, bucket_name: Settings.aws.base_s3_bucket, key: "#{bare_druid}/file1.mov", client: aws_client) }
-  let(:mp3_location) { instance_double(Aws::S3::Object, bucket_name: Settings.aws.base_s3_bucket, key: "#{bare_druid}/file2.mp3", client: aws_client) }
+  let(:mov_location) { instance_double(Aws::S3::Object, bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{bare_druid}/file1.mov", client: aws_client) }
+  let(:mp3_location) { instance_double(Aws::S3::Object, bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{bare_druid}/file2.mp3", client: aws_client) }
 
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(dsa_object_client)
@@ -31,8 +31,8 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
     allow(Dor::TextExtraction::FileFetcher).to receive(:new).and_return(file_fetcher)
     allow(Dor::TextExtraction::SpeechToText).to receive(:new).and_return(stt)
     allow(Aws::S3::Client).to receive(:new).and_return(aws_client)
-    allow(Aws::S3::Object).to receive(:new).with(bucket_name: Settings.aws.base_s3_bucket, key: "#{bare_druid}/file1.mov", client: aws_client).and_return(mov_location)
-    allow(Aws::S3::Object).to receive(:new).with(bucket_name: Settings.aws.base_s3_bucket, key: "#{bare_druid}/file2.mp3", client: aws_client).and_return(mp3_location)
+    allow(Aws::S3::Object).to receive(:new).with(bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{bare_druid}/file1.mov", client: aws_client).and_return(mov_location)
+    allow(Aws::S3::Object).to receive(:new).with(bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{bare_druid}/file2.mp3", client: aws_client).and_return(mp3_location)
   end
 
   context 'when fetching files is successful' do

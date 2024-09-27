@@ -5,11 +5,25 @@ describe Dor::TextExtraction::AwsProvider do
   let(:region) { 'us-west-2' }
   let(:access_key_id) { 'some_key' }
   let(:secret_access_key) { 'secret' }
-  let(:bucket_name) { Settings.aws.base_s3_bucket }
+  let(:bucket_name) { Settings.aws.speech_to_text.base_s3_bucket }
+  let(:sqs_todo_queue_url) { Settings.aws.speech_to_text.sqs_todo_queue_url }
+  let(:sqs_done_queue_url) { Settings.aws.speech_to_text.sqs_done_queue_url }
 
   describe '.bucket_name' do
     it 'returns value from Settings' do
       expect(provider.bucket_name).to eq bucket_name
+    end
+  end
+
+  describe '.sqs_todo_queue_url' do
+    it 'returns value from Settings' do
+      expect(provider.sqs_todo_queue_url).to eq sqs_todo_queue_url
+    end
+  end
+
+  describe '.sqs_done_queue_url' do
+    it 'returns value from Settings' do
+      expect(provider.sqs_done_queue_url).to eq sqs_done_queue_url
     end
   end
 

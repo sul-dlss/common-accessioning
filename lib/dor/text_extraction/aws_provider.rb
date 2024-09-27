@@ -2,7 +2,7 @@
 
 module Dor
   module TextExtraction
-    # The Application's configured interface to AWS S3.
+    # The Application's configured interface to AWS.
     class AwsProvider
       delegate :client, to: :resource
       attr_reader :aws_client_args
@@ -22,7 +22,22 @@ module Dor
 
       # @return [String]
       def bucket_name
-        Settings.aws.base_s3_bucket
+        Settings.aws.speech_to_text.base_s3_bucket
+      end
+
+      # @return [String]
+      def sqs_todo_queue_url
+        Settings.aws.speech_to_text.sqs_todo_queue_url
+      end
+
+      # @return [String]
+      def sqs_done_queue_url
+        Settings.aws.speech_to_text.sqs_done_queue_url
+      end
+
+      # @return [::Aws::SQS::Client]
+      def sqs
+        @sqs ||= ::Aws::SQS::Client.new(aws_client_args)
       end
 
       # @return [::Aws::S3::Resource]
