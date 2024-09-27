@@ -53,7 +53,7 @@ purl_fetcher:
   url: 'https://purl-fetcher-stage.stanford.edu'
   token: 'mint-token-with-target-purl-fetcher-rake-generate-token'
 
-# used for the speech-to-text workflow
+# aws related options (currently used for the speech-to-text workflow)
 aws:
   region: 'us-west-2'
   access_key_id: 'fake-access'
@@ -62,3 +62,12 @@ aws:
     base_s3_bucket: 'sul-speech-to-text-dev' # default bucket for storing speech-to-text file
     sqs_todo_queue_url: 'https://sqs.us-west-2.amazonaws.com/queue_url' # queue to send new speech-to-text jobs
     sqs_done_queue_url: 'https://sqs.us-west-2.amazonaws.com/queue_url_done' # queue to receive completed speech-to-text jobs
+
+
+# options specific for speech-to-text generation
+speech_to_text:
+  whisper:
+    options:
+      model: 'large'
+      max_line_count: 80
+      beam_size: 10
