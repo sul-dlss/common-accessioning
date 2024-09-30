@@ -112,6 +112,15 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
     end
   end
 
+  describe '#s3_location' do
+    let(:cocina_object) { instance_double(Cocina::Models::DRO, version:, externalIdentifier: druid, dro?: true, type: object_type) }
+    let(:version) { 3 }
+
+    it 'returns the s3 filename key for a given filename' do
+      expect(stt.s3_location('text.xml')).to eq("#{bare_druid}-v#{version}/text.xml")
+    end
+  end
+
   describe '#job_id' do
     let(:cocina_object) { instance_double(Cocina::Models::DRO, version:, externalIdentifier: druid, dro?: true, type: object_type) }
     let(:version) { 3 }

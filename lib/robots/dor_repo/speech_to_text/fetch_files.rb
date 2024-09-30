@@ -11,21 +11,15 @@ module Robots
 
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          sttable_filenames.each do |filename|
-            raise "Unable to fetch #{filename} for #{druid}" unless file_fetcher.write_file_with_retries(filename:, location: aws_provider.bucket.object(File.join(job_id, filename)), max_tries: 3)
+          speech_to_text.filenames_to_stt.each do |filename|
+            raise "Unable to fetch #{filename} for #{druid}" unless file_fetcher.write_file_with_retries(filename:, location: aws_provider.bucket.object(speech_to_text.s3_location(filename)), max_tries: 3)
           end
         end
 
         private
 
-        def sttable_filenames
-          Dor::TextExtraction::SpeechToText.new(cocina_object:).filenames_to_stt
-        end
-
-        # this will be the base of the S3 key for the files sent (to namespace them in the bucket)
-        # it is the same as the job_id when we send the SQS message
-        def job_id
-          @job_id ||= Dor::TextExtraction::SpeechToText.new(cocina_object:).job_id
+        def speech_to_text
+          @speech_to_text ||= Dor::TextExtraction::SpeechToText.new(cocina_object:)
         end
 
         def file_fetcher

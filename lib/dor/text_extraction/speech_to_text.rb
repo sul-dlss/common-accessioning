@@ -39,6 +39,11 @@ module Dor
         stt_files.map(&:filename)
       end
 
+      # return the s3 location for a given filename
+      def s3_location(filename)
+        File.join(job_id, filename)
+      end
+
       # return the job_id for the stt job, defined as the druid-version of the object
       def job_id
         "#{bare_druid}-v#{cocina_object.version}"

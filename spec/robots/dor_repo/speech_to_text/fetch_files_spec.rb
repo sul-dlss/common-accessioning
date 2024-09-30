@@ -34,6 +34,8 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
     allow(Aws::S3::Client).to receive(:new).and_return(aws_client)
     allow(Aws::S3::Object).to receive(:new).with(bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{job_id}/file1.mov", client: aws_client).and_return(mov_location)
     allow(Aws::S3::Object).to receive(:new).with(bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{job_id}/file2.mp3", client: aws_client).and_return(mp3_location)
+    allow(stt).to receive(:s3_location).with('file1.mov').and_return("#{job_id}/file1.mov")
+    allow(stt).to receive(:s3_location).with('file2.mp3').and_return("#{job_id}/file2.mp3")
   end
 
   context 'when fetching files is successful' do
