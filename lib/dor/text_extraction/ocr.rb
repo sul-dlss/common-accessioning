@@ -85,7 +85,7 @@ module Dor
 
         files = Dir.glob("#{abbyy_input_path}/*")
         logger.info "Removing ABBYY input directory: #{abbyy_input_path}.  Empty: #{Dir.empty?(abbyy_input_path)}. Num files/folders: #{files.count}: #{files.join(', ')}"
-        FileUtils.rm_r(abbyy_input_path)
+        delete_folder(abbyy_input_path)
       end
 
       # e.g. /abbyy/OUTPUT/ab123cd4567
@@ -94,7 +94,7 @@ module Dor
 
         files = Dir.glob("#{abbyy_output_path}/*")
         logger.info "Removing ABBYY output directory: #{abbyy_output_path}.  Empty: #{Dir.empty?(abbyy_output_path)}. Num files/folders: #{files.count}: #{files.join(', ')}"
-        FileUtils.rm_r(abbyy_output_path)
+        delete_folder(abbyy_output_path)
       end
 
       # e.g. /abbyy/INPUT/ab123cd4567.xml
@@ -175,6 +175,11 @@ module Dor
 
       def allowed_object_types
         resource_type_mapping.keys
+      end
+
+      # shell out to remove a folder and all its contents since FileUtils.rm_r sometimes fails even if the directory is empty
+      def delete_folder(folder)
+        `rm -rf #{folder}`
       end
     end
     # rubocop:enable Metrics/ClassLength
