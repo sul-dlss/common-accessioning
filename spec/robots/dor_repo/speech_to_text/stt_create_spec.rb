@@ -9,6 +9,7 @@ describe Robots::DorRepo::SpeechToText::SttCreate do
   let(:bare_druid) { 'bb222cc3333' }
   let(:robot) { described_class.new }
   let(:aws_client) { instance_double(Aws::SQS::Client) }
+  let(:aws_s3_client) { instance_double(Aws::S3::Client) }
   let(:stt) { instance_double(Dor::TextExtraction::SpeechToText, job_id:, filenames_to_stt: ['file1.mov', 'file2.mp3']) }
   let(:cocina_model) { build(:dro, id: druid).new(structural: {}, type: object_type, access: { view: 'world' }) }
   let(:object_type) { 'https://cocina.sul.stanford.edu/models/media' }
@@ -22,16 +23,22 @@ describe Robots::DorRepo::SpeechToText::SttCreate do
     instance_double(Dor::Workflow::Response::Process, lane_id: 'lane1', context: { 'runSpeechToText' => true })
   end
   let(:job_id) { "#{bare_druid}-v1" }
+  let(:media) { ["#{job_id}/file1.mov", "#{job_id}/file2.mp3"] }
+  let(:list_objects) { instance_double(Aws::S3::Types::ListObjectsOutput, contents: [mov_object, mp3_object]) }
+  let(:mov_object) { instance_double(Aws::S3::Types::Object, key: media[0]) }
+  let(:mp3_object) { instance_double(Aws::S3::Types::Object, key: media[1]) }
 
   before do
+    allow(Aws::S3::Client).to receive(:new).and_return(aws_s3_client)
     allow(Aws::SQS::Client).to receive(:new).and_return(aws_client)
     allow(Dor::Services::Client).to receive(:object).and_return(dsa_object_client)
     allow(Dor::TextExtraction::SpeechToText).to receive(:new).and_return(stt)
     allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
+    allow(aws_s3_client).to receive(:list_objects).and_return(list_objects)
   end
 
   context 'when the message is sent successfully' do
-    let(:message_body) { { id: job_id, druid:, options: { model: 'large', max_line_count: 80, beam_size: 10 } }.to_json }
+    let(:message_body) { { id: job_id, druid:, media:, options: { model: 'large', max_line_count: 80, beam_size: 10 } }.to_json }
 
     before do
       allow(aws_client).to receive(:send_message).with({ queue_url: Settings.aws.speech_to_text.sqs_todo_queue_url, message_body: }).and_return(true)
