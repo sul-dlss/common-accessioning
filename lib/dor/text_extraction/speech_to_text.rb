@@ -4,13 +4,12 @@ module Dor
   module TextExtraction
     # Determine if speech to text is required and possible for a given object
     class SpeechToText
-      attr_reader :cocina_object, :workflow_context, :bare_druid, :logger
+      attr_reader :cocina_object, :workflow_context, :bare_druid
 
-      def initialize(cocina_object:, workflow_context: {}, logger: nil)
+      def initialize(cocina_object:, workflow_context: {})
         @cocina_object = cocina_object
         @workflow_context = workflow_context
         @bare_druid = cocina_object.externalIdentifier.delete_prefix('druid:')
-        @logger = logger || Logger.new($stdout)
       end
 
       def possible?
@@ -38,6 +37,16 @@ module Dor
       # return a list of filenames that are correct mimetype
       def filenames_to_stt
         stt_files.map(&:filename)
+      end
+
+      # return the s3 location for a given filename
+      def s3_location(filename)
+        File.join(job_id, filename)
+      end
+
+      # return the job_id for the stt job, defined as the druid-version of the object
+      def job_id
+        "#{bare_druid}-v#{cocina_object.version}"
       end
 
       private

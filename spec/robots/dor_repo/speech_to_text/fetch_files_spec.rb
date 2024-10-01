@@ -9,7 +9,7 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
   let(:bare_druid) { 'bb222cc3333' }
   let(:robot) { described_class.new }
   let(:file_fetcher) { instance_double(Dor::TextExtraction::FileFetcher, write_file_with_retries: written) }
-  let(:stt) { instance_double(Dor::TextExtraction::SpeechToText, filenames_to_stt: ['file1.mov', 'file2.mp3']) }
+  let(:stt) { instance_double(Dor::TextExtraction::SpeechToText, job_id:, filenames_to_stt: ['file1.mov', 'file2.mp3']) }
   let(:cocina_model) { build(:dro, id: druid).new(structural: {}, type: object_type, access: { view: 'world' }) }
   let(:object_type) { 'https://cocina.sul.stanford.edu/models/media' }
   let(:dsa_object_client) do
@@ -22,8 +22,9 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
     instance_double(Dor::Workflow::Response::Process, lane_id: 'lane1', context: { 'runSpeechToText' => true })
   end
   let(:aws_client) { instance_double(Aws::S3::Client) }
-  let(:mov_location) { instance_double(Aws::S3::Object, bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{bare_druid}/file1.mov", client: aws_client) }
-  let(:mp3_location) { instance_double(Aws::S3::Object, bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{bare_druid}/file2.mp3", client: aws_client) }
+  let(:mov_location) { instance_double(Aws::S3::Object, bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{job_id}/file1.mov", client: aws_client) }
+  let(:mp3_location) { instance_double(Aws::S3::Object, bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{job_id}/file2.mp3", client: aws_client) }
+  let(:job_id) { "#{bare_druid}-v1" }
 
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(dsa_object_client)
@@ -31,8 +32,10 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
     allow(Dor::TextExtraction::FileFetcher).to receive(:new).and_return(file_fetcher)
     allow(Dor::TextExtraction::SpeechToText).to receive(:new).and_return(stt)
     allow(Aws::S3::Client).to receive(:new).and_return(aws_client)
-    allow(Aws::S3::Object).to receive(:new).with(bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{bare_druid}/file1.mov", client: aws_client).and_return(mov_location)
-    allow(Aws::S3::Object).to receive(:new).with(bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{bare_druid}/file2.mp3", client: aws_client).and_return(mp3_location)
+    allow(Aws::S3::Object).to receive(:new).with(bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{job_id}/file1.mov", client: aws_client).and_return(mov_location)
+    allow(Aws::S3::Object).to receive(:new).with(bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{job_id}/file2.mp3", client: aws_client).and_return(mp3_location)
+    allow(stt).to receive(:s3_location).with('file1.mov').and_return("#{job_id}/file1.mov")
+    allow(stt).to receive(:s3_location).with('file2.mp3').and_return("#{job_id}/file2.mp3")
   end
 
   context 'when fetching files is successful' do

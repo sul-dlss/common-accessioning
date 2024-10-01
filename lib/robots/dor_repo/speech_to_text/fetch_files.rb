@@ -11,15 +11,15 @@ module Robots
 
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          sttable_filenames.each do |filename|
-            raise "Unable to fetch #{filename} for #{druid}" unless file_fetcher.write_file_with_retries(filename:, location: aws_provider.bucket.object(File.join(bare_druid, filename)), max_tries: 3)
+          speech_to_text.filenames_to_stt.each do |filename|
+            raise "Unable to fetch #{filename} for #{druid}" unless file_fetcher.write_file_with_retries(filename:, location: aws_provider.bucket.object(speech_to_text.s3_location(filename)), max_tries: 3)
           end
         end
 
         private
 
-        def sttable_filenames
-          Dor::TextExtraction::SpeechToText.new(cocina_object:, workflow_context: workflow.context).filenames_to_stt
+        def speech_to_text
+          @speech_to_text ||= Dor::TextExtraction::SpeechToText.new(cocina_object:)
         end
 
         def file_fetcher

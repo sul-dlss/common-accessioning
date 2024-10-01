@@ -25,27 +25,30 @@ module Robots
         private
 
         def send_sqs_message
-          message_body = {
-            id: job_id,
-            druid:,
-            media:
-          }.merge(whisper_options).to_json
-
           # Send the message to the SQS queue
           aws_provider.sqs.send_message({
                                           queue_url: aws_provider.sqs_todo_queue_url,
                                           message_body:
                                         })
 
-          logger.info("Sent SQS message for druid #{druid} to queue #{aws_provider.sqs_todo_queue_url}")
+          logger.info("Sent SQS message for druid #{druid} to queue #{aws_provider.sqs_todo_queue_url} with job_id #{job_id}")
+        end
+
+        def message_body
+          {
+            id: job_id,
+            druid:,
+            media:
+          }.merge(whisper_options).to_json
         end
 
         def job_id
-          @job_id ||= SecureRandom.uuid
+          @job_id ||= Dor::TextExtraction::SpeechToText.new(cocina_object:).job_id
         end
 
+        # array of media files in the bucket folder for this job (excluding s3 folders)
         def media
-          Dor::TextExtraction::SpeechToText.new(cocina_object:, workflow_context: workflow.context).filenames_to_stt
+          aws_provider.client.list_objects(bucket: aws_provider.bucket_name, prefix: job_id).contents.map(&:key).reject { |key| key.end_with?('/') }
         end
 
         # pulled from config, could later be overriden by settings in the workflow context
