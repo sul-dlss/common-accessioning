@@ -4,23 +4,22 @@ module Dor
   module TextExtraction
     # Update the status of workflow steps in SDR based on OCR processing events
     class WorkflowUpdater
-      attr_reader :workflow, :step
+      OCR_WF_NAME = 'ocrWF'
+      OCR_WF_CREATE_NAME = 'ocr-create'
 
       # Default is to update the 'ocr-create' step in the 'ocrWF' workflow
-      def initialize(workflow: 'ocrWF', step: 'ocr-create', client: nil, logger: nil)
-        @workflow = workflow
-        @step = step
+      def initialize(client: nil, logger: nil)
         @client = client || LyberCore::WorkflowClientFactory.build(logger:)
       end
 
       # Notify SDR that the OCR workflow step completed successfully
       def mark_ocr_completed(druid)
-        @client.update_status(druid:, workflow:, process: step, status: 'completed')
+        @client.update_status(druid:, workflow: OCR_WF_NAME, process: OCR_WF_CREATE_NAME, status: 'completed')
       end
 
       # Notify SDR that the OCR workflow step failed
       def mark_ocr_errored(druid, error_msg:)
-        @client.update_error_status(druid:, workflow:, process: step, error_msg:)
+        @client.update_error_status(druid:, workflow: OCR_WF_NAME, process: OCR_WF_CREATE_NAME, error_msg:)
       end
     end
   end
