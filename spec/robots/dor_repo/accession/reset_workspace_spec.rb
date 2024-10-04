@@ -6,7 +6,7 @@ RSpec.describe Robots::DorRepo::Accession::ResetWorkspace do
   let(:druid) { 'druid:oo000oo0001' }
   let(:robot) { described_class.new }
   let(:object_client) { instance_double(Dor::Services::Client::Object, workspace: workspace_client) }
-  let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, reset: nil) }
+  let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, cleanup: nil) }
   let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
   let(:workflow_client) { instance_double(Dor::Workflow::Client, process:) }
 
@@ -22,7 +22,7 @@ RSpec.describe Robots::DorRepo::Accession::ResetWorkspace do
 
     it 'resets the workspace' do
       expect(return_status).to eq 'noop'
-      expect(workspace_client).to have_received(:reset).with(workflow: 'accessionWF', lane_id: 'default')
+      expect(workspace_client).to have_received(:cleanup).with(workflow: 'accessionWF', lane_id: 'default')
     end
   end
 end

@@ -12,10 +12,9 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   let(:context) { {} }
   let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default', context:) }
   let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process:) }
-  let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: object, workspace: workspace_client) }
+  let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: object) }
   let(:apo_object_client) { instance_double(Dor::Services::Client::Object, find: apo) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
-  let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, cleanup: true) }
   let(:ocr) { instance_double(Dor::TextExtraction::Ocr, possible?: true, required?: false) }
   let(:stt) { instance_double(Dor::TextExtraction::SpeechToText, possible?: true, required?: false) }
 

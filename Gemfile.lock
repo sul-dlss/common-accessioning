@@ -1,3 +1,16 @@
+GIT
+  remote: https://github.com/sul-dlss/dor-services-client.git
+  revision: b4a49aa1a2835b4641268e62c8133baa1218577c
+  branch: combine-reset-and-cleanup
+  specs:
+    dor-services-client (14.21.0)
+      activesupport (>= 4.2, < 8)
+      cocina-models (~> 0.99.0)
+      deprecation
+      faraday (~> 2.0)
+      faraday-retry
+      zeitwerk (~> 2.1)
+
 GEM
   remote: https://gems.contribsys.com/
   specs:
@@ -114,13 +127,6 @@ GEM
       capistrano-shared_configs
       ed25519
     docile (1.4.1)
-    dor-services-client (14.21.0)
-      activesupport (>= 4.2, < 8)
-      cocina-models (~> 0.99.0)
-      deprecation
-      faraday (~> 2.0)
-      faraday-retry
-      zeitwerk (~> 2.1)
     dor-workflow-client (7.5.0)
       activesupport (>= 3.2.1, < 8)
       deprecation (>= 0.99.0)
@@ -355,7 +361,7 @@ DEPENDENCIES
   config
   debug
   dlss-capistrano
-  dor-services-client (~> 14.6)
+  dor-services-client (~> 14.6)!
   dor-workflow-client (~> 7.0)
   druid-tools
   dry-struct (~> 1.0)

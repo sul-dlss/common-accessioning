@@ -19,9 +19,9 @@ RSpec.describe Robots::DorRepo::Dissemination::Cleanup do
       allow(Honeybadger).to receive(:notify)
     end
 
-    it 'is does nothing except notify HB' do
+    it 'is successful and notifies HB' do
       test_perform(robot, druid)
-      expect(workspace_client).not_to have_received(:cleanup).with(workflow: 'disseminationWF', lane_id: 'default')
+      expect(workspace_client).to have_received(:cleanup).with(workflow: 'disseminationWF', lane_id: 'default')
       expect(Honeybadger).to have_received(:notify)
     end
   end

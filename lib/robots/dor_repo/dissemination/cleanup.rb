@@ -10,9 +10,9 @@ module Robots
         end
 
         def perform_work
+          object_client.workspace.cleanup(workflow: 'disseminationWF', lane_id:)
+          # Oct 3 2024:  Warn. If we never see these warnings, we can get rid of this robot completely.
           Honeybadger.notify('[WARNING] DisseminationWF:cleanup robot is deprecated and should not be used.', context: { druid: })
-          # Oct 3 2024: just warn, do not actually do the work.  If we never see these warnings, we can get rid of this robot.
-          # object_client.workspace.cleanup(workflow: 'disseminationWF', lane_id:)
           LyberCore::ReturnState.new(status: :noop, note: 'Initiated cleanup API call.')
         end
       end

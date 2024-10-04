@@ -12,8 +12,8 @@ module Robots
         end
 
         def perform_work
-          # Reset workspace is performed async by dor-services-app.
-          object_client.workspace.reset(workflow: 'accessionWF', lane_id:)
+          # Cleanup is performed async by dor-services-app.
+          object_client.workspace.cleanup(workflow: 'accessionWF', lane_id:)
 
           # dor-services-app will update the workflow step, do don't do it here.
           LyberCore::ReturnState.new(status: :noop, note: 'Initiated reset API call.')
