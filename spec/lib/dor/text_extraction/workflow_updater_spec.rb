@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Dor::TextExtraction::WorkflowUpdater do
-  subject(:updater) { described_class.new(workflow:, step:, client:) }
+  subject(:updater) { described_class.new(client:) }
 
   let(:workflow) { 'ocrWF' }
   let(:step) { 'ocr-create' }
