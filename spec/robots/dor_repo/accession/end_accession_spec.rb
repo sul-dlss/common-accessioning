@@ -17,9 +17,11 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
   let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, cleanup: true) }
   let(:ocr) { instance_double(Dor::TextExtraction::Ocr, possible?: true, required?: false) }
+  let(:stt) { instance_double(Dor::TextExtraction::SpeechToText, possible?: true, required?: false) }
 
   before do
     allow(Dor::TextExtraction::Ocr).to receive(:new).and_return(ocr)
+    allow(Dor::TextExtraction::SpeechToText).to receive(:new).and_return(stt)
     allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
     allow(Dor::Services::Client).to receive(:object).with(apo_druid).and_return(apo_object_client)
@@ -36,29 +38,69 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
         expect(workspace_client).to have_received(:cleanup).with(workflow: 'accessionWF', lane_id: 'default')
       end
 
-      context 'when OCR is possible but not required' do
-        let(:ocr) { instance_double(Dor::TextExtraction::Ocr, possible?: true, required?: false) }
+      context 'when OCR' do
+        let(:ocr) { instance_double(Dor::TextExtraction::Ocr, possible?: possible, required?: required) }
 
-        it 'does not start ocrWF' do
-          perform
-          expect(workflow_client).not_to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default')
+        context 'when is possible but not required' do
+          let(:possible) { true }
+          let(:required) { false }
+
+          it 'does not start ocrWF' do
+            perform
+            expect(workflow_client).not_to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default')
+          end
+        end
+
+        context 'when is required and possible' do
+          let(:possible) { true }
+          let(:required) { true }
+
+          it 'starts ocrWF' do
+            perform
+            expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default')
+          end
+        end
+
+        context 'when required but not possible' do
+          let(:possible) { false }
+          let(:required) { true }
+
+          it 'raises an exception' do
+            expect { perform }.to raise_error(RuntimeError, 'Object cannot be OCRd')
+          end
         end
       end
 
-      context 'when OCR is required and possible' do
-        let(:ocr) { instance_double(Dor::TextExtraction::Ocr, possible?: true, required?: true) }
+      context 'when speech to text' do
+        let(:stt) { instance_double(Dor::TextExtraction::SpeechToText, possible?: possible, required?: required) }
 
-        it 'starts ocrWF' do
-          perform
-          expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default')
+        context 'when is possible but not required' do
+          let(:possible) { true }
+          let(:required) { false }
+
+          it 'does not start speechToTextWF' do
+            perform
+            expect(workflow_client).not_to have_received(:create_workflow_by_name).with(druid, 'speechToTextWF', version: 2, lane_id: 'default')
+          end
         end
-      end
 
-      context 'when OCR is required but not possible' do
-        let(:ocr) { instance_double(Dor::TextExtraction::Ocr, possible?: false, required?: true) }
+        context 'when is required and possible' do
+          let(:possible) { true }
+          let(:required) { true }
 
-        it 'raises an exception' do
-          expect { perform }.to raise_error(RuntimeError, 'Object cannot be OCRd')
+          it 'starts speechToTextWF' do
+            perform
+            expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'speechToTextWF', version: 2, lane_id: 'default')
+          end
+        end
+
+        context 'when required but not possible' do
+          let(:possible) { false }
+          let(:required) { true }
+
+          it 'raises an exception' do
+            expect { perform }.to raise_error(RuntimeError, 'Object cannot have speech-to-text applied')
+          end
         end
       end
     end
