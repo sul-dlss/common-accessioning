@@ -12,10 +12,9 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   let(:context) { {} }
   let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default', context:) }
   let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process:) }
-  let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: object, workspace: workspace_client) }
+  let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: object) }
   let(:apo_object_client) { instance_double(Dor::Services::Client::Object, find: apo) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
-  let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, cleanup: true) }
   let(:ocr) { instance_double(Dor::TextExtraction::Ocr, possible?: true, required?: false) }
   let(:stt) { instance_double(Dor::TextExtraction::SpeechToText, possible?: true, required?: false) }
 
@@ -30,12 +29,10 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   describe '#perform' do
     subject(:perform) { test_perform(robot, druid) }
 
-    let(:return_status) { perform.status }
-
     context 'when there is no special dissemniation workflow' do
-      it 'cleans up' do
-        expect(return_status).to eq 'noop'
-        expect(workspace_client).to have_received(:cleanup).with(workflow: 'accessionWF', lane_id: 'default')
+      it 'completes without creating any new workflows' do
+        perform
+        expect(workflow_client).not_to have_received(:create_workflow_by_name)
       end
 
       context 'when OCR' do
@@ -121,7 +118,6 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
         perform
         expect(workflow_client).to have_received(:create_workflow_by_name)
           .with(druid, 'wasDisseminationWF', version: '1', lane_id: 'default')
-        expect(workspace_client).to have_received(:cleanup).with(workflow: 'accessionWF', lane_id: 'default')
       end
     end
   end

@@ -13,12 +13,7 @@ module Robots
           next_dissemination_wf = special_dissemination_wf
           workflow_service.create_workflow_by_name(druid, next_dissemination_wf, version: current_version, lane_id:) if next_dissemination_wf.present?
 
-          # Note that this used to be handled by the disseminationWF, which is no longer used.
-          object_client.workspace.cleanup(workflow: 'accessionWF', lane_id:)
-
           start_captioning
-
-          LyberCore::ReturnState.new(status: :noop, note: 'Initiated cleanup API call.')
         end
 
         private

@@ -16,11 +16,13 @@ RSpec.describe Robots::DorRepo::Dissemination::Cleanup do
     before do
       allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
       allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
+      allow(Honeybadger).to receive(:notify)
     end
 
-    it 'is successful' do
+    it 'is successful and notifies HB' do
       test_perform(robot, druid)
       expect(workspace_client).to have_received(:cleanup).with(workflow: 'disseminationWF', lane_id: 'default')
+      expect(Honeybadger).to have_received(:notify)
     end
   end
 end
