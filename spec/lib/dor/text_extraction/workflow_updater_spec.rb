@@ -13,16 +13,16 @@ describe Dor::TextExtraction::WorkflowUpdater do
     allow(client).to receive(:update_error_status)
   end
 
-  describe '#mark_ocr_completed' do
+  describe '#mark_ocr_create_completed' do
     it 'calls the workflow client to set completed status' do
-      updater.mark_ocr_completed(druid)
+      updater.mark_ocr_create_completed(druid)
       expect(client).to have_received(:update_status).with(druid:, workflow:, process: step, status: 'completed')
     end
   end
 
-  describe '#mark_ocr_errored' do
+  describe '#mark_ocr_create_errored' do
     it 'calls the workflow client to set error status and message' do
-      updater.mark_ocr_errored(druid, error_msg: 'Something went wrong')
+      updater.mark_ocr_create_errored(druid, error_msg: 'Something went wrong')
       expect(client).to have_received(:update_error_status).with(druid:, workflow:, process: step, error_msg: 'Something went wrong')
     end
   end
