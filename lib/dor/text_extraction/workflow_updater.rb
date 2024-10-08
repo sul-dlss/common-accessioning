@@ -13,12 +13,12 @@ module Dor
       end
 
       # Notify SDR that the OCR workflow step completed successfully
-      def mark_ocr_completed(druid)
+      def mark_ocr_create_completed(druid)
         @client.update_status(druid:, workflow: OCR_WF_NAME, process: OCR_WF_CREATE_NAME, status: 'completed')
       end
 
       # Notify SDR that the OCR workflow step failed
-      def mark_ocr_errored(druid, error_msg:)
+      def mark_ocr_create_errored(druid, error_msg:)
         @client.update_error_status(druid:, workflow: OCR_WF_NAME, process: OCR_WF_CREATE_NAME, error_msg:)
       end
     end
