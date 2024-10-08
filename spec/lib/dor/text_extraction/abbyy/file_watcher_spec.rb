@@ -23,8 +23,8 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
     allow(Honeybadger).to receive(:notify)
     allow(Dor::Services::Client).to receive(:configure)
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
-    allow(workflow_updater).to receive(:mark_ocr_errored)
-    allow(workflow_updater).to receive(:mark_ocr_completed)
+    allow(workflow_updater).to receive(:mark_ocr_create_errored)
+    allow(workflow_updater).to receive(:mark_ocr_create_completed)
     allow(object_client).to receive(:events).and_return(events_client)
     allow(events_client).to receive(:create)
     allow(logger).to receive(:info)
@@ -50,7 +50,7 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
     end
 
     it 'updates the OCR workflow' do
-      expect(workflow_updater).to have_received(:mark_ocr_completed).with(druid)
+      expect(workflow_updater).to have_received(:mark_ocr_create_completed).with(druid)
     end
 
     it 'logs the success' do
@@ -87,7 +87,7 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
     end
 
     it 'updates the OCR workflow' do
-      expect(workflow_updater).to have_received(:mark_ocr_errored).with(druid, error_msg: "Error one\nError two")
+      expect(workflow_updater).to have_received(:mark_ocr_create_errored).with(druid, error_msg: "Error one\nError two")
     end
 
     it 'publishes an event' do
