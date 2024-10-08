@@ -38,4 +38,19 @@ describe Dor::TextExtraction::AwsProvider do
       expect(config.credentials.secret_access_key).to eq secret_access_key
     end
   end
+
+  context 'when role_arn is provided' do
+    let(:role_arn) { Settings.aws.speech_to_text.role_arn }
+    let(:provider) { described_class.new(region:, access_key_id:, secret_access_key:, role_arn:) }
+    let(:assume_role_credentials) { instance_double(Aws::AssumeRoleCredentials) }
+
+    before do
+      allow(Aws::AssumeRoleCredentials).to receive(:new).with(client: an_instance_of(Aws::STS::Client), role_arn:, role_session_name: an_instance_of(String)).and_return(assume_role_credentials)
+    end
+
+    it 'configures the credentials with a role_arn value' do
+      expect(provider.sqs.config.credentials).to eq assume_role_credentials
+      expect(Aws::AssumeRoleCredentials).to have_received(:new).once
+    end
+  end
 end
