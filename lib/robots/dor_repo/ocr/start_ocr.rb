@@ -11,7 +11,9 @@ module Robots
 
         def perform_work
           if Dor::TextExtraction::Ocr.new(cocina_object:).possible?
-            Dor::TextExtraction::VersionUpdater.open(druid:, description: 'Start OCR workflow', object_client:)
+            return if object_client.version.status.open?
+
+            object_client.version.open(description: 'Start OCR workflow')
           else
             # skip all steps in the WF with note
             note = 'No files available or invalid object for OCR'
