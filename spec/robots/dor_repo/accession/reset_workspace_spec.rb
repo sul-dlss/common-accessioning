@@ -22,7 +22,7 @@ RSpec.describe Robots::DorRepo::Accession::ResetWorkspace do
 
     it 'resets the workspace' do
       expect(return_status).to eq 'noop'
-      expect(workspace_client).to have_received(:cleanup).with(workflow: 'accessionWF', lane_id: 'default')
+      expect(workspace_client).to have_received(:cleanup).with(lane_id: 'default')
     end
   end
 end
