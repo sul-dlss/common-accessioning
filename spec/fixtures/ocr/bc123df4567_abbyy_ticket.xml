@@ -8,11 +8,11 @@
   </RecognitionParams>
   <ExportParams XMLResultPublishingMethod="XMLResultToFolder">
     <ExportFormat OutputFileFormat="PDFA" OutputFlowType="SharedFolder" PdfAComplianceMode="PDFAM_PdfA_2u" PdfVersion="Version17" Scenario="MaxQuality" UseImprovedCompression="true" MRCMode="Normal" PdfUACompatible="true">
-      <OutputLocation>E:\AbbyyShare\sdr-ocr-qa\OUTPUT/bc123df4567</OutputLocation>
+      <OutputLocation>S:\AbbyyShare\sdr-ocr-qa\OUTPUT/bc123df4567</OutputLocation>
       <FileExistsAction>Overwrite</FileExistsAction>
       <NamingRule>bc123df4567.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
-    <XMLResultLocation>E:\AbbyyShare\sdr-ocr-qa\RESULTXML</XMLResultLocation>
+    <XMLResultLocation>S:\AbbyyShare\sdr-ocr-qa\RESULTXML</XMLResultLocation>
   </ExportParams>
   <InputFile Name="bc123df4567\filename3.PDF"/>
   <InputFile Name="bc123df4567\filename4.pdf"/>
