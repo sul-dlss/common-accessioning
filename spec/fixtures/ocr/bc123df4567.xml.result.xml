@@ -21,14 +21,14 @@
     <PublishingScriptLanguage/>
     <FailedScriptLanguage/>
     <ExportFormat Id="{9343AC6F-C04B-4141-B8D3-AFEA7B2B3516}" OutputFileFormat="Text" KeepLastModifiedDate="false" CleanupSummaryRequired="false" OutputFlowType="SharedFolder" CodePage="NULL_CODE_PAGE" EncodingType="UTF8" UsePageBreakCharacters="false" KeepOriginalHeadersFooters="true" InsertEmptyLineBetweenParagraphs="false" KeepLineBreaks="false">
-      <OutputLocation>E:\AbbyyShare\sdr-ocr-qa\OUTPUT/</OutputLocation>
+      <OutputLocation>S:\AbbyyShare\sdr-ocr-qa\OUTPUT/</OutputLocation>
       <ExportToSourceLibrary>false</ExportToSourceLibrary>
       <AddLibraryPrefixToOutputFolder>false</AddLibraryPrefixToOutputFolder>
       <KeepLibraryStructureInOutputFolder>true</KeepLibraryStructureInOutputFolder>
       <FileExistsAction>CreateNewName</FileExistsAction>
       <NamingRule>&lt;FileName&gt;.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
-    <XMLResultLocation>E:\AbbyyShare\sdr-ocr-qa\RESULTXML</XMLResultLocation>
+    <XMLResultLocation>S:\AbbyyShare\sdr-ocr-qa\RESULTXML</XMLResultLocation>
     <EmptyPageDetectionSettings maxBarcodesCount="0" maxBlackSquaresCount="1" maxTextObjectsCount="0" maxBlacknessPercentage="-1" autodetectKernelRect="true" kernelMargins.Bottom="0" kernelMargins.Left="0" kernelMargins.Right="0" kernelMargins.Top="0" maxAlphabetLettersCount="-1"/>
   </ExportParams>
   <IndexingSettings/>
@@ -59,7 +59,7 @@
     <Text>Processing error: Processing station Default Processing Station. Processing was canceled</Text>
   </Message>
   <InputFile FileName="bc123df4567.xml" IsTreatAsNormalTextPdf="false" InternalFileId="" Id="2343184" CopiedAsIs="false" FileModificationTime="09.05.2024 14:07:54.526322">
-      <OutputDocuments OutputLocation="E:\AbbyyShare\sdr-ocr-qa\EXCEPTIONS" ExportFormatId="{F0489D19-5004-4D79-92BA-3C7E3B90B101}" ExportFormat="NoConversion" OutputFlowType="SharedFolder">
+      <OutputDocuments OutputLocation="S:\AbbyyShare\sdr-ocr-qa\EXCEPTIONS" ExportFormatId="{F0489D19-5004-4D79-92BA-3C7E3B90B101}" ExportFormat="NoConversion" OutputFlowType="SharedFolder">
       <FileName>bc123df4567.xml</FileName>
     </OutputDocuments>
     <Message Type="Error" Code="36" ComputerName="DPGLAB-OCR-A" Time="09.05.2024 14:07:54.875665">

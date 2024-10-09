@@ -138,7 +138,7 @@ describe Dor::TextExtraction::Abbyy::Results do
     it 'does not have output documents' do
       output_docs = results.output_docs
       expect(output_docs.length).to be 1
-      expect(output_docs).to eq({ 'noconversion' => 'E:\AbbyyShare\sdr-ocr-qa\EXCEPTIONS/bc123df4567.xml' })
+      expect(output_docs).to eq({ 'noconversion' => 'S:\AbbyyShare\sdr-ocr-qa\EXCEPTIONS/bc123df4567.xml' })
     end
 
     it 'does not have an alto doc' do
