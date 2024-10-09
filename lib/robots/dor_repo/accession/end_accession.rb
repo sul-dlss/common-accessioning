@@ -58,7 +58,7 @@ module Robots
           apo = Dor::Services::Client.object(apo_id).find
 
           wf = apo.administrative.disseminationWorkflow
-          wf unless wf == 'disseminationWF'
+          wf unless wf == 'disseminationWF' # disseminationWF is gone so never start it - it's work is now done in reset-workspace
         end
       end
     end
