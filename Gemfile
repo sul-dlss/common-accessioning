@@ -9,7 +9,7 @@ gem 'assembly-objectfile', '~> 2.1'
 gem 'aws-sdk-s3' # used for sending files to S3 for the speech-to-text workflow
 gem 'aws-sdk-sqs' # used for sending sqs mssages for the speech-to-text workflow
 gem 'config'
-gem 'dor-services-client', '~> 15.0'
+gem 'dor-services-client', '~> 15.1'
 gem 'dor-workflow-client', '~> 7.0'
 gem 'dry-struct', '~> 1.0'
 gem 'dry-types', '~> 1.1'
