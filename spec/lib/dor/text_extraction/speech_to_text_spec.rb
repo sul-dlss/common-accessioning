@@ -96,6 +96,26 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
     end
   end
 
+  describe '#cleanup' do
+    let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: true, type: object_type, version:) }
+    let(:client) { instance_double(Aws::S3::Client, list_objects:) }
+    let(:list_objects) { instance_double(Aws::S3::Types::ListObjectsOutput, contents: [m4a_object, mp4_object]) }
+    let(:m4a_object) { instance_double(Aws::S3::Types::Object, key: "#{bare_druid}-v#{version}/file1.m4a") }
+    let(:mp4_object) { instance_double(Aws::S3::Types::Object, key: "#{bare_druid}-v#{version}/file1.mp4") }
+    let(:version) { 2 }
+
+    before do
+      allow(Aws::S3::Client).to receive(:new).and_return(client)
+      allow(client).to receive(:delete_object).and_return(instance_double(Aws::S3::Types::Object))
+    end
+
+    it 'removes all files from s3' do
+      expect(stt.cleanup).to be true
+      expect(client).to have_received(:delete_object).with(bucket: 'sul-speech-to-text-dev', key: "#{bare_druid}-v#{version}/file1.m4a").once
+      expect(client).to have_received(:delete_object).with(bucket: 'sul-speech-to-text-dev', key: "#{bare_druid}-v#{version}/file1.mp4").once
+    end
+  end
+
   describe '#filenames_to_stt' do
     let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, structural:, type: object_type) }
 
