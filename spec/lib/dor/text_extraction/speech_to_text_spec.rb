@@ -142,4 +142,13 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
       expect(stt.job_id).to eq("#{bare_druid}-v#{version}")
     end
   end
+
+  describe '#output_location' do
+    let(:cocina_object) { instance_double(Cocina::Models::DRO, version:, externalIdentifier: druid, dro?: true, type: object_type) }
+    let(:version) { 3 }
+
+    it 'returns the output_location for the STT job' do
+      expect(stt.output_location).to eq("#{bare_druid}-v#{version}/output")
+    end
+  end
 end
