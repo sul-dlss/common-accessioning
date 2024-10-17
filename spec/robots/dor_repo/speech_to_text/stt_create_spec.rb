@@ -38,7 +38,7 @@ describe Robots::DorRepo::SpeechToText::SttCreate do
   end
 
   context 'when the message is sent successfully' do
-    let(:message_body) { { id: job_id, druid:, media:, options: { model: 'large', max_line_count: 80, beam_size: 10 } }.to_json }
+    let(:message_body) { { id: job_id, druid:, media: }.merge(Settings.speech_to_text.whisper.to_h).to_json }
 
     before do
       allow(aws_client).to receive(:send_message).with({ queue_url: Settings.aws.speech_to_text.sqs_todo_queue_url, message_body: }).and_return(true)
