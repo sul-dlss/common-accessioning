@@ -68,6 +68,8 @@ aws:
 speech_to_text:
   whisper:
     options:
-      model: 'large'
-      max_line_count: 80
+      model: 'large-v3'
       beam_size: 10
+      writer:
+        max_line_width: 42 
+        max_line_count: 1
