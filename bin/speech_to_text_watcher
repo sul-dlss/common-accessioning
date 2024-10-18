@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Continually monitor the speech-to-text worker's "done" queue and report job status to SDR
+
+require 'socket'
+
+require_relative '../config/boot'
+
+# Set log level with LOG_LEVEL; share the logger across the stack
+progname = 'speech_to_text_watcher'
+logger = Logger.new(STDOUT, progname:, level: ENV['LOG_LEVEL'] || 'INFO')
+host = Socket.gethostname
+stt_create_done_handler = Dor::TextExtraction::SpeechToTextCreateDoneHandler.new(host:, progname:, logger:)
+
+
+sqs_watcher = Dor::TextExtraction::SqsWatcher.new(role_arn: Settings.aws.speech_to_text.role_arn,
+                                                   queue_url: Settings.aws.speech_to_text.sqs_done_queue_url)
+sqs_watcher.poll do |done_msg|
+  logger.debug("sqs_watcher.poll block received done_msg: #{done_msg}")
+  stt_create_done_handler.process_done_message(done_msg)
+end
