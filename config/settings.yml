@@ -71,5 +71,5 @@ speech_to_text:
       model: 'large-v3'
       beam_size: 10
       writer:
-        max_line_width: 42 
+        max_line_width: 42
         max_line_count: 1
