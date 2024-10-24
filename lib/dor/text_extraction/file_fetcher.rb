@@ -55,18 +55,22 @@ module Dor
       private
 
       # fetch a file from preservation and send to cloud endpoint
+      # rubocop:disable Metrics/MethodLength
       def fetch_and_send_file_to_s3(filename:, s3_object:)
         logger.info("fetching #{filename} for #{druid} and sending to #{s3_object.bucket_name}")
-        s3_object.upload_stream do |upload_stream|
-          preservation_client.objects.content(
-            druid:,
-            filepath: filename,
-            on_data: proc { |data, _count| upload_stream.write(data) }
-          )
-        end
+        Thread.new do
+          s3_object.upload_stream do |upload_stream|
+            preservation_client.objects.content(
+              druid:,
+              filepath: filename,
+              on_data: proc { |data, _count| upload_stream.write(data) }
+            )
+          end
+        end.join
 
-        true # NOTE: return false on failure
+        true
       end
+      # rubocop:enable Metrics/MethodLength
 
       # fetch a file from perservation and write to disk
       def fetch_and_write_file_to_disk(filename:, path:)
