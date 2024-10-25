@@ -37,8 +37,8 @@ describe Robots::DorRepo::SpeechToText::StageFiles do
       allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
       allow(object_client).to receive(:find).and_return(cocina_object)
       allow(client).to receive(:list_objects).and_return(list_objects_output)
-      allow(client).to receive(:get_object).with(bucket:, key: 'file1.txt').and_return('spec/fixtures/speech_to_text/file1.txt')
-      allow(client).to receive(:get_object).with(bucket:, key: 'file1.vtt').and_return('spec/fixtures/speech_to_text/file1.vtt')
+      allow(client).to receive(:get_object).with(bucket:, key: 'file1.txt').and_yield(File.read('spec/fixtures/speech_to_text/file1.txt'))
+      allow(client).to receive(:get_object).with(bucket:, key: 'file1.vtt').and_yield(File.read('spec/fixtures/speech_to_text/file1.vtt'))
       allow(Aws::S3::Client).to receive(:new).and_return(client)
     end
 
@@ -53,7 +53,9 @@ describe Robots::DorRepo::SpeechToText::StageFiles do
 
       # files are now in the local workspace
       expect(File.exist?("#{fake_workspace_path}/content/file1.txt")).to be true
-      expect(File.exist?("#{fake_workspace_path}/content/file1.txt")).to be true
+      expect(File.read("#{fake_workspace_path}/content/file1.txt")).to eq(File.read('spec/fixtures/speech_to_text/file1.txt'))
+      expect(File.exist?("#{fake_workspace_path}/content/file1.vtt")).to be true
+      expect(File.read("#{fake_workspace_path}/content/file1.vtt")).to eq(File.read('spec/fixtures/speech_to_text/file1.vtt'))
     end
   end
 end
