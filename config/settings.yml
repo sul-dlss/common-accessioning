@@ -56,6 +56,7 @@ purl_fetcher:
 # aws related options (currently used for the speech-to-text workflow)
 aws:
   region: 'us-west-2'
+  role_arn: 'role-arn'
   access_key_id: 'fake-access'
   secret_access_key: 'fake-secret'
   speech_to_text:

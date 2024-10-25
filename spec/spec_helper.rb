@@ -39,3 +39,10 @@ def clone_test_input(destination)
   source = 'spec/test_input'
   system "rsync -rqOlt --delete #{source}/ #{destination}/"
 end
+
+def build_file(sdr_preserve, shelve, filename)
+  extension = File.extname(filename)
+  mimetype = { '.m4a' => 'audio/mp4', '.mp4' => 'video/mp4', '.txt' => 'text/plain' }
+  sdr_value = instance_double(Cocina::Models::FileAdministrative, sdrPreserve: sdr_preserve, shelve:)
+  instance_double(Cocina::Models::File, administrative: sdr_value, hasMimeType: mimetype[extension], filename:)
+end
