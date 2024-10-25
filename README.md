@@ -58,9 +58,7 @@ Interactive console:
 $ ROBOT_ENVIRONMENT=production ./bin/console
 ```
 
-Running a single robot step manually (without checking current workflow status).  Note the workflow/step name should be the Module::Class name and not the workflow/step name
-(e.g. "Accession::Publish" or "SpeechToText::FetchFiles")
-
+Running a single robot step manually (without checking current workflow status):
 ```console
 $ ./bin/run_robot --druid druid:12345 --environment production Accession::Publish
 ```
