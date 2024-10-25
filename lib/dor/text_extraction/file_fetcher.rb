@@ -52,6 +52,8 @@ module Dor
       end
       # rubocop:enable Metrics/MethodLength
 
+      private
+
       # fetch a file from preservation and send to cloud endpoint
       # rubocop:disable Metrics/MethodLength
       def fetch_and_send_file_to_s3(filename:, s3_object:)
@@ -83,8 +85,6 @@ module Dor
 
         true
       end
-
-      private
 
       def preservation_client
         @preservation_client ||= Preservation::Client.configure(url: Settings.preservation_catalog.url, token: Settings.preservation_catalog.token)
