@@ -22,13 +22,6 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
   let(:druid) { 'druid:bc123df4567' }
   let(:bare_druid) { 'bc123df4567' }
 
-  def build_file(sdr_preserve, shelve, filename)
-    extension = File.extname(filename)
-    mimetype = { '.m4a' => 'audio/mp4', '.mp4' => 'video/mp4', '.txt' => 'text/plain' }
-    sdr_value = instance_double(Cocina::Models::FileAdministrative, sdrPreserve: sdr_preserve, shelve:)
-    instance_double(Cocina::Models::File, administrative: sdr_value, hasMimeType: mimetype[extension], filename:)
-  end
-
   describe '#possible?' do
     context 'when the object is not a DRO' do
       let(:cocina_object) { instance_double(Cocina::Models::Collection, externalIdentifier: druid, dro?: false, type: object_type) }
