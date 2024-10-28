@@ -11,8 +11,7 @@ module Robots
 
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          # TODO: cleanup any speech to text workspace files
-          true
+          Dor::TextExtraction::SpeechToText.new(cocina_object:).cleanup
         end
       end
     end

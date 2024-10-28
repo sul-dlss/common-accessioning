@@ -44,7 +44,7 @@ module Robots
 
         # the s3 output folder for this job
         def s3_output_folder
-          "#{Dor::TextExtraction::SpeechToText.new(cocina_object:).job_id}/output"
+          Dor::TextExtraction::SpeechToText.new(cocina_object:).output_location
         end
       end
     end
