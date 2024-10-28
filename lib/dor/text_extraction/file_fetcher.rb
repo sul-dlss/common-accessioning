@@ -31,7 +31,7 @@ module Dor
                     else
                       raise "Unknown location type: #{location.class}"
                     end
-        rescue Faraday::ResourceNotFound
+        rescue Faraday::ResourceNotFound, Aws::S3::MultipartUploadError
           tries += 1
           logger.warn("received NotFoundError from Preservation try ##{tries}")
 
@@ -65,7 +65,7 @@ module Dor
           )
         end
 
-        true # NOTE: return false on failure
+        true
       end
 
       # fetch a file from perservation and write to disk
