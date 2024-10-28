@@ -41,7 +41,8 @@ module Dor
       # remove all files in the s3 input folder, the output folder is a subfolder, so gets cleaned up too
       def cleanup_s3_folder
         # Iterate over the list of filenames to be deleted (which is based on the job_id prefix for this druid)
-        s3_objects = aws_provider.client.list_objects(bucket: aws_provider.bucket_name, prefix: job_id)
+        # use a trailing / on the job_id to avoid the cornercase of of version 1 and version 10 having the same prefix
+        s3_objects = aws_provider.client.list_objects(bucket: aws_provider.bucket_name, prefix: "#{job_id}/")
         s3_objects.contents.each do |object|
           aws_provider.client.delete_object(bucket: aws_provider.bucket_name, key: object.key)
         end.size

@@ -22,7 +22,7 @@ describe Robots::DorRepo::SpeechToText::StageFiles do
     instance_double(Dor::Services::Client::Object, workspace: workspace_client)
   end
   let(:speech_to_text) do
-    instance_double(Dor::TextExtraction::SpeechToText, job_id: "#{druid}-v#{version}")
+    instance_double(Dor::TextExtraction::SpeechToText, output_location: "#{druid}-v#{version}/output")
   end
   let(:client) { instance_double(Aws::S3::Client) }
   let(:aws_m4a_txt_object) { instance_double(Aws::S3::Types::Object, key: 'file1.txt') }
