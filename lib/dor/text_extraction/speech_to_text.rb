@@ -22,7 +22,8 @@ module Dor
         # check to be sure there are actually files to be speech to text'd
         return false unless filenames_to_stt.any?
 
-        # TODO: check for any files that have "manuallyCorrected" in cocina structural (then skip)
+        # Note that we check for the "correctedForAccessibility" attribute in cocina structural in the
+        # `CocinaUpdater` class and skip adding those generated files as needed.
 
         true
       end
