@@ -9,7 +9,9 @@ require_relative '../config/boot'
 
 # Set log level with LOG_LEVEL; share the logger across the stack
 progname = 'speech_to_text_watcher'
-logger = Logger.new(STDOUT, progname:, level: ENV['LOG_LEVEL'] || 'INFO')
+stdout_logger = Logger.new(STDOUT, progname:, level: ENV['LOG_LEVEL'] || 'INFO')
+file_logger = Logger.new("log/#{progname}.log", progname:, level: ENV['LOG_LEVEL'] || 'INFO')
+logger = ActiveSupport::BroadcastLogger.new(stdout_logger, file_logger)
 host = Socket.gethostname
 stt_create_done_handler = Dor::TextExtraction::SpeechToTextCreateDoneHandler.new(host:, progname:, logger:)
 
