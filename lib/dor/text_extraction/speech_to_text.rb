@@ -93,6 +93,7 @@ module Dor
       # defines the mimetypes types for which speech to text files can possibly be run
       def allowed_mimetypes
         %w[
+          audio/x-m4a
           audio/mp4
           video/mp4
         ]
