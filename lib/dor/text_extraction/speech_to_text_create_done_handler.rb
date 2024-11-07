@@ -17,10 +17,11 @@ module Dor
       def process_done_message(done_msg)
         done_msg_hash = JSON.parse(done_msg.body)
         druid, _version = done_msg_hash['id'].split('-') # druid-version, e.g. bc123df4567-v2
+        druid = DruidTools::Druid.new(druid).druid # normalize to namespaced druid, as DSA expects
         event_type = done_msg_hash['error'].blank? ? 'stt-create-success' : 'stt-create-error'
 
-        send_to_dor_event_log(druid:, event_type:, done_msg_hash:)
         update_workflow_step(druid:, create_succeeded: event_type == 'stt-create-success', error_msg: done_msg_hash['error'])
+        send_to_dor_event_log(druid:, event_type:, done_msg_hash:)
       end
 
       private

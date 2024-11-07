@@ -6,13 +6,14 @@ describe Dor::TextExtraction::SpeechToTextCreateDoneHandler do
   let(:host) { 'common-accessioning-test-y.stanford.edu' }
   let(:progname) { 'stt_create_done_handler_spec' }
   let(:logger) { instance_double(Logger, debug: nil, info: nil) }
-  let(:druid) { 'bc123df4567' }
+  let(:bare_druid) { 'bc123df4567' }
+  let(:druid) { "druid:#{bare_druid}" }
   let(:workflow_updater) { instance_double(Dor::TextExtraction::WorkflowUpdater, mark_stt_create_completed: nil, mark_stt_create_errored: nil) }
   let(:dor_event_logger) { instance_double(Dor::TextExtraction::DorEventLogger, create_event: nil) }
   let(:whisper_error_msg) { nil }
   let(:done_msg_hash) do
     {
-      'id' => "#{druid}-v2",
+      'id' => "#{bare_druid}-v2",
       'media' => ['bear_breaks_into_home_plays_piano_no_speech.mp4'],
       'finished' => '2024-10-08T16:35:44.959829+00:00',
       'extraction_technical_metadata' => {
