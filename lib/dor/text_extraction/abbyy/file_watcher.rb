@@ -22,7 +22,7 @@ module Dor
         # rubocop:disable Metrics/AbcSize
         def initialize(
           logger: Logger.new($stdout),
-          workflow_updater: Dor::TextExtraction::WorkflowUpdater,
+          workflow_updater_class: Dor::TextExtraction::WorkflowUpdater,
           listener_options: {}
         )
           # Set up the ABBYY directories
@@ -33,7 +33,7 @@ module Dor
 
           # Set up the services and listener
           @logger = logger
-          @workflow_updater = workflow_updater.new(logger:)
+          @workflow_updater = workflow_updater_class.new(logger:)
           @listener_options = default_listener_options.merge(listener_options)
           Dor::Services::Client.configure(logger:, url: Settings.dor_services.url, token: Settings.dor_services.token)
         end
@@ -62,7 +62,7 @@ module Dor
         # Notify SDR that the OCR workflow step completed successfully
         def process_success(results)
           logger.info "Found successful OCR results for druid:#{results.druid} at #{results.result_path}"
-          workflow_updater.mark_ocr_completed("druid:#{results.druid}")
+          workflow_updater.mark_ocr_create_completed("druid:#{results.druid}")
           create_event(type: 'ocr_success', results:)
         end
 
@@ -71,7 +71,7 @@ module Dor
           logger.info "Found failed OCR results for druid:#{results.druid} at #{results.result_path}: #{results.failure_messages.join('; ')}"
           context = { druid: "druid:#{results.druid}", result_path: results.result_path, failure_messages: results.failure_messages }
           Honeybadger.notify('Found failed OCR results', context:)
-          workflow_updater.mark_ocr_errored("druid:#{results.druid}", error_msg: results.failure_messages.join("\n"))
+          workflow_updater.mark_ocr_create_errored("druid:#{results.druid}", error_msg: results.failure_messages.join("\n"))
           create_event(type: 'ocr_errored', results:)
         end
 
