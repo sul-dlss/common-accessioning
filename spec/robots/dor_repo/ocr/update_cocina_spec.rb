@@ -56,7 +56,7 @@ describe Robots::DorRepo::Ocr::UpdateCocina do
 
   context 'with an xml file' do
     # setup a fake OCR XML file in the workspace directory which matches the name of the image file in the Cocina
-    before { create_xml_file('image1.xml') }
+    before { create_ocr_file('image1.xml') }
 
     it 'runs the update cocina robot and sets the transcription role' do
       new_cocina = test_perform(robot, druid)
@@ -68,7 +68,7 @@ describe Robots::DorRepo::Ocr::UpdateCocina do
 
   context 'with a txt file' do
     # setup a fake OCR txt file in the workspace directory which matches the name of the image file in the Cocina
-    before { create_txt_file('image1.txt') }
+    before { create_ocr_file('image1.txt') }
 
     it 'runs the update cocina robot and does not set the transcription role' do
       new_cocina = test_perform(robot, druid)

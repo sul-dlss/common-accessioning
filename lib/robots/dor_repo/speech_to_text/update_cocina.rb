@@ -11,7 +11,7 @@ module Robots
 
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          Dor::TextExtraction::CocinaUpdater.update(dro: cocina_object, logger:)
+          Dor::TextExtraction::SpeechToTextCocinaUpdater.update(dro: cocina_object, logger:)
           object_client.update(params: cocina_object)
 
           cocina_object
