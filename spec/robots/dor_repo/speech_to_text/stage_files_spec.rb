@@ -27,7 +27,8 @@ describe Robots::DorRepo::SpeechToText::StageFiles do
   let(:client) { instance_double(Aws::S3::Client) }
   let(:aws_m4a_txt_object) { instance_double(Aws::S3::Types::Object, key: 'file1.txt') }
   let(:aws_m4a_vtt_object) { instance_double(Aws::S3::Types::Object, key: 'file1.vtt') }
-  let(:list_objects_output) { instance_double(Aws::S3::Types::ListObjectsOutput, contents: [aws_m4a_vtt_object, aws_m4a_txt_object]) }
+  let(:aws_m4a_srt_object) { instance_double(Aws::S3::Types::Object, key: 'file1.srt') }
+  let(:list_objects_output) { instance_double(Aws::S3::Types::ListObjectsOutput, contents: [aws_m4a_vtt_object, aws_m4a_txt_object, aws_m4a_srt_object]) }
   let(:bucket) { Settings.aws.speech_to_text.base_s3_bucket }
 
   context 'when there are files to move' do
@@ -44,14 +45,16 @@ describe Robots::DorRepo::SpeechToText::StageFiles do
 
     after { FileUtils.rm_rf(fake_workspace_path) } # cleanup the fake workspace for the next test run
 
-    it 'copies the files from s3 to local workspace' do
+    it 'copies only the vtt and txt files from s3 to local workspace' do
       # files are not in the local workspace
-      expect(File.exist?("#{fake_workspace_path}/content/file1.txt")).to be false
-      expect(File.exist?("#{fake_workspace_path}/content/file1.txt")).to be false
+      %w[file.txt file.vtt file1.srt].each do |file|
+        expect(File.exist?("#{fake_workspace_path}/content/#{file}")).to be false
+      end
 
       expect(perform).to be true
 
-      # files are now in the local workspace
+      # correct files are now in the local workspace
+      expect(File.exist?("#{fake_workspace_path}/content/file1.srt")).to be false # we didn't get the .srt!
       expect(File.exist?("#{fake_workspace_path}/content/file1.txt")).to be true
       expect(File.read("#{fake_workspace_path}/content/file1.txt")).to eq(File.read('spec/fixtures/speech_to_text/file1.txt'))
       expect(File.exist?("#{fake_workspace_path}/content/file1.vtt")).to be true
