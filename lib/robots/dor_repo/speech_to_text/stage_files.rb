@@ -37,9 +37,9 @@ module Robots
         end
 
         # array of media files in the s3 output bucket folder for this job
-        # TODO: filter to only files we actually care about?
+        # only includes .txt and .vtt files
         def output_files
-          @output_files ||= aws_provider.client.list_objects(bucket: aws_provider.bucket_name, prefix: s3_output_folder).contents.map(&:key)
+          @output_files ||= aws_provider.client.list_objects(bucket: aws_provider.bucket_name, prefix: s3_output_folder).contents.map(&:key).select { |filename| filename.end_with?('.txt', '.vtt') }
         end
 
         # the s3 output folder for this job
