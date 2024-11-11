@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Dor::TextExtraction::CocinaUpdater do
+describe Dor::TextExtraction::OcrCocinaUpdater do
   # NOTE: this context makes workspace_dir, workspace_content_dir and workspace_metadata_dir available
   include_context 'with workspace dir'
 
@@ -53,11 +53,10 @@ describe Dor::TextExtraction::CocinaUpdater do
     let(:resource1_files) { dro.structural.contains[0].structural.contains }
 
     before do
-      create_txt_file('image1.txt')
-      create_xml_file('image1.xml')
-      create_pdf_file("#{bare_druid}.pdf")
-      create_txt_file("#{bare_druid}.txt")
-
+      create_ocr_file('image1.txt')
+      create_ocr_file('image1.xml')
+      create_ocr_file("#{bare_druid}.pdf")
+      create_ocr_file("#{bare_druid}.txt")
       described_class.update(dro:)
     end
 
@@ -170,13 +169,13 @@ describe Dor::TextExtraction::CocinaUpdater do
     end
 
     before do
-      create_txt_file('image1.txt')
-      create_xml_file('image1.xml')
-      create_txt_file('image2.txt')
-      create_xml_file('image2.xml')
-      create_pdf_file("#{bare_druid}.pdf")
-      create_txt_file("#{bare_druid}.txt")
-      create_txt_file('some_new_file.txt')
+      create_ocr_file('image1.txt')
+      create_ocr_file('image1.xml')
+      create_ocr_file('image2.txt')
+      create_ocr_file('image2.xml')
+      create_ocr_file("#{bare_druid}.pdf")
+      create_ocr_file("#{bare_druid}.txt")
+      create_ocr_file('some_new_file.txt')
 
       described_class.update(dro:)
     end
@@ -261,12 +260,12 @@ describe Dor::TextExtraction::CocinaUpdater do
     end
 
     before do
-      create_txt_file('page_001.txt')
-      create_xml_file('page_001.xml')
-      create_txt_file('page_002.txt')
-      create_xml_file('page_002.xml')
-      create_pdf_file("#{bare_druid}.pdf")
-      create_txt_file("#{bare_druid}.txt")
+      create_ocr_file('page_001.txt')
+      create_ocr_file('page_001.xml')
+      create_ocr_file('page_002.txt')
+      create_ocr_file('page_002.xml')
+      create_ocr_file("#{bare_druid}.pdf")
+      create_ocr_file("#{bare_druid}.txt")
 
       described_class.update(dro:)
     end
@@ -332,7 +331,7 @@ describe Dor::TextExtraction::CocinaUpdater do
     end
 
     before do
-      create_pdf_file("#{bare_druid}.pdf")
+      create_ocr_file("#{bare_druid}.pdf")
 
       described_class.update(dro:)
     end
@@ -417,7 +416,7 @@ describe Dor::TextExtraction::CocinaUpdater do
     let(:workspace_content_file) { File.join(workspace_content_dir, 'page1.xml') }
 
     before do
-      create_xml_file('page1.xml')
+      create_ocr_file('page1.xml')
 
       described_class.update(dro:)
     end
@@ -572,9 +571,9 @@ describe Dor::TextExtraction::CocinaUpdater do
     end
 
     before do
-      create_xml_file('page1.xml')
-      create_pdf_file("#{bare_druid}.pdf")
-      create_txt_file("#{bare_druid}.txt")
+      create_ocr_file('page1.xml')
+      create_ocr_file("#{bare_druid}.pdf")
+      create_ocr_file("#{bare_druid}.txt")
 
       described_class.update(dro:)
     end

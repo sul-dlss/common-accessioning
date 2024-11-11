@@ -34,11 +34,11 @@ describe Robots::DorRepo::SpeechToText::UpdateCocina do
               {
                 type: Cocina::Models::ObjectType.file,
                 externalIdentifier: "#{druid}_1",
-                label: 'file1.wav',
-                filename: 'file1.wav',
+                label: 'file1.m4a',
+                filename: 'file1.m4a',
                 size: 123,
                 version: 1,
-                hasMimeType: 'audio/x-wav'
+                hasMimeType: 'audio/mp4'
               }
             ]
           }
@@ -53,27 +53,27 @@ describe Robots::DorRepo::SpeechToText::UpdateCocina do
     allow(DruidTools::Druid).to receive(:new).and_return(druid_tools)
   end
 
-  context 'with an xml file' do
-    # setup a fake caption XML file in the workspace directory which matches the name of the audio file in the Cocina
-    before { create_xml_file('file1.xml') }
+  context 'with a vtt file' do
+    # setup a fake caption vtt file in the workspace directory which matches the name of the audio file in the Cocina
+    before { create_speech_to_text_file('file1.vtt') }
 
-    it 'runs the update cocina robot and sets the transcription role' do
+    it 'runs the update cocina robot and sets the caption role' do
       new_cocina = test_perform(robot, druid)
       new_file = new_cocina.structural.contains[0].structural.contains[1]
-      expect(new_file.filename).to eq 'file1.xml'
-      expect(new_file.use).to eq 'transcription'
+      expect(new_file.filename).to eq 'file1.vtt'
+      expect(new_file.use).to eq 'caption'
     end
   end
 
   context 'with a txt file' do
     # setup a fake caption txt file in the workspace directory which matches the name of the audio file in the Cocina
-    before { create_txt_file('file1.txt') }
+    before { create_speech_to_text_file('file1.txt') }
 
-    it 'runs the update cocina robot and does not set the transcription role' do
+    it 'runs the update cocina robot and sets the transcription role' do
       new_cocina = test_perform(robot, druid)
       new_file = new_cocina.structural.contains[0].structural.contains[1]
       expect(new_file.filename).to eq 'file1.txt'
-      expect(new_file.use).to be_nil
+      expect(new_file.use).to eq 'transcription'
     end
   end
 end
