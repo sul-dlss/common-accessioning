@@ -13,7 +13,7 @@ describe Robots::DorRepo::SpeechToText::StageFiles do
   let(:structural) { instance_double(Cocina::Models::DROStructural, contains: [fileset]) }
   let(:fileset) { instance_double(Cocina::Models::FileSet, type: 'https://cocina.sul.stanford.edu/models/resources/audio', structural: fileset_structural) }
   let(:fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [m4a_file]) }
-  let(:m4a_file) { build_file(true, true, 'file1.m4a') }
+  let(:m4a_file) { build_file('file1.m4a') }
   let(:fake_workspace_path) { 'tmp/fake/workspace' }
   let(:workspace_client) do
     instance_double(Dor::Services::Client::Workspace, create: fake_workspace_path)

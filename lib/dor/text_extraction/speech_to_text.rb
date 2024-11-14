@@ -84,10 +84,24 @@ module Dor
         end.flatten.compact
       end
 
-      # filter down fileset files to those in preservation, that are shelved and are of an allowed mimetypes
-      # return all of them
+      # filter down fileset files that could possibly be speech to texted to those that are in preservation
+      # and shelved and are of an allowed mimetypes and return all of them
       def stt_files_in_fileset(fileset)
-        fileset.structural.contains.select { |file| file.administrative.sdrPreserve && file.administrative.shelve && allowed_mimetypes.include?(file.hasMimeType) }
+        files = fileset.structural.contains.select { |file| file.administrative.sdrPreserve && file.administrative.shelve && allowed_mimetypes.include?(file.hasMimeType) }
+        files.reject { |file| existing_stt_file_corrected_for_accessibility?(fileset, file.filename) }
+      end
+
+      # look in resource structural metadata to find a matching speech to text file that has been corrected for accessibility
+      # e.g. if the original file is "page1.tif", look for a "page1.txt" in the same resource that is
+      # marked as "correctedForAccessibility" in it's cocina attribute, and then return true or false
+      # this allows us to skip this captioning this file, since there is no point in doing it (since we wouldn't
+      # want to overwrite the existing manually corrected caption file)
+      def existing_stt_file_corrected_for_accessibility?(fileset, filename)
+        basename = File.basename(filename, File.extname(filename)) # filename without extension
+        corresponding_stt_file = "#{basename}.vtt"
+        fileset.structural.contains.find do |file|
+          file.filename == corresponding_stt_file && file.correctedForAccessibility
+        end
       end
 
       # defines the mimetypes types for which speech to text files can possibly be run

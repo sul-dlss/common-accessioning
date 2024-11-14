@@ -12,18 +12,12 @@ RSpec.describe Dor::TextExtraction::Ocr do
   let(:second_fileset) { instance_double(Cocina::Models::FileSet, type: 'https://cocina.sul.stanford.edu/models/resources/image', structural: second_fileset_structural) }
   let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [pdf_file]) }
   let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [jpg_file, tif_file, text_file]) }
-  let(:pdf_file) { build_file(true, 'file1.pdf') }
-  let(:jpg_file) { build_file(true, 'file2.jpg') }
-  let(:tif_file) { build_file(true, 'file2.tif') }
-  let(:text_file) { build_file(true, 'file3.txt') }
+  let(:pdf_file) { build_file('file1.pdf') }
+  let(:jpg_file) { build_file('file2.jpg') }
+  let(:tif_file) { build_file('file2.tif') }
+  let(:text_file) { build_file('file3.txt') }
+  let(:xml_file) { build_file('file2.xml', corrected: true) }
   let(:druid) { 'druid:bc123df4567' }
-
-  def build_file(sdr_peserve, filename)
-    extension = File.extname(filename)
-    mimetype = { '.pdf' => 'application/pdf', '.tif' => 'image/tiff', '.jpg' => 'image/jpeg', '.txt' => 'text/plain' }
-    sdr_value = instance_double(Cocina::Models::FileAdministrative, sdrPreserve: sdr_peserve)
-    instance_double(Cocina::Models::File, administrative: sdr_value, hasMimeType: mimetype[extension], filename:)
-  end
 
   before { allow(ocr).to receive(:sleep) } # effectively make the sleep a no-op so that the test doesn't take so long due to retries and backoff
 
@@ -97,15 +91,41 @@ RSpec.describe Dor::TextExtraction::Ocr do
   describe '#filenames_to_ocr' do
     let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, structural:, type: object_type) }
 
-    it 'returns a list of filenames that should be OCRed' do
-      expect(ocr.send(:filenames_to_ocr)).to eq(['file2.tif'])
+    it 'returns a list of filenames that should be OCRed, preferring tif over jpeg' do
+      expect(ocr.filenames_to_ocr).to eq(['file2.tif'])
     end
 
     context 'when tif file is not in preservation' do
-      let(:tif_file) { build_file(false, 'file2.tif') }
+      let(:tif_file) { build_file('file2.tif', preserve: false) }
 
       it 'returns the jpg file' do
         expect(ocr.send(:filenames_to_ocr)).to eq(['file2.jpg'])
+      end
+    end
+
+    context 'when an OCR file exists and is marked correctedForAccessibility' do
+      let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [tif_file, xml_file]) }
+
+      it 'returns nothing' do
+        expect(ocr.send(:filenames_to_ocr)).to eq([])
+      end
+    end
+
+    context 'when an OCR file exists with the same stem name, marked correctedForAccessibility, but is in a different resource' do
+      let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [jpg_file]) }
+      let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [tif_file, xml_file]) }
+
+      it 'returns the tif file' do
+        expect(ocr.send(:filenames_to_ocr)).to eq(['file2.jpg'])
+      end
+    end
+
+    context 'when an OCR file exists and is NOT marked correctedForAccessibility' do
+      let(:xml_file) { build_file('file2.xml', corrected: false) }
+      let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [tif_file, xml_file]) }
+
+      it 'returns the tif file' do
+        expect(ocr.send(:filenames_to_ocr)).to eq(['file2.tif'])
       end
     end
   end

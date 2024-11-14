@@ -13,12 +13,12 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
   let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [m4a_file, text_file]) }
   let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [mp4_file, mp4_file_not_shelved, mp4_file_not_preserved]) }
   let(:third_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [text_file2]) }
-  let(:m4a_file) { build_file(true, true, 'file1.m4a') }
-  let(:mp4_file) { build_file(true, true, 'file1.mp4') }
-  let(:mp4_file_not_shelved) { build_file(true, false, 'file2.mp4') }
-  let(:mp4_file_not_preserved) { build_file(false, true, 'file3.mp4') }
-  let(:text_file) { build_file(true, true, 'file1.txt') }
-  let(:text_file2) { build_file(true, true, 'file2.txt') }
+  let(:m4a_file) { build_file('file1.m4a') }
+  let(:mp4_file) { build_file('file1.mp4') }
+  let(:mp4_file_not_shelved) { build_file('file2.mp4', shelve: false) }
+  let(:mp4_file_not_preserved) { build_file('file3.mp4', preserve: false) }
+  let(:text_file) { build_file('file1.txt') }
+  let(:text_file2) { build_file('file2.txt') }
   let(:druid) { 'druid:bc123df4567' }
   let(:bare_druid) { 'bc123df4567' }
 
@@ -112,8 +112,26 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
   describe '#filenames_to_stt' do
     let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, structural:, type: object_type) }
 
-    it 'returns a list of filenames that should be STTed' do
+    it 'returns a list of filenames that should be STTed, ignoring those not in preservation or shelved' do
       expect(stt.send(:filenames_to_stt)).to eq(['file1.m4a', 'file1.mp4'])
+    end
+
+    context 'when a speech to text file exists but is marked correctedForAccessibility' do
+      let(:vtt_file) { build_file('file1.vtt', corrected: true) }
+      let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [mp4_file, vtt_file]) }
+
+      it 'ignores the mp4 file which has a corresponding vtt file that has been corrected for accessibility' do
+        expect(stt.send(:filenames_to_stt)).to eq(['file1.m4a'])
+      end
+    end
+
+    context 'when an OCR file exists and is NOT marked correctedForAccessibility' do
+      let(:vtt_file) { build_file('file1.vtt', corrected: false) }
+      let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [mp4_file, vtt_file]) }
+
+      it 'returns the mp4 file which has a corresponding vtt file which has not been corrected for accessibility' do
+        expect(stt.send(:filenames_to_stt)).to eq(['file1.m4a', 'file1.mp4'])
+      end
     end
   end
 

@@ -139,14 +139,30 @@ module Dor
         end.compact
       end
 
-      # filter down fileset files to those in preservation and are allowed mimetypes
-      # if there are more than one allowed mimetype, grab the preferred type
+      # filter down fileset files that could possibly be OCRed to those that are in preservation and shelved and are one of an allowed mimetypes
+      # if there is more than one file of the allowed mimetype, grab the preferred type
+      # rubocop:disable Metrics/AbcSize
       def ocr_file(fileset)
-        perservedfiles = fileset.structural.contains.select { |file| file.administrative.sdrPreserve && allowed_mimetypes.include?(file.hasMimeType) }
-        return perservedfiles[0] if perservedfiles.one?
+        files ||=
+          fileset.structural.contains.select { |file| file.administrative.sdrPreserve && allowed_mimetypes.include?(file.hasMimeType) }.sort_by { |pfile| allowed_mimetypes.index(pfile.hasMimeType) }
 
-        perservedfiles = perservedfiles.sort_by { |pfile| allowed_mimetypes.index(pfile.hasMimeType) }
-        perservedfiles[0]
+        return nil if files.empty? || existing_ocr_file_corrected_for_accessibility?(fileset, files.first.filename)
+
+        files.first
+      end
+      # rubocop:enable Metrics/AbcSize
+
+      # look in resource structural metadata to find a matching OCR file that has been corrected for accessibility
+      # e.g. if the original file is "page1.tif", look for a "page1.xml" in the same resource that is
+      # marked as "correctedForAccessibility" in it's cocina attribute, and then return true or false
+      # this allows us to skip this OCRing this file, since there is no point in doing it (since we wouldn't
+      # want to overwrite the existing manually corrected OCR file)
+      def existing_ocr_file_corrected_for_accessibility?(fileset, filename)
+        basename = File.basename(filename, File.extname(filename)) # filename without extension
+        corresponding_ocr_file = "#{basename}.xml"
+        fileset.structural.contains.find do |file|
+          file.filename == corresponding_ocr_file && file.correctedForAccessibility
+        end
       end
 
       # defines the mimetypes types for which files for which OCR can possibly be run
@@ -169,6 +185,7 @@ module Dor
         }
       end
 
+      # the resource type we are looking for in the structural metadata for files to OCR
       def matchtype
         resource_type_mapping[cocina_object.type]
       end
