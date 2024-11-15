@@ -22,6 +22,10 @@ module Dor
     #
     # rubocop:disable Metrics/ClassLength
     class CocinaUpdater
+      attr_reader :dro, :logger
+
+      delegate :externalIdentifier, :version, :structural, to: :dro
+
       # @param dro [Cocina::Models::Dro] the object metadata to update in place
       def self.update(dro:, logger: nil)
         new(dro:, logger:).update
@@ -35,7 +39,7 @@ module Dor
       def update
         update_cocina
 
-        @dro
+        dro
       end
 
       private
@@ -44,7 +48,7 @@ module Dor
       def update_cocina
         # TODO: this assumes non-hierarchical files
         content_dir.children.sort.each do |file|
-          @logger.info("examining #{file}")
+          logger.info("examining #{file}")
           next if file.basename.to_s.start_with?('.')
           next unless can_overwrite?(file)
 
@@ -57,7 +61,7 @@ module Dor
       end
 
       def update_file(path)
-        @logger.info("updating #{path} in cocina")
+        logger.info("updating #{path} in cocina")
         resource = find_resource(path)
 
         delete_file_from_resource(path, resource)
@@ -65,7 +69,7 @@ module Dor
       end
 
       def add_file(path)
-        @logger.info("adding #{path} to cocina")
+        logger.info("adding #{path} to cocina")
         resource = find_resource_with_stem(path)
 
         # NOTE: we want to add item level pdf and txt files as new resources.
@@ -85,11 +89,11 @@ module Dor
       end
 
       def add_file_to_new_resource(path)
-        @dro.structural.contains.push(
+        structural.contains.push(
           Cocina::Models::FileSet.new(
             externalIdentifier: resource_identifier,
             type: resource_type(path),
-            version: @dro.version,
+            version:,
             label: resource_label(path),
             structural: { contains: [file(path)] }
           )
@@ -106,7 +110,7 @@ module Dor
 
       def dro_files
         # TODO: replace with Cocina::Models::Utils.files when that's available
-        @dro.structural.contains.flat_map do |fileset|
+        structural.contains.flat_map do |fileset|
           fileset.structural.contains
         end
       end
@@ -123,7 +127,7 @@ module Dor
           true
         else
           # remove it from the workspace so that accessionWF doesn't get confused
-          @logger.info("preventing update of #{file.filename} sdrGeneratedText=#{file.sdrGeneratedText} correctedForAccessibility=#{file.correctedForAccessibility}")
+          logger.info("preventing update of #{file.filename} sdrGeneratedText=#{file.sdrGeneratedText} correctedForAccessibility=#{file.correctedForAccessibility}")
           path.delete
           false
         end
@@ -133,7 +137,7 @@ module Dor
       # @param path {String} - the path to look for
       # @return {FileSet, nil} - the resource or nil if it is not found
       def find_resource(path)
-        @dro.structural.contains.detect do |resource|
+        structural.contains.detect do |resource|
           resource.structural.contains.detect do |file|
             file.filename == path.basename.to_s
           end
@@ -145,7 +149,7 @@ module Dor
       # @return {FileSet, nil} - the resource or nil if it is not found
       def find_resource_with_stem(path)
         file_stem = stem(path)
-        @dro.structural.contains.detect do |resource|
+        structural.contains.detect do |resource|
           resource.structural.contains.detect do |file|
             stem(file.filename) == file_stem
           end
@@ -163,7 +167,7 @@ module Dor
           correctedForAccessibility: false,
           type: Cocina::Models::ObjectType.file,
           filename: object_file.filename,
-          version: @dro.version,
+          version:,
           hasMimeType: object_file.mimetype,
           hasMessageDigests: message_digests(object_file),
           size: object_file.filesize,
@@ -227,7 +231,7 @@ module Dor
       end
 
       def resource_identifier
-        "#{bare_druid}_#{@dro.structural.contains.length + 1}"
+        "#{bare_druid}_#{structural.contains.length + 1}"
       end
 
       def bare_druid
@@ -239,11 +243,11 @@ module Dor
       end
 
       def druid_tools
-        @druid_tools ||= DruidTools::Druid.new(@dro.externalIdentifier, Settings.sdr.local_workspace_root)
+        @druid_tools ||= DruidTools::Druid.new(externalIdentifier, Settings.sdr.local_workspace_root)
       end
 
       def document?
-        @dro.type == Cocina::Models::ObjectType.document
+        dro.type == Cocina::Models::ObjectType.document
       end
     end
   end
