@@ -121,11 +121,20 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
       end
     end
 
-    context 'when an OCR file exists and is NOT marked correctedForAccessibility' do
-      let(:vtt_file) { build_file('file1.vtt', corrected: false) }
+    context 'when an OCR file exists and is NOT marked correctedForAccessibility and is also NOT sdrGenerated' do
+      let(:vtt_file) { build_file('file1.vtt', corrected: false, sdr_generated: false) }
       let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [mp4_file, vtt_file]) }
 
-      it 'returns the mp4 file which has a corresponding vtt file which has not been corrected for accessibility' do
+      it 'ignores the mp4 file which has a corresponding vtt file which has not been corrected for accessibility but was also not sdr generated' do
+        expect(stt.send(:filenames_to_stt)).to eq(['file1.m4a'])
+      end
+    end
+
+    context 'when an OCR file exists and is NOT marked correctedForAccessibility but is sdrGenerated' do
+      let(:vtt_file) { build_file('file1.vtt', corrected: false, sdr_generated: true) }
+      let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [mp4_file, vtt_file]) }
+
+      it 'returns the both the m4a and mp4 file which has a corresponding vtt file which has not been corrected for accessibility but is sdr generated' do
         expect(stt.send(:filenames_to_stt)).to eq(['file1.m4a', 'file1.mp4'])
       end
     end

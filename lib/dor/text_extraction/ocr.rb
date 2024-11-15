@@ -154,12 +154,12 @@ module Dor
       # e.g. if the original file is "page1.tif", look for a "page1.xml" in the same resource that is
       # marked as "correctedForAccessibility" in it's cocina attribute, and then return true or false
       # this allows us to skip this OCRing this file, since there is no point in doing it (since we wouldn't
-      # want to overwrite the existing manually corrected OCR file)
+      # want to overwrite the existing manually corrected OR non-SDR generated OCR file)
       def existing_ocr_file_corrected_for_accessibility?(fileset, filename)
         basename = File.basename(filename, File.extname(filename)) # filename without extension
         corresponding_ocr_file = "#{basename}.xml"
         fileset.structural.contains.find do |file|
-          file.filename == corresponding_ocr_file && file.correctedForAccessibility
+          file.filename == corresponding_ocr_file && (file.correctedForAccessibility || !file.sdrGeneratedText)
         end
       end
 

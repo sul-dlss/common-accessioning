@@ -119,8 +119,17 @@ RSpec.describe Dor::TextExtraction::Ocr do
       end
     end
 
-    context 'when an OCR file exists and is NOT marked correctedForAccessibility' do
-      let(:xml_file) { build_file('file2.xml', corrected: false) }
+    context 'when an OCR file exists and is NOT marked correctedForAccessibility and is also NOT sdrGenerated' do
+      let(:xml_file) { build_file('file2.xml', corrected: false, sdr_generated: false) }
+      let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [tif_file, xml_file]) }
+
+      it 'returns nothing' do
+        expect(ocr.send(:filenames_to_ocr)).to eq([])
+      end
+    end
+
+    context 'when an OCR file exists and is NOT marked correctedForAccessibility but is sdrGenerated' do
+      let(:xml_file) { build_file('file2.xml', corrected: false, sdr_generated: true) }
       let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [tif_file, xml_file]) }
 
       it 'returns the tif file' do

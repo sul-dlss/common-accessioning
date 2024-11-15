@@ -94,12 +94,12 @@ module Dor
       # e.g. if the original file is "page1.tif", look for a "page1.txt" in the same resource that is
       # marked as "correctedForAccessibility" in it's cocina attribute, and then return true or false
       # this allows us to skip this captioning this file, since there is no point in doing it (since we wouldn't
-      # want to overwrite the existing manually corrected caption file)
+      # want to overwrite the existing manually corrected OR non-SDR generated caption file)
       def existing_stt_file_corrected_for_accessibility?(fileset, filename)
         basename = File.basename(filename, File.extname(filename)) # filename without extension
         corresponding_stt_file = "#{basename}.vtt"
         fileset.structural.contains.find do |file|
-          file.filename == corresponding_stt_file && file.correctedForAccessibility
+          file.filename == corresponding_stt_file && (file.correctedForAccessibility || !file.sdrGeneratedText)
         end
       end
 
