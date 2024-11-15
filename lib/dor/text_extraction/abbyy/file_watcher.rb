@@ -11,7 +11,7 @@ module Dor
       # See bin/abbyy_watcher for the script that starts this class
       # See lib/capistrano/tasks/abbyy_watcher_systemd.cap for the systemd service definition
       class FileWatcher
-        attr_reader :result_xml_path, :exceptions_path, :logger, :workflow_updater
+        attr_reader :result_xml_path, :exceptions_path, :logger, :workflow_updater, :dor_event_logger
 
         # These methods control the underlying listener; see:
         # https://github.com/guard/listen?tab=readme-ov-file#pause--start--stop
@@ -35,7 +35,7 @@ module Dor
           @logger = logger
           @workflow_updater = workflow_updater_class.new(logger:)
           @listener_options = default_listener_options.merge(listener_options)
-          Dor::Services::Client.configure(logger:, url: Settings.dor_services.url, token: Settings.dor_services.token)
+          @dor_event_logger = Dor::TextExtraction::DorEventLogger.new(logger:)
         end
         # rubocop:enable Metrics/AbcSize
 
@@ -76,8 +76,9 @@ module Dor
         end
 
         # Publish to the SDR event service with processing information
-        def create_event(type:, results:)
-          Dor::Services::Client.object("druid:#{results.druid}").events.create(
+        def create_event(type:, results:) # rubocop:disable Metrics/MethodLength
+          dor_event_logger.create_event(
+            druid: "druid:#{results.druid}",
             type:,
             data: {
               host:,
