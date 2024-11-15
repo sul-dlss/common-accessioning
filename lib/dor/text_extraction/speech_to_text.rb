@@ -87,8 +87,7 @@ module Dor
       # filter down fileset files that could possibly be speech to texted to those that are in preservation
       # and shelved and are of an allowed mimetypes and return all of them
       def stt_files_in_fileset(fileset)
-        files = fileset.structural.contains.select { |file| file.administrative.sdrPreserve && file.administrative.shelve && allowed_mimetypes.include?(file.hasMimeType) }
-        files.reject { |file| existing_stt_file_corrected_for_accessibility?(fileset, file.filename) }
+        fileset.structural.contains.select { |file| acceptable_file?(file) }.reject { |file| existing_stt_file_corrected_for_accessibility?(fileset, file.filename) }
       end
 
       # look in resource structural metadata to find a matching speech to text file that has been corrected for accessibility
@@ -104,6 +103,11 @@ module Dor
         end
       end
 
+      # indicates if the file is preserved, shelved and is of an allowed mimetype
+      def acceptable_file?(file)
+        file.administrative.sdrPreserve && file.administrative.shelve && allowed_mimetypes.include?(file.hasMimeType)
+      end
+
       # defines the mimetypes types for which speech to text files can possibly be run
       def allowed_mimetypes
         %w[
@@ -115,7 +119,7 @@ module Dor
 
       # the allowed structural metadata resources types that can contain files that can be stt'd
       def allowed_resource_types
-        ['https://cocina.sul.stanford.edu/models/resources/audio', 'https://cocina.sul.stanford.edu/models/resources/video']
+        [Cocina::Models::FileSetType.audio, Cocina::Models::FileSetType.video]
       end
 
       # the allowed objects that can have speech to text run on them

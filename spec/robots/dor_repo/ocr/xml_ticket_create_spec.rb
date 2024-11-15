@@ -15,7 +15,7 @@ describe Robots::DorRepo::Ocr::XmlTicketCreate do
     instance_double(Dor::Services::Client::Object, find: cocina_model, update: true)
   end
   let(:cocina_model) { build(:dro, id: druid).new(structural: {}, type: object_type, access: { view: 'world' }) }
-  let(:object_type) { 'https://cocina.sul.stanford.edu/models/image' }
+  let(:object_type) { Cocina::Models::ObjectType.image }
   let(:workflow_context) { { runOCR: true } }
   let(:workflow) { instance_double(LyberCore::Workflow, context: workflow_context) }
   let(:fixture_path) { File.join(File.absolute_path('spec/fixtures/ocr'), "#{bare_druid}_abbyy_ticket.xml") }

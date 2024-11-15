@@ -47,7 +47,7 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
     let(:cocina_object) { build(:dro, id: druid).new(structural:) }
 
     let(:structural) do
-      { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+      { contains: [{ type: Cocina::Models::FileSetType.image,
                      externalIdentifier: 'bb222cc3333_1',
                      label: 'Image 1',
                      version: 1,
@@ -60,7 +60,7 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
                                                 hasMessageDigests: [{ type: 'md5', digest: '42616f9e6c1b7e7b7a71b4fa0c5ef794' }],
                                                 access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                 administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
-                   { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                   { type: Cocina::Models::FileSetType.image,
                      externalIdentifier: 'bb222cc3333_2',
                      label: 'Image 2',
                      version: 1,
@@ -74,7 +74,7 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
                                                                     { type: 'md5', digest: 'ac440802bd590ce0899dafecc5a5ab1b' }],
                                                 access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                 administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
-                   { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                   { type: Cocina::Models::FileSetType.image,
                      externalIdentifier: 'bb222cc3333_3',
                      label: 'Image 3',
                      version: 1,
@@ -88,7 +88,7 @@ RSpec.describe Robots::DorRepo::Assembly::ChecksumCompute do
                                                 access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                 administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
                    # This file does not exist in the workspace.
-                   { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                   { type: Cocina::Models::FileSetType.image,
                      externalIdentifier: 'bb222cc3333_4',
                      label: 'Image 4',
                      version: 1,

@@ -141,16 +141,14 @@ module Dor
 
       # filter down fileset files that could possibly be OCRed to those that are in preservation and shelved and are one of an allowed mimetypes
       # if there is more than one file of the allowed mimetype, grab the preferred type
-      # rubocop:disable Metrics/AbcSize
       def ocr_file(fileset)
         files ||=
-          fileset.structural.contains.select { |file| file.administrative.sdrPreserve && allowed_mimetypes.include?(file.hasMimeType) }.sort_by { |pfile| allowed_mimetypes.index(pfile.hasMimeType) }
+          fileset.structural.contains.select { |file| acceptable_file?(file) }.sort_by { |pfile| allowed_mimetypes.index(pfile.hasMimeType) }
 
         return nil if files.empty? || existing_ocr_file_corrected_for_accessibility?(fileset, files.first.filename)
 
         files.first
       end
-      # rubocop:enable Metrics/AbcSize
 
       # look in resource structural metadata to find a matching OCR file that has been corrected for accessibility
       # e.g. if the original file is "page1.tif", look for a "page1.xml" in the same resource that is
@@ -163,6 +161,11 @@ module Dor
         fileset.structural.contains.find do |file|
           file.filename == corresponding_ocr_file && file.correctedForAccessibility
         end
+      end
+
+      # indicates if the file is preserved, shelved and is of an allowed mimetype
+      def acceptable_file?(file)
+        file.administrative.sdrPreserve && file.administrative.shelve && allowed_mimetypes.include?(file.hasMimeType)
       end
 
       # defines the mimetypes types for which files for which OCR can possibly be run

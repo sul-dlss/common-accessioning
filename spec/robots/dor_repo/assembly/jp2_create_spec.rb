@@ -12,7 +12,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
   let(:cocina_model) { build(:dro, id: druid).new(structural:, access:) }
 
   let(:structural) do
-    { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+    { contains: [{ type: Cocina::Models::FileSetType.image,
                    externalIdentifier: 'bb111bb2222_1',
                    label: 'Image 1',
                    version: 1,
@@ -26,7 +26,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                               hasMessageDigests: [{ type: 'md5', digest: '42616f9e6c1b7e7b7a71b4fa0c5ef794' }],
                                               access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                               administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
-                 { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                 { type: Cocina::Models::FileSetType.image,
                    externalIdentifier: 'bb111bb2222_2',
                    label: 'Image 2',
                    version: 1,
@@ -41,7 +41,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                                                   { type: 'md5', digest: 'ac440802bd590ce0899dafecc5a5ab1b' }],
                                               access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                               administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
-                 { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                 { type: Cocina::Models::FileSetType.image,
                    externalIdentifier: 'bb111bb2222_3',
                    label: 'Image 3',
                    version: 1,
@@ -129,7 +129,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     context 'with a fileset that is not page or image' do
       let(:structural) do
         # This is an audio fileset (but contains an image for testing)
-        { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/audio',
+        { contains: [{ type: Cocina::Models::FileSetType.audio,
                        externalIdentifier: 'bb111bb2222_1',
                        label: 'Image 1',
                        version: 1,
@@ -155,7 +155,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
     context 'with a file that has an existing mimetype that is not an image' do
       let(:structural) do
-        { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/page',
+        { contains: [{ type: Cocina::Models::FileSetType.page,
                        externalIdentifier: 'bb111bb2222_1',
                        label: 'Doc 1',
                        version: 1,
@@ -183,7 +183,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
     context 'with a file that does not have an existing mimetype and is not an image' do
       let(:structural) do
-        { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/page',
+        { contains: [{ type: Cocina::Models::FileSetType.page,
                        externalIdentifier: 'bb111bb2222_1',
                        label: 'Doc 1',
                        version: 1,
@@ -211,7 +211,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
     context 'when the image file does not exist and there is a jp2 cocina file and jp2 file' do
       let(:structural) do
-        { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+        { contains: [{ type: Cocina::Models::FileSetType.image,
                        externalIdentifier: 'bb111bb2222_1',
                        label: 'Image 4',
                        version: 1,
@@ -250,7 +250,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.jp2" }
 
       let(:structural) do
-        { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+        { contains: [{ type: Cocina::Models::FileSetType.image,
                        externalIdentifier: 'bb111bb2222_1',
                        label: 'Image 2',
                        version: 1,
@@ -286,7 +286,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
     context 'when the image file exists and there is a jp2 cocina file' do
       let(:structural) do
-        { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+        { contains: [{ type: Cocina::Models::FileSetType.image,
                        externalIdentifier: 'bb111bb2222_1',
                        label: 'Image 1',
                        version: 1,
@@ -316,7 +316,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
       it 'replaces the jp2 cocina file and creates a jp2 file' do
         expect(file_sets).to eq(
-          [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+          [{ type: Cocina::Models::FileSetType.image,
              externalIdentifier: 'bb111bb2222_1',
              label: 'Image 1',
              version: 1,
@@ -349,7 +349,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.jp2" }
 
       let(:structural) do
-        { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+        { contains: [{ type: Cocina::Models::FileSetType.image,
                        externalIdentifier: 'bb111bb2222_1',
                        label: 'Image 2',
                        version: 1,
@@ -370,7 +370,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       it 'creates a jp2 cocina file' do
         expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.jp2")).to be true
         expect(file_sets).to eq(
-          [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+          [{ type: Cocina::Models::FileSetType.image,
              externalIdentifier: 'bb111bb2222_1',
              label: 'Image 2',
              version: 1,
@@ -404,7 +404,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/sub/image113.jp2" }
 
       let(:structural) do
-        { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+        { contains: [{ type: Cocina::Models::FileSetType.image,
                        externalIdentifier: 'bb111bb2222_1',
                        label: 'Image 3',
                        version: 1,
@@ -425,7 +425,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       it 'adds the jp2 cocina file' do
         expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/sub/image113.jp2")).to be true
         expect(file_sets).to eq(
-          [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+          [{ type: Cocina::Models::FileSetType.image,
              externalIdentifier: 'bb111bb2222_1',
              label: 'Image 3',
              version: 1,
@@ -457,7 +457,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     context 'when the image file does not exist and there is no jp2 file' do
       let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image114.tif" }
       let(:structural) do
-        { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+        { contains: [{ type: Cocina::Models::FileSetType.image,
                        externalIdentifier: 'bb111bb2222_1',
                        label: 'Image 4',
                        version: 1,
@@ -488,7 +488,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
       it 'retrieves the file from preservation and creates a jp2' do
         expect(file_sets).to eq(
-          [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+          [{ type: Cocina::Models::FileSetType.image,
              externalIdentifier: 'bb111bb2222_1',
              label: 'Image 4',
              version: 1,

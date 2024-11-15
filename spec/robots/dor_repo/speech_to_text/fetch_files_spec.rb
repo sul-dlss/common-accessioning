@@ -11,7 +11,7 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
   let(:file_fetcher) { instance_double(Dor::TextExtraction::FileFetcher, write_file_with_retries: written) }
   let(:stt) { instance_double(Dor::TextExtraction::SpeechToText, job_id:, filenames_to_stt: ['file1.mov', 'file2.mp3']) }
   let(:cocina_model) { build(:dro, id: druid).new(structural: {}, type: object_type, access: { view: 'world' }) }
-  let(:object_type) { 'https://cocina.sul.stanford.edu/models/media' }
+  let(:object_type) { Cocina::Models::ObjectType.media }
   let(:dsa_object_client) do
     instance_double(Dor::Services::Client::Object, find: cocina_model, update: true)
   end

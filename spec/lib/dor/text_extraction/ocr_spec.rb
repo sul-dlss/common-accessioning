@@ -5,11 +5,16 @@ require 'spec_helper'
 RSpec.describe Dor::TextExtraction::Ocr do
   let(:ocr) { described_class.new(cocina_object:, workflow_context:) }
   let(:ticket) { Dor::TextExtraction::Abbyy::Ticket.new(filepaths: [], druid:) }
-  let(:object_type) { 'https://cocina.sul.stanford.edu/models/image' }
+  let(:druid) { 'druid:bc123df4567' }
+  let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: is_dro, type: object_type, structural:) }
+  let(:is_dro) { true }
+  let(:object_type) { Cocina::Models::ObjectType.image }
   let(:workflow_context) { {} }
   let(:structural) { instance_double(Cocina::Models::DROStructural, contains: [first_fileset, second_fileset]) }
-  let(:first_fileset) { instance_double(Cocina::Models::FileSet, type: 'https://cocina.sul.stanford.edu/models/resources/document', structural: first_fileset_structural) }
-  let(:second_fileset) { instance_double(Cocina::Models::FileSet, type: 'https://cocina.sul.stanford.edu/models/resources/image', structural: second_fileset_structural) }
+  let(:first_fileset) { instance_double(Cocina::Models::FileSet, type: first_fileset_type, structural: first_fileset_structural) }
+  let(:second_fileset) { instance_double(Cocina::Models::FileSet, type: second_fileset_type, structural: second_fileset_structural) }
+  let(:first_fileset_type) { Cocina::Models::FileSetType.document }
+  let(:second_fileset_type) { Cocina::Models::FileSetType.image }
   let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [pdf_file]) }
   let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [jpg_file, tif_file, text_file]) }
   let(:pdf_file) { build_file('file1.pdf') }
@@ -17,13 +22,12 @@ RSpec.describe Dor::TextExtraction::Ocr do
   let(:tif_file) { build_file('file2.tif') }
   let(:text_file) { build_file('file3.txt') }
   let(:xml_file) { build_file('file2.xml', corrected: true) }
-  let(:druid) { 'druid:bc123df4567' }
 
   before { allow(ocr).to receive(:sleep) } # effectively make the sleep a no-op so that the test doesn't take so long due to retries and backoff
 
   describe '#possible?' do
     context 'when the object is not a DRO' do
-      let(:cocina_object) { instance_double(Cocina::Models::Collection, externalIdentifier: druid, dro?: false, type: object_type) }
+      let(:is_dro) { false }
 
       it 'returns false' do
         expect(ocr.possible?).to be false
@@ -31,10 +35,8 @@ RSpec.describe Dor::TextExtraction::Ocr do
     end
 
     context 'when the object is a DRO' do
-      let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: true, type: object_type, structural:) }
-
       context 'when the object type is one that does not require OCR' do
-        let(:object_type) { 'https://cocina.sul.stanford.edu/models/media' }
+        let(:object_type) { Cocina::Models::ObjectType.media }
 
         it 'returns false' do
           expect(ocr.possible?).to be false
@@ -61,8 +63,6 @@ RSpec.describe Dor::TextExtraction::Ocr do
   end
 
   describe '#required?' do
-    let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: true, type: object_type) }
-
     context 'when workflow context includes runOCR as true' do
       let(:workflow_context) { { 'runOCR' => true } }
 
@@ -89,8 +89,6 @@ RSpec.describe Dor::TextExtraction::Ocr do
   end
 
   describe '#filenames_to_ocr' do
-    let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, structural:, type: object_type) }
-
     it 'returns a list of filenames that should be OCRed, preferring tif over jpeg' do
       expect(ocr.filenames_to_ocr).to eq(['file2.tif'])
     end
@@ -112,6 +110,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
     end
 
     context 'when an OCR file exists with the same stem name, marked correctedForAccessibility, but is in a different resource' do
+      let(:first_fileset_type) { Cocina::Models::FileSetType.image }
       let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [jpg_file]) }
       let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [tif_file, xml_file]) }
 
@@ -131,15 +130,48 @@ RSpec.describe Dor::TextExtraction::Ocr do
   end
 
   describe '#ocr_files' do
-    let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, structural:, type: Cocina::Models::ObjectType.document) }
+    let(:object_type) { Cocina::Models::ObjectType.document }
 
     it 'returns a list of all filenames' do
       expect(ocr.send(:ocr_files)).to eq([pdf_file])
     end
   end
 
+  describe '#acceptable_file?' do
+    context 'when file is preserved, shelved, and has an allowed mimetype' do
+      let(:file) { build_file('file1.tif') }
+
+      it 'returns true' do
+        expect(ocr.send(:acceptable_file?, file)).to be true
+      end
+    end
+
+    context 'when file is not preserved' do
+      let(:file) { build_file('file1.tif', preserve: false) }
+
+      it 'returns false' do
+        expect(ocr.send(:acceptable_file?, file)).to be false
+      end
+    end
+
+    context 'when file is not shelved' do
+      let(:file) { build_file('file1.tif', shelve: false) }
+
+      it 'returns false' do
+        expect(ocr.send(:acceptable_file?, file)).to be false
+      end
+    end
+
+    context 'when file has a disallowed mimetype for OCR' do
+      let(:file) { build_file('file1.txt') }
+
+      it 'returns false' do
+        expect(ocr.send(:acceptable_file?, file)).to be false
+      end
+    end
+  end
+
   describe '#cleanup' do
-    let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: true, type: object_type, structural:) }
     let(:result_path) { File.join(Settings.sdr.abbyy.local_result_path, "#{druid}.xml.result.xml") }
     let(:abbyy_exception_file) { File.join(Settings.sdr.abbyy.local_exception_path, "#{druid}.xml.result.xml") }
 

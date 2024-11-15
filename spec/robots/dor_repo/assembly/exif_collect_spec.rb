@@ -62,7 +62,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
 
     context 'when there are no existing mimetypes and filesizes in file nodes' do
       let(:structural) do
-        { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+        { contains: [{ type: Cocina::Models::FileSetType.image,
                        externalIdentifier: 'bb111bb2222_1',
                        label: 'Image 1',
                        version: 1,
@@ -75,7 +75,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
                                                   hasMessageDigests: [{ type: 'md5', digest: '42616f9e6c1b7e7b7a71b4fa0c5ef794' }],
                                                   access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                   administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
-                     { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                     { type: Cocina::Models::FileSetType.image,
                        externalIdentifier: 'bb111bb2222_2',
                        label: 'Image 2',
                        version: 1,
@@ -89,7 +89,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
                                                                       { type: 'md5', digest: 'ac440802bd590ce0899dafecc5a5ab1b' }],
                                                   access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                   administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
-                     { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                     { type: Cocina::Models::FileSetType.image,
                        externalIdentifier: 'bb111bb2222_3',
                        label: 'Image 3',
                        version: 1,
@@ -132,7 +132,7 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
 
     context 'when there are existing mimetypes and filesizes in file nodes' do
       let(:structural) do
-        { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+        { contains: [{ type: Cocina::Models::FileSetType.image,
                        externalIdentifier: 'cc333dd4444_1',
                        label: 'Image 1',
                        version: 1,

@@ -9,9 +9,9 @@ describe Robots::DorRepo::SpeechToText::StageFiles do
   let(:version) { 1 }
   let(:robot) { described_class.new }
   let(:cocina_object) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: true, type: object_type, structural:) }
-  let(:object_type) { 'https://cocina.sul.stanford.edu/models/media' }
+  let(:object_type) { Cocina::Models::ObjectType.media }
   let(:structural) { instance_double(Cocina::Models::DROStructural, contains: [fileset]) }
-  let(:fileset) { instance_double(Cocina::Models::FileSet, type: 'https://cocina.sul.stanford.edu/models/resources/audio', structural: fileset_structural) }
+  let(:fileset) { instance_double(Cocina::Models::FileSet, type: Cocina::Models::FileSetType.audio, structural: fileset_structural) }
   let(:fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [m4a_file]) }
   let(:m4a_file) { build_file('file1.m4a') }
   let(:fake_workspace_path) { 'tmp/fake/workspace' }

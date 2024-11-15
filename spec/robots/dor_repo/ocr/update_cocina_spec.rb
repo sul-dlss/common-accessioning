@@ -21,12 +21,12 @@ describe Robots::DorRepo::Ocr::UpdateCocina do
 
   # set up a Cocina object with one image in it
   let(:cocina_model) { build(:dro, id: druid).new(structural:, type: object_type) }
-  let(:object_type) { 'https://cocina.sul.stanford.edu/models/image' }
+  let(:object_type) { Cocina::Models::ObjectType.image }
   let(:structural) do
     {
       contains: [
         {
-          type: 'https://cocina.sul.stanford.edu/models/resources/image',
+          type: Cocina::Models::FileSetType.image,
           externalIdentifier: "#{bare_druid}_1",
           label: 'Image 1',
           version: 1,

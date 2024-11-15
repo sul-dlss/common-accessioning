@@ -27,7 +27,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
         end
 
         let(:expected) do
-          { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+          { contains: [{ type: Cocina::Models::FileSetType.image,
                          externalIdentifier: 'nx288wh8889_1',
                          label: 'Image 1',
                          version: 1,
@@ -41,7 +41,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                     hasMessageDigests: [],
                                                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                     administrative: { publish: false, sdrPreserve: false, shelve: false } }] } },
-                       { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                       { type: Cocina::Models::FileSetType.image,
                          externalIdentifier: 'nx288wh8889_2',
                          label: 'Image 2',
                          version: 1,
@@ -55,7 +55,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                     hasMessageDigests: [],
                                                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                     administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
-                       { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                       { type: Cocina::Models::FileSetType.image,
                          externalIdentifier: 'nx288wh8889_3',
                          label: 'Image 3',
                          version: 1,
@@ -103,7 +103,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
         end
 
         let(:expected) do
-          { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+          { contains: [{ type: Cocina::Models::FileSetType.image,
                          externalIdentifier: 'nx288wh8889_1',
                          label: 'Image 1',
                          version: 1,
@@ -177,7 +177,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                     hasMessageDigests: [],
                                                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                     administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
-                       { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                       { type: Cocina::Models::FileSetType.image,
                          externalIdentifier: 'nx288wh8889_2',
                          label: 'Image 2',
                          version: 1,
@@ -241,7 +241,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                     hasMessageDigests: [],
                                                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                     administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
-                       { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                       { type: Cocina::Models::FileSetType.image,
                          externalIdentifier: 'nx288wh8889_3',
                          label: 'Image 3',
                          version: 1,
@@ -295,7 +295,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
         end
 
         let(:expected) do
-          { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+          { contains: [{ type: Cocina::Models::FileSetType.image,
                          externalIdentifier: 'nx288wh8889_1',
                          label: 'Image 1',
                          version: 1,
@@ -309,7 +309,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                     hasMessageDigests: [],
                                                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                     administrative: { publish: false, sdrPreserve: false, shelve: false } }] } },
-                       { type: 'https://cocina.sul.stanford.edu/models/resources/image',
+                       { type: Cocina::Models::FileSetType.image,
                          externalIdentifier: 'nx288wh8889_2',
                          label: 'Image 2',
                          version: 1,
@@ -343,7 +343,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
         end
 
         let(:expected) do
-          { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/page',
+          { contains: [{ type: Cocina::Models::FileSetType.page,
                          externalIdentifier: 'nx288wh8889_1',
                          label: 'Page 1',
                          version: 1,
@@ -357,7 +357,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                     hasMessageDigests: [],
                                                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                     administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
-                       { type: 'https://cocina.sul.stanford.edu/models/resources/page',
+                       { type: Cocina::Models::FileSetType.page,
                          externalIdentifier: 'nx288wh8889_2',
                          label: 'Page 2',
                          version: 1,
@@ -396,7 +396,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
         end
 
         let(:expected) do
-          { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/file',
+          { contains: [{ type: Cocina::Models::FileSetType.file,
                          externalIdentifier: 'nx288wh8889_1',
                          label: 'File 1',
                          version: 1,
@@ -410,7 +410,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                     hasMessageDigests: [],
                                                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                     administrative: { publish: false, sdrPreserve: false, shelve: false } }] } },
-                       { type: 'https://cocina.sul.stanford.edu/models/resources/file',
+                       { type: Cocina::Models::FileSetType.file,
                          externalIdentifier: 'nx288wh8889_2',
                          label: 'File 2',
                          version: 1,
@@ -424,7 +424,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                     hasMessageDigests: [],
                                                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                     administrative: { publish: false, sdrPreserve: false, shelve: false } }] } },
-                       { type: 'https://cocina.sul.stanford.edu/models/resources/file',
+                       { type: Cocina::Models::FileSetType.file,
                          externalIdentifier: 'nx288wh8889_3',
                          label: 'File 3',
                          version: 1,
@@ -438,7 +438,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                     hasMessageDigests: [],
                                                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                     administrative: { publish: false, sdrPreserve: false, shelve: false } }] } },
-                       { type: 'https://cocina.sul.stanford.edu/models/resources/file',
+                       { type: Cocina::Models::FileSetType.file,
                          externalIdentifier: 'nx288wh8889_4',
                          label: 'File 4',
                          version: 1,
@@ -486,7 +486,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
       let(:object_type) { Cocina::Models::ObjectType.three_dimensional }
 
       let(:expected) do
-        { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/3d',
+        { contains: [{ type: Cocina::Models::FileSetType.three_dimensional,
                        externalIdentifier: 'nx288wh8889_1',
                        label: '3d 1',
                        version: 1,
@@ -500,7 +500,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                   hasMessageDigests: [],
                                                   access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                   administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
-                     { type: 'https://cocina.sul.stanford.edu/models/resources/file',
+                     { type: Cocina::Models::FileSetType.file,
                        externalIdentifier: 'nx288wh8889_2',
                        label: 'File 1',
                        version: 1,
@@ -514,7 +514,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                   hasMessageDigests: [],
                                                   access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                   administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
-                     { type: 'https://cocina.sul.stanford.edu/models/resources/file',
+                     { type: Cocina::Models::FileSetType.file,
                        externalIdentifier: 'nx288wh8889_3',
                        label: 'File 2',
                        version: 1,
@@ -528,7 +528,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                   hasMessageDigests: [],
                                                   access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                   administrative: { publish: false, sdrPreserve: true, shelve: false } }] } },
-                     { type: 'https://cocina.sul.stanford.edu/models/resources/file',
+                     { type: Cocina::Models::FileSetType.file,
                        externalIdentifier: 'nx288wh8889_4',
                        label: 'File 3',
                        version: 1,
@@ -559,7 +559,7 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
       end
 
       let(:expected) do
-        { contains: [{ type: 'https://cocina.sul.stanford.edu/models/resources/image',
+        { contains: [{ type: Cocina::Models::FileSetType.image,
                        externalIdentifier: 'nx288wh8889_1',
                        label: 'Image 1',
                        version: 1,
