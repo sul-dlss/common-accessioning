@@ -70,6 +70,8 @@ describe Dor::TextExtraction::FileFetcher do
             allow(Honeybadger).to receive(:notify)
 
             allow(objects_client).to receive(:content) do
+              # the only reason we raise a different error here (compared to the enclosing context) is to
+              # exercise one of the other rescued errors.  both should be treated in the same way.
               raise Faraday::ResourceNotFound, 'druid not available yet'
             end
           end
