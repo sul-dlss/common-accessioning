@@ -1,0 +1,1 @@
+{"text": "Hola amigo.", "segments": [{"id": 0, "seek": 0, "start": 0.0, "end": 29.98, "text": " Thank you.", "tokens": [50365, 1044, 291, 13, 51864], "temperature": 0.0, "avg_logprob": -0.30370934804280597, "compression_ratio": 0.5555555555555556, "no_speech_prob": 0.8704729080200195}], "language": "es"}

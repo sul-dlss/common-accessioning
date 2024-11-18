@@ -27,8 +27,9 @@ describe Robots::DorRepo::SpeechToText::StageFiles do
   let(:client) { instance_double(Aws::S3::Client) }
   let(:aws_m4a_txt_object) { instance_double(Aws::S3::Types::Object, key: 'file1.txt') }
   let(:aws_m4a_vtt_object) { instance_double(Aws::S3::Types::Object, key: 'file1.vtt') }
+  let(:aws_m4a_json_object) { instance_double(Aws::S3::Types::Object, key: 'file1.json') }
   let(:aws_m4a_srt_object) { instance_double(Aws::S3::Types::Object, key: 'file1.srt') }
-  let(:list_objects_output) { instance_double(Aws::S3::Types::ListObjectsOutput, contents: [aws_m4a_vtt_object, aws_m4a_txt_object, aws_m4a_srt_object]) }
+  let(:list_objects_output) { instance_double(Aws::S3::Types::ListObjectsOutput, contents: [aws_m4a_vtt_object, aws_m4a_txt_object, aws_m4a_json_object, aws_m4a_srt_object]) }
   let(:bucket) { Settings.aws.speech_to_text.base_s3_bucket }
 
   context 'when there are files to move' do
@@ -40,14 +41,16 @@ describe Robots::DorRepo::SpeechToText::StageFiles do
       allow(client).to receive(:list_objects).and_return(list_objects_output)
       allow(client).to receive(:get_object).with(bucket:, key: 'file1.txt').and_yield(File.read('spec/fixtures/speech_to_text/file1.txt'))
       allow(client).to receive(:get_object).with(bucket:, key: 'file1.vtt').and_yield(File.read('spec/fixtures/speech_to_text/file1.vtt'))
+      allow(client).to receive(:get_object).with(bucket:, key: 'file1.json').and_yield(File.read('spec/fixtures/speech_to_text/file1.json'))
       allow(Aws::S3::Client).to receive(:new).and_return(client)
     end
 
     after { FileUtils.rm_rf(fake_workspace_path) } # cleanup the fake workspace for the next test run
 
-    it 'copies only the vtt and txt files from s3 to local workspace' do
+    # rubocop:disable RSpec/ExampleLength
+    it 'copies only the vtt, json and txt files from s3 to local workspace' do
       # files are not in the local workspace
-      %w[file.txt file.vtt file1.srt].each do |file|
+      %w[file.txt file.vtt file1.json file1.srt].each do |file|
         expect(File.exist?("#{fake_workspace_path}/content/#{file}")).to be false
       end
 
@@ -59,6 +62,9 @@ describe Robots::DorRepo::SpeechToText::StageFiles do
       expect(File.read("#{fake_workspace_path}/content/file1.txt")).to eq(File.read('spec/fixtures/speech_to_text/file1.txt'))
       expect(File.exist?("#{fake_workspace_path}/content/file1.vtt")).to be true
       expect(File.read("#{fake_workspace_path}/content/file1.vtt")).to eq(File.read('spec/fixtures/speech_to_text/file1.vtt'))
+      expect(File.exist?("#{fake_workspace_path}/content/file1.json")).to be true
+      expect(File.read("#{fake_workspace_path}/content/file1.json")).to eq(File.read('spec/fixtures/speech_to_text/file1.json'))
     end
+    # rubocop:enable RSpec/ExampleLength
   end
 end

@@ -90,6 +90,7 @@ describe Dor::TextExtraction::OcrCocinaUpdater do
       expect(file.hasMessageDigests[0].digest).to eq '6d98df7e7b6faa698f3458714e2d0eee'
       expect(file.hasMessageDigests[1].type).to eq 'sha1'
       expect(file.hasMessageDigests[1].digest).to eq '8dbc9709e00f49523566107de23e4e603aab5f70'
+      expect(file.languageTag).to be_nil
     end
 
     it 'first resource has abbyy xml ocr file set correctly' do
@@ -105,6 +106,7 @@ describe Dor::TextExtraction::OcrCocinaUpdater do
       expect(file.administrative.sdrPreserve).to be true
       expect(file.administrative.shelve).to be true
       expect(file.hasMimeType).to eq 'application/xml'
+      expect(file.languageTag).to be_nil
     end
     # rubocop:enable RSpec/ExampleLength
 
@@ -182,6 +184,10 @@ describe Dor::TextExtraction::OcrCocinaUpdater do
 
     it 'has expected number of resources' do
       expect(dro.structural.contains.length).to eq 5
+    end
+
+    it 'first resource has expected number of files (tif, txt and xml)' do
+      expect(dro.structural.contains[0].structural.contains.length).to eq 3
     end
 
     it 'has first resource set correctly' do

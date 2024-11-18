@@ -49,7 +49,7 @@ module Dor
         # TODO: this assumes non-hierarchical files
         content_dir.children.sort.each do |file|
           logger.info("examining #{file}")
-          next if file.basename.to_s.start_with?('.')
+          next if skip_file?(file)
           next unless can_overwrite?(file)
 
           if file_in_cocina?(file)
@@ -120,6 +120,11 @@ module Dor
         path.exist? ? path : nil
       end
 
+      # you can override this in a subclass to skip certain files in the workspace
+      def skip_file?(file)
+        file.basename.to_s.start_with?('.')
+      end
+
       # prevent non SDR generated OCR and corrected OCR from being overwritten
       def can_overwrite?(path)
         file = find_cocina_file(path)
@@ -168,6 +173,7 @@ module Dor
           type: Cocina::Models::ObjectType.file,
           filename: object_file.filename,
           version:,
+          languageTag: language(path),
           hasMimeType: object_file.mimetype,
           hasMessageDigests: message_digests(object_file),
           size: object_file.filesize,
@@ -176,6 +182,11 @@ module Dor
         )
       end
       # rubocop:enable Metrics/MethodLength
+
+      # you can override this in a subclass to set the languageTag attribute
+      def language(_path)
+        nil
+      end
 
       def access
         {

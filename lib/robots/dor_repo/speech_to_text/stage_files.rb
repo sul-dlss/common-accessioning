@@ -37,9 +37,14 @@ module Robots
         end
 
         # array of media files in the s3 output bucket folder for this job
-        # only includes .txt and .vtt files
+        # only includes .txt, .vtt and .json files since these are the only ones we need to add to the object or update cocina
         def output_files
-          @output_files ||= aws_provider.client.list_objects(bucket: aws_provider.bucket_name, prefix: s3_output_folder).contents.map(&:key).select { |filename| filename.end_with?('.txt', '.vtt') }
+          @output_files ||= aws_provider.client.list_objects(bucket: aws_provider.bucket_name, prefix: s3_output_folder).contents.map(&:key).select { |filename| filename.end_with?(*stt_file_extensions) }
+        end
+
+        # the file extensions that we are interested in for speech to text output
+        def stt_file_extensions
+          %w[.txt .vtt .json]
         end
 
         # the s3 output folder for this job
