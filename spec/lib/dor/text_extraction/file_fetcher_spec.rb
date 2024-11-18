@@ -48,7 +48,7 @@ describe Dor::TextExtraction::FileFetcher do
           count = 0
           allow(objects_client).to receive(:content) do |*args|
             count += 1
-            raise Faraday::ResourceNotFound, 'druid not available yet' unless count > 2
+            raise Preservation::Client::NotFoundError, 'druid not available yet' unless count > 2
 
             filepath = args.first.fetch(:filepath)
             args.first.fetch(:on_data).call("Content for: #{filepath}")
