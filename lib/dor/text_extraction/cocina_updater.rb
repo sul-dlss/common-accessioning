@@ -121,8 +121,8 @@ module Dor
       end
 
       # you can override this in a subclass to skip certain files in the workspace
-      def skip_file?(file)
-        file.basename.to_s.start_with?('.')
+      def skip_file?(_file)
+        false
       end
 
       # prevent non SDR generated OCR and corrected OCR from being overwritten
@@ -183,7 +183,7 @@ module Dor
       end
       # rubocop:enable Metrics/MethodLength
 
-      # you can override this in a subclass to set the languageTag attribute
+      # you can override this in a subclass to set the languageTag attribute if needed
       def language(_path)
         nil
       end

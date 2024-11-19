@@ -54,8 +54,11 @@ describe Robots::DorRepo::SpeechToText::UpdateCocina do
   end
 
   context 'with a vtt file' do
-    # setup a fake caption vtt file in the workspace directory which matches the name of the audio file in the Cocina
-    before { create_speech_to_text_file('file1.vtt') }
+    # setup a fake caption vtt and json file in the workspace directory which matches the name of the audio file in the Cocina
+    before do
+      create_speech_to_text_file('file1.vtt')
+      create_speech_to_text_file('file1.json')
+    end
 
     it 'runs the update cocina robot and sets the caption role' do
       new_cocina = test_perform(robot, druid)
@@ -66,14 +69,26 @@ describe Robots::DorRepo::SpeechToText::UpdateCocina do
   end
 
   context 'with a txt file' do
-    # setup a fake caption txt file in the workspace directory which matches the name of the audio file in the Cocina
-    before { create_speech_to_text_file('file1.txt') }
+    # setup a fake caption txt and json file in the workspace directory which matches the name of the audio file in the Cocina
+    before do
+      create_speech_to_text_file('file1.txt')
+      create_speech_to_text_file('file1.json')
+    end
 
     it 'runs the update cocina robot and sets the transcription role' do
       new_cocina = test_perform(robot, druid)
       new_file = new_cocina.structural.contains[0].structural.contains[1]
       expect(new_file.filename).to eq 'file1.txt'
       expect(new_file.use).to eq 'transcription'
+    end
+  end
+
+  context 'with a missing json file' do
+    # setup a fake caption txt file with no json file in the workspace directory which matches the name of the audio file in the Cocina
+    before { create_speech_to_text_file('file1.txt') }
+
+    it 'raises an error that a json file was not found' do
+      expect { test_perform(robot, druid) }.to raise_error(/missing expected json file/)
     end
   end
 end

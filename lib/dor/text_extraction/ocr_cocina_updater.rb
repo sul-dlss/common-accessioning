@@ -11,6 +11,13 @@ module Dor
 
       private
 
+      # When adding files to the object, we will skip everything except .txt, .pdf and .xml files
+      # We don't expect there to be any other files coming out of Abbyy, but this guards against it
+      # Any extra files will be removed in the cleanup step
+      def skip_file?(file)
+        %w[.xml .txt .pdf].none? { |ext| file.basename.to_s.end_with?(ext) }
+      end
+
       # Rename the PDF that was generated for an Item of type document
       # TODO: maybe xml_ticket_create.rb should be adjusted to create it this way?
       def rename_document_pdf

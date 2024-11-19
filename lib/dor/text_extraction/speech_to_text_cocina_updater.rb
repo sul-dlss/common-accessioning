@@ -6,9 +6,11 @@ module Dor
     class SpeechToTextCocinaUpdater < CocinaUpdater
       private
 
-      # we will skip .json speech to text files, these are only parsed for language to add to cocina
+      # When adding files to the object, we will skip everything except .vtt and .txt files
+      # Note that we will have also .json files in the workspace, but these are only parsed for language tag
+      # to add to cocina and not actually stored in the object itself and will be cleaned up later
       def skip_file?(file)
-        file.basename.to_s.start_with?('.') || file.basename.to_s.end_with?('.json')
+        %w[.vtt .txt].none? { |ext| file.basename.to_s.end_with?(ext) }
       end
 
       def add_file_to_new_resource(_path)
@@ -19,7 +21,7 @@ module Dor
       def language(path)
         corresponding_json_file = find_workspace_file("#{stem(path)}.json")
 
-        return unless corresponding_json_file
+        raise "missing expected json file: '#{corresponding_json_file}'" unless corresponding_json_file
 
         json = JSON.parse(corresponding_json_file.read)
         json['language']
