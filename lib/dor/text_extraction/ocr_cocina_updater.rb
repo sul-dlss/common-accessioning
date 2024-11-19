@@ -14,8 +14,8 @@ module Dor
       # When adding files to the object, we will skip everything except .txt, .pdf and .xml files
       # We don't expect there to be any other files coming out of Abbyy, but this guards against it
       # Any extra files will be removed in the cleanup step
-      def skip_file?(file)
-        %w[.xml .txt .pdf].none? { |ext| file.basename.to_s.end_with?(ext) }
+      def include_file?(file)
+        %w[.xml .txt .pdf].any? { |ext| file.basename.to_s.end_with?(ext) }
       end
 
       # Rename the PDF that was generated for an Item of type document

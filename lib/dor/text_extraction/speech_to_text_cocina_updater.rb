@@ -9,8 +9,8 @@ module Dor
       # When adding files to the object, we will skip everything except .vtt and .txt files
       # Note that we will have also .json files in the workspace, but these are only parsed for language tag
       # to add to cocina and not actually stored in the object itself and will be cleaned up later
-      def skip_file?(file)
-        %w[.vtt .txt].none? { |ext| file.basename.to_s.end_with?(ext) }
+      def include_file?(file)
+        %w[.vtt .txt].any? { |ext| file.basename.to_s.end_with?(ext) }
       end
 
       def add_file_to_new_resource(_path)

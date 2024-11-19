@@ -49,7 +49,7 @@ module Dor
         # TODO: this assumes non-hierarchical files
         content_dir.children.sort.each do |file|
           logger.info("examining #{file}")
-          next if skip_file?(file)
+          next unless include_file?(file)
           next unless can_overwrite?(file)
 
           if file_in_cocina?(file)
@@ -120,9 +120,9 @@ module Dor
         path.exist? ? path : nil
       end
 
-      # you can override this in a subclass to skip certain files in the workspace
-      def skip_file?(_file)
-        false
+      # you can override this in a subclass to only include certain files in the workspace
+      def include_file?(_file)
+        true
       end
 
       # prevent non SDR generated OCR and corrected OCR from being overwritten
