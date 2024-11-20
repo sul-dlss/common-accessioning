@@ -9,14 +9,33 @@ require_relative '../config/boot'
 
 # Set log level with LOG_LEVEL; share the logger across the stack
 progname = 'speech_to_text_watcher'
-logger = Logger.new(STDOUT, progname:, level: ENV['LOG_LEVEL'] || 'INFO')
+stdout_logger = Logger.new(STDOUT, progname:, level: ENV['LOG_LEVEL'] || 'INFO')
+file_logger = Logger.new("log/#{progname}.log", progname:, level: ENV['LOG_LEVEL'] || 'INFO')
+logger = ActiveSupport::BroadcastLogger.new(stdout_logger, file_logger)
 host = Socket.gethostname
 stt_create_done_handler = Dor::TextExtraction::SpeechToTextCreateDoneHandler.new(host:, progname:, logger:)
 
 
 sqs_watcher = Dor::TextExtraction::SqsWatcher.new(role_arn: Settings.aws.speech_to_text.role_arn,
                                                    queue_url: Settings.aws.speech_to_text.sqs_done_queue_url)
-sqs_watcher.poll do |done_msg|
-  logger.debug("sqs_watcher.poll block received done_msg: #{done_msg}")
-  stt_create_done_handler.process_done_message(done_msg)
+
+# The whole #poll call is wrapped in this signal trapping begin/rescue, because
+# the handler block passed to #poll can only trap exceptions from within that
+# handler block.  But interrupts and signals may bubble up from #poll, not the
+# handler block passed to #poll.
+begin
+  # will poll indefinitely, until a signal or interrupt is received, or until an
+  # unhandled exception bubbles up.
+  sqs_watcher.poll do |done_msg|
+    logger.debug("sqs_watcher.poll block received done_msg: #{done_msg}")
+    stt_create_done_handler.process_done_message(done_msg)
+  end
+rescue SignalException, Interrupt => e
+  logger.info("Received signal or interrupt, exiting #{progname}")
+  logger.debug("signal or interrupt received by #{progname}: #{e} -- #{e.message} -- #{e.backtrace}")
+  exit 0
+rescue StandardError => e
+  logger.fatal("#{e} -- #{e.message} -- #{e.backtrace}")
+  Honeybadger.notify(e)
+  exit Errno::ENOMSG::Errno # cause is unknown/unexpected, hence the generic error
 end
