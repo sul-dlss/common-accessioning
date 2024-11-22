@@ -49,7 +49,7 @@ module Dor
         # TODO: this assumes non-hierarchical files
         content_dir.children.sort.each do |file|
           logger.info("examining #{file}")
-          next if file.basename.to_s.start_with?('.')
+          next unless include_file?(file)
           next unless can_overwrite?(file)
 
           if file_in_cocina?(file)
@@ -120,6 +120,11 @@ module Dor
         path.exist? ? path : nil
       end
 
+      # you can override this in a subclass to only include certain files in the workspace
+      def include_file?(_file)
+        !file.basename.to_s.start_with?('.')
+      end
+
       # prevent non SDR generated OCR and corrected OCR from being overwritten
       def can_overwrite?(path)
         file = find_cocina_file(path)
@@ -156,26 +161,38 @@ module Dor
         end
       end
 
-      # rubocop:disable Metrics/MethodLength
       def file(path)
         object_file = ::Assembly::ObjectFile.new(path)
-        Cocina::Models::File.new(
-          externalIdentifier: file_identifier,
-          label: object_file.filename,
-          use: use(object_file),
-          sdrGeneratedText: true,
-          correctedForAccessibility: false,
-          type: Cocina::Models::ObjectType.file,
-          filename: object_file.filename,
-          version:,
-          hasMimeType: object_file.mimetype,
-          hasMessageDigests: message_digests(object_file),
-          size: object_file.filesize,
-          access:,
-          administrative:
-        )
+        Cocina::Models::File.new(cocina_file_attributes(object_file))
+      end
+
+      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize
+      def cocina_file_attributes(object_file)
+        {}.tap do |file_attributes|
+          file_attributes[:externalIdentifier] = file_identifier
+          file_attributes[:label] = object_file.filename
+          file_attributes[:use] = use(object_file)
+          file_attributes[:sdrGeneratedText] = true
+          file_attributes[:correctedForAccessibility] = false
+          file_attributes[:type] = Cocina::Models::ObjectType.file
+          file_attributes[:filename] = object_file.filename
+          file_attributes[:version] = version
+          file_attributes[:languageTag] = language(object_file.path) if language(object_file.path)
+          file_attributes[:hasMimeType] = object_file.mimetype
+          file_attributes[:hasMessageDigests] = message_digests(object_file)
+          file_attributes[:size] = object_file.filesize
+          file_attributes[:access] = access
+          file_attributes[:administrative] = administrative
+        end
       end
       # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/AbcSize
+
+      # you can override this in a subclass to set the languageTag attribute if needed
+      def language(_path)
+        nil
+      end
 
       def access
         {

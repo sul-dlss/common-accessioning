@@ -184,6 +184,10 @@ describe Dor::TextExtraction::OcrCocinaUpdater do
       expect(dro.structural.contains.length).to eq 5
     end
 
+    it 'first resource has expected number of files (tif, txt and xml)' do
+      expect(dro.structural.contains[0].structural.contains.length).to eq 3
+    end
+
     it 'has first resource set correctly' do
       resource = dro.structural.contains[0]
       expect(resource.structural.contains[0].filename).to eq 'image1.tif'
