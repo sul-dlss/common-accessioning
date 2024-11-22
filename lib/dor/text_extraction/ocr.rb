@@ -139,7 +139,7 @@ module Dor
         end.compact
       end
 
-      # filter down fileset files that could possibly be OCRed to those that are in preservation and shelved and are one of an allowed mimetypes
+      # filter down fileset files that could possibly be OCRed to those that are in preservation and shelved and are of an allowed mimetype
       # if there is more than one file of the allowed mimetype, grab the preferred type
       def ocr_file(fileset)
         files ||=
