@@ -9,7 +9,7 @@ describe Robots::DorRepo::Ocr::FetchFiles do
   let(:robot) { described_class.new }
   let(:ocr) { instance_double(Dor::TextExtraction::Ocr, abbyy_input_path:, filenames_to_ocr: ['file1.txt', 'file2.pdf']) }
   let(:cocina_model) { build(:dro, id: druid).new(structural: {}, type: object_type, access: { view: 'world' }) }
-  let(:object_type) { 'https://cocina.sul.stanford.edu/models/image' }
+  let(:object_type) { Cocina::Models::ObjectType.image }
   let(:file_fetcher) { instance_double(Dor::TextExtraction::FileFetcher, write_file_with_retries: written) }
   let(:dsa_object_client) do
     instance_double(Dor::Services::Client::Object, find: cocina_model, update: true)

@@ -41,7 +41,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
         {
           contains: [
             {
-              type: 'https://cocina.sul.stanford.edu/models/resources/page',
+              type: Cocina::Models::FileSetType.page,
               externalIdentifier: 'bc234fg5678_1', label: 'Optional label',
               version: 1,
               structural: {
@@ -66,7 +66,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                 ]
               }
             }, {
-              type: 'https://cocina.sul.stanford.edu/models/resources/page',
+              type: Cocina::Models::FileSetType.page,
               externalIdentifier: 'bc234fg5678_2', label: 'optional page 2 label',
               version: 1,
               structural: {
@@ -92,7 +92,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                 ]
               }
             }, {
-              type: 'https://cocina.sul.stanford.edu/models/resources/object',
+              type: Cocina::Models::FileSetType.object,
               externalIdentifier: 'bc234fg5678_3', label: 'Object 1', version: 1,
               structural: {
                 contains: [
@@ -129,7 +129,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
         {
           contains: [
             {
-              type: 'https://cocina.sul.stanford.edu/models/resources/page',
+              type: Cocina::Models::FileSetType.page,
               externalIdentifier: 'bc234fg5678_1', label: 'Optional label',
               version: 1,
               structural: {
@@ -154,7 +154,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                 ]
               }
             }, {
-              type: 'https://cocina.sul.stanford.edu/models/resources/page',
+              type: Cocina::Models::FileSetType.page,
               externalIdentifier: 'bc234fg5678_2', label: 'optional page 2 label',
               version: 1,
               structural: {
@@ -180,7 +180,7 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
                 ]
               }
             }, {
-              type: 'https://cocina.sul.stanford.edu/models/resources/object',
+              type: Cocina::Models::FileSetType.object,
               externalIdentifier: 'bc234fg5678_3', label: 'Object 1', version: 1,
               structural: {
                 contains: [

@@ -20,12 +20,12 @@ describe Robots::DorRepo::SpeechToText::UpdateCocina do
 
   # set up a Cocina object with one audio file in it
   let(:cocina_model) { build(:dro, id: druid).new(structural:, type: object_type) }
-  let(:object_type) { 'https://cocina.sul.stanford.edu/models/media' }
+  let(:object_type) { Cocina::Models::ObjectType.media }
   let(:structural) do
     {
       contains: [
         {
-          type: 'https://cocina.sul.stanford.edu/models/resources/file',
+          type: Cocina::Models::FileSetType.file,
           externalIdentifier: "#{bare_druid}_1",
           label: 'Audio 1',
           version: 1,
