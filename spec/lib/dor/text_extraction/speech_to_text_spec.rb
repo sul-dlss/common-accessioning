@@ -108,8 +108,8 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
   end
 
   describe '#filenames_to_stt' do
-    it 'returns a list of filenames that should be STTed, ignoring those not in preservation or shelved' do
-      expect(stt.send(:filenames_to_stt)).to eq(['file1.m4a', 'file1.mp4'])
+    it 'returns a list of filenames that should be STTed, ignoring those not in preservation' do
+      expect(stt.send(:filenames_to_stt)).to eq(['file1.m4a', 'file1.mp4', 'file2.mp4'])
     end
 
     context 'when a speech to text file exists but is marked correctedForAccessibility' do
@@ -142,7 +142,7 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
 
   describe '#stt_files' do
     it 'returns a list of all filenames' do
-      expect(stt.send(:stt_files)).to eq([m4a_file, mp4_file])
+      expect(stt.send(:stt_files)).to eq([m4a_file, mp4_file, mp4_file_not_shelved])
     end
   end
 
@@ -166,8 +166,8 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
     context 'when file is not shelved' do
       let(:file) { build_file('file1.mp4', shelve: false) }
 
-      it 'returns false' do
-        expect(stt.send(:acceptable_file?, file)).to be false
+      it 'returns true' do
+        expect(stt.send(:acceptable_file?, file)).to be true
       end
     end
 

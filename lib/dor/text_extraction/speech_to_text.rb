@@ -85,7 +85,7 @@ module Dor
       end
 
       # filter down fileset files that could possibly be speech to texted to those that are in preservation
-      # and shelved and are of an allowed mimetypes and return all of them
+      # and are one of the allowed mimetypes and return all of them
       def stt_files_in_fileset(fileset)
         fileset.structural.contains.select { |file| acceptable_file?(file) }.reject { |file| existing_stt_file_corrected_for_accessibility?(fileset, file.filename) }
       end
@@ -103,9 +103,9 @@ module Dor
         end
       end
 
-      # indicates if the file is preserved, shelved and is of an allowed mimetype
+      # indicates if the file is preserved and is of an allowed mimetype
       def acceptable_file?(file)
-        file.administrative.sdrPreserve && file.administrative.shelve && allowed_mimetypes.include?(file.hasMimeType)
+        file.administrative.sdrPreserve && allowed_mimetypes.include?(file.hasMimeType)
       end
 
       # defines the mimetypes types for which speech to text files can possibly be run
