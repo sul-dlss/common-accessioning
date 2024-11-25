@@ -139,7 +139,7 @@ module Dor
         end.compact
       end
 
-      # filter down fileset files that could possibly be OCRed to those that are in preservation and shelved and are of an allowed mimetype
+      # filter down fileset files that could possibly be OCRed to those that are in preservation and are of an allowed mimetype
       # if there is more than one file of the allowed mimetype, grab the preferred type
       def ocr_file(fileset)
         files ||=
@@ -163,9 +163,9 @@ module Dor
         end
       end
 
-      # indicates if the file is preserved, shelved and is of an allowed mimetype
+      # indicates if the file is preserved and is of an allowed mimetype
       def acceptable_file?(file)
-        file.administrative.sdrPreserve && file.administrative.shelve && allowed_mimetypes.include?(file.hasMimeType)
+        file.administrative.sdrPreserve && allowed_mimetypes.include?(file.hasMimeType)
       end
 
       # defines the mimetypes types for which files for which OCR can possibly be run
