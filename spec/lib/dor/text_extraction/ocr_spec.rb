@@ -166,8 +166,8 @@ RSpec.describe Dor::TextExtraction::Ocr do
     context 'when file is not shelved' do
       let(:file) { build_file('file1.tif', shelve: false) }
 
-      it 'returns false' do
-        expect(ocr.send(:acceptable_file?, file)).to be false
+      it 'returns true' do
+        expect(ocr.send(:acceptable_file?, file)).to be true
       end
     end
 
