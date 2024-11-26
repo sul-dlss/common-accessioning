@@ -43,17 +43,22 @@ module Robots
         end
 
         def job_id
-          @job_id ||= Dor::TextExtraction::SpeechToText.new(cocina_object:).job_id
+          stt.job_id
         end
 
         # array of media files in the bucket folder for this job (excluding s3 folders)
         def media
-          aws_provider.client.list_objects(bucket: aws_provider.bucket_name, prefix: job_id).contents.map(&:key).reject { |key| key.end_with?('/') }
+          filenames = aws_provider.client.list_objects(bucket: aws_provider.bucket_name, prefix: job_id).contents.map(&:key).reject { |key| key.end_with?('/') }
+          filenames.map { |filename| { name: filename, options: { language: stt.language_tag(File.basename(filename)) } } }
         end
 
         # pulled from config, could later be overriden by settings in the workflow context
         def whisper_options
           Settings.speech_to_text.whisper.to_h
+        end
+
+        def stt
+          @stt ||= Dor::TextExtraction::SpeechToText.new(cocina_object:)
         end
       end
     end

@@ -10,7 +10,8 @@ describe Robots::DorRepo::SpeechToText::SttCreate do
   let(:robot) { described_class.new }
   let(:aws_client) { instance_double(Aws::SQS::Client) }
   let(:aws_s3_client) { instance_double(Aws::S3::Client) }
-  let(:stt) { instance_double(Dor::TextExtraction::SpeechToText, job_id:, filenames_to_stt: ['file1.mov', 'file2.mp3']) }
+  let(:filenames_to_stt) { ['file1.mov', 'file2.mp3'] }
+  let(:stt) { instance_double(Dor::TextExtraction::SpeechToText, job_id:, filenames_to_stt:) }
   let(:cocina_model) { build(:dro, id: druid).new(structural: {}, type: object_type, access: { view: 'world' }) }
   let(:object_type) { Cocina::Models::ObjectType.media }
   let(:dsa_object_client) do
@@ -23,10 +24,10 @@ describe Robots::DorRepo::SpeechToText::SttCreate do
     instance_double(Dor::Workflow::Response::Process, lane_id: 'lane1', context: { 'runSpeechToText' => true })
   end
   let(:job_id) { "#{bare_druid}-v1" }
-  let(:media) { ["#{job_id}/file1.mov", "#{job_id}/file2.mp3"] }
+  let(:media) { [{ name: "#{job_id}/#{filenames_to_stt[0]}", options: { language: 'en' } }, { name: "#{job_id}/#{filenames_to_stt[1]}", options: { language: 'es' } }] }
   let(:list_objects) { instance_double(Aws::S3::Types::ListObjectsOutput, contents: [mov_object, mp3_object]) }
-  let(:mov_object) { instance_double(Aws::S3::Types::Object, key: media[0]) }
-  let(:mp3_object) { instance_double(Aws::S3::Types::Object, key: media[1]) }
+  let(:mov_object) { instance_double(Aws::S3::Types::Object, key: media[0][:name]) }
+  let(:mp3_object) { instance_double(Aws::S3::Types::Object, key: media[1][:name]) }
 
   before do
     allow(Aws::S3::Client).to receive(:new).and_return(aws_s3_client)
@@ -35,6 +36,8 @@ describe Robots::DorRepo::SpeechToText::SttCreate do
     allow(Dor::TextExtraction::SpeechToText).to receive(:new).and_return(stt)
     allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     allow(aws_s3_client).to receive(:list_objects).and_return(list_objects)
+    allow(stt).to receive(:language_tag).with(filenames_to_stt[0]).and_return('en')
+    allow(stt).to receive(:language_tag).with(filenames_to_stt[1]).and_return('es')
   end
 
   context 'when the message is sent successfully' do

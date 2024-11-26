@@ -19,7 +19,7 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
   let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [mp4_file, mp4_file_not_shelved, mp4_file_not_preserved]) }
   let(:third_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [text_file2]) }
   let(:m4a_file) { build_file('file1.m4a') }
-  let(:mp4_file) { build_file('file1.mp4') }
+  let(:mp4_file) { build_file('file1.mp4', language_tag: 'es') }
   let(:mp4_file_not_shelved) { build_file('file2.mp4', shelve: false) }
   let(:mp4_file_not_preserved) { build_file('file3.mp4', preserve: false) }
   let(:text_file) { build_file('file1.txt') }
@@ -45,7 +45,7 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
 
       context 'when the object has no files that can be STTed' do
         let(:first_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [text_file]) }
-        let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [text_file, text_file]) }
+        let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [text_file, text_file2]) }
 
         it 'returns false' do
           expect(stt.possible?).to be false
@@ -84,6 +84,35 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
 
       it 'returns false' do
         expect(stt.required?).to be false
+      end
+    end
+  end
+
+  describe '#language_tag' do
+    context 'when the file cannot be found' do
+      let(:filename) { 'bogus.mp4' }
+
+      it 'returns nil' do
+        expect(stt.filenames_to_stt).not_to include(filename)
+        expect(stt.language_tag(filename)).to be_nil
+      end
+    end
+
+    context 'when the file is found and there is no language tag in cocina' do
+      let(:filename) { 'file1.m4a' }
+
+      it 'returns nil' do
+        expect(stt.filenames_to_stt).to include(filename)
+        expect(stt.language_tag(filename)).to be_nil
+      end
+    end
+
+    context 'when the file is found and there is a language tag in cocina' do
+      let(:filename) { 'file1.mp4' }
+
+      it 'returns the language tag' do
+        expect(stt.filenames_to_stt).to include(filename)
+        expect(stt.language_tag(filename)).to eq 'es'
       end
     end
   end
