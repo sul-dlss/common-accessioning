@@ -64,4 +64,19 @@ describe Robots::DorRepo::SpeechToText::SttCreate do
       expect(Honeybadger).to have_received(:notify).with('Problem sending SQS Message to AWS for SpeechToText', context: { druid:, job_id:, error: instance_of(Aws::SQS::Errors::ServiceError) }).once
     end
   end
+
+  context 'when a file has no language tag' do
+    let(:message_body) { { id: job_id, druid:, media: [{ name: "#{job_id}/#{filenames_to_stt[0]}" }] }.merge(Settings.speech_to_text.whisper.to_h).to_json }
+
+    before do
+      allow(stt).to receive(:language_tag).with(filenames_to_stt[0]).and_return(nil)
+      allow(aws_client).to receive(:send_message).with({ queue_url: Settings.aws.speech_to_text.sqs_todo_queue_url, message_body: }).and_return(true)
+      allow(aws_s3_client).to receive(:list_objects).and_return(instance_double(Aws::S3::Types::ListObjectsOutput, contents: [mov_object]))
+    end
+
+    it 'sends SQS message without language options' do
+      expect(perform.status).to eq 'noop'
+      expect(aws_client).to have_received(:send_message).with({ queue_url: Settings.aws.speech_to_text.sqs_todo_queue_url, message_body: }).once
+    end
+  end
 end

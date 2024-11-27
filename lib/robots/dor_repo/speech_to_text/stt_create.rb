@@ -49,7 +49,12 @@ module Robots
         # array of media files in the bucket folder for this job (excluding s3 folders)
         def media
           filenames = aws_provider.client.list_objects(bucket: aws_provider.bucket_name, prefix: job_id).contents.map(&:key).reject { |key| key.end_with?('/') }
-          filenames.map { |filename| { name: filename, options: { language: stt.language_tag(File.basename(filename)) } } }
+          filenames.map do |filename|
+            media_file = { name: filename }
+            language_tag = stt.language_tag(File.basename(filename))
+            media_file[:options] = { language: language_tag } if language_tag
+            media_file
+          end
         end
 
         # pulled from config, could later be overriden by settings in the workflow context
