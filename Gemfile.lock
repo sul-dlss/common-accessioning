@@ -34,8 +34,8 @@ GEM
     ast (2.4.2)
     attr_extras (7.1.0)
     aws-eventstream (1.3.0)
-    aws-partitions (1.1013.0)
-    aws-sdk-core (3.213.0)
+    aws-partitions (1.1015.0)
+    aws-sdk-core (3.214.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -43,7 +43,7 @@ GEM
     aws-sdk-kms (1.96.0)
       aws-sdk-core (~> 3, >= 3.210.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.173.0)
+    aws-sdk-s3 (1.175.0)
       aws-sdk-core (~> 3, >= 3.210.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -74,7 +74,7 @@ GEM
     capistrano-one_time_key (0.2.0)
       capistrano (~> 3.0)
     capistrano-shared_configs (0.2.2)
-    cocina-models (0.99.0)
+    cocina-models (0.99.1)
       activesupport
       deprecation
       dry-struct (~> 1.0)
@@ -90,9 +90,9 @@ GEM
       thor
       zeitwerk (~> 2.1)
     coderay (1.1.3)
-    commonmarker (1.1.5)
+    commonmarker (2.0.1)
       rb_sys (~> 0.9)
-    commonmarker (1.1.5-x86_64-linux)
+    commonmarker (2.0.1-x86_64-linux)
     concurrent-ruby (1.3.4)
     config (5.5.2)
       deep_merge (~> 1.2, >= 1.2.1)
@@ -101,6 +101,7 @@ GEM
     crack (1.0.0)
       bigdecimal
       rexml
+    date (3.4.1)
     debug (1.9.2)
       irb (~> 1.10)
       reline (>= 0.3.8)
@@ -108,7 +109,7 @@ GEM
     deprecation (1.1.0)
       activesupport
     diff-lcs (1.5.1)
-    dlss-capistrano (5.2.0)
+    dlss-capistrano (5.3.0)
       bcrypt_pbkdf
       capistrano (~> 3.0)
       capistrano-bundle_audit (>= 0.3.0)
@@ -154,8 +155,8 @@ GEM
       dry-logic (~> 1.4)
       zeitwerk (~> 2.6)
     ed25519 (1.3.0)
-    edtf (3.1.1)
-      activesupport (>= 3.0, < 8.0)
+    edtf (3.2.0)
+      activesupport (>= 3.0, < 9.0)
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
     faraday (2.12.1)
@@ -169,7 +170,7 @@ GEM
     ffi (1.17.0)
     ffi (1.17.0-x86_64-linux-gnu)
     hashdiff (1.1.2)
-    honeybadger (5.24.0)
+    honeybadger (5.26.0)
       logger
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
@@ -186,7 +187,7 @@ GEM
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    logger (1.6.1)
+    logger (1.6.2)
     lyber-core (7.7.0)
       activesupport
       config
@@ -212,7 +213,7 @@ GEM
       nokogiri
       nokogiri-happymapper
     multi_json (1.15.0)
-    net-http (0.5.0)
+    net-http (0.6.0)
       uri
     net-scp (4.0.0)
       net-ssh (>= 2.6.5, < 8.0.0)
@@ -246,7 +247,8 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     pstore (0.1.3)
-    psych (5.2.0)
+    psych (5.2.1)
+      date
       stringio
     public_suffix (6.0.1)
     purl_fetcher-client (2.1.2)
@@ -264,8 +266,8 @@ GEM
       psych (>= 4.0.0)
     redis-client (0.22.2)
       connection_pool
-    regexp_parser (2.9.2)
-    reline (0.5.11)
+    regexp_parser (2.9.3)
+    reline (0.5.12)
       io-console (~> 0.5)
     rexml (3.3.9)
     rspec (3.13.0)
@@ -283,17 +285,17 @@ GEM
     rspec-support (3.13.1)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rubocop (1.68.0)
+    rubocop (1.69.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.4, < 3.0)
-      rubocop-ast (>= 1.32.2, < 2.0)
+      rubocop-ast (>= 1.36.1, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.36.1)
+      unicode-display_width (>= 2.4.0, < 4.0)
+    rubocop-ast (1.36.2)
       parser (>= 3.3.1.0)
     rubocop-capybara (2.21.0)
       rubocop (~> 1.41)
@@ -310,7 +312,7 @@ GEM
     ruby-vips (2.2.2)
       ffi (~> 1.12)
       logger
-    securerandom (0.3.2)
+    securerandom (0.4.0)
     sidekiq (7.3.6)
       connection_pool (>= 2.3.0)
       logger
@@ -337,7 +339,9 @@ GEM
     thor (1.3.2)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (2.6.0)
+    unicode-display_width (3.1.2)
+      unicode-emoji (~> 4.0, >= 4.0.4)
+    unicode-emoji (4.0.4)
     uri (1.0.2)
     webmock (3.24.0)
       addressable (>= 2.8.0)
