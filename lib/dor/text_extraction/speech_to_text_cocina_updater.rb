@@ -6,11 +6,9 @@ module Dor
     class SpeechToTextCocinaUpdater < CocinaUpdater
       private
 
-      # When adding files to the object, we will skip everything except .vtt and .txt files
-      # Note that we will have also .json files in the workspace, but these are only parsed for language tag
-      # to add to cocina and not actually stored in the object itself and will be cleaned up later
+      # When adding files to the object, we will skip everything except .vtt, .txt and .json files
       def include_file?(file)
-        %w[.vtt .txt].any? { |ext| file.basename.to_s.end_with?(ext) }
+        %w[.vtt .txt .json].any? { |ext| file.basename.to_s.end_with?(ext) }
       end
 
       def add_file_to_new_resource(_path)
@@ -25,6 +23,18 @@ module Dor
 
         json = JSON.parse(corresponding_json_file.read)
         json['language']
+      end
+
+      # set the administrative attributes based on the mimetype
+      # all speech to text files are preserved, shelved and published EXCEPT json files, which are only preserved
+      def administrative(object_file)
+        preserve = true
+        publish = shelve = object_file.mimetype != 'application/json'
+        {
+          publish:,
+          sdrPreserve: preserve,
+          shelve:
+        }
       end
 
       # set the use attribute based on the mimetype

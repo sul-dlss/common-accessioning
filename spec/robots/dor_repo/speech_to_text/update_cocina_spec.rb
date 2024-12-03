@@ -62,9 +62,12 @@ describe Robots::DorRepo::SpeechToText::UpdateCocina do
 
     it 'runs the update cocina robot and sets the caption role' do
       new_cocina = test_perform(robot, druid)
-      new_file = new_cocina.structural.contains[0].structural.contains[1]
-      expect(new_file.filename).to eq 'file1.vtt'
-      expect(new_file.use).to eq 'caption'
+      new_json_file = new_cocina.structural.contains[0].structural.contains[1]
+      new_vtt_file = new_cocina.structural.contains[0].structural.contains[2]
+      expect(new_json_file.filename).to eq 'file1.json'
+      expect(new_json_file.use).to be_nil
+      expect(new_vtt_file.filename).to eq 'file1.vtt'
+      expect(new_vtt_file.use).to eq 'caption'
     end
   end
 
@@ -77,9 +80,12 @@ describe Robots::DorRepo::SpeechToText::UpdateCocina do
 
     it 'runs the update cocina robot and sets the transcription role' do
       new_cocina = test_perform(robot, druid)
-      new_file = new_cocina.structural.contains[0].structural.contains[1]
-      expect(new_file.filename).to eq 'file1.txt'
-      expect(new_file.use).to eq 'transcription'
+      new_json_file = new_cocina.structural.contains[0].structural.contains[1]
+      new_txt_file = new_cocina.structural.contains[0].structural.contains[2]
+      expect(new_json_file.filename).to eq 'file1.json'
+      expect(new_json_file.use).to be_nil
+      expect(new_txt_file.filename).to eq 'file1.txt'
+      expect(new_txt_file.use).to eq 'transcription'
     end
   end
 
