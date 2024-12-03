@@ -71,6 +71,12 @@ module Dor
         "#{job_id}/output"
       end
 
+      # given a filename, look in the list of files that can be sent for speech to text, examine the cocina structural
+      #  and return the languageTag for the file (or nil if no language is set)
+      def language_tag(filename)
+        stt_files.find { |file| file.filename == filename }&.languageTag
+      end
+
       private
 
       # iterate through cocina structural contains and return all File objects for files that need to be stt'd
