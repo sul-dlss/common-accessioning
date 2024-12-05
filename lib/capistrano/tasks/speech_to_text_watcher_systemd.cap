@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+namespace :speech_to_text_watcher_systemd do
+  desc 'Restart the speech_to_text_watcher systemd service'
+  task restart: ['controlmaster:setup', 'otk:generate'] do
+    on fetch(:speech_to_text_watcher_server) do
+      within release_path do
+        execute 'sudo systemctl restart speech_to_text_watcher'
+      end
+    end
+  end
+
+  desc 'Check that the speech_to_text_watcher systemd service is running'
+  task status: ['controlmaster:setup', 'otk:generate'] do
+    on fetch(:speech_to_text_watcher_server) do
+      within release_path do
+        execute 'systemctl status speech_to_text_watcher'
+      end
+    end
+  end
+end

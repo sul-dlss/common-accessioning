@@ -45,3 +45,6 @@ before 'deploy:publishing', 'shared_configs:update'
 
 # restart abbyy watcher systemd service each deploy
 before 'deploy:publishing', 'abbyy_watcher_systemd:restart'
+
+# restart speech-to-text watcher systemd service each deploy
+before 'deploy:publishing', 'speech_to_text_watcher_systemd:restart'
