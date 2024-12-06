@@ -74,7 +74,6 @@ speech_to_text:
       word_timestamps: True
       condition_on_previous_text: False
       no_speech_threshold: 0.6
-      temperature: unspecified
       logprob_threshold: -1.0
       compression_ratio_threshold: 2.4
       patience: 1.0
