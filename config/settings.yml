@@ -69,8 +69,9 @@ aws:
 speech_to_text:
   whisper:
     options:
-      model: 'large-v3'
-      beam_size: 10
+      model: 'large'
+      word_timestamps: True
+      condition_on_previous_text: False
       writer:
-        max_line_width: 42 
+        max_line_width: 42
         max_line_count: 1
