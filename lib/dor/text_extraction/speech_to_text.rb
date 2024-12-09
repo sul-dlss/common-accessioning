@@ -52,8 +52,18 @@ module Dor
       # return a list of filenames that should be stt'd
       # iterate over all files in cocina_object.structural.contains, looking at mimetypes
       # return a list of filenames that are correct mimetype
+      # then filter out any files that either (1) do not have an audio track or (2) have audio that is mostly silent
       def filenames_to_stt
-        stt_files.map(&:filename)
+        available_files = stt_files.map(&:filename)
+        available_files.select { |filename| has_audio_track?(filename) && !mostly_silent_audio_track?(filename) }
+      end
+
+      def has_audio_track?(_filename)
+        true
+      end
+
+      def mostly_silent_audio_track?(_filename)
+        false
       end
 
       # return the s3 location for a given filename
