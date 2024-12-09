@@ -65,11 +65,11 @@ describe Dor::TextExtraction::SpeechToTextCocinaUpdater do
       expect(dro.structural.contains.length).to eq 1
     end
 
-    it 'first resource has expected number of files (mp4, txt and vtt) - and skips the json' do
-      expect(resource1_files.length).to be 3
+    it 'first resource has expected number of files (mp4, txt, vtt, json)' do
+      expect(resource1_files.length).to be 4
     end
 
-    it 'first resource still has first file set correctly' do
+    it 'first resource still has video file set correctly' do
       file = resource1_files[0]
       expect(file.label).to eq 'Video 1'
       expect(file.filename).to eq 'file1.mp4'
@@ -78,8 +78,28 @@ describe Dor::TextExtraction::SpeechToTextCocinaUpdater do
     end
 
     # rubocop:disable RSpec/ExampleLength
-    it 'first resource has txt file set correctly with language pulled from json' do
+    it 'first resource has json file set correctly with shelve and publish as false' do
       file = resource1_files[1]
+      expect(file.label).to eq 'file1.json'
+      expect(file.filename).to eq 'file1.json'
+      expect(file.use).to be_nil
+      expect(file.sdrGeneratedText).to be true
+      expect(file.correctedForAccessibility).to be false
+      expect(file.access.view).to be 'world'
+      expect(file.access.download).to be 'world'
+      expect(file.administrative.publish).to be false
+      expect(file.administrative.sdrPreserve).to be true
+      expect(file.administrative.shelve).to be false
+      expect(file.hasMimeType).to eq 'application/json'
+      expect(file.hasMessageDigests[0].type).to eq 'md5'
+      expect(file.hasMessageDigests[0].digest).to eq '8b43304039be0e1cc7be600cf77818bb'
+      expect(file.hasMessageDigests[1].type).to eq 'sha1'
+      expect(file.hasMessageDigests[1].digest).to eq '0cc8fa02921cac04613ff6c4dae56f4f8ae183af'
+      expect(file.languageTag).to eq 'es'
+    end
+
+    it 'first resource has txt file set correctly with language pulled from json and shelve and publish as true' do
+      file = resource1_files[2]
       expect(file.label).to eq 'file1.txt'
       expect(file.filename).to eq 'file1.txt'
       expect(file.use).to eq 'transcription'
@@ -98,8 +118,8 @@ describe Dor::TextExtraction::SpeechToTextCocinaUpdater do
       expect(file.languageTag).to eq 'es'
     end
 
-    it 'first resource has vtt file set correctly with language pulled from json' do
-      file = resource1_files[2]
+    it 'first resource has vtt file set correctly with language pulled from json and shelve and publish as true' do
+      file = resource1_files[3]
       expect(file.label).to eq 'file1.vtt'
       expect(file.filename).to eq 'file1.vtt'
       expect(file.use).to eq 'caption'

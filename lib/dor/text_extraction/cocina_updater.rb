@@ -183,7 +183,7 @@ module Dor
           file_attributes[:hasMessageDigests] = message_digests(object_file)
           file_attributes[:size] = object_file.filesize
           file_attributes[:access] = access
-          file_attributes[:administrative] = administrative
+          file_attributes[:administrative] = administrative(object_file)
         end
       end
       # rubocop:enable Metrics/MethodLength
@@ -206,7 +206,8 @@ module Dor
         raise 'Override this in a subclass'
       end
 
-      def administrative
+      # you can override this in a subclass to set the administrative attributes conditionally if needed
+      def administrative(_object_file)
         {
           publish: true,
           sdrPreserve: true,
