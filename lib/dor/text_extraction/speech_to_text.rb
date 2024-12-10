@@ -55,16 +55,35 @@ module Dor
       # then filter out any files that either (1) do not have an audio track or (2) have audio that is mostly silent
       def filenames_to_stt
         available_files = stt_files.map(&:filename)
-        available_files.select { |filename| has_audio_track?(filename) && !mostly_silent_audio_track?(filename) }
+        available_files.select { |filename| has_audio_track?(filename) && has_useful_audio_track?(filename) }
       end
 
-      def has_audio_track?(_filename)
+      # determines if the given file has an audio track by parsing the technical metadata and looking at the file's audio_count
+      def has_audio_track?(filename)
+        tech_metadata.find { |file| file['filename'] == filename }&.dig('av_metadata', 'audio_count')&.positive?
+      end
+
+      # TODO: implement this method via FFmpeg to determine if the audio track is mostly silent
+      # see https://github.com/sul-dlss/common-accessioning/issues/1436
+      # determines if the given file has an audio track that is mostly silent
+      def has_useful_audio_track?(_filename)
         true
       end
 
-      def mostly_silent_audio_track?(_filename)
-        false
+      # return the technical metadata for the object from the technical-metadata-service and parse it as json
+      # rubocop:disable Metrics/AbcSize
+      def tech_metadata
+        @tech_metadata ||= begin
+          resp = Faraday.get("#{Settings.tech_md_service.url}/v1/technical-metadata/druid/#{cocina_object.externalIdentifier}") do |req|
+            req.headers['Content-Type'] = 'application/json'
+            req.headers['Authorization'] = "Bearer #{Settings.tech_md_service.token}"
+          end
+          raise "Technical-metadata-service returned #{resp.status} when requesting techmd for #{bare_druid}: #{resp.body}" unless resp.success?
+
+          JSON.parse(resp.body)
+        end
       end
+      # rubocop:enable Metrics/AbcSize
 
       # return the s3 location for a given filename
       def s3_location(filename)
