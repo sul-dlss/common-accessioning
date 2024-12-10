@@ -1,9 +1,24 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
+
 # To start an pry session with gems and configuration loaded:
-# [robot_root] $ ./bin/console development
-ENV['ROBOT_ENVIRONMENT'] = ARGV.shift unless ARGV.first.nil?
+# [robot_root] $ ./bin/console production
+# OR [robot_root] $ ./bin/console -e production
+# OR [robot_root] $ ROBOT_ENVIRONMENT=production ./bin/console
+if ENV['ROBOT_ENVIRONMENT'].nil?
+  ENV['ROBOT_ENVIRONMENT'] = ARGV.shift unless ARGV.first.nil? || ARGV.first.start_with?('-')
+
+  OptionParser.new do |opts|
+    opts.on("-e", "--environment ENV", "Environment") do |env|
+      ENV['ROBOT_ENVIRONMENT'] = env
+    end
+  end.parse!
+
+  ENV['ROBOT_ENVIRONMENT'] ||= 'development'
+end
+puts "Loading #{ENV['ROBOT_ENVIRONMENT']} environment..."
 
 require File.expand_path(File.dirname(__FILE__) + '/../config/boot')
 
