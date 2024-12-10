@@ -60,7 +60,7 @@ module Dor
 
       # determines if the given file has an audio track by parsing the technical metadata and looking at the file's audio_count
       def has_audio_track?(filename)
-        tech_metadata.find { |file| file['filename'] == filename }&.dig('av_metadata', 'audio_count')&.positive?
+        tech_metadata.find { |file| file['filename'] == filename }&.dig('av_metadata', 'audio_count')&.positive? || false
       end
 
       # TODO: implement this method via FFmpeg to determine if the audio track is mostly silent
