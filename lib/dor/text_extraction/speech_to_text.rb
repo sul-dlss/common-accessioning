@@ -63,9 +63,9 @@ module Dor
         tech_metadata.find { |file| file['filename'] == filename }&.dig('av_metadata', 'audio_count')&.positive? || false
       end
 
-      # TODO: implement this method via FFmpeg to determine if the audio track is mostly silent
-      # see https://github.com/sul-dlss/common-accessioning/issues/1436
-      # determines if the given file has an audio track that is mostly silent
+      # TODO: once tech metadata characterizes audio as silent or not, this method should be updated
+      # to determine if the is_silent is set to true or false (similar to how has_audio_track? works)
+      # see https://github.com/sul-dlss/technical-metadata-service/pull/572
       def has_useful_audio_track?(_filename)
         true
       end
