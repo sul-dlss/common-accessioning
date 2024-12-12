@@ -52,9 +52,38 @@ module Dor
       # return a list of filenames that should be stt'd
       # iterate over all files in cocina_object.structural.contains, looking at mimetypes
       # return a list of filenames that are correct mimetype
+      # then filter out any files that either (1) do not have an audio track or (2) have audio that is mostly silent
       def filenames_to_stt
-        stt_files.map(&:filename)
+        available_files = stt_files.map(&:filename)
+        available_files.select { |filename| has_audio_track?(filename) && has_useful_audio_track?(filename) }
       end
+
+      # determines if the given file has an audio track by parsing the technical metadata and looking at the file's audio_count
+      def has_audio_track?(filename)
+        tech_metadata.find { |file| file['filename'] == filename }&.dig('av_metadata', 'audio_count')&.positive? || false
+      end
+
+      # TODO: once tech metadata characterizes audio as silent or not, this method should be updated
+      # to determine if the is_silent is set to true or false (similar to how has_audio_track? works)
+      # see https://github.com/sul-dlss/technical-metadata-service/pull/572
+      def has_useful_audio_track?(_filename)
+        true
+      end
+
+      # return the technical metadata for the object from the technical-metadata-service and parse it as json
+      # rubocop:disable Metrics/AbcSize
+      def tech_metadata
+        @tech_metadata ||= begin
+          resp = Faraday.get("#{Settings.tech_md_service.url}/v1/technical-metadata/druid/#{cocina_object.externalIdentifier}") do |req|
+            req.headers['Content-Type'] = 'application/json'
+            req.headers['Authorization'] = "Bearer #{Settings.tech_md_service.token}"
+          end
+          raise "Technical-metadata-service returned #{resp.status} when requesting techmd for #{bare_druid}: #{resp.body}" unless resp.success?
+
+          JSON.parse(resp.body)
+        end
+      end
+      # rubocop:enable Metrics/AbcSize
 
       # return the s3 location for a given filename
       def s3_location(filename)
