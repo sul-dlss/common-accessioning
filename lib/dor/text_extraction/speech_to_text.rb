@@ -60,14 +60,25 @@ module Dor
 
       # determines if the given file has an audio track by parsing the technical metadata and looking at the file's audio_count
       def has_audio_track?(filename)
-        tech_metadata.find { |file| file['filename'] == filename }&.dig('av_metadata', 'audio_count')&.positive? || false
+        file_level_tech_metadata(filename)&.dig('av_metadata', 'audio_count')&.positive? || false
       end
 
-      # TODO: once tech metadata characterizes audio as silent or not, this method should be updated
-      # to determine if the is_silent is set to true or false (similar to how has_audio_track? works)
-      # see https://github.com/sul-dlss/technical-metadata-service/pull/572
-      def has_useful_audio_track?(_filename)
-        true
+      # using new technical metadata generated in https://github.com/sul-dlss/technical-metadata-service/pull/572
+      # this uses the audio max_volume and mean_volume fields to determine if the audio is mostly silent
+      # rubocop:disable Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/PerceivedComplexity
+      def has_useful_audio_track?(filename)
+        audio_metadata = file_level_tech_metadata(filename)&.dig('dro_file_parts')&.find { |parts| parts['part_type'] == 'audio' }&.dig('audio_metadata')
+        return false unless audio_metadata && audio_metadata['max_volume'] && audio_metadata['mean_volume']
+
+        audio_metadata['mean_volume'] > -40 && audio_metadata['max_volume'] > -30
+      end
+      # rubocop:enable Metrics/CyclomaticComplexity
+      # rubocop:enable Metrics/PerceivedComplexity
+
+      # return the technical metadata for a given filename
+      def file_level_tech_metadata(filename)
+        tech_metadata.find { |file| file['filename'] == filename }
       end
 
       # return the technical metadata for the object from the technical-metadata-service and parse it as json

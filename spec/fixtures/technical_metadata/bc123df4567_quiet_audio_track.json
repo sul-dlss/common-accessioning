@@ -10,7 +10,7 @@
             "format": "MPEG-4",
             "codec_id": "M4A ",
             "duration": 0,
-            "audio_count": 0,
+            "audio_count": 1,
             "file_extension": "m4a",
             "format_profile": "Apple audio with iTunes info"
         },
@@ -24,7 +24,9 @@
                     "channels": "2",
                     "codec_id": "mp4a-40-2",
                     "stream_size": 4831404,
-                    "sampling_rate": 48000
+                    "sampling_rate": 48000,
+                    "mean_volume": -45,
+                    "max_volume": -35
                 }
             }
         ]

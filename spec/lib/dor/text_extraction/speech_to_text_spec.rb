@@ -173,6 +173,14 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
       end
     end
 
+    context 'when a speech to text file exists which has a mostly quiet audio track' do
+      let(:tech_md_response) { File.read("spec/fixtures/technical_metadata/#{bare_druid}_quiet_audio_track.json") }
+
+      it 'ignores the m4a file which has a mostly quiet audio track' do
+        expect(stt.send(:filenames_to_stt)).to eq(['file1.mp4'])
+      end
+    end
+
     context 'when an OCR file exists and is NOT marked correctedForAccessibility and is also NOT sdrGenerated' do
       let(:vtt_file) { build_file('file1.vtt', corrected: false, sdr_generated: false) }
       let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [mp4_file, vtt_file]) }
@@ -338,6 +346,85 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
       it 'returns false' do
         allow(stt).to receive(:tech_metadata).and_return(JSON.parse(tech_md_response))
         expect(stt.send(:has_audio_track?, filename)).to be false
+      end
+    end
+  end
+
+  describe '#has_useful_audio_track?' do
+    let(:filename) { 'file1.m4a' }
+
+    context 'when the file has useful audio levels' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename,
+          'dro_file_parts' => [
+            {
+              'part_type' => 'audio',
+              'audio_metadata' => {
+                'mean_volume' => -35,
+                'max_volume' => -25
+              }
+            }
+          ]
+        }.to_json
+      end
+
+      it 'returns true' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect(stt.send(:has_useful_audio_track?, filename)).to be true
+      end
+    end
+
+    context 'when the file has very low audio levels' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename,
+          'dro_file_parts' => [
+            {
+              'part_type' => 'audio',
+              'audio_metadata' => {
+                'mean_volume' => -45,
+                'max_volume' => -35
+              }
+            }
+          ]
+        }.to_json
+      end
+
+      it 'returns false' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect(stt.send(:has_useful_audio_track?, filename)).to be false
+      end
+    end
+
+    context 'when the file has no audio metadata' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename,
+          'dro_file_parts' => [
+            {
+              'part_type' => 'video'
+            }
+          ]
+        }.to_json
+      end
+
+      it 'returns false' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect(stt.send(:has_useful_audio_track?, filename)).to be false
+      end
+    end
+
+    context 'when the file has no dro_file_parts' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename
+        }.to_json
+      end
+
+      it 'returns false' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect(stt.send(:has_useful_audio_track?, filename)).to be false
       end
     end
   end
