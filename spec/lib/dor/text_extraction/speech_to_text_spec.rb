@@ -404,6 +404,33 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
       end
     end
 
+    context 'when the file has an audio track but is missing the mean/max volume from audio metadata' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename,
+          'av_metadata' => {
+            'audio_count' => 1
+          },
+          'dro_file_parts' => [
+            {
+              'part_type' => 'video'
+            },
+            {
+              'part_type' => 'audio',
+              'audio_metadata' => {
+                'channels' => '2'
+              }
+            }
+          ]
+        }.to_json
+      end
+
+      it 'raises an exception' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect { stt.send(:has_useful_audio_track?, filename) }.to raise_error(RuntimeError, "Audio metadata missing max_volume and mean_volume for #{filename}")
+      end
+    end
+
     context 'when the file has an audio track but has no dro_file_parts' do
       let(:tech_md_response) do
         {
