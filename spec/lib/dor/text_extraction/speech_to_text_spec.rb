@@ -292,71 +292,16 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
     end
   end
 
-  describe '#has_audio_track?' do
+  describe '#has_useful_audio_track?' do
     let(:filename) { 'file1.m4a' }
 
-    context 'when the file has an audio track' do
+    context 'when the file has an audio track with normal volume levels' do
       let(:tech_md_response) do
         {
           'filename' => filename,
           'av_metadata' => {
             'audio_count' => 1
-          }
-        }.to_json
-      end
-
-      it 'returns true' do
-        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
-        expect(stt.send(:has_audio_track?, filename)).to be true
-      end
-    end
-
-    context 'when the file does not have an audio track' do
-      let(:tech_md_response) do
-        {
-          'filename' => filename,
-          'av_metadata' => {
-            'audio_count' => 0
-          }
-        }.to_json
-      end
-
-      it 'returns false' do
-        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
-        expect(stt.send(:has_audio_track?, filename)).to be false
-      end
-    end
-
-    context 'when the file does not have an av_metadata' do
-      let(:tech_md_response) do
-        {
-          'filename' => filename
-        }.to_json
-      end
-
-      it 'returns false' do
-        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
-        expect(stt.send(:has_audio_track?, filename)).to be false
-      end
-    end
-
-    context 'when the file is not present in the technical metadata' do
-      let(:tech_md_response) { [].to_json }
-
-      it 'returns false' do
-        allow(stt).to receive(:tech_metadata).and_return(JSON.parse(tech_md_response))
-        expect(stt.send(:has_audio_track?, filename)).to be false
-      end
-    end
-  end
-
-  describe '#has_useful_audio_track?' do
-    let(:filename) { 'file1.m4a' }
-
-    context 'when the file has useful audio levels' do
-      let(:tech_md_response) do
-        {
-          'filename' => filename,
+          },
           'dro_file_parts' => [
             {
               'part_type' => 'audio',
@@ -375,10 +320,51 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
       end
     end
 
-    context 'when the file has very low audio levels' do
+    context 'when the file does not have an audio track' do
       let(:tech_md_response) do
         {
           'filename' => filename,
+          'av_metadata' => {
+            'audio_count' => 0
+          }
+        }.to_json
+      end
+
+      it 'returns false' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect(stt.send(:has_useful_audio_track?, filename)).to be false
+      end
+    end
+
+    context 'when the file does not have an av_metadata block' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename
+        }.to_json
+      end
+
+      it 'returns false' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect(stt.send(:has_useful_audio_track?, filename)).to be false
+      end
+    end
+
+    context 'when the file is not present in the technical metadata' do
+      let(:tech_md_response) { [].to_json }
+
+      it 'returns false' do
+        allow(stt).to receive(:tech_metadata).and_return(JSON.parse(tech_md_response))
+        expect(stt.send(:has_useful_audio_track?, filename)).to be false
+      end
+    end
+
+    context 'when the file has an audio track with very low audio levels' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename,
+          'av_metadata' => {
+            'audio_count' => 1
+          },
           'dro_file_parts' => [
             {
               'part_type' => 'audio',
@@ -397,10 +383,13 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
       end
     end
 
-    context 'when the file has no audio metadata' do
+    context 'when the file has an audio track but has no audio metadata' do
       let(:tech_md_response) do
         {
           'filename' => filename,
+          'av_metadata' => {
+            'audio_count' => 1
+          },
           'dro_file_parts' => [
             {
               'part_type' => 'video'
@@ -409,22 +398,25 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
         }.to_json
       end
 
-      it 'returns false' do
+      it 'raises an exception' do
         allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
-        expect(stt.send(:has_useful_audio_track?, filename)).to be false
+        expect { stt.send(:has_useful_audio_track?, filename) }.to raise_error(RuntimeError, "No audio metadata found for #{filename}")
       end
     end
 
-    context 'when the file has no dro_file_parts' do
+    context 'when the file has an audio track but has no dro_file_parts' do
       let(:tech_md_response) do
         {
-          'filename' => filename
+          'filename' => filename,
+          'av_metadata' => {
+            'audio_count' => 1
+          }
         }.to_json
       end
 
-      it 'returns false' do
+      it 'raises an exception' do
         allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
-        expect(stt.send(:has_useful_audio_track?, filename)).to be false
+        expect { stt.send(:has_useful_audio_track?, filename) }.to raise_error(RuntimeError, "No audio metadata found for #{filename}")
       end
     end
   end

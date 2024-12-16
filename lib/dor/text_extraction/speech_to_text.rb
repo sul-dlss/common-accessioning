@@ -55,26 +55,29 @@ module Dor
       # then filter out any files that either (1) do not have an audio track or (2) have audio that is mostly silent
       def filenames_to_stt
         available_files = stt_files.map(&:filename)
-        available_files.select { |filename| has_audio_track?(filename) && has_useful_audio_track?(filename) }
+        available_files.select { |filename| has_useful_audio_track?(filename) }
       end
 
-      # determines if the given file has an audio track by parsing the technical metadata and looking at the file's audio_count
-      def has_audio_track?(filename)
-        file_level_tech_metadata(filename)&.dig('av_metadata', 'audio_count')&.positive? || false
-      end
-
-      # using new technical metadata generated in https://github.com/sul-dlss/technical-metadata-service/pull/572
-      # this uses the audio max_volume and mean_volume fields to determine if the audio is mostly silent
+      # first verify that the file has an audio track, then check the audio metadata to determine if the audio is mostly silent
+      # using technical metadata generated in https://github.com/sul-dlss/technical-metadata-service/pull/572
+      # check the audio max_volume and mean_volume fields to determine if the audio is mostly silent
+      # if will raise an error if this metadata is missing
       # rubocop:disable Metrics/CyclomaticComplexity
       # rubocop:disable Metrics/PerceivedComplexity
+      # rubocop:disable Metrics/AbcSize
       def has_useful_audio_track?(filename)
+        return false unless file_level_tech_metadata(filename)&.dig('av_metadata', 'audio_count')&.positive?
+
         audio_metadata = file_level_tech_metadata(filename)&.dig('dro_file_parts')&.find { |parts| parts['part_type'] == 'audio' }&.dig('audio_metadata')
-        return false unless audio_metadata && audio_metadata['max_volume'] && audio_metadata['mean_volume']
+
+        raise "No audio metadata found for #{filename}" unless audio_metadata
+        raise "Audio metadata missing max_volume and mean_volume for #{filename}" unless audio_metadata['max_volume'] && audio_metadata['mean_volume']
 
         audio_metadata['mean_volume'] > -40 && audio_metadata['max_volume'] > -30
       end
       # rubocop:enable Metrics/CyclomaticComplexity
       # rubocop:enable Metrics/PerceivedComplexity
+      # rubocop:enable Metrics/AbcSize
 
       # return the technical metadata for a given filename
       def file_level_tech_metadata(filename)
