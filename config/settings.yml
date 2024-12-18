@@ -67,6 +67,7 @@ aws:
 
 # options specific for speech-to-text generation
 speech_to_text:
+  filter_file: config/speech_to_text_filters.yaml
   whisper:
     options:
       model: 'large'
