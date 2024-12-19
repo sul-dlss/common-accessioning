@@ -24,6 +24,21 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
   let(:mp4_file_not_preserved) { build_file('file3.mp4', preserve: false) }
   let(:text_file) { build_file('file1.txt') }
   let(:text_file2) { build_file('file2.txt') }
+  let(:tech_md_response) { File.read("spec/fixtures/technical_metadata/#{bare_druid}.json") }
+
+  before do
+    stub_request(:get, "https://dor-techmd-test.stanford.test/v1/technical-metadata/druid/#{druid}")
+      .with(
+        headers: {
+          'Accept' => '*/*',
+          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'Authorization' => 'Bearer rake-generate-token-me',
+          'Content-Type' => 'application/json',
+          'User-Agent' => 'Faraday v2.12.1'
+        }
+      )
+      .to_return(status: 200, body: tech_md_response, headers: {})
+  end
 
   describe '#possible?' do
     context 'when the object is not a DRO' do
@@ -150,6 +165,22 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
       end
     end
 
+    context 'when a speech to text file exists but has no audio track' do
+      let(:tech_md_response) { File.read("spec/fixtures/technical_metadata/#{bare_druid}_no_audio_track.json") }
+
+      it 'ignores the m4a file which has no audio track' do
+        expect(stt.send(:filenames_to_stt)).to eq(['file1.mp4'])
+      end
+    end
+
+    context 'when a speech to text file exists which has a mostly quiet audio track' do
+      let(:tech_md_response) { File.read("spec/fixtures/technical_metadata/#{bare_druid}_quiet_audio_track.json") }
+
+      it 'ignores the m4a file which has a mostly quiet audio track' do
+        expect(stt.send(:filenames_to_stt)).to eq(['file1.mp4'])
+      end
+    end
+
     context 'when an OCR file exists and is NOT marked correctedForAccessibility and is also NOT sdrGenerated' do
       let(:vtt_file) { build_file('file1.vtt', corrected: false, sdr_generated: false) }
       let(:second_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [mp4_file, vtt_file]) }
@@ -230,6 +261,190 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
 
     it 'returns the output_location for the STT job' do
       expect(stt.output_location).to eq("#{bare_druid}-v#{version}/output")
+    end
+  end
+
+  describe '#tech_metadata' do
+    context 'when the technical metadata service returns a successful response' do
+      it 'returns the parsed JSON response' do
+        expect(stt.send(:tech_metadata)).to eq(JSON.parse(tech_md_response))
+      end
+    end
+
+    context 'when the technical metadata service returns an unsuccessful response' do
+      before do
+        stub_request(:get, "https://dor-techmd-test.stanford.test/v1/technical-metadata/druid/#{druid}")
+          .with(
+            headers: {
+              'Accept' => '*/*',
+              'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+              'Authorization' => 'Bearer rake-generate-token-me',
+              'Content-Type' => 'application/json',
+              'User-Agent' => 'Faraday v2.12.1'
+            }
+          )
+          .to_return(status: 500, body: 'Internal Server Error', headers: {})
+      end
+
+      it 'raises an error with the response status and body' do
+        expect { stt.send(:tech_metadata) }.to raise_error(RuntimeError, "Technical-metadata-service returned 500 when requesting techmd for #{bare_druid}: Internal Server Error")
+      end
+    end
+  end
+
+  describe '#has_useful_audio_track?' do
+    let(:filename) { 'file1.m4a' }
+
+    context 'when the file has an audio track with normal volume levels' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename,
+          'av_metadata' => {
+            'audio_count' => 1
+          },
+          'dro_file_parts' => [
+            {
+              'part_type' => 'audio',
+              'audio_metadata' => {
+                'mean_volume' => -35,
+                'max_volume' => -25
+              }
+            }
+          ]
+        }.to_json
+      end
+
+      it 'returns true' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect(stt.send(:has_useful_audio_track?, filename)).to be true
+      end
+    end
+
+    context 'when the file does not have an audio track' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename,
+          'av_metadata' => {
+            'audio_count' => 0
+          }
+        }.to_json
+      end
+
+      it 'returns false' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect(stt.send(:has_useful_audio_track?, filename)).to be false
+      end
+    end
+
+    context 'when the file does not have an av_metadata block' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename
+        }.to_json
+      end
+
+      it 'returns false' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect(stt.send(:has_useful_audio_track?, filename)).to be false
+      end
+    end
+
+    context 'when the file is not present in the technical metadata' do
+      let(:tech_md_response) { [].to_json }
+
+      it 'returns false' do
+        allow(stt).to receive(:tech_metadata).and_return(JSON.parse(tech_md_response))
+        expect(stt.send(:has_useful_audio_track?, filename)).to be false
+      end
+    end
+
+    context 'when the file has an audio track with very low audio levels' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename,
+          'av_metadata' => {
+            'audio_count' => 1
+          },
+          'dro_file_parts' => [
+            {
+              'part_type' => 'audio',
+              'audio_metadata' => {
+                'mean_volume' => -45,
+                'max_volume' => -35
+              }
+            }
+          ]
+        }.to_json
+      end
+
+      it 'returns false' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect(stt.send(:has_useful_audio_track?, filename)).to be false
+      end
+    end
+
+    context 'when the file has an audio track but has no audio metadata' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename,
+          'av_metadata' => {
+            'audio_count' => 1
+          },
+          'dro_file_parts' => [
+            {
+              'part_type' => 'video'
+            }
+          ]
+        }.to_json
+      end
+
+      it 'raises an exception' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect { stt.send(:has_useful_audio_track?, filename) }.to raise_error(RuntimeError, "No audio metadata found for #{filename}")
+      end
+    end
+
+    context 'when the file has an audio track but is missing the mean/max volume from audio metadata' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename,
+          'av_metadata' => {
+            'audio_count' => 1
+          },
+          'dro_file_parts' => [
+            {
+              'part_type' => 'video'
+            },
+            {
+              'part_type' => 'audio',
+              'audio_metadata' => {
+                'channels' => '2'
+              }
+            }
+          ]
+        }.to_json
+      end
+
+      it 'raises an exception' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect { stt.send(:has_useful_audio_track?, filename) }.to raise_error(RuntimeError, "Audio metadata missing max_volume and mean_volume for #{filename}")
+      end
+    end
+
+    context 'when the file has an audio track but has no dro_file_parts' do
+      let(:tech_md_response) do
+        {
+          'filename' => filename,
+          'av_metadata' => {
+            'audio_count' => 1
+          }
+        }.to_json
+      end
+
+      it 'raises an exception' do
+        allow(stt).to receive(:tech_metadata).and_return([JSON.parse(tech_md_response)])
+        expect { stt.send(:has_useful_audio_track?, filename) }.to raise_error(RuntimeError, "No audio metadata found for #{filename}")
+      end
     end
   end
 end
