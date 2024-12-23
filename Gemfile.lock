@@ -1,8 +1,8 @@
 GEM
   remote: https://gems.contribsys.com/
   specs:
-    sidekiq-pro (7.3.3)
-      sidekiq (>= 7.3.0, < 8)
+    sidekiq-pro (7.3.4)
+      sidekiq (>= 7.3.7, < 8)
 
 GEM
   remote: https://rubygems.org/
@@ -34,7 +34,7 @@ GEM
     ast (2.4.2)
     attr_extras (7.1.0)
     aws-eventstream (1.3.0)
-    aws-partitions (1.1023.0)
+    aws-partitions (1.1027.0)
     aws-sdk-core (3.214.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
@@ -102,7 +102,7 @@ GEM
       bigdecimal
       rexml
     date (3.4.1)
-    debug (1.9.2)
+    debug (1.10.0)
       irb (~> 1.10)
       reline (>= 0.3.8)
     deep_merge (1.2.2)
@@ -170,24 +170,24 @@ GEM
     ffi (1.17.0)
     ffi (1.17.0-x86_64-linux-gnu)
     hashdiff (1.1.2)
-    honeybadger (5.26.0)
+    honeybadger (5.26.1)
       logger
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     io-console (0.8.0)
-    irb (1.14.2)
+    irb (1.14.3)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     jmespath (1.6.2)
-    json (2.9.0)
+    json (2.9.1)
     jsonpath (1.1.5)
       multi_json
     language_server-protocol (3.17.0.3)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    logger (1.6.3)
+    logger (1.6.4)
     lyber-core (7.7.0)
       activesupport
       config
@@ -247,7 +247,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     pstore (0.1.4)
-    psych (5.2.1)
+    psych (5.2.2)
       date
       stringio
     public_suffix (6.0.1)
@@ -261,13 +261,13 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.11.1)
       ffi (~> 1.0)
-    rb_sys (0.9.103)
-    rdoc (6.9.0)
+    rb_sys (0.9.104)
+    rdoc (6.10.0)
       psych (>= 4.0.0)
     redis-client (0.23.0)
       connection_pool
     regexp_parser (2.9.3)
-    reline (0.5.12)
+    reline (0.6.0)
       io-console (~> 0.5)
     rexml (3.4.0)
     rspec (3.13.0)
@@ -313,7 +313,7 @@ GEM
       ffi (~> 1.12)
       logger
     securerandom (0.4.1)
-    sidekiq (7.3.6)
+    sidekiq (7.3.7)
       connection_pool (>= 2.3.0)
       logger
       rack (>= 2.2.4)
