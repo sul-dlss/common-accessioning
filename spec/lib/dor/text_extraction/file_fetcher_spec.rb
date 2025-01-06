@@ -4,19 +4,24 @@ require 'spec_helper'
 
 describe Dor::TextExtraction::FileFetcher do
   let(:file_fetcher) { described_class.new(druid:, logger:) }
-
   let(:logger) { instance_double(Logger, warn: nil, info: nil, error: nil) }
   let(:druid) { 'druid:bb222cc3333' }
   let(:bare_druid) { 'bb222cc3333' }
-  let(:objects_client) { instance_double(Preservation::Client::Objects) }
   let(:base_dir) { "tmp/#{bare_druid}" }
-
-  let(:pres_client) { instance_double(Preservation::Client, objects: objects_client) }
+  let(:found_response) { { status: 200, body: "Content for: #{filename}", headers: {} } }
+  let(:not_found_response) { { status: 404, body: 'Not found' } }
 
   before do
     FileUtils.mkdir_p(base_dir)
-    allow(Preservation::Client).to receive(:configure).and_return(pres_client)
     allow(file_fetcher).to receive(:sleep) # effectively make the sleep a no-op so that the test doesn't take so long due to retries and backoff
+    allow(Honeybadger).to receive(:notify)
+
+    stub_request(:get, "#{Settings.preservation_catalog.url}/v1/objects/#{druid}/file?category=content&filepath=#{filename}&version")
+      .with(
+        headers: { 'Accept' => '*/*',
+                   'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+                   'Authorization' => "Bearer #{Settings.preservation_catalog.token}" }
+      ).to_return(response)
   end
 
   describe '#write_file_with_retries' do
@@ -24,57 +29,28 @@ describe Dor::TextExtraction::FileFetcher do
       let(:filename) { 'image111.tif' }
       let(:file_path) { File.join(base_dir, filename) }
       let(:location) { Pathname.new(file_path) }
+      let(:response) { found_response }
 
       context 'when preservation is done' do
-        before do
-          allow(objects_client).to receive(:content) do |*args|
-            filepath = args.first.fetch(:filepath)
-            args.first.fetch(:on_data).call("Content for: #{filepath}")
-          end
-        end
-
         it 'writes the file' do
           file_fetcher.write_file_with_retries(filename:, location:)
-          expect(Preservation::Client).to have_received(:configure)
           expect(logger).to have_received(:info).once
-          expect(objects_client).to have_received(:content).once # success first time!
-
           expect(File.read(file_path)).to eq("Content for: #{filename}")
         end
       end
 
       context 'when preservation is still processing' do
-        before do
-          count = 0
-          allow(objects_client).to receive(:content) do |*args|
-            count += 1
-            raise Preservation::Client::NotFoundError, 'druid not available yet' unless count > 2
+        let(:response) { [not_found_response, not_found_response, found_response] }
 
-            filepath = args.first.fetch(:filepath)
-            args.first.fetch(:on_data).call("Content for: #{filepath}")
-          end
-        end
-
-        it 'writes the file and warns' do
+        it 'eventually writes the file, warns twice, but no HB alert' do
           file_fetcher.write_file_with_retries(filename:, location:)
-          expect(Preservation::Client).to have_received(:configure)
           expect(logger).to have_received(:warn).twice
-
-          expect(objects_client).to have_received(:content).exactly(3).times # 2 failures, 3rd time is the charm
-
+          expect(Honeybadger).not_to have_received(:notify)
           expect(File.read(file_path)).to eq("Content for: #{filename}")
         end
 
         context 'when retries are exhausted before the files show up on the preservation NFS mount' do
-          before do
-            allow(Honeybadger).to receive(:notify)
-
-            allow(objects_client).to receive(:content) do
-              # the only reason we raise a different error here (compared to the enclosing context) is to
-              # exercise one of the other rescued errors.  both should be treated in the same way.
-              raise Faraday::ResourceNotFound, 'druid not available yet'
-            end
-          end
+          let(:response) { [not_found_response, not_found_response, not_found_response] }
 
           it 'returns false, sends to HB, and logs an error' do
             written = file_fetcher.write_file_with_retries(filename:, location:)
@@ -94,13 +70,10 @@ describe Dor::TextExtraction::FileFetcher do
       let(:key) { File.join(bare_druid, filename) }
       let(:client) { instance_double(Aws::S3::Client) }
       let(:location) { Aws::S3::Object.new(bucket_name: 'bucket', key:, client:) }
+      let(:response) { found_response }
 
       context 'when preservation is done' do
         before do
-          allow(objects_client).to receive(:content) do |*args|
-            filepath = args.first.fetch(:filepath)
-            args.first.fetch(:on_data).call("Content for: #{filepath}")
-          end
           allow(client).to receive_messages(create_multipart_upload: instance_double(Aws::S3::Types::CreateMultipartUploadOutput, upload_id: '123'),
                                             upload_part: instance_double(Aws::S3::Types::UploadPartOutput, etag: 'etag'))
           allow(client).to receive(:complete_multipart_upload)
@@ -109,7 +82,6 @@ describe Dor::TextExtraction::FileFetcher do
         it 'fetches files from perservation and sends to s3' do
           file_fetcher.write_file_with_retries(filename:, location:)
           expect(logger).to have_received(:info).once
-          expect(objects_client).to have_received(:content).once
           expect(client).to have_received(:create_multipart_upload).once
           expect(client).to have_received(:upload_part).once
           expect(client).to have_received(:complete_multipart_upload).once
@@ -120,6 +92,7 @@ describe Dor::TextExtraction::FileFetcher do
     context 'when passing an invalid location' do
       let(:filename) { 'image111.tif' }
       let(:location) { {} } # not an Aws::S3::Object or an instance of Pathname or a string
+      let(:response) { found_response }
 
       it 'raises an error' do
         expect { file_fetcher.write_file_with_retries(filename:, location:) }.to raise_error(RuntimeError, 'Unknown location type: Hash')
