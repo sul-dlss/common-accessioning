@@ -62,6 +62,7 @@ describe Robots::DorRepo::SpeechToText::UpdateCocina do
 
     it 'runs the update cocina robot and sets the caption role' do
       new_cocina = test_perform(robot, druid)
+      expect(new_cocina.structural.contains.size).to eq 1
       new_json_file = new_cocina.structural.contains[0].structural.contains[1]
       new_vtt_file = new_cocina.structural.contains[0].structural.contains[2]
       expect(new_json_file.filename).to eq 'file1.json'
@@ -69,6 +70,82 @@ describe Robots::DorRepo::SpeechToText::UpdateCocina do
       expect(new_vtt_file.filename).to eq 'file1.vtt'
       expect(new_vtt_file.use).to eq 'caption'
     end
+  end
+
+  context 'with vtt files and input files with the same filename but different extensions' do
+    let(:structural) do
+      {
+        contains: [
+          {
+            type: Cocina::Models::FileSetType.file,
+            externalIdentifier: "#{bare_druid}_1",
+            label: 'Audio 1',
+            version: 1,
+            structural: {
+              contains: [
+                {
+                  type: Cocina::Models::ObjectType.file,
+                  externalIdentifier: "#{druid}_1",
+                  label: 'file1.m4a',
+                  filename: 'file1.m4a',
+                  size: 123,
+                  version: 1,
+                  hasMimeType: 'audio/mp4'
+                }
+              ]
+            }
+          },
+          {
+            type: Cocina::Models::FileSetType.file,
+            externalIdentifier: "#{bare_druid}_1",
+            label: 'Video 1',
+            version: 1,
+            structural: {
+              contains: [
+                {
+                  type: Cocina::Models::ObjectType.file,
+                  externalIdentifier: "#{druid}_1",
+                  label: 'file1.mp4',
+                  filename: 'file1.mp4',
+                  size: 123,
+                  version: 1,
+                  hasMimeType: 'video/mp4'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    end
+
+    # setup fake caption vtt and json files in the workspace directory which matches the names of the audio and video files in the Cocina
+    before do
+      create_speech_to_text_file('file1_m4a.vtt')
+      create_speech_to_text_file('file1_m4a.json')
+      create_speech_to_text_file('file1_mp4.vtt')
+      create_speech_to_text_file('file1_mp4.json')
+    end
+
+    # rubocop:disable RSpec/ExampleLength
+    it 'runs the update cocina robot and correctly adds the renamed output files to the correct resource' do
+      new_cocina = test_perform(robot, druid)
+      new_audio_json_file = new_cocina.structural.contains[0].structural.contains[1]
+      new_audio_vtt_file = new_cocina.structural.contains[0].structural.contains[2]
+      new_video_json_file = new_cocina.structural.contains[1].structural.contains[1]
+      new_video_vtt_file = new_cocina.structural.contains[1].structural.contains[2]
+      expect(new_cocina.structural.contains.size).to eq 2
+      expect(new_cocina.structural.contains[0].structural.contains[0].filename).to eq 'file1.m4a'
+      expect(new_audio_json_file.filename).to eq 'file1_m4a.json'
+      expect(new_audio_json_file.use).to be_nil
+      expect(new_audio_vtt_file.filename).to eq 'file1_m4a.vtt'
+      expect(new_audio_vtt_file.use).to eq 'caption'
+      expect(new_cocina.structural.contains[1].structural.contains[0].filename).to eq 'file1.mp4'
+      expect(new_video_json_file.filename).to eq 'file1_mp4.json'
+      expect(new_video_json_file.use).to be_nil
+      expect(new_video_vtt_file.filename).to eq 'file1_mp4.vtt'
+      expect(new_video_vtt_file.use).to eq 'caption'
+    end
+    # rubocop:enable RSpec/ExampleLength
   end
 
   context 'with a txt file' do
