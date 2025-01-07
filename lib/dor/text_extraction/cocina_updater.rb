@@ -252,7 +252,7 @@ module Dor
       # get the full filename of a file path by extracting the extension from the last part of the filename (e.g. '/user/path/file1_mp4.vtt' => 'file1.mp4')
       def extracted_filename_with_extension(path)
         basename_with_extension_stem = stem(path)
-        extension_from_filename = basename_with_extension_stem.include?('_') ? basename_with_extension_stem.split('_', 2).last : ''
+        extension_from_filename = basename_with_extension_stem.include?('_') ? basename_with_extension_stem.split('_').last : ''
         basename_without_extension_stem = basename_with_extension_stem.gsub("_#{extension_from_filename}", '')
         "#{basename_without_extension_stem}.#{extension_from_filename}"
       end
