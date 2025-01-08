@@ -109,8 +109,12 @@ cocina_object.structural.contains.size
 => 17
 workflow.status
 => "completed"
-
 ```
+
+### Caption Cleanup
+
+Files produced during media captioning can have specific phrases automatically removed (e.g. bad phrases that are produced by hallucinations).  There is a file that provides configuration on what is removed: `config/speech_to_text_filters.yaml` which accepts both strings and regular expressions.  Information on how to use it is provided in the top of the configuration file.
+
 ## Deployment
 
 See `Capfile` for deployment instructions

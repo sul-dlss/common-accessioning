@@ -1,0 +1,5 @@
+This is some text caption material.
+It includes a bunch of text.
+Some of it should be removed, like this: © transcript Emily Beynon
+And like this: © BF-WATCH TV 2021 and other content
+And also like this amara.org even if the middle of a line
