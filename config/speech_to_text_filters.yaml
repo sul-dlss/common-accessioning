@@ -2,8 +2,10 @@
 # Add one phrase per line, as either a string or regular expression.
 # All exact matches to the provided string or regular expressions are removed from the .txt and .vtt file.
 # Regular expressions require `!ruby/regexp` in front of the expression as shown in the examples below.
+# Be cautious when using regular expressions as they can be very powerful and may remove more than intended.
+# Using start/end line anchors (^ and $) in regular expressions may be wise in some cases.
 # You can test your regular expressions to see if they work as expected at https://rubular.com/
 - "© BF-WATCH TV 2021"
 - "© transcript Emily Beynon"
-- "amara.org"
+# - "amara.org"
 # - !ruby/regexp /(ruled)\s(out|in)/ # test regular expression to show the format
