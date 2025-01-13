@@ -131,8 +131,8 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
 
     it 'removes all files from s3' do
       expect(stt.cleanup).to be true
-      expect(client).to have_received(:delete_object).with(bucket: 'sul-speech-to-text-dev', key: "#{bare_druid}-v#{version}/file1.m4a").once
-      expect(client).to have_received(:delete_object).with(bucket: 'sul-speech-to-text-dev', key: "#{bare_druid}-v#{version}/file1.mp4").once
+      expect(client).to have_received(:delete_object).with(bucket: Settings.aws.speech_to_text.base_s3_bucket, key: "#{bare_druid}-v#{version}/file1.m4a").once
+      expect(client).to have_received(:delete_object).with(bucket: Settings.aws.speech_to_text.base_s3_bucket, key: "#{bare_druid}-v#{version}/file1.mp4").once
     end
   end
 

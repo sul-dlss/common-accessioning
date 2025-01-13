@@ -24,11 +24,6 @@ module Dor
       end
 
       # @return [String]
-      def sqs_todo_queue_url
-        Settings.aws.speech_to_text.sqs_todo_queue_url
-      end
-
-      # @return [String]
       def sqs_done_queue_url
         Settings.aws.speech_to_text.sqs_done_queue_url
       end
@@ -41,6 +36,35 @@ module Dor
       # @return [::Aws::S3::Resource]
       def resource
         ::Aws::S3::Resource.new(aws_client_args)
+      end
+
+      # @return [::Aws::Batch::Client]
+      def batch
+        ::Aws::Batch::Client.new(aws_client_args)
+      end
+
+      # @return [String]
+      def batch_job_queue
+        Settings.aws.speech_to_text.batch_job_queue
+      end
+
+      # @return [String]
+      def batch_job_definition
+        Settings.aws.speech_to_text.batch_job_definition
+      end
+
+      # @return [::Aws::Batch::Types::SubmitJobResponse]
+      def submit_job(job)
+        batch.submit_job(
+          {
+            job_name: job[:id],
+            job_definition: batch_job_definition,
+            job_queue: batch_job_queue,
+            parameters: {
+              job: job.to_json
+            }
+          }
+        )
       end
 
       private

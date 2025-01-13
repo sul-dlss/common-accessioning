@@ -59,9 +59,11 @@ aws:
   access_key_id: 'fake-access'
   secret_access_key: 'fake-secret'
   speech_to_text:
+    # values below can be found by running `terraform output` in terraform_aws/organizations/{env}/speech_to_text
     role_arn: 'arn:aws:iam::1234567890123:role/DevelopersRole'
-    base_s3_bucket: 'sul-speech-to-text-dev' # default bucket for storing speech-to-text file
-    sqs_todo_queue_url: 'https://sqs.us-west-2.amazonaws.com/queue_url' # queue to send new speech-to-text jobs
+    base_s3_bucket: 'bucket-name' # default bucket for storing speech-to-text file
+    batch_job_queue: 'arn:aws:batch:us-west-2:1234567890123:job-queue/queue-name' # AWS Batch queue to submit jobs to
+    batch_job_definition: 'arn:aws:batch:us-west-2:1234567890123:job-definition/queue-name' # AWS Batch job definition to use for job
     sqs_done_queue_url: 'https://sqs.us-west-2.amazonaws.com/queue_url_done' # queue to receive completed speech-to-text jobs
 
 
