@@ -19,7 +19,7 @@ module Dor
     #    that contains the same filename "stem" or the same filename with extension added to the end of the stem
     #    and add the file there.
     #    e.g. "abc123.xml" would be added to the same resource that contains "abc123.tiff"
-    #    and "abc123_tiff.xml" would be added to the same resource that contains "abc123.tiff"
+    #    and "abc123_tiff.xml" would also be added to the same resource that contains "abc123.tiff"
     #    see https://github.com/sul-dlss/common-accessioning/issues/1443 for the logic behind this
     # rubocop:disable Metrics/ClassLength
     class CocinaUpdater
