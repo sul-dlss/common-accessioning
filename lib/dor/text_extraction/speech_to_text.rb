@@ -57,8 +57,18 @@ module Dor
       end
 
       # return the s3 location for a given filename
+      # NOTE: Due to https://github.com/sul-dlss/common-accessioning/issues/1443, we will rename this file when sending it to whisper
+      # to ensure whisper will always produce a unique output caption file for each input file provided (even if the basename is identical).
+      # This is because whisper currently only uses the basename to determine the output filename, which will cause a problem if we have two
+      # input files with the same basename but different extensions (e.g. "file.mp4" and "file.m4a").
       def s3_location(filename)
-        File.join(job_id, filename)
+        file_extension = File.extname(filename)
+        basename = File.basename(filename, file_extension)
+        # For example, "file1.mp4" becomes "file1_mp4.mp4" which will cause whipser to produce "file1_mp4.vtt" as the output,
+        # and "file1.m4a" becomes "file1_m4a.m4a" which will cause whisper to produce "file1_m4a.vtt" as the output, ensuring uniqueness for both.
+        # The cocina_updater will understand this and update the cocina structural metadata correctly matching the new filename to the original.
+        new_filename = "#{basename}_#{file_extension.delete('.')}#{file_extension}"
+        File.join(job_id, new_filename)
       end
 
       # return the job_id for the stt job, defined as the druid-version of the object

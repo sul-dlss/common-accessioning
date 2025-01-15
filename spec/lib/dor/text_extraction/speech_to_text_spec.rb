@@ -212,8 +212,8 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
   describe '#s3_location' do
     let(:version) { 3 }
 
-    it 'returns the s3 filename key for a given filename' do
-      expect(stt.s3_location('text.xml')).to eq("#{bare_druid}-v#{version}/text.xml")
+    it 'returns the new s3 filename key for a given filename' do
+      expect(stt.s3_location('text.xml')).to eq("#{bare_druid}-v#{version}/text_xml.xml")
     end
   end
 
