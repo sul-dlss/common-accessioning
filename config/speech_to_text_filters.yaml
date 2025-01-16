@@ -7,5 +7,10 @@
 # You can test your regular expressions to see if they work as expected at https://rubular.com/
 - "© BF-WATCH TV 2021"
 - "© transcript Emily Beynon"
-# - "amara.org"
+- "Amara.org-gemenskapen"
+- "Subtitles by the Amara.org community"
+- "Translation and subtitles brought to you by the Amara.org community"
+- "Undertexter av Amara.org-gemenskapen"
+- "www.amara.org"
+- "字幕由 Amara.org 社群提供"
 # - !ruby/regexp /(ruled)\s(out|in)/ # test regular expression to show the format
