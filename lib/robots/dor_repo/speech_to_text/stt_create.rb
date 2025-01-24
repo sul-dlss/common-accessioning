@@ -11,35 +11,31 @@ module Robots
 
         # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
         def perform_work
-          # start the caption creation by sending an SQS message to the caption creation service
-
-          send_sqs_message
+          # start the caption creation by sending Batch a job
+          send_batch_message
 
           # Leave this step running until the Whisper monitoring job marks it as complete
           LyberCore::ReturnState.new(status: :noop, note: 'Initiated SpeechToText.')
         rescue StandardError => e
-          Honeybadger.notify('Problem sending SQS Message to AWS for SpeechToText', context: { druid:, job_id:, error: e })
-          raise "Error sending SQS message: #{e.message}"
+          Honeybadger.notify('Problem sending Batch job to AWS for SpeechToText', context: { druid:, job_id:, error: e })
+          raise "Error sending Batch job: #{e.message}"
         end
 
         private
 
-        def send_sqs_message
-          # Send the message to the SQS queue
-          aws_provider.sqs.send_message({
-                                          queue_url: aws_provider.sqs_todo_queue_url,
-                                          message_body:
-                                        })
+        def send_batch_message
+          # Send the message to the Batch
+          aws_provider.submit_job(message)
 
-          logger.info("Sent SQS message for druid #{druid} to queue #{aws_provider.sqs_todo_queue_url} with job_id #{job_id}")
+          logger.info("Sent Batch job for druid #{druid} to Batch job_queue=#{aws_provider.batch_job_queue} with job_definition=#{aws_provider.batch_job_definition} and job_id=#{job_id}")
         end
 
-        def message_body
+        def message
           {
             id: job_id,
             druid:,
             media:
-          }.merge(whisper_options).to_json
+          }.merge(whisper_options)
         end
 
         def job_id
