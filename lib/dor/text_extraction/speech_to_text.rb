@@ -52,9 +52,52 @@ module Dor
       # return a list of filenames that should be stt'd
       # iterate over all files in cocina_object.structural.contains, looking at mimetypes
       # return a list of filenames that are correct mimetype
+      # then filter out any files that either (1) do not have an audio track or (2) have audio that is mostly silent
       def filenames_to_stt
-        stt_files.map(&:filename)
+        available_files = stt_files.map(&:filename)
+        available_files.select { |filename| has_useful_audio_track?(filename) }
       end
+
+      # first verify that the file has an audio track, then check the audio metadata to determine if the audio is mostly silent
+      # using technical metadata generated in https://github.com/sul-dlss/technical-metadata-service/pull/572
+      # check the audio max_volume and mean_volume fields to determine if the audio is mostly silent
+      # if will raise an error if this metadata is missing
+      # rubocop:disable Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/PerceivedComplexity
+      # rubocop:disable Metrics/AbcSize
+      def has_useful_audio_track?(filename)
+        return false unless file_level_tech_metadata(filename)&.dig('av_metadata', 'audio_count')&.positive?
+
+        audio_metadata = file_level_tech_metadata(filename)&.dig('dro_file_parts')&.find { |parts| parts['part_type'] == 'audio' }&.dig('audio_metadata')
+
+        raise "No audio metadata found for #{filename}" unless audio_metadata
+        raise "Audio metadata missing max_volume and mean_volume for #{filename}" unless audio_metadata['max_volume'] && audio_metadata['mean_volume']
+
+        audio_metadata['mean_volume'] > -40 && audio_metadata['max_volume'] > -30
+      end
+      # rubocop:enable Metrics/CyclomaticComplexity
+      # rubocop:enable Metrics/PerceivedComplexity
+      # rubocop:enable Metrics/AbcSize
+
+      # return the technical metadata for a given filename
+      def file_level_tech_metadata(filename)
+        tech_metadata.find { |file| file['filename'] == filename }
+      end
+
+      # return the technical metadata for the object from the technical-metadata-service and parse it as json
+      # rubocop:disable Metrics/AbcSize
+      def tech_metadata
+        @tech_metadata ||= begin
+          resp = Faraday.get("#{Settings.tech_md_service.url}/v1/technical-metadata/druid/#{cocina_object.externalIdentifier}") do |req|
+            req.headers['Content-Type'] = 'application/json'
+            req.headers['Authorization'] = "Bearer #{Settings.tech_md_service.token}"
+          end
+          raise "Technical-metadata-service returned #{resp.status} when requesting techmd for #{bare_druid}: #{resp.body}" unless resp.success?
+
+          JSON.parse(resp.body)
+        end
+      end
+      # rubocop:enable Metrics/AbcSize
 
       # return the s3 location for a given filename
       # NOTE: Due to https://github.com/sul-dlss/common-accessioning/issues/1443, we will rename this file when sending it to whisper
