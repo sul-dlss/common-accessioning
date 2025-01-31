@@ -3,7 +3,7 @@
 module Dor
   module TextExtraction
     # Determine if speech to text is required and possible for a given object
-    class SpeechToText
+    class SpeechToText # rubocop:disable Metrics/ClassLength
       attr_reader :cocina_object, :workflow_context, :bare_druid
 
       def initialize(cocina_object:, workflow_context: {})
