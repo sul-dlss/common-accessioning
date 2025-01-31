@@ -1,5 +1,5 @@
 [![CircleCI](https://circleci.com/gh/sul-dlss/common-accessioning.svg?style=svg)](https://circleci.com/gh/sul-dlss/common-accessioning)
-[![Code Climate Test Coverage](https://codeclimate.com/github/sul-dlss/common-accessioning/badges/coverage.svg)](https://codeclimate.com/github/sul-dlss/common-accessioning/coverage)
+[![Test Coverage](https://codecov.io/github/sul-dlss/common-accessioning/graph/badge.svg?token=ezuXfCOLeO)](https://codecov.io/github/sul-dlss/common-accessioning)
 
 # DOR consolidated robots
 

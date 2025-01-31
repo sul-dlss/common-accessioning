@@ -33,8 +33,7 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
           'Accept' => '*/*',
           'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
           'Authorization' => 'Bearer rake-generate-token-me',
-          'Content-Type' => 'application/json',
-          'User-Agent' => 'Faraday v2.12.1'
+          'Content-Type' => 'application/json'
         }
       )
       .to_return(status: 200, body: tech_md_response, headers: {})
@@ -279,8 +278,7 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
               'Accept' => '*/*',
               'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
               'Authorization' => 'Bearer rake-generate-token-me',
-              'Content-Type' => 'application/json',
-              'User-Agent' => 'Faraday v2.12.1'
+              'Content-Type' => 'application/json'
             }
           )
           .to_return(status: 500, body: 'Internal Server Error', headers: {})
