@@ -4,7 +4,7 @@ module Robots
   module DorRepo
     module Assembly
       class Base < LyberCore::Robot
-        protected
+        private
 
         def check_assembly_item
           return true if assembly_item.item?
