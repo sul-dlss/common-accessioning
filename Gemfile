@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-gem 'activesupport', '~> 7.0'
+gem 'activesupport'
 gem 'assembly-image', '~> 2.0' # ruby-vips is used by 2.0.0 for improved image processing
 gem 'assembly-objectfile', '~> 2.1'
 gem 'aws-sdk-batch' # used for submitting jobs for speech-to-text workflow
