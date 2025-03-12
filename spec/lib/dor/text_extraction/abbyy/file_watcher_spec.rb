@@ -9,8 +9,7 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
   let(:druid) { "druid:#{bare_druid}" }
   let(:logger) { instance_double(Logger) }
   let(:workflow_updater) { instance_double(Dor::TextExtraction::WorkflowUpdater) }
-  let(:object_client) { instance_double(Dor::Services::Client::Object) }
-  let(:events_client) { instance_double(Dor::Services::Client::Events) }
+  let(:dor_event_logger) { instance_double(Dor::TextExtraction::DorEventLogger, create_event: nil) }
   let(:listener_options) { { force_polling: true } }
   let(:file_watcher) { described_class.new(logger:, listener_options:) }
 
@@ -21,12 +20,9 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
     )
     allow(Dor::TextExtraction::WorkflowUpdater).to receive(:new).and_return(workflow_updater)
     allow(Honeybadger).to receive(:notify)
-    allow(Dor::Services::Client).to receive(:configure)
-    allow(Dor::Services::Client).to receive(:object).and_return(object_client)
+    allow(Dor::TextExtraction::DorEventLogger).to receive(:new).with(logger:).and_return(dor_event_logger)
     allow(workflow_updater).to receive(:mark_ocr_create_errored)
     allow(workflow_updater).to receive(:mark_ocr_create_completed)
-    allow(object_client).to receive(:events).and_return(events_client)
-    allow(events_client).to receive(:create)
     allow(logger).to receive(:info)
   end
 
@@ -58,8 +54,9 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
     end
 
     it 'publishes an event' do
-      expect(events_client).to have_received(:create).with(
+      expect(dor_event_logger).to have_received(:create_event).with(
         {
+          druid:,
           type: 'ocr_success',
           data: a_hash_including({ software_name: 'ABBYY FineReader Server', software_version: '14.0' })
         }
@@ -91,8 +88,9 @@ describe Dor::TextExtraction::Abbyy::FileWatcher do
     end
 
     it 'publishes an event' do
-      expect(events_client).to have_received(:create).with(
+      expect(dor_event_logger).to have_received(:create_event).with(
         {
+          druid:,
           type: 'ocr_errored',
           data: a_hash_including({ software_name: 'ABBYY FineReader Server', errors: failure_messages })
         }
