@@ -9,9 +9,6 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
   let(:robot) { described_class.new }
   let(:type) { 'item' }
   let(:cocina_model) { build(:dro, id: "druid:#{druid}") }
-  let(:ng_xml) do
-    Nokogiri::XML('<contentMetadata type="image"></contentMetadata>')
-  end
 
   let(:object_client) do
     instance_double(Dor::Services::Client::Object, update: true)
@@ -71,8 +68,20 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
 
     it 'converts stub content metadata' do
       expect(object_client).to receive(:update)
-      expect(FileUtils).to receive(:mv).with(stub_content_file_name, "/dor/stopped/#{druid}-#{Settings.assembly.stub_cm_file_name}")
+      expect(FileUtils).to receive(:rm).with(stub_content_file_name)
       expect(result.status).to eq('completed')
+    end
+
+    context 'when convert_stub_content_metadata raises an error due to invalid XML' do
+      before do
+        allow(item).to receive(:convert_stub_content_metadata)
+          .and_raise(RuntimeError, 'Invalid stubContentMetadata.xml')
+      end
+
+      it 'raises an error before updating cocina' do
+        expect(object_client).not_to receive(:update)
+        expect { result }.to raise_error(RuntimeError, 'Invalid stubContentMetadata.xml')
+      end
     end
   end
 end

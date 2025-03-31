@@ -210,5 +210,13 @@ RSpec.describe Dor::Assembly::StubContentMetadataParser do
         expect(structural.to_h).to eq expected_content_metadata
       end
     end
+
+    context 'with malformed XML' do
+      let(:druid) { 'druid:bb111bb7777' }
+
+      it 'raises an error' do
+        expect { item.convert_stub_content_metadata }.to raise_error(RuntimeError, /Invalid stubContentMetadata.xml/)
+      end
+    end
   end
 end

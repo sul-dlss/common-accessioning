@@ -38,7 +38,14 @@ module Dor
         # Loads stub content metadata XML into a Nokogiri document.
         raise "Stub content metadata file #{Settings.assembly.stub_cm_file_name} not found for #{druid.id} in any of the root directories: #{@root_dir.join(',')}" unless stub_content_metadata_exists?
 
-        @stub_cm = Nokogiri.XML(File.open(stub_cm_file_name)) { |conf| conf.default_xml.noblanks }
+        @stub_cm = begin
+          Nokogiri.XML(File.open(stub_cm_file_name)) do |conf|
+            conf.default_xml.noblanks
+            conf.default_xml.strict
+          end
+        rescue Nokogiri::XML::SyntaxError
+          raise 'Invalid stubContentMetadata.xml'
+        end
       end
 
       # this determines the reading order from the stub_object_type (default ltr unless the object type contains one of the possible "rtl" designations)
