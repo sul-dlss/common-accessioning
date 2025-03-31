@@ -67,11 +67,11 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
 
     before do
       allow(item).to receive(:convert_stub_content_metadata).and_return(build(:dro).structural)
-      allow(FileUtils).to receive(:rm).with(stub_content_file_name)
     end
 
     it 'converts stub content metadata' do
       expect(object_client).to receive(:update)
+      expect(FileUtils).to receive(:mv).with(stub_content_file_name, "/dor/stopped/#{druid}-#{Settings.assembly.stub_cm_file_name}")
       expect(result.status).to eq('completed')
     end
   end
