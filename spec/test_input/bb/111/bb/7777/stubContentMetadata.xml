@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<content type="Book (rtl)">
+   <resource>
+      <label>This is truncated</label>
+      <file name="page1.tif"/>
+      <file name="page1.txt" publish="no" preserve="no" shelve="no"/>
+   </resource>
+   <resource>
+      <label>Where is the rest?</label>
+      <file name="page2.tif"/>
