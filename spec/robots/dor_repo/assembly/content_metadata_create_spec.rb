@@ -78,9 +78,30 @@ RSpec.describe Robots::DorRepo::Assembly::ContentMetadataCreate do
           .and_raise(RuntimeError, 'Invalid stubContentMetadata.xml')
       end
 
-      it 'raises an error before updating cocina' do
+      it 'raises an error before updating cocina after retries' do
         expect(object_client).not_to receive(:update)
         expect { result }.to raise_error(RuntimeError, 'Invalid stubContentMetadata.xml')
+      end
+    end
+
+    context 'when convert_stub_content_metadata succeeds after retries' do
+      let(:content_metadata) { false }
+      let(:stub_content_metadata) { true }
+
+      before do
+        try_count = 0
+        allow(item).to receive(:convert_stub_content_metadata) do
+          try_count += 1
+          raise 'Invalid stubContentMetadata.xml' if try_count < 3
+
+          build(:dro).structural
+        end
+      end
+
+      it 'updates cocina after successful retry' do
+        expect(object_client).to receive(:update)
+        expect(FileUtils).to receive(:rm).with(stub_content_file_name)
+        expect(result.status).to eq('completed')
       end
     end
   end
