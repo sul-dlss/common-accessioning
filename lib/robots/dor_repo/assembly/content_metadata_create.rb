@@ -18,7 +18,7 @@ module Robots
           return LyberCore::ReturnState.new(status: :skipped, note: 'No stubContentMetadata to load from the filesystem') unless assembly_item.stub_content_metadata_exists?
 
           tries = 0
-          max_tries = 3
+          max_tries = 0
           begin
             updated = assembly_item.cocina_model.new(structural: assembly_item.convert_stub_content_metadata)
             assembly_item.object_client.update(params: updated)
