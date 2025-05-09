@@ -9,8 +9,6 @@ server 'common-accessioning-prod-f.stanford.edu', user: 'lyberadmin', roles: %w[
 server 'common-accessioning-prod-g.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
 server 'common-accessioning-prod-h.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
 
-Capistrano::OneTimeKey.generate_one_time_key!
-
 set :deploy_environment, 'production'
 set :default_env, robot_environment: fetch(:deploy_environment)
 # See https://github.com/honeybadger-io/honeybadger-ruby/issues/129 &
