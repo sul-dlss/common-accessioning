@@ -16,6 +16,7 @@ assembly:
 
 sdr:
   local_workspace_root: /dor/workspace
+  staging_root: /sdr-deposit-staging
   abbyy:
     # Windows-style paths for the ABBYY machine, referenced in XML tickets
     remote_output_path: /tmp/output
