@@ -21,7 +21,7 @@ module Robots
           FileUtils.cp_r(staging_pathname, workspace_pathname.parent)
 
           # Audit the workspace directory
-          check_expected_files!
+          check_expected_file_sizes!
         end
 
         private
@@ -34,12 +34,13 @@ module Robots
           @workspace_pathname ||= DruidTools::Druid.new(druid, Settings.sdr.local_workspace_root).pathname
         end
 
-        # @return [Boolean] true if all expected files are present in the workspace and have the correct file size.
-        def check_expected_files!
+        def check_expected_file_sizes! # rubocop:disable Metrics/AbcSize
           cocina_object.structural.contains.each do |fileset|
             fileset.structural.contains.each do |file|
               file_pathname = workspace_pathname.join('content', file.filename)
-              raise "File missing or incorrect size: #{file_pathname}" unless file_pathname.exist? && file_pathname.size == file.size
+              next unless file_pathname.exist? && file_pathname.size != file.size
+
+              raise "File incorrect size: #{file_pathname} expected #{file.size} but actually #{file_pathname.size}"
             end
           end
         end

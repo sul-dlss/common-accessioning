@@ -11,7 +11,6 @@ RSpec.describe Robots::DorRepo::Accession::Stage do
     let(:druid) { 'druid:dd116zh0343' }
     let(:object_client) { instance_double(Dor::Services::Client::Object, find: object) }
     let(:workflow_client) { instance_double(Dor::Workflow::Client) }
-    # let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'low') }
     let(:workspace_root) { File.join(Dir.tmpdir, 'workspace') }
     let(:object_workspace_root) { "#{workspace_root}/dd/116/zh/0343/dd116zh0343" }
 
@@ -20,8 +19,8 @@ RSpec.describe Robots::DorRepo::Accession::Stage do
     before do
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
       allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
-      # Workspace fixtures being used for staging.
 
+      # Workspace fixtures being used for staging.
       allow(Settings.sdr).to receive_messages(staging_root: 'spec/fixtures/workspace', local_workspace_root: workspace_root)
     end
 
@@ -91,7 +90,7 @@ RSpec.describe Robots::DorRepo::Accession::Stage do
       end
     end
 
-    context 'when files missing' do
+    context 'when file already accessioned (and therefore missing)' do
       let(:object) do
         build(:dro, id: druid).new(
           structural: {
@@ -104,8 +103,8 @@ RSpec.describe Robots::DorRepo::Accession::Stage do
                 contains: [
                   {
                     externalIdentifier: '222-1',
-                    label: 'folder1PuSu/story1u.txt',
-                    filename: 'folder1PuSu/story1ux.txt',
+                    label: 'folder1PuSu/already_accessioned.txt',
+                    filename: 'folder1PuSu/already_accessioned.txt',
                     type: Cocina::Models::ObjectType.file,
                     version: 1,
                     access: {},
@@ -121,7 +120,7 @@ RSpec.describe Robots::DorRepo::Accession::Stage do
       end
 
       it 'raises' do
-        expect { perform }.to raise_error(StandardError, /File missing or incorrect size/)
+        expect { perform }.not_to raise_error
       end
     end
 
@@ -155,7 +154,7 @@ RSpec.describe Robots::DorRepo::Accession::Stage do
       end
 
       it 'raises' do
-        expect { perform }.to raise_error(StandardError, /File missing or incorrect size/)
+        expect { perform }.to raise_error(StandardError, /File incorrect size/)
       end
     end
   end
