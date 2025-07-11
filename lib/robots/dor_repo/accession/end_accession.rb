@@ -11,7 +11,7 @@ module Robots
         def perform_work
           # Is there a specialized dissemination workflow?  (used by web archive workflow)
           next_dissemination_wf = special_dissemination_wf
-          workflow_service.create_workflow_by_name(druid, next_dissemination_wf, version: current_version, lane_id:) if next_dissemination_wf.present?
+          object_workflow.create(version: current_version, lane_id:) if next_dissemination_wf.present?
 
           start_captioning
         end
@@ -47,12 +47,12 @@ module Robots
             # user asked for OCR but the object is not OCRable
             raise 'Object cannot be OCRd' unless ocr.possible?
 
-            workflow_service.create_workflow_by_name(druid, 'ocrWF', version: next_version, lane_id:, context: workflow_context_for_next_version)
+            object_workflow.create(version: next_version, lane_id:, context: workflow_context_for_next_version)
           elsif stt.required?
             # user asked for SpeechToText but the object is not speech-to-textable
             raise 'Object cannot have speech-to-text applied' unless stt.possible?
 
-            workflow_service.create_workflow_by_name(druid, 'speechToTextWF', version: next_version, lane_id:, context: workflow_context_for_next_version)
+            object_workflow.create(version: next_version, lane_id:, context: workflow_context_for_next_version)
           end
         end
 

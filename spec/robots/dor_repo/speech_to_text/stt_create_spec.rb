@@ -17,12 +17,10 @@ describe Robots::DorRepo::SpeechToText::SttCreate do
   let(:dsa_object_client) do
     instance_double(Dor::Services::Client::Object, find: cocina_model, update: true)
   end
-  let(:workflow_client) do
-    instance_double(Dor::Workflow::Client, process: workflow_process, workflow_status: 'waiting')
-  end
-  let(:workflow_process) do
-    instance_double(Dor::Workflow::Response::Process, lane_id: 'lane1', context: { 'runSpeechToText' => true })
-  end
+  let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id: 'lane1') }
+  let(:workflow_response) { instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response) }
+  let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow, find: workflow_response, create: nil) }
+  let(:workflow_process) { instance_double(Dor::Services::Client::Process, update: true, update_error: true, status: 'queued') }
   let(:job_id) { "#{bare_druid}-v1" }
   let(:media) { [{ name: "#{job_id}/#{filenames_to_stt[0]}", options: { language: 'en' } }, { name: "#{job_id}/#{filenames_to_stt[1]}", options: { language: 'es' } }] }
   let(:list_objects) { instance_double(Aws::S3::Types::ListObjectsOutput, contents: [mov_object, mp3_object]) }
@@ -35,7 +33,8 @@ describe Robots::DorRepo::SpeechToText::SttCreate do
     allow(Aws::Batch::Client).to receive(:new).and_return(aws_batch_client)
     allow(Dor::Services::Client).to receive(:object).and_return(dsa_object_client)
     allow(Dor::TextExtraction::SpeechToText).to receive(:new).and_return(stt)
-    allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
+    allow(dsa_object_client).to receive(:workflow).with('speechToTextWF').and_return(object_workflow)
+    allow(object_workflow).to receive(:process).with('stt-create').and_return(workflow_process)
     allow(aws_s3_client).to receive(:list_objects).and_return(list_objects)
     allow(aws_batch_client).to receive(:submit_job).and_return(job_response)
     allow(stt).to receive(:language_tag).with(filenames_to_stt[0]).and_return('en')

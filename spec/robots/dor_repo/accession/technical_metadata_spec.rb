@@ -10,12 +10,14 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
 
     let(:druid) { 'druid:dd116zh0343' }
     let(:object_client) { instance_double(Dor::Services::Client::Object, find: object) }
-    let(:workflow_client) { instance_double(Dor::Workflow::Client, process:) }
-    let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'low') }
+    let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id: 'low', context: {}) }
+    let(:workflow_response) { instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response) }
+    let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow, process: workflow_process, find: workflow_response) }
+    let(:workflow_process) { instance_double(Dor::Services::Client::Process, update: true, update_error: true, status: 'queued') }
 
     before do
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
-      allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
+      allow(object_client).to receive(:workflow).with('accessionWF').and_return(object_workflow)
     end
 
     context 'when a DRO with files' do

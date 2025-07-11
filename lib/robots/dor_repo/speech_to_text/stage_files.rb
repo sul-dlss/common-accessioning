@@ -9,7 +9,7 @@ module Robots
           super('speechToTextWF', 'stage-files')
         end
 
-        # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
+        # available from LyberCore::Robot: druid, bare_druid, object_workflow, object_client, cocina_object, logger
         # copy files from S3 workspace to local workspace
         def perform_work
           workspace_dir = object_client.workspace.create(content: true, metadata: true)
