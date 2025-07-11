@@ -8,7 +8,6 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
   let(:base_url) { 'http://dor-services.example.edu' }
   let(:bare_druid) { 'bb222cc3333' }
   let(:druid) { "druid:#{bare_druid}" }
-  let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
   let(:workspace_client) { instance_double(Dor::Services::Client::Workspace, create: nil) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, close: true) }
   let(:object_client) do

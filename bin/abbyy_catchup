@@ -26,13 +26,13 @@ successes, failures = results.partition(&:success?)
 # Manually process the successes and failures; continue on error
 successes.each do |result|
   watcher.process_success(result)
-rescue Dor::WorkflowException, Dor::Services::Client::Error => e
+rescue Dor::Services::Client::Error => e
   logger.error e.message
   next
 end
 failures.each do |result|
   watcher.process_failure(result)
-rescue Dor::WorkflowException, Dor::Services::Client::Error => e
+rescue Dor::Services::Client::Error => e
   logger.error e.message
   next
 end

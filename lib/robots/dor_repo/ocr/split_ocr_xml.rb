@@ -9,7 +9,7 @@ module Robots
           super('ocrWF', 'split-ocr-xml')
         end
 
-        # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
+        # available from LyberCore::Robot: druid, bare_druid, object_workflow, object_client, cocina_object, logger
         def perform_work
           base_output_path = Dor::TextExtraction::Ocr.new(cocina_object:).abbyy_output_path
           alto_path = File.join(base_output_path, "#{bare_druid}.xml")
