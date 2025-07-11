@@ -1,3 +1,17 @@
+GIT
+  remote: https://github.com/sul-dlss/lyber-core.git
+  revision: c1db7cd65b9b33590ca6817ebd19538b509abac0
+  specs:
+    lyber-core (7.7.0)
+      activesupport
+      config
+      dor-services-client
+      dor-workflow-client (>= 7.6)
+      druid-tools
+      honeybadger
+      sidekiq (~> 7.0)
+      zeitwerk
+
 GEM
   remote: https://gems.contribsys.com/
   specs:
@@ -196,15 +210,6 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.7.0)
-    lyber-core (7.7.0)
-      activesupport
-      config
-      dor-services-client
-      dor-workflow-client (>= 7.6)
-      druid-tools
-      honeybadger
-      sidekiq (~> 7.0)
-      zeitwerk
     method_source (1.1.0)
     mime-types (3.7.0)
       logger
@@ -391,7 +396,7 @@ DEPENDENCIES
   equivalent-xml
   honeybadger
   listen (~> 3.9)
-  lyber-core (~> 7.6)
+  lyber-core!
   nokogiri
   preservation-client
   pry

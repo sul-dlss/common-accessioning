@@ -9,7 +9,7 @@ module Robots
           super('ocrWF', 'xml-ticket-create')
         end
 
-        # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
+        # available from LyberCore::Robot: druid, bare_druid, object_workflow, object_client, cocina_object, logger
         def perform_work
           workflow_context = workflow.context
           filepaths = Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context:).filenames_to_ocr

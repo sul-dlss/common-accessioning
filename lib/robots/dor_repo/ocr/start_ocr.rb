@@ -17,7 +17,7 @@ module Robots
           else
             # skip all steps in the WF with note
             note = 'No files available or invalid object for OCR'
-            workflow_service.skip_all(druid:, workflow: 'ocrWF', note:)
+            object_workflow.skip_all(note:)
             LyberCore::ReturnState.new(status: 'skipped', note:)
           end
         end

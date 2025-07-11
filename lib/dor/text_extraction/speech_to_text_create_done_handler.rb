@@ -10,7 +10,7 @@ module Dor
         @host = host
         @progname = progname
         @logger = logger
-        @workflow_updater = Dor::TextExtraction::WorkflowUpdater.new(logger:)
+        @workflow_updater = Dor::TextExtraction::WorkflowUpdater.new
         @dor_event_logger = Dor::TextExtraction::DorEventLogger.new(logger:)
       end
 
