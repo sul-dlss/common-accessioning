@@ -16,7 +16,9 @@ gem 'dry-struct', '~> 1.0'
 gem 'dry-types', '~> 1.1'
 gem 'druid-tools'
 gem 'honeybadger'
-gem 'lyber-core', '~> 7.6' # 7.6 uses the correct dor-services-client version (> 15.0)
+# gem 'lyber-core', '~> 7.6' # 7.6 uses the correct dor-services-client version (> 15.0)
+# gem 'lyber-core', path: '../lyber-core'
+gem 'lyber-core', github: 'sul-dlss/lyber-core' # 7.6 uses the correct dor-services-client version (> 15.0)
 gem 'nokogiri'
 gem 'purl_fetcher-client'
 gem 'preservation-client'

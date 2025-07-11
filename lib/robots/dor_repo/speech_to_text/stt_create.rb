@@ -9,7 +9,7 @@ module Robots
           super('speechToTextWF', 'stt-create')
         end
 
-        # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
+        # available from LyberCore::Robot: druid, bare_druid, object_workflow, object_client, cocina_object, logger
         def perform_work
           # start the caption creation by sending Batch a job
           send_batch_message
