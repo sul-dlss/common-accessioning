@@ -22,6 +22,14 @@ module Robots
           @current_version ||= object_client.version.current
         end
 
+        # we will pass on any workflow context to the next version when starting OCR or speechToText
+        # so that user selections like language will be available to the OCR/speechToText workflows,
+        # but we will remove the context values that actually starts OCR/speechToText when doing this,
+        # or else we will end up in an infinite loop, where the workflow gets triggered over and over again
+        def workflow_context_for_next_version
+          workflow.context.except('runOCR', 'runSpeechToText')
+        end
+
         # check to see if we need to run OCR or speech-to-text or start workflow if needed
         # they are currently mutually exclusive, you cannot run both OCR and speech-to-text on the same object at the same time
         def start_captioning
@@ -39,12 +47,12 @@ module Robots
             # user asked for OCR but the object is not OCRable
             raise 'Object cannot be OCRd' unless ocr.possible?
 
-            workflow_service.create_workflow_by_name(druid, 'ocrWF', version: next_version, lane_id:, context: workflow.context)
+            workflow_service.create_workflow_by_name(druid, 'ocrWF', version: next_version, lane_id:, context: workflow_context_for_next_version)
           elsif stt.required?
             # user asked for SpeechToText but the object is not speech-to-textable
             raise 'Object cannot have speech-to-text applied' unless stt.possible?
 
-            workflow_service.create_workflow_by_name(druid, 'speechToTextWF', version: next_version, lane_id:, context: workflow.context)
+            workflow_service.create_workflow_by_name(druid, 'speechToTextWF', version: next_version, lane_id:, context: workflow_context_for_next_version)
           end
         end
 

@@ -1,5 +1,8 @@
 <?xml version='1.0'?>
 <XmlTicket>
+    <ImageProcessingProfile>
+        <ImageOperation Operation='Rotate' RotationType='Automatic' />
+    </ImageProcessingProfile>
     <RecognitionParams RecognitionQuality='Balanced' RecognitionMode='FullPage' UsePullXTextAndRecognizeRest='false' LanguageDetectMode='Always'>
         <TextType>Normal</TextType>
         <Language>Spanish</Language>
@@ -13,7 +16,7 @@
             <FileExistsAction>Overwrite</FileExistsAction>
             <NamingRule>bb222cc3333.&lt;Ext&gt;</NamingRule>
         </ExportFormat>
-        <ExportFormat OutputFileFormat='ALTO' OutputFlowType='SharedFolder' FormatVersion='3_1'
+        <ExportFormat OutputFileFormat='ALTO' WriteOriginalImageCoordinates='true' OutputFlowType='SharedFolder' FormatVersion='3_1'
             CoordinatesParticularity='Words' WriteWordConfidence='true'>
             <OutputLocation>S:\AbbyyShare\sdr-ocr-qa\OUTPUT/bb222cc3333</OutputLocation>
             <FileExistsAction>Overwrite</FileExistsAction>
