@@ -31,26 +31,21 @@ module Robots
           ocr = Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context: workflow.context)
           stt = Dor::TextExtraction::SpeechToText.new(cocina_object:, workflow_context: workflow.context)
 
+          # NOTE: since the first step of ocrWF or speechToTextWF opens a new version, we want this new WF to be associated
+          #       with the next object version (the current version is about to be closed)
+          next_version = (current_version.to_i + 1)
+
           if ocr.required?
             # user asked for OCR but the object is not OCRable
             raise 'Object cannot be OCRd' unless ocr.possible?
 
-            start_caption_workflow('ocrWF')
+            workflow_service.create_workflow_by_name(druid, 'ocrWF', version: next_version, lane_id:, context: workflow.context)
           elsif stt.required?
             # user asked for SpeechToText but the object is not speech-to-textable
             raise 'Object cannot have speech-to-text applied' unless stt.possible?
 
-            start_caption_workflow('speechToTextWF')
+            workflow_service.create_workflow_by_name(druid, 'speechToTextWF', version: next_version, lane_id:, context: workflow.context)
           end
-        end
-
-        def start_caption_workflow(workflow_name)
-          # NOTES:
-          # 1. since the first step of ocrWF or speechToTextWF opens a new version, we want this new WF to be associated
-          #       with the next object version (the current version is about to be closed)
-          # 2. we need to pass in any existing workflow version context from the previous version because it can contain
-          #       user provided values (such as language selection)
-          workflow_service.create_workflow_by_name(druid, workflow_name, version: (current_version.to_i + 1), lane_id:, context: workflow.context)
         end
 
         # This returns any optional dissemination workflow such as wasDisseminationWF
