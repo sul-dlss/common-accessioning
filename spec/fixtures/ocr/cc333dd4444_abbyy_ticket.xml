@@ -1,5 +1,8 @@
 <?xml version='1.0'?>
 <XmlTicket>
+  <ImageProcessingProfile>
+    <ImageOperation Operation='Rotate' RotationType='Automatic' />
+  </ImageProcessingProfile>
   <ExportParams XMLResultPublishingMethod='XMLResultToFolder'>
     <ExportFormat OutputFileFormat='PDFA' OutputFlowType='SharedFolder'
                 PdfAComplianceMode='PDFAM_PdfA_2u' PdfVersion='Version17'
@@ -9,7 +12,8 @@
       <FileExistsAction>Overwrite</FileExistsAction>
       <NamingRule>cc333dd4444.&lt;Ext&gt;</NamingRule>
     </ExportFormat>
-    <ExportFormat OutputFileFormat='ALTO' OutputFlowType='SharedFolder' FormatVersion='3_1' CoordinatesParticularity='Words' WriteWordConfidence='true'>
+    <ExportFormat OutputFileFormat='ALTO' WriteOriginalImageCoordinates='true' OutputFlowType='SharedFolder' FormatVersion='3_1' CoordinatesParticularity='Words'
+      WriteWordConfidence='true'>
       <OutputLocation>S:\AbbyyShare\sdr-ocr-qa\OUTPUT/cc333dd4444</OutputLocation>
       <FileExistsAction>Overwrite</FileExistsAction>
       <NamingRule>cc333dd4444.&lt;Ext&gt;</NamingRule>
