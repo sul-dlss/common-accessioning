@@ -11,6 +11,75 @@ module Robots
 
         def perform_work
           raise 'Accessioning has been started with an object that is still open' if object_client.version.status.open?
+
+          check_files! if cocina_object.dro?
+        end
+
+        private
+
+        def check_files! # rubocop:disable Metrics/MethodLength
+          # There may be a latency before staging files are visible in this mount, so we will retry a few times.
+          retries = 0
+          staging_present = nil
+          begin
+            staging_present = staging_pathname.exist?
+            missing_files = audit_files
+
+            raise "Files missing from staging, workspace, and preservation: #{missing_files.join(', ')}" if missing_files.present?
+          rescue StandardError
+            if !staging_present && retries < 3
+              retries += 1
+              sleep(5 * retries) # wait before retrying
+              retry
+            end
+            raise
+          end
+        end
+
+        # @return [Array<String>] list of files that are missing from staging, workspace, and preservation
+        def audit_files
+          [].tap do |missing_files|
+            # Every file should be in staging, workspace, or preservation.
+            cocina_object.structural.contains.each do |fileset|
+              fileset.structural.contains.each do |file|
+                next if check_file(dir_pathname: staging_pathname, file: file)
+                next if check_file(dir_pathname: workspace_pathname, file: file)
+                next if check_preservation_file(file: file)
+
+                missing_files << file.filename
+              end
+            end
+          end
+        end
+
+        def staging_pathname
+          @staging_pathname ||= DruidTools::Druid.new(druid, Settings.sdr.staging_root).pathname
+        end
+
+        def workspace_pathname
+          @workspace_pathname ||= DruidTools::Druid.new(druid, Settings.sdr.local_workspace_root).pathname
+        end
+
+        def preservation_client
+          @preservation_client ||= Preservation::Client.configure(url: Settings.preservation_catalog.url, token: Settings.preservation_catalog.token)
+        end
+
+        # @return [boolean] true if the file exists and has the expected size
+        def check_file(dir_pathname:, file:)
+          file_pathname = dir_pathname.join('content', file.filename)
+          file_pathname.exist? && file_pathname.size == file.size
+        end
+
+        # @return [boolean] true if the file exists in preservation and has the expected MD5
+        def check_preservation_file(file:)
+          file_md5 = file.hasMessageDigests.find { |message_digest| message_digest.type == 'md5' }.digest
+          preservation_files_md5_map[file.filename] == file_md5
+        end
+
+        def preservation_files_md5_map
+          @preservation_files_md5_map ||= preservation_client.objects.checksum(druid: druid).each_with_object({}) do |hash, map|
+            map[hash[:filename]] = hash[:md5]
+          end
         end
       end
     end
