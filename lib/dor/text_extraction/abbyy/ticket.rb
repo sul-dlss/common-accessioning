@@ -46,7 +46,7 @@ module Dor
         end
 
         def alto_output
-          "<ExportFormat OutputFileFormat='ALTO' OutputFlowType='SharedFolder' FormatVersion='3_1' CoordinatesParticularity='Words' WriteWordConfidence='true'>
+          "<ExportFormat OutputFileFormat='ALTO' WriteOriginalImageCoordinates='true' OutputFlowType='SharedFolder' FormatVersion='3_1' CoordinatesParticularity='Words' WriteWordConfidence='true'>
             <OutputLocation>#{output_file_path}</OutputLocation>
             <FileExistsAction>Overwrite</FileExistsAction>
             <NamingRule>#{bare_druid}.&lt;Ext&gt;</NamingRule>
@@ -72,6 +72,12 @@ module Dor
           </ExportFormat>"
         end
 
+        def image_processing_profile
+          "<ImageProcessingProfile>
+            <ImageOperation Operation='Rotate' RotationType='Automatic'/>
+          </ImageProcessingProfile>"
+        end
+
         def input_filepaths_field
           # windows filepath since Abbyy service runs on a Windows machine
           filepaths.map do |filename|
@@ -84,6 +90,7 @@ module Dor
         def xml
           "<?xml version='1.0'?>
           <XmlTicket>
+            #{image_processing_profile}
             #{language_xml}
             <ExportParams XMLResultPublishingMethod='XMLResultToFolder'>
               #{pdf_files? ? pdfa_output : image_output}
