@@ -18,6 +18,7 @@ sdr:
   local_workspace_root: /dor/workspace
   staging_root: /sdr-deposit-staging
   abbyy:
+    max_image_dimension: 30000 # any image larger than this along either dimension will be ignored for OCR purposes
     # Windows-style paths for the ABBYY machine, referenced in XML tickets
     remote_output_path: /tmp/output
     remote_result_path: /tmp/result
