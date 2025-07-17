@@ -15,11 +15,15 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
   let(:preservation_client) { instance_double(Preservation::Client, objects: preservation_objects_client) }
   let(:preservation_objects_client) { instance_double(Preservation::Client::Objects, checksum: checksums) }
   let(:checksums) { [] }
+  let(:purl_fetcher_reader) { instance_double(PurlFetcher::Client::Reader, files_by_digest:) }
+  let(:files_by_digest) { [] }
+  let(:access) { { view: 'world', download: 'world' } }
 
   before do
     allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
     allow(Settings.sdr).to receive_messages(local_workspace_root: 'spec/fixtures/workspace', staging_root: 'spec/fixtures/staging')
     allow(Preservation::Client).to receive(:configure).and_return(preservation_client)
+    allow(PurlFetcher::Client::Reader).to receive(:new).and_return(purl_fetcher_reader)
   end
 
   describe '#perform' do
@@ -52,7 +56,7 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
 
     context 'when DRO with files' do
       let(:cocina_object) do
-        build(:dro, id: druid).new(structural:)
+        build(:dro, id: druid).new(access:, structural:)
       end
 
       let(:structural) do
@@ -123,6 +127,28 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
                   }
                 ]
               }
+            },
+            # This file is on shelves.
+            {
+              externalIdentifier: '225',
+              type: Cocina::Models::FileSetType.file,
+              label: 'my shelved repository object',
+              version: 1,
+              structural: {
+                contains: [
+                  {
+                    externalIdentifier: '225-1',
+                    label: 'folder1PuSu/story6u.txt',
+                    filename: 'folder1PuSu/story6u.txt',
+                    type: Cocina::Models::ObjectType.file,
+                    version: 1,
+                    access: {},
+                    size: 7888,
+                    administrative: { publish: true, sdrPreserve: false, shelve: true },
+                    hasMessageDigests: [{ type: 'md5', digest: '123' }]
+                  }
+                ]
+              }
             }
           ],
           hasMemberOrders: [],
@@ -137,6 +163,13 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
         ]
       end
 
+      let(:files_by_digest) do
+        [
+          { '123' => 'folder1PuSu/story6u.txt' },
+          { '456' => 'folder1PuSu/story7u.txt' }
+        ]
+      end
+
       it 'does not raise' do
         expect { perform }.not_to raise_error
       end
@@ -144,7 +177,7 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
 
     context 'when DRO with missing file and staging directory not present' do
       let(:cocina_object) do
-        build(:dro, id: druid).new(structural:)
+        build(:dro, id: druid).new(access:, structural:)
       end
 
       let(:structural) do
@@ -165,7 +198,7 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
                     version: 1,
                     access: {},
                     size: 7888,
-                    administrative: { publish: true, sdrPreserve: true, shelve: false },
+                    administrative: { publish: true, sdrPreserve: true, shelve: true },
                     hasMessageDigests: [{ type: 'md5', digest: '123' }]
                   }
                 ]
@@ -178,14 +211,14 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
       end
 
       it 'raises an error' do
-        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, workspace, and preservation: folder1PuSu/story1x.txt')
+        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, workspace, shelves, and preservation: folder1PuSu/story1x.txt')
       end
     end
 
     # rubocop:disable RSpec/SubjectStub
     context 'when DRO with missing file' do
       let(:cocina_object) do
-        build(:dro, id: druid).new(structural:)
+        build(:dro, id: druid).new(access:, structural:)
       end
 
       let(:structural) do
@@ -206,7 +239,7 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
                     version: 1,
                     access: {},
                     size: 7888,
-                    administrative: { publish: true, sdrPreserve: true, shelve: false },
+                    administrative: { publish: true, sdrPreserve: true, shelve: true },
                     hasMessageDigests: [{ type: 'md5', digest: '123' }]
                   }
                 ]
@@ -224,10 +257,55 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
       end
 
       it 'retries before raising an error' do
-        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, workspace, and preservation: folder1PuSu/story1x.txt')
+        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, workspace, shelves, and preservation: folder1PuSu/story1x.txt')
         expect(robot).to have_received(:sleep).exactly(3).times
       end
     end
     # rubocop:enable RSpec/SubjectStub
+
+    context 'when DRO with shelved file but object is not on shelves' do
+      let(:cocina_object) do
+        build(:dro, id: druid).new(access:, structural:)
+      end
+
+      let(:structural) do
+        {
+          contains: [
+            # This file is on shelves.
+            {
+              externalIdentifier: '225',
+              type: Cocina::Models::FileSetType.file,
+              label: 'my shelved repository object',
+              version: 1,
+              structural: {
+                contains: [
+                  {
+                    externalIdentifier: '225-1',
+                    label: 'folder1PuSu/story6u.txt',
+                    filename: 'folder1PuSu/story6u.txt',
+                    type: Cocina::Models::ObjectType.file,
+                    version: 1,
+                    access: {},
+                    size: 7888,
+                    administrative: { publish: true, sdrPreserve: false, shelve: true },
+                    hasMessageDigests: [{ type: 'md5', digest: '123' }]
+                  }
+                ]
+              }
+            }
+          ],
+          hasMemberOrders: [],
+          isMemberOf: []
+        }
+      end
+
+      before do
+        allow(purl_fetcher_reader).to receive(:files_by_digest).and_raise(PurlFetcher::Client::NotFoundResponseError)
+      end
+
+      it 'raises an error' do
+        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, workspace, shelves, and preservation: folder1PuSu/story6u.txt')
+      end
+    end
   end
 end
