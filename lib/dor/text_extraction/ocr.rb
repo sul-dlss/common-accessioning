@@ -94,20 +94,21 @@ module Dor
       def cleanup_output_folder
         return unless Dir.exist?(abbyy_output_path)
 
-        # the output folder *should* be empty by now, but sometimes it takes a bit longer for it to actually be
-        # empty or appear to be empty (file system sync issues)...since the rm -fr call does not actually seem
-        # to remove non-empty folders, wait a bit until the file system thinks the folder is empty,
-        # but eventually giving up so we don't wait forever
+        files = Dir.glob("#{abbyy_output_path}/*")
+        logger.info "Removing ABBYY output directory: #{abbyy_output_path}.  Empty: #{Dir.empty?(abbyy_output_path)}. Num files/folders: #{files.count}: #{files.join(', ')}"
+        # the output folder *should* be empty/deleted by now, but sometimes it takes a bit longer for it to actually be
+        # empty/deleted or appear to be empty/deleted (file system sync issues)
+        # wait a bit until the file system thinks the folder is empty, but eventually giving up so we don't wait forever
         tries = 0
         max_tries = 5
         loop do
+          delete_folder(abbyy_output_path)
           tries += 1
-          sleep(3**tries)
-          break if Dir.empty?(abbyy_output_path) || tries > max_tries
+          sleep(2**tries)
+
+          break if !Dir.exist?(abbyy_output_path) || Dir.empty?(abbyy_output_path) || tries > max_tries
         end
 
-        files = Dir.glob("#{abbyy_output_path}/*")
-        logger.info "Removing ABBYY output directory: #{abbyy_output_path}.  Empty: #{Dir.empty?(abbyy_output_path)}. Num files/folders: #{files.count}: #{files.join(', ')}"
         delete_folder(abbyy_output_path)
       end
       # rubocop:enable Metrics/MethodLength,Metrics/AbcSize
