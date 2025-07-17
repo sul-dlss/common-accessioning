@@ -25,7 +25,7 @@ module Robots
             staging_present = staging_pathname.exist?
             missing_files = audit_files
 
-            raise "Files missing from staging, workspace, and preservation: #{missing_files.join(', ')}" if missing_files.present?
+            raise "Files missing from staging, workspace, shelves, and preservation: #{missing_files.join(', ')}" if missing_files.present?
           rescue StandardError
             if !staging_present && retries < 3
               retries += 1
@@ -38,17 +38,22 @@ module Robots
 
         # @return [Array<String>] list of files that are missing from staging, workspace, and preservation
         def audit_files
-          [].tap do |missing_files|
-            # Every file should be in staging, workspace, or preservation.
-            cocina_object.structural.contains.each do |fileset|
-              fileset.structural.contains.each do |file|
-                next if check_file(dir_pathname: staging_pathname, file: file)
-                next if check_file(dir_pathname: workspace_pathname, file: file)
-                next if check_preservation_file(file: file)
+          cocina_files.filter_map do |file|
+            # Every file should be in staging, workspace, shelf, or preservation.
+            next if check_file(dir_pathname: staging_pathname, file: file)
+            next if check_file(dir_pathname: workspace_pathname, file: file)
 
-                missing_files << file.filename
-              end
-            end
+            md5 = file.hasMessageDigests.find { |message_digest| message_digest.type == 'md5' }.digest
+            next if check_preservation_file(file: file, md5: md5)
+            next if check_shelved_file(file: file, md5: md5)
+
+            file.filename
+          end
+        end
+
+        def cocina_files
+          cocina_object.structural.contains.flat_map do |fileset|
+            fileset.structural.contains
           end
         end
 
@@ -71,14 +76,28 @@ module Robots
         end
 
         # @return [boolean] true if the file exists in preservation and has the expected MD5
-        def check_preservation_file(file:)
-          file_md5 = file.hasMessageDigests.find { |message_digest| message_digest.type == 'md5' }.digest
-          preservation_files_md5_map[file.filename] == file_md5
+        def check_preservation_file(file:, md5:)
+          file.administrative.sdrPreserve && preservation_files_md5_map[file.filename] == md5
         end
 
         def preservation_files_md5_map
           @preservation_files_md5_map ||= preservation_client.objects.checksum(druid: druid).each_with_object({}) do |hash, map|
             map[hash[:filename]] = hash[:md5]
+          end
+        end
+
+        # @return [boolean] true if the file exists on shelfs and has the expected MD5
+        def check_shelved_file(file:, md5:)
+          file.administrative.shelve && shelve_files_md5_map[file.filename] == md5
+        end
+
+        def shelve_files_md5_map
+          @shelve_files_md5_map ||= begin
+            PurlFetcher::Client::Reader.new(host: Settings.purl_fetcher.url).files_by_digest(druid).each_with_object({}) do |hash, map|
+              map[hash.values.first] = hash.keys.first
+            end
+          rescue PurlFetcher::Client::NotFoundResponseError
+            {}
           end
         end
       end
