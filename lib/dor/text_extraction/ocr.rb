@@ -90,27 +90,13 @@ module Dor
       end
 
       # e.g. /abbyy/OUTPUT/ab123cd4567
-      # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
       def cleanup_output_folder
         return unless Dir.exist?(abbyy_output_path)
-
-        # the output folder *should* be empty by now, but sometimes it takes a bit longer for it to actually be
-        # empty or appear to be empty (file system sync issues)...since the rm -fr call does not actually seem
-        # to remove non-empty folders, wait a bit until the file system thinks the folder is empty,
-        # but eventually giving up so we don't wait forever
-        tries = 0
-        max_tries = 5
-        loop do
-          tries += 1
-          sleep(3**tries)
-          break if Dir.empty?(abbyy_output_path) || tries > max_tries
-        end
 
         files = Dir.glob("#{abbyy_output_path}/*")
         logger.info "Removing ABBYY output directory: #{abbyy_output_path}.  Empty: #{Dir.empty?(abbyy_output_path)}. Num files/folders: #{files.count}: #{files.join(', ')}"
         delete_folder(abbyy_output_path)
       end
-      # rubocop:enable Metrics/MethodLength,Metrics/AbcSize
 
       # e.g. /abbyy/INPUT/ab123cd4567.xml
       def cleanup_xml_ticket
