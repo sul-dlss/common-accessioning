@@ -95,18 +95,19 @@ module Dor
         return unless Dir.exist?(abbyy_output_path)
 
         files = Dir.glob("#{abbyy_output_path}/*")
+        files.each { |file| FileUtils.rm_r(file) }
         logger.info "Removing ABBYY output directory: #{abbyy_output_path}.  Empty: #{Dir.empty?(abbyy_output_path)}. Num files/folders: #{files.count}: #{files.join(', ')}"
         # the output folder *should* be empty/deleted by now, but sometimes it takes a bit longer for it to actually be
         # empty/deleted or appear to be empty/deleted (file system sync issues)
         # wait a bit until the file system thinks the folder is empty, but eventually giving up so we don't wait forever
         tries = 0
-        max_tries = 5
+        max_tries = 7
         loop do
           delete_folder(abbyy_output_path)
           tries += 1
-          sleep(2**tries)
-
           break if !Dir.exist?(abbyy_output_path) || Dir.empty?(abbyy_output_path) || tries > max_tries
+
+          sleep(2**tries)
         end
 
         delete_folder(abbyy_output_path)

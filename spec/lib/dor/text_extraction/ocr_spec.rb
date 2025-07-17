@@ -266,7 +266,7 @@ RSpec.describe Dor::TextExtraction::Ocr do
           ocr.cleanup
           expect(Honeybadger).not_to have_received(:notify) # no calls to HB, success occurs third time
           expect(ocr).to have_received(:`).with("rm -rf #{ocr.abbyy_input_path}").exactly(3).times
-          expect(ocr).to have_received(:`).with("rm -rf #{ocr.abbyy_output_path}").once
+          expect(ocr).to have_received(:`).with("rm -rf #{ocr.abbyy_output_path}").twice
         end
       end
 
