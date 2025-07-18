@@ -44,7 +44,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
           it 'does not start ocrWF' do
             perform
-            expect(workflow_client).not_to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default')
+            expect(workflow_client).not_to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default', context:)
           end
         end
 
@@ -54,7 +54,19 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
           it 'starts ocrWF' do
             perform
-            expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default')
+            expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default', context:)
+          end
+        end
+
+        context 'when is required and possible and has incoming workflow context' do
+          let(:possible) { true }
+          let(:required) { true }
+          let(:context) { { 'runOCR' => true, 'ocrLanguages' => ['Russian'] } }
+          let(:incoming_context) { { 'ocrLanguages' => ['Russian'] } }
+
+          it 'starts ocrWF but removes runOCR from context' do
+            perform
+            expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default', context: incoming_context)
           end
         end
 
@@ -77,7 +89,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
           it 'does not start speechToTextWF' do
             perform
-            expect(workflow_client).not_to have_received(:create_workflow_by_name).with(druid, 'speechToTextWF', version: 2, lane_id: 'default')
+            expect(workflow_client).not_to have_received(:create_workflow_by_name).with(druid, 'speechToTextWF', version: 2, lane_id: 'default', context:)
           end
         end
 
@@ -87,7 +99,19 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
           it 'starts speechToTextWF' do
             perform
-            expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'speechToTextWF', version: 2, lane_id: 'default')
+            expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'speechToTextWF', version: 2, lane_id: 'default', context:)
+          end
+        end
+
+        context 'when is required and possible and has incoming workflow context' do
+          let(:possible) { true }
+          let(:required) { true }
+          let(:context) { { 'runSpeechToText' => true, 'ocrLanguages' => ['Russian'] } }
+          let(:incoming_context) { { 'ocrLanguages' => ['Russian'] } }
+
+          it 'starts ocrWF but removes runSpeechToText from context' do
+            perform
+            expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'speechToTextWF', version: 2, lane_id: 'default', context: incoming_context)
           end
         end
 

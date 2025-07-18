@@ -43,7 +43,7 @@ describe Robots::DorRepo::Ocr::XmlTicketCreate do
   context 'when robot has user inputed languages' do
     let(:bare_druid) { 'bc123df4567' }
     let(:druid) { "druid:#{bare_druid}" }
-    let(:workflow_context) { { runOCR: true, ocrLanguages: %w[English Spanish German] } }
+    let(:workflow_context) { { 'runOCR' => true, 'ocrLanguages' => %w[English Spanish German] } }
     let(:filenames) { ['filename3.PDF', 'filename4.pdf'] }
     let(:object_type) { Cocina::Models::ObjectType.document }
 

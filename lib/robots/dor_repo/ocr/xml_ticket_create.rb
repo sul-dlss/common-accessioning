@@ -13,7 +13,7 @@ module Robots
         def perform_work
           workflow_context = workflow.context
           filepaths = Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context:).filenames_to_ocr
-          Dor::TextExtraction::Abbyy::Ticket.new(filepaths:, druid:, ocr_languages: workflow_context[:ocrLanguages]).write_xml
+          Dor::TextExtraction::Abbyy::Ticket.new(filepaths:, druid:, ocr_languages: workflow_context['ocrLanguages']).write_xml
         end
       end
     end
