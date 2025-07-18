@@ -1,3 +1,17 @@
+GIT
+  remote: https://github.com/sul-dlss/lyber-core.git
+  revision: 2080c69783e03de5aa8784fbae921406eed6e341
+  branch: how-about-less-memoization-will-that-fix-things
+  specs:
+    lyber-core (8.0.0)
+      activesupport
+      config
+      dor-services-client
+      druid-tools
+      honeybadger
+      sidekiq (~> 7.0)
+      zeitwerk
+
 GEM
   remote: https://gems.contribsys.com/
   specs:
@@ -189,14 +203,6 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.7.0)
-    lyber-core (8.0.0)
-      activesupport
-      config
-      dor-services-client
-      druid-tools
-      honeybadger
-      sidekiq (~> 7.0)
-      zeitwerk
     method_source (1.1.0)
     mime-types (3.7.0)
       logger
@@ -382,7 +388,7 @@ DEPENDENCIES
   equivalent-xml
   honeybadger
   listen (~> 3.9)
-  lyber-core (~> 8.0)
+  lyber-core!
   nokogiri
   preservation-client
   pry
