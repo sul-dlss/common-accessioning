@@ -29,7 +29,7 @@ describe Dor::TextExtraction::SpeechToTextCreateDoneHandler do
   let(:event_data) { { host:, invoked_by: progname, done_msg_body: done_msg_hash } }
 
   before do
-    allow(Dor::TextExtraction::WorkflowUpdater).to receive(:new).with(logger:).and_return(workflow_updater)
+    allow(Dor::TextExtraction::WorkflowUpdater).to receive(:new).and_return(workflow_updater)
     allow(Dor::TextExtraction::DorEventLogger).to receive(:new).with(logger:).and_return(dor_event_logger)
     handler.process_done_message(done_msg)
   end

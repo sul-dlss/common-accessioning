@@ -15,12 +15,10 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
   let(:dsa_object_client) do
     instance_double(Dor::Services::Client::Object, find: cocina_model, update: true)
   end
-  let(:workflow_client) do
-    instance_double(Dor::Workflow::Client, process: workflow_process, workflow_status: 'waiting')
-  end
-  let(:workflow_process) do
-    instance_double(Dor::Workflow::Response::Process, lane_id: 'lane1', context: { 'runSpeechToText' => true })
-  end
+  let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id: 'lane1', context: { 'runSpeechToText' => true }) }
+  let(:workflow_response) { instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response) }
+  let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow, find: workflow_response, create: nil) }
+  let(:workflow_process) { instance_double(Dor::Services::Client::Process, update: true, update_error: true, status: 'waiting') }
   let(:aws_client) { instance_double(Aws::S3::Client) }
   let(:mov_location) { instance_double(Aws::S3::Object, bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{job_id}/file1.mov", client: aws_client) }
   let(:mp3_location) { instance_double(Aws::S3::Object, bucket_name: Settings.aws.speech_to_text.base_s3_bucket, key: "#{job_id}/file2.mp3", client: aws_client) }
@@ -28,7 +26,8 @@ describe Robots::DorRepo::SpeechToText::FetchFiles do
 
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(dsa_object_client)
-    allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
+    allow(dsa_object_client).to receive(:workflow).with('speechToTextWF').and_return(object_workflow)
+    allow(object_workflow).to receive(:process).with('fetch-files').and_return(workflow_process)
     allow(Dor::TextExtraction::FileFetcher).to receive(:new).and_return(file_fetcher)
     allow(Dor::TextExtraction::SpeechToText).to receive(:new).and_return(stt)
     allow(Aws::S3::Client).to receive(:new).and_return(aws_client)

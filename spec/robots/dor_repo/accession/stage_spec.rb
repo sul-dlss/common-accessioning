@@ -10,7 +10,7 @@ RSpec.describe Robots::DorRepo::Accession::Stage do
 
     let(:druid) { 'druid:dd116zh0343' }
     let(:object_client) { instance_double(Dor::Services::Client::Object, find: object) }
-    let(:workflow_client) { instance_double(Dor::Workflow::Client) }
+    let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow) }
     let(:workspace_root) { File.join(Dir.tmpdir, 'workspace') }
     let(:object_workspace_root) { "#{workspace_root}/dd/116/zh/0343/dd116zh0343" }
 
@@ -18,7 +18,7 @@ RSpec.describe Robots::DorRepo::Accession::Stage do
 
     before do
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
-      allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
+      allow(object_client).to receive(:workflow).and_return(object_workflow)
 
       # Workspace fixtures being used for staging.
       allow(Settings.sdr).to receive_messages(staging_root: 'spec/fixtures/workspace', local_workspace_root: workspace_root)

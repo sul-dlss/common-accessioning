@@ -1,3 +1,17 @@
+GIT
+  remote: https://github.com/sul-dlss/lyber-core.git
+  revision: 2080c69783e03de5aa8784fbae921406eed6e341
+  branch: how-about-less-memoization-will-that-fix-things
+  specs:
+    lyber-core (8.0.0)
+      activesupport
+      config
+      dor-services-client
+      druid-tools
+      honeybadger
+      sidekiq (~> 7.0)
+      zeitwerk
+
 GEM
   remote: https://gems.contribsys.com/
   specs:
@@ -127,13 +141,6 @@ GEM
       faraday-retry
       nokogiri
       zeitwerk (~> 2.1)
-    dor-workflow-client (7.8.0)
-      activesupport (>= 7.0.0)
-      deprecation (>= 0.99.0)
-      faraday (~> 2.0)
-      faraday-retry (~> 2.0)
-      nokogiri (~> 1.6)
-      zeitwerk (~> 2.1)
     drb (2.2.3)
     druid-tools (3.0.0)
     dry-core (1.1.0)
@@ -196,15 +203,6 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.7.0)
-    lyber-core (7.7.0)
-      activesupport
-      config
-      dor-services-client
-      dor-workflow-client (>= 7.6)
-      druid-tools
-      honeybadger
-      sidekiq (~> 7.0)
-      zeitwerk
     method_source (1.1.0)
     mime-types (3.7.0)
       logger
@@ -384,14 +382,13 @@ DEPENDENCIES
   debug
   dlss-capistrano
   dor-services-client (~> 15.1)
-  dor-workflow-client (~> 7.0)
   druid-tools
   dry-struct (~> 1.0)
   dry-types (~> 1.1)
   equivalent-xml
   honeybadger
   listen (~> 3.9)
-  lyber-core (~> 7.6)
+  lyber-core!
   nokogiri
   preservation-client
   pry

@@ -7,17 +7,22 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
 
   let(:robot) { described_class.new }
   let(:druid) { 'druid:bb222cc3333' }
+
   let(:release_tags) { [] }
   let(:release_tag_client) { instance_double(Dor::Services::Client::ReleaseTags, list: release_tags) }
-  let(:object_client) { instance_double(Dor::Services::Client::Object, find: cocina_model, members:, release_tags: release_tag_client) }
   let(:members) { [] }
-  let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default') }
-  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process:) }
+
+  let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id: 'default') }
+  let(:workflow_response) { instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response) }
+  let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow, process: workflow_process, find: workflow_response) }
+  let(:workflow_process) { instance_double(Dor::Services::Client::Process, update: true, update_error: true, status: 'queued') }
+  let(:milestones) { instance_double(Dor::Services::Client::Milestones) }
+
+  let(:object_client) { instance_double(Dor::Services::Client::Object, find: cocina_model, members:, release_tags: release_tag_client, workflow: object_workflow, milestones:) }
 
   before do
     allow(Dor::Services::Client).to receive(:object).and_return(object_client)
-    allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
-    allow(workflow_client).to receive(:lifecycle).and_return(true, true, true, false)
+    allow(milestones).to receive(:date).and_return(1.day.ago, 1.day.ago, 1.day.ago, nil)
   end
 
   context 'when the model is an item' do
@@ -60,7 +65,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       end
 
       it 'does not add workflow for item members' do
-        expect(workflow_client).not_to receive(:create_workflow_by_name)
+        expect(object_workflow).not_to receive(:create)
         perform
       end
     end
@@ -74,7 +79,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       end
 
       it 'does not add workflow for item members' do
-        expect(workflow_client).not_to receive(:create_workflow_by_name)
+        expect(object_workflow).not_to receive(:create)
         perform
       end
     end
@@ -88,7 +93,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       end
 
       it 'does not add workflow for item members' do
-        expect(workflow_client).not_to receive(:create_workflow_by_name)
+        expect(object_workflow).not_to receive(:create)
         perform
       end
     end
@@ -106,7 +111,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       end
 
       it 'runs for a collection and execute the item_members method' do
-        expect(workflow_client).to receive(:create_workflow_by_name).exactly(3).times # 3 workflows added, one for each published item
+        expect(object_workflow).to receive(:create).exactly(3).times # 3 workflows added, one for each published item
 
         perform
       end
@@ -126,7 +131,7 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       end
 
       it 'runs for a collection and execute the item_members method' do
-        expect(workflow_client).to receive(:create_workflow_by_name).exactly(3).times # 3 workflows added, one for each published item
+        expect(object_workflow).to receive(:create).exactly(3).times # 3 workflows added, one for each published item
         perform
       end
     end

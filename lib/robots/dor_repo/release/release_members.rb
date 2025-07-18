@@ -29,7 +29,7 @@ module Robots
         end
 
         def published?(member)
-          workflow_service.lifecycle(druid: member.externalIdentifier, milestone_name: 'published', version: member.version).present?
+          object_client.milestones.date(milestone_name: 'published', version: member.version).present?
         end
 
         # Here's an example of the kinds of tags we're dealing with:
@@ -43,7 +43,7 @@ module Robots
         end
 
         def create_release_workflow(member)
-          workflow_service.create_workflow_by_name(member.externalIdentifier, 'releaseWF', version: member.version, lane_id:)
+          object_workflow.create(version: member.version, lane_id:)
         end
       end
     end

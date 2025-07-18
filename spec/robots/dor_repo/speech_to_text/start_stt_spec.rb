@@ -42,21 +42,19 @@ describe Robots::DorRepo::SpeechToText::StartStt do
     let(:note) { 'No files available or invalid object for Speech To Text' }
     let(:workflow) { 'speechToTextWF' }
     let(:status) { 'skipped' }
-    let(:workflow_client) { instance_double(Dor::Workflow::Client) }
+    let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow, skip_all: nil) }
     # NOTE: this is just mocking a workflow response, it doesn't actually have to be fully accurate
     # we just need to expect we will update the status of all steps except start-stt
-    let(:skip_all) { instance_double(Dor::Workflow::Response, name: 'skip-all') }
 
     let(:return_status) { perform.status }
 
     before do
-      allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
-      allow(workflow_client).to receive(:skip_all)
+      allow(object_client).to receive(:workflow).with('speechToTextWF').and_return(object_workflow)
     end
 
     it 'sets sends a skip_all request to dor-client-workflow' do
       perform
-      expect(workflow_client).to have_received(:skip_all).with(druid:, workflow:, note:)
+      expect(object_workflow).to have_received(:skip_all).with(note:)
       expect(return_status).to eq status
     end
   end
