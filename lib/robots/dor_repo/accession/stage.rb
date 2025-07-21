@@ -11,7 +11,7 @@ module Robots
 
         def perform_work # rubocop:disable Metrics/AbcSize
           return LyberCore::ReturnState.new(status: :skipped, note: 'object is not an item') unless cocina_object.dro?
-          return LyberCore::ReturnState.new(status: :skipped, note: 'no files in staging') unless staging_pathname.exist?
+          return LyberCore::ReturnState.new(status: :skipped, note: "no files in staging on #{Socket.gethostname}") unless staging_pathname.exist?
 
           # Delete the workspace directory if it exists
           workspace_pathname.rmtree if workspace_pathname.exist?

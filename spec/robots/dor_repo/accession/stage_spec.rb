@@ -42,7 +42,7 @@ RSpec.describe Robots::DorRepo::Accession::Stage do
 
       it 'skips the robot' do
         expect(perform.status).to eq('skipped')
-        expect(perform.note).to eq('no files in staging')
+        expect(perform.note).to match(/no files in staging/)
       end
     end
 
