@@ -37,7 +37,7 @@ module Robots
         end
 
         # @return [Array<String>] list of files that are missing from staging, workspace, and preservation
-        def audit_files # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrrics/PerceivedComplexity
+        def audit_files # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
           cocina_files.filter_map do |file|
             # Files that are dark (not published or shelved) are not accessioned.
             next unless file.administrative.publish || file.administrative.shelve
