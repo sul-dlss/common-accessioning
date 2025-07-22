@@ -149,6 +149,28 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
                   }
                 ]
               }
+            },
+            # This file is unshelved and unpreserved. Therefore, it should not be present.
+            {
+              externalIdentifier: '226',
+              type: Cocina::Models::FileSetType.file,
+              label: 'my unshelved and unpreserved repository object',
+              version: 1,
+              structural: {
+                contains: [
+                  {
+                    externalIdentifier: '226-1',
+                    label: 'folder1PuSu/story1u.jp2',
+                    filename: 'folder1PuSu/story1u.jp2',
+                    type: Cocina::Models::ObjectType.file,
+                    version: 1,
+                    access: {},
+                    size: 7888,
+                    administrative: { publish: false, sdrPreserve: false, shelve: false },
+                    hasMessageDigests: [{ type: 'md5', digest: '123' }]
+                  }
+                ]
+              }
             }
           ],
           hasMemberOrders: [],
