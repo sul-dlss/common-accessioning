@@ -33,7 +33,7 @@ module Dor
 
           # Set up the services and listener
           @logger = logger
-          @workflow_updater = workflow_updater_class.new(logger:)
+          @workflow_updater = workflow_updater_class.new
           @listener_options = default_listener_options.merge(listener_options)
           Dor::Services::Client.configure(logger:, url: Settings.dor_services.url, token: Settings.dor_services.token)
         end

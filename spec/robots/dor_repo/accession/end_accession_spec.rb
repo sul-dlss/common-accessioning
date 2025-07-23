@@ -10,8 +10,10 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   let(:druid) { 'druid:zz000zz0001' }
   let(:apo_druid) { 'druid:mx121xx1234' }
   let(:context) { {} }
-  let(:process) { instance_double(Dor::Workflow::Response::Process, lane_id: 'default', context:) }
-  let(:workflow_client) { instance_double(Dor::Workflow::Client, create_workflow_by_name: nil, process:) }
+  let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id: 'default', context:) }
+  let(:workflow_response) { instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response) }
+  let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow, process: workflow_process, find: workflow_response, create: nil) }
+  let(:workflow_process) { instance_double(Dor::Services::Client::Process, update: true, update_error: true) }
   let(:object_client) { instance_double(Dor::Services::Client::Object, version: version_client, find: object) }
   let(:apo_object_client) { instance_double(Dor::Services::Client::Object, find: apo) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, current: '1') }
@@ -21,9 +23,10 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
   before do
     allow(Dor::TextExtraction::Ocr).to receive(:new).and_return(ocr)
     allow(Dor::TextExtraction::SpeechToText).to receive(:new).and_return(stt)
-    allow(LyberCore::WorkflowClientFactory).to receive(:build).and_return(workflow_client)
     allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
     allow(Dor::Services::Client).to receive(:object).with(apo_druid).and_return(apo_object_client)
+    allow(object_client).to receive(:workflow).and_return(object_workflow)
+    allow(object_workflow).to receive(:process).and_return(workflow_process)
   end
 
   describe '#perform' do
@@ -32,7 +35,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
     context 'when there is no special dissemniation workflow' do
       it 'completes without creating any new workflows' do
         perform
-        expect(workflow_client).not_to have_received(:create_workflow_by_name)
+        expect(object_workflow).not_to have_received(:create)
       end
 
       context 'when OCR' do
@@ -44,7 +47,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
           it 'does not start ocrWF' do
             perform
-            expect(workflow_client).not_to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default', context:)
+            expect(object_workflow).not_to have_received(:create)
           end
         end
 
@@ -54,7 +57,8 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
           it 'starts ocrWF' do
             perform
-            expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default', context:)
+            expect(object_workflow).to have_received(:create).with(version: 2, lane_id: 'default', context:)
+            expect(object_client).to have_received(:workflow).with('ocrWF')
           end
         end
 
@@ -66,7 +70,8 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
           it 'starts ocrWF but removes runOCR from context' do
             perform
-            expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'ocrWF', version: 2, lane_id: 'default', context: incoming_context)
+            expect(object_workflow).to have_received(:create).with(version: 2, lane_id: 'default', context: incoming_context)
+            expect(object_client).to have_received(:workflow).with('ocrWF')
           end
         end
 
@@ -89,7 +94,7 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
           it 'does not start speechToTextWF' do
             perform
-            expect(workflow_client).not_to have_received(:create_workflow_by_name).with(druid, 'speechToTextWF', version: 2, lane_id: 'default', context:)
+            expect(object_workflow).not_to have_received(:create)
           end
         end
 
@@ -99,7 +104,8 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
           it 'starts speechToTextWF' do
             perform
-            expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'speechToTextWF', version: 2, lane_id: 'default', context:)
+            expect(object_workflow).to have_received(:create).with(version: 2, lane_id: 'default', context:)
+            expect(object_client).to have_received(:workflow).with('speechToTextWF')
           end
         end
 
@@ -111,7 +117,8 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
           it 'starts ocrWF but removes runSpeechToText from context' do
             perform
-            expect(workflow_client).to have_received(:create_workflow_by_name).with(druid, 'speechToTextWF', version: 2, lane_id: 'default', context: incoming_context)
+            expect(object_workflow).to have_received(:create).with(version: 2, lane_id: 'default', context: incoming_context)
+            expect(object_client).to have_received(:workflow).with('speechToTextWF')
           end
         end
 
@@ -140,8 +147,8 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
 
       it 'kicks off that workflow' do
         perform
-        expect(workflow_client).to have_received(:create_workflow_by_name)
-          .with(druid, 'wasDisseminationWF', version: '1', lane_id: 'default')
+        expect(object_workflow).to have_received(:create).with(version: '1', lane_id: 'default')
+        expect(object_client).to have_received(:workflow).with('wasDisseminationWF')
       end
     end
   end

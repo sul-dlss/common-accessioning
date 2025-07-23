@@ -11,12 +11,11 @@ gem 'aws-sdk-s3' # used for sending files to S3 for the speech-to-text workflow
 gem 'aws-sdk-sqs' # used for receiving sqs messages from the speech-to-text workflow
 gem 'config'
 gem 'dor-services-client', '~> 15.1'
-gem 'dor-workflow-client', '~> 7.0'
 gem 'dry-struct', '~> 1.0'
 gem 'dry-types', '~> 1.1'
 gem 'druid-tools'
 gem 'honeybadger'
-gem 'lyber-core', '~> 7.6' # 7.6 uses the correct dor-services-client version (> 15.0)
+gem 'lyber-core', '~> 8.0'
 gem 'nokogiri'
 gem 'purl_fetcher-client'
 gem 'preservation-client'

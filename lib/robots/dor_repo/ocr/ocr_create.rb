@@ -9,7 +9,7 @@ module Robots
           super('ocrWF', 'ocr-create')
         end
 
-        # available from LyberCore::Robot: druid, bare_druid, workflow_service, object_client, cocina_object, logger
+        # available from LyberCore::Robot: druid, bare_druid, object_workflow, object_client, cocina_object, logger
         def perform_work
           # Leave this step running until the OCR monitoring job marks it as complete
           LyberCore::ReturnState.new(status: :noop, note: 'Initiated ABBYY OCRing.')
