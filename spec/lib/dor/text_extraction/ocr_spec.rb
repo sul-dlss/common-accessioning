@@ -146,6 +146,29 @@ RSpec.describe Dor::TextExtraction::Ocr do
     end
   end
 
+  describe '#ocr_file' do
+    context 'when fileset has a single PDF' do
+      it 'return the PDF file' do
+        expect(ocr.send(:ocr_file, first_fileset)).to be pdf_file
+      end
+    end
+
+    context 'when fileset includes multiple possible OCRable files and a non-OCRable file' do
+      it 'returns the file with the preferred mimetype' do
+        expect(ocr.send(:ocr_file, second_fileset)).to be tif_file
+      end
+    end
+
+    context 'when fileset includes multiple possible OCRable files but they are all too big' do
+      let(:jpg_file) { build_file('file2.jpg', height: Settings.sdr.abbyy.max_image_dimension * 2, width: 200) }
+      let(:tif_file) { build_file('file2.tif', height: Settings.sdr.abbyy.max_image_dimension * 2, width: 200) }
+
+      it 'returns nil' do
+        expect(ocr.send(:ocr_file, second_fileset)).to be_nil
+      end
+    end
+  end
+
   describe '#acceptable_file?' do
     context 'when file is preserved, shelved, and has an allowed mimetype' do
       let(:file) { build_file('file1.tif') }
@@ -176,6 +199,40 @@ RSpec.describe Dor::TextExtraction::Ocr do
 
       it 'returns false' do
         expect(ocr.send(:acceptable_file?, file)).to be false
+      end
+    end
+  end
+
+  describe '#image_size_acceptable?' do
+    context 'when presentation information is not available' do
+      let(:file) { build_file('file1.tif') }
+
+      it 'returns true' do
+        expect(ocr.send(:image_size_acceptable?, file)).to be true
+      end
+    end
+
+    context 'when presentation information is available and image size is below limits' do
+      let(:file) { build_file('file1.tif', height: 100, width: 200) }
+
+      it 'returns true' do
+        expect(ocr.send(:image_size_acceptable?, file)).to be true
+      end
+    end
+
+    context 'when presentation information is available and image height is above limits' do
+      let(:file) { build_file('file1.tif', height: Settings.sdr.abbyy.max_image_dimension * 2, width: 200) }
+
+      it 'returns false' do
+        expect(ocr.send(:image_size_acceptable?, file)).to be false
+      end
+    end
+
+    context 'when presentation information is available and image width is above limits' do
+      let(:file) { build_file('file1.tif', height: 100, width: Settings.sdr.abbyy.max_image_dimension * 2) }
+
+      it 'returns false' do
+        expect(ocr.send(:image_size_acceptable?, file)).to be false
       end
     end
   end

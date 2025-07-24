@@ -47,12 +47,16 @@ def clone_test_input(destination)
 end
 
 # rubocop:disable Metrics/ParameterLists
-def build_file(filename, preserve: true, shelve: true, corrected: false, sdr_generated: false, language_tag: nil)
+def build_file(filename, preserve: true, shelve: true, corrected: false, sdr_generated: false, language_tag: nil, height: nil, width: nil)
   extension = File.extname(filename)
   mimetype = { '.pdf' => 'application/pdf', '.tif' => 'image/tiff', '.jpg' => 'image/jpeg', '.txt' => 'text/plain',
                '.m4a' => 'audio/mp4', '.mp4' => 'video/mp4', '.vtt' => 'text/vtt', '.xml' => 'application/xml' }
   sdr_value = instance_double(Cocina::Models::FileAdministrative, sdrPreserve: preserve, shelve:)
+  presentation = if height && width
+                   instance_double(Cocina::Models::Presentation, height:, width:)
+                 end
   instance_double(Cocina::Models::File, administrative: sdr_value, hasMimeType: mimetype[extension], languageTag: language_tag,
-                                        filename:, correctedForAccessibility: corrected, sdrGeneratedText: sdr_generated)
+                                        filename:, correctedForAccessibility: corrected, sdrGeneratedText: sdr_generated,
+                                        presentation:)
 end
 # rubocop:enable Metrics/ParameterLists
