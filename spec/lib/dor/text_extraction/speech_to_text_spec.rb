@@ -105,28 +105,41 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
   describe '#language_tag' do
     context 'when the file cannot be found' do
       let(:filename) { 'bogus.mp4' }
+      let(:s3_filename) { 'bogus_mp4.mp4' }
 
       it 'returns nil' do
         expect(stt.filenames_to_stt).not_to include(filename)
-        expect(stt.language_tag(filename)).to be_nil
+        expect(stt.language_tag(s3_filename)).to be_nil
       end
     end
 
     context 'when the file is found and there is no language tag in cocina' do
       let(:filename) { 'file1.m4a' }
+      let(:s3_filename) { 'file1_m4a.m4a' }
 
       it 'returns nil' do
         expect(stt.filenames_to_stt).to include(filename)
-        expect(stt.language_tag(filename)).to be_nil
+        expect(stt.language_tag(s3_filename)).to be_nil
       end
     end
 
     context 'when the file is found and there is a language tag in cocina' do
       let(:filename) { 'file1.mp4' }
+      let(:s3_filename) { 'file1_mp4.mp4' }
 
       it 'returns the language tag' do
         expect(stt.filenames_to_stt).to include(filename)
-        expect(stt.language_tag(filename)).to eq 'es'
+        expect(stt.language_tag(s3_filename)).to eq 'es'
+      end
+    end
+
+    context 'when the file is found, the s3 filename is the same as the cocina filename and there is a language tag in cocina' do
+      let(:filename) { 'file1.mp4' }
+      let(:s3_filename) { 'file1.mp4' }
+
+      it 'returns the language tag' do
+        expect(stt.filenames_to_stt).to include(filename)
+        expect(stt.language_tag(s3_filename)).to eq 'es'
       end
     end
   end
@@ -244,6 +257,18 @@ RSpec.describe Dor::TextExtraction::SpeechToText do
 
     it 'returns the new s3 filename key for a given filename' do
       expect(stt.s3_location('text.xml')).to eq("#{bare_druid}-v#{version}/text_xml.xml")
+    end
+  end
+
+  describe '#s3_filename' do
+    it 'returns the new s3 base filename for a given cocina filename' do
+      expect(stt.s3_filename('text.xml')).to eq('text_xml.xml')
+    end
+  end
+
+  describe '#cocina_filename' do
+    it 'returns the original cocina filename for a given s3 filename' do
+      expect(stt.cocina_filename('text_xml.xml')).to eq('text.xml')
     end
   end
 
