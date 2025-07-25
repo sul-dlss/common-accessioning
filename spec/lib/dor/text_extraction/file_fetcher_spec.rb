@@ -59,7 +59,7 @@ describe Dor::TextExtraction::FileFetcher do
             context = { druid:, filename:, max_tries: 3, path: file_path }
             expect(logger).to have_received(:error).with("Exceeded max_tries attempting to fetch file: #{context}")
             expect(Honeybadger).to have_received(:notify).with('Exceeded max_tries attempting to fetch file', context:)
-            expect(file_fetcher).to have_received(:sleep).with(8) # should have hit max backoff time of 2^3 seconds
+            expect(file_fetcher).to have_received(:sleep).with((Settings.sleep_coefficient * 2)**3) # should have hit max backoff time of 2^3 seconds
           end
         end
       end

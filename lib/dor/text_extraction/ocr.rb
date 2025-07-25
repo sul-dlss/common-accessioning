@@ -37,7 +37,7 @@ module Dor
           cleanup_abbyy_exceptions
         rescue SystemCallError => e # SystemCallError is the superclass of all errors raised by system calls, such as Errno::ENOENT from FileUtils.rm_r
           tries += 1
-          sleep(3**tries)
+          sleep((Settings.sleep_coefficient * 3)**tries)
 
           logger.info "Retry #{tries} for ocr-workspace-cleanup; after exception #{e.message}"
 
@@ -107,7 +107,7 @@ module Dor
           tries += 1
           break if !Dir.exist?(abbyy_output_path) || Dir.empty?(abbyy_output_path) || tries > max_tries
 
-          sleep(2**tries)
+          sleep((Settings.sleep_coefficient * 2)**tries)
         end
 
         delete_folder(abbyy_output_path)
