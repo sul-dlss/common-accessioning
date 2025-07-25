@@ -80,3 +80,5 @@ speech_to_text:
       writer:
         max_line_width: 42
         max_line_count: 1
+
+sleep_coefficient: 1

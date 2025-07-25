@@ -35,7 +35,7 @@ module Dor
           tries += 1
           logger.warn("received NotFoundError from Preservation try ##{tries}")
 
-          sleep(2**tries)
+          sleep((Settings.sleep_coefficient * 2)**tries)
 
           retry unless tries > max_tries
 

@@ -29,7 +29,7 @@ module Robots
           rescue StandardError
             if !staging_present && retries < 3
               retries += 1
-              sleep(5 * retries) # wait before retrying
+              sleep((Settings.sleep_coefficient * 5) * retries) # wait before retrying
               retry
             end
             raise

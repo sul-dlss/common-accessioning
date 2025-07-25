@@ -27,7 +27,7 @@ module Robots
           # see https://github.com/sul-dlss/common-accessioning/issues/1477
           rescue RuntimeError => e
             tries += 1
-            sleep(3**tries)
+            sleep((Settings.sleep_coefficient * 3)**tries)
             logger.info "Retry #{tries} for content-metadata-create; after exception #{e.message}"
 
             retry unless tries > max_tries

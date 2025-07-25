@@ -7,3 +7,5 @@ sdr:
     # Windows-style paths for the ABBYY machine, referenced in XML tickets
     remote_output_path: S:\AbbyyShare\sdr-ocr-qa\OUTPUT
     remote_result_path: S:\AbbyyShare\sdr-ocr-qa\RESULTXML
+
+sleep_coefficient: 0.01

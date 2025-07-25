@@ -11,22 +11,22 @@ module Dor
 
       # Notify SDR that the OCR workflow step completed successfully
       def mark_ocr_create_completed(druid)
-        workflow(druid:, workflow_name: OCR_WF_NAME, process: OCR_WF_CREATE_NAME).workflow_process.update(status: 'completed')
+        workflow_process(druid:, workflow_name: OCR_WF_NAME, process: OCR_WF_CREATE_NAME).update(status: 'completed')
       end
 
       # Notify SDR that the OCR workflow step failed
       def mark_ocr_create_errored(druid, error_msg:)
-        workflow(druid:, workflow_name: OCR_WF_NAME, process: OCR_WF_CREATE_NAME).workflow_process.update_error(error_msg:)
+        workflow_process(druid:, workflow_name: OCR_WF_NAME, process: OCR_WF_CREATE_NAME).update_error(error_msg:)
       end
 
       # Notify SDR that the speech-to-text workflow step completed successfully
       def mark_stt_create_completed(druid)
-        workflow(druid:, workflow_name: STT_WF_NAME, process: STT_WF_CREATE_NAME).workflow_process.update(status: 'completed')
+        workflow_process(druid:, workflow_name: STT_WF_NAME, process: STT_WF_CREATE_NAME).update(status: 'completed')
       end
 
       # Notify SDR that the speech-to-text workflow step failed
       def mark_stt_create_errored(druid, error_msg:)
-        workflow(druid:, workflow_name: STT_WF_NAME, process: STT_WF_CREATE_NAME).workflow_process.update_error(error_msg:)
+        workflow_process(druid:, workflow_name: STT_WF_NAME, process: STT_WF_CREATE_NAME).update_error(error_msg:)
       end
 
       private
@@ -35,8 +35,12 @@ module Dor
         Dor::Services::Client.object(druid)
       end
 
-      def workflow(druid:, workflow_name:, process:)
-        LyberCore::Workflow.new(object_client: object_client(druid), workflow_name:, process:)
+      def object_workflow(druid:, workflow_name:)
+        object_client(druid).workflow(workflow_name)
+      end
+
+      def workflow_process(druid:, workflow_name:, process:)
+        object_workflow(druid:, workflow_name:).process(process)
       end
     end
   end
