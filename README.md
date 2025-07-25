@@ -99,15 +99,19 @@ workflow_name='accessionWF'
 process='end-accession'
 
 object_client = Dor::Services::Client.object(druid)
+
 cocina_object = object_client.find
-workflow_service = LyberCore::WorkflowClientFactory.build(logger: nil)
-workflow = LyberCore::Workflow.new(workflow_service:,druid:,workflow_name:,process:)
+
+object_workflow = object_client.workflow(workflow_name)
+workflow_process = object_workflow.process(process)
+workflow_response = object_workflow.find
+process_response = workflow_response.process_for_recent_version(name: process)
 
 cocina_object.type
 => "https://cocina.sul.stanford.edu/models/book"
 cocina_object.structural.contains.size
 => 17
-workflow.status
+process_response.status
 => "completed"
 ```
 
