@@ -105,13 +105,26 @@ module Dor
       # This is because whisper currently only uses the basename to determine the output filename, which will cause a problem if we have two
       # input files with the same basename but different extensions (e.g. "file.mp4" and "file.m4a").
       def s3_location(filename)
-        file_extension = File.extname(filename)
-        basename = File.basename(filename, file_extension)
+        File.join(job_id, s3_filename(filename))
+      end
+
+      def s3_filename(filename)
         # For example, "file1.mp4" becomes "file1_mp4.mp4" which will cause whipser to produce "file1_mp4.vtt" as the output,
         # and "file1.m4a" becomes "file1_m4a.m4a" which will cause whisper to produce "file1_m4a.vtt" as the output, ensuring uniqueness for both.
         # The cocina_updater will understand this and update the cocina structural metadata correctly matching the new filename to the original.
-        new_filename = "#{basename}_#{file_extension.delete('.')}#{file_extension}"
-        File.join(job_id, new_filename)
+        file_extension = File.extname(filename) # e.g. .mp4
+        basename = File.basename(filename, file_extension) # e.g. file1
+        "#{basename}_#{file_extension.delete('.')}#{file_extension}" # e.g. file1_mp4.mp4
+      end
+
+      def cocina_filename(filename)
+        # For example, "file1_mp4.mp4" will become "file14.mp4"
+        # This allows us to match filenames we put in the S3 bucket with the filename we pulled out of cocina
+        # so that we can do things like match the language tag in the stt-create robot
+        file_extension = File.extname(filename) # e.g. mp4
+        basename = File.basename(filename, file_extension) # e.g. file1_mp4
+        basename_without_added_extension = basename.gsub("_#{file_extension.delete('.')}", '') # e.g. file1
+        "#{basename_without_added_extension}#{file_extension}" # e.g. file1.mp4
       end
 
       # return the job_id for the stt job, defined as the druid-version of the object
@@ -124,10 +137,11 @@ module Dor
         "#{job_id}/output"
       end
 
-      # given a filename, look in the list of files that can be sent for speech to text, examine the cocina structural
+      # given a s3 filename, look in the list of files that can be sent for speech to text, examine the cocina structural
       #  and return the languageTag for the file (or nil if no language is set)
-      def language_tag(filename)
-        stt_files.find { |file| file.filename == filename }&.languageTag
+      #  we need to account for the way we rename files by adding the extension when sending to S3
+      def language_tag(s3_filename)
+        stt_files.find { |file| file.filename == cocina_filename(s3_filename) }&.languageTag
       end
 
       private
