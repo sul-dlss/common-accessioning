@@ -33,9 +33,6 @@ module Robots
         # check to see if we need to run OCR or speech-to-text or start workflow if needed
         # they are currently mutually exclusive, you cannot run both OCR and speech-to-text on the same object at the same time
         def start_captioning
-          # NOTE: the "workflow" object that is providing the context is a LyberCore::Workflow class
-          # It is provided by the LyberCore::Robot superclass via lyber-core gem
-          # see https://github.com/sul-dlss/lyber-core/blob/main/lib/lyber_core/robot.rb and https://github.com/sul-dlss/lyber-core/blob/main/lib/lyber_core/workflow.rb
           ocr = Dor::TextExtraction::Ocr.new(cocina_object:, workflow_context: workflow.context)
           stt = Dor::TextExtraction::SpeechToText.new(cocina_object:, workflow_context: workflow.context)
 
