@@ -11,11 +11,15 @@ describe Dor::TextExtraction::OcrCocinaUpdater do
   let(:dro) do
     build(:dro, id: druid).new(
       type: item_type,
+      access: { download:, view: },
       structural: {
         contains: original_resources
       }
     )
   end
+  let(:download) { 'world' }
+  let(:view) { 'world' }
+
   # DruidTools needs to return the workspace_dir set up by "with workspace dir" context
   let(:druid_tools) do
     instance_double(DruidTools::Druid, id: bare_druid, content_dir: workspace_content_dir)
@@ -42,7 +46,8 @@ describe Dor::TextExtraction::OcrCocinaUpdater do
                 type: Cocina::Models::ObjectType.file,
                 version: 1,
                 filename: 'image1.tif',
-                hasMimeType: 'image/tiff'
+                hasMimeType: 'image/tiff',
+                access: { download: 'world', view: 'world' }
               }
             ]
           }
@@ -142,7 +147,8 @@ describe Dor::TextExtraction::OcrCocinaUpdater do
                 type: Cocina::Models::ObjectType.file,
                 version: 1,
                 filename: 'image1.tif',
-                hasMimeType: 'image/tiff'
+                hasMimeType: 'image/tiff',
+                access: { download: 'world', view: 'world' }
               }
             ]
           }
@@ -160,7 +166,8 @@ describe Dor::TextExtraction::OcrCocinaUpdater do
                 type: Cocina::Models::ObjectType.file,
                 version: 1,
                 filename: 'image2.tif',
-                hasMimeType: 'image/tiff'
+                hasMimeType: 'image/tiff',
+                access: { download: 'world', view: 'world' }
               }
             ]
           }
@@ -237,7 +244,8 @@ describe Dor::TextExtraction::OcrCocinaUpdater do
                 type: Cocina::Models::ObjectType.file,
                 version: 1,
                 filename: 'page_001.tif',
-                hasMimeType: 'image/tiff'
+                hasMimeType: 'image/tiff',
+                access: { download: 'world', view: 'world' }
               }
             ]
           }
@@ -255,7 +263,8 @@ describe Dor::TextExtraction::OcrCocinaUpdater do
                 type: Cocina::Models::ObjectType.file,
                 version: 1,
                 filename: 'page_002.tif',
-                hasMimeType: 'image/tiff'
+                hasMimeType: 'image/tiff',
+                access: { download: 'world', view: 'world' }
               }
             ]
           }
@@ -304,6 +313,21 @@ describe Dor::TextExtraction::OcrCocinaUpdater do
       expect(resource.label).to eq 'Plain text OCR (uncorrected)'
       expect(resource.type).to eq Cocina::Models::FileSetType.object
       expect(resource.structural.contains[0].filename).to eq "#{bare_druid}.txt"
+    end
+
+    context 'when object access rights are restricted' do
+      let(:download) { 'stanford' }
+      let(:view) { 'stanford' }
+
+      it 'sets the file level access rights to restricted' do
+        expect(dro.structural.contains[0].structural.contains[0].access.view).to eq('world') # original file can have different rights
+        expect(dro.structural.contains[0].structural.contains[1].access.view).to eq('stanford') # new files below
+        expect(dro.structural.contains[0].structural.contains[2].access.view).to eq('stanford')
+        expect(dro.structural.contains[1].structural.contains[0].access.view).to eq('world') # original file can have different rights
+        expect(dro.structural.contains[1].structural.contains[1].access.view).to eq('stanford') # new files below
+        expect(dro.structural.contains[1].structural.contains[2].access.view).to eq('stanford')
+        expect(dro.structural.contains[2].structural.contains[0].access.view).to eq('stanford')
+      end
     end
   end
 
