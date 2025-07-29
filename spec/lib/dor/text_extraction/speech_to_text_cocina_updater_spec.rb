@@ -11,12 +11,15 @@ describe Dor::TextExtraction::SpeechToTextCocinaUpdater do
   let(:dro) do
     build(:dro, id: druid).new(
       type: item_type,
+      access: { download:, view: },
       structural: {
         contains: original_resources
       }
     )
   end
   let(:item_type) { Cocina::Models::ObjectType.media }
+  let(:download) { 'world' }
+  let(:view) { 'world' }
 
   # DruidTools needs to return the workspace_dir set up by "with workspace dir" context
   let(:druid_tools) do
@@ -44,7 +47,8 @@ describe Dor::TextExtraction::SpeechToTextCocinaUpdater do
                 type: Cocina::Models::ObjectType.file,
                 version: 1,
                 filename: 'file_1.mp4',
-                hasMimeType: 'video/mp4'
+                hasMimeType: 'video/mp4',
+                access: { download: 'world', view: 'world' }
               }
             ]
           }
@@ -62,7 +66,8 @@ describe Dor::TextExtraction::SpeechToTextCocinaUpdater do
                 type: Cocina::Models::ObjectType.file,
                 version: 1,
                 filename: 'file_1.m4a',
-                hasMimeType: 'audio/m4a'
+                hasMimeType: 'audio/m4a',
+                access: { download: 'world', view: 'world' }
               }
             ]
           }
@@ -221,6 +226,28 @@ describe Dor::TextExtraction::SpeechToTextCocinaUpdater do
       expect(file.administrative.shelve).to be true
       expect(file.hasMimeType).to eq 'text/vtt'
       expect(file.languageTag).to eq 'es'
+    end
+
+    context 'when object access rights are restricted' do
+      let(:download) { 'stanford' }
+      let(:view) { 'stanford' }
+
+      it 'sets the file level access rights to restricted' do
+        expect(resource1_files[0].access.view).to eq('world') # original file can have different rights
+        expect(resource1_files[1].access.view).to eq('stanford') # new files below
+        expect(resource1_files[2].access.view).to eq('stanford')
+        expect(resource1_files[3].access.view).to eq('stanford')
+        expect(resource1_files[1].access.download).to eq('stanford')
+        expect(resource1_files[2].access.download).to eq('stanford')
+        expect(resource1_files[3].access.download).to eq('stanford')
+        expect(resource2_files[0].access.view).to eq('world') # original file can have different rights
+        expect(resource2_files[1].access.view).to eq('stanford') # new files below
+        expect(resource2_files[2].access.view).to eq('stanford')
+        expect(resource2_files[3].access.view).to eq('stanford')
+        expect(resource2_files[1].access.download).to eq('stanford')
+        expect(resource2_files[2].access.download).to eq('stanford')
+        expect(resource2_files[3].access.download).to eq('stanford')
+      end
     end
     # rubocop:enable RSpec/ExampleLength
   end

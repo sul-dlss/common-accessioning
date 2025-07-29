@@ -7,7 +7,7 @@ RSpec.describe Dor::TextExtraction::CocinaUpdater do
 
   let(:druid) { 'druid:bc123df4567' }
   let(:object_type) { Cocina::Models::ObjectType.image }
-  let(:dro) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: true, version: 1, type: object_type, structural:) }
+  let(:dro) { instance_double(Cocina::Models::DRO, externalIdentifier: druid, dro?: true, version: 1, type: object_type, structural:, access:) }
   let(:logger) { instance_double(Logger) }
   let(:path) { "/some/server/path/#{filename}" }
   let(:tiff_file) { instance_double(Cocina::Models::File, filename: 'file1.tiff') }
@@ -17,6 +17,25 @@ RSpec.describe Dor::TextExtraction::CocinaUpdater do
   let(:tiff_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [tiff_file]) }
   let(:other_tiff_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [other_tiff_file]) }
   let(:structural) { instance_double(Cocina::Models::DROStructural, contains: [tiff_fileset, other_tiff_fileset]) }
+  let(:access) { instance_double(Cocina::Models::DROAccess, view:, download:) }
+  let(:download) { 'world' }
+  let(:view) { 'world' }
+
+  describe '#access' do
+    context 'when object has world/world rights' do
+      it 'sets world/world for all new files' do
+        expect(updater.send(:access)).to eq({ download: 'world', view: 'world' })
+      end
+    end
+
+    context 'when object has stanford/world rights' do
+      let(:download) { 'stanford' }
+
+      it 'sets stanford/world for all new files' do
+        expect(updater.send(:access)).to eq({ download: 'stanford', view: 'world' })
+      end
+    end
+  end
 
   describe '#find_resource_with_stem' do
     context 'when file has matching stem' do

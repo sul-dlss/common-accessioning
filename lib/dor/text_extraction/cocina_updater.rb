@@ -201,10 +201,11 @@ module Dor
         nil
       end
 
+      # you can override this in a subclass to set the access attributes conditionally if needed, otherwise uses object default
       def access
         {
-          view: 'world',
-          download: 'world'
+          view: dro.access.view,
+          download: dro.access.download
         }
       end
 
