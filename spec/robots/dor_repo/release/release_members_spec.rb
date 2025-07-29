@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/IndexedLet
 RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
   subject(:perform) { test_perform(robot, druid) }
 
@@ -16,13 +17,11 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
   let(:workflow_response) { instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response) }
   let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow, process: workflow_process, find: workflow_response) }
   let(:workflow_process) { instance_double(Dor::Services::Client::Process, update: true, update_error: true, status: 'queued') }
-  let(:milestones) { instance_double(Dor::Services::Client::Milestones) }
 
-  let(:object_client) { instance_double(Dor::Services::Client::Object, find: cocina_model, members:, release_tags: release_tag_client, workflow: object_workflow, milestones:) }
+  let(:object_client) { instance_double(Dor::Services::Client::Object, find: cocina_model, members:, release_tags: release_tag_client, workflow: object_workflow) }
 
   before do
-    allow(Dor::Services::Client).to receive(:object).and_return(object_client)
-    allow(milestones).to receive(:date).and_return(1.day.ago, 1.day.ago, 1.day.ago, nil)
+    allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
   end
 
   context 'when the model is an item' do
@@ -64,23 +63,31 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
         [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', version: 1)]
       end
 
+      before do
+        allow(Dor::Services::Client).to receive(:object).with('druid:bb001zc5754')
+      end
+
       it 'does not add workflow for item members' do
-        expect(object_workflow).not_to receive(:create)
         perform
+        expect(Dor::Services::Client).not_to have_received(:object).with('druid:bb001zc5754')
       end
     end
 
     context 'when there are multiple targets but they are all released to self only' do
-      let(:release_tag1) { Dor::Services::Client::ReleaseTag.new(to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') } # rubocop:disable RSpec/IndexedLet
-      let(:release_tag2) { Dor::Services::Client::ReleaseTag.new(to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket') } # rubocop:disable RSpec/IndexedLet
+      let(:release_tag1) { Dor::Services::Client::ReleaseTag.new(to: 'Searchworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
+      let(:release_tag2) { Dor::Services::Client::ReleaseTag.new(to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket') }
       let(:release_tags) { [release_tag1, release_tag2] }
       let(:members) do
         [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', version: 1)]
       end
 
+      before do
+        allow(Dor::Services::Client).to receive(:object).with('druid:bb001zc5754')
+      end
+
       it 'does not add workflow for item members' do
-        expect(object_workflow).not_to receive(:create)
         perform
+        expect(Dor::Services::Client).not_to have_received(:object).with('druid:bb001zc5754')
       end
     end
 
@@ -92,9 +99,13 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
         [Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', version: 1)]
       end
 
+      before do
+        allow(Dor::Services::Client).to receive(:object).with('druid:bb001zc5754')
+      end
+
       it 'does not add workflow for item members' do
-        expect(object_workflow).not_to receive(:create)
         perform
+        expect(Dor::Services::Client).not_to have_received(:object).with('druid:bb001zc5754')
       end
     end
 
@@ -104,36 +115,82 @@ RSpec.describe Robots::DorRepo::Release::ReleaseMembers do
       let(:members) do
         [
           Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', version: 1),
-          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb023nj3137', version: 1),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb023nj3137', version: 2),
           Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb027yn4436', version: 1),
           Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb048rn5648', version: 1)
         ]
       end
+      let(:object_client1) { instance_double(Dor::Services::Client::Object, milestones: published_milestones_client, workflow: workflow_client) }
+      let(:object_client2) { instance_double(Dor::Services::Client::Object, milestones: published_milestones_client, workflow: workflow_client) }
+      let(:object_client3) { instance_double(Dor::Services::Client::Object, milestones: published_milestones_client, workflow: workflow_client) }
+      let(:object_client4) { instance_double(Dor::Services::Client::Object, milestones: unpublished_milestones_client) }
+
+      let(:published_milestones_client) { instance_double(Dor::Services::Client::Milestones, date: 1.day.ago) }
+      let(:unpublished_milestones_client) { instance_double(Dor::Services::Client::Milestones, date: nil) }
+      let(:workflow_client) { instance_double(Dor::Services::Client::ObjectWorkflow, create: true) }
+
+      before do
+        allow(Dor::Services::Client).to receive(:object).with('druid:bb001zc5754').and_return(object_client1)
+        allow(Dor::Services::Client).to receive(:object).with('druid:bb023nj3137').and_return(object_client2)
+        allow(Dor::Services::Client).to receive(:object).with('druid:bb027yn4436').and_return(object_client3)
+        allow(Dor::Services::Client).to receive(:object).with('druid:bb048rn5648').and_return(object_client4)
+      end
 
       it 'runs for a collection and execute the item_members method' do
-        expect(object_workflow).to receive(:create).exactly(3).times # 3 workflows added, one for each published item
-
         perform
+
+        expect(published_milestones_client).to have_received(:date).with(milestone_name: 'published', version: 1).exactly(2).times
+        expect(published_milestones_client).to have_received(:date).with(milestone_name: 'published', version: 2).exactly(1).time
+        expect(unpublished_milestones_client).to have_received(:date).with(milestone_name: 'published', version: 1).exactly(1).time
+        expect(workflow_client).to have_received(:create).with(version: 1, lane_id: 'default').exactly(2).times
+        expect(workflow_client).to have_received(:create).with(version: 2, lane_id: 'default').exactly(1).time
+        expect(object_client1).to have_received(:workflow).with('releaseWF')
+        expect(object_client2).to have_received(:workflow).with('releaseWF')
+        expect(object_client3).to have_received(:workflow).with('releaseWF')
       end
     end
 
     context 'when there are multiple targets and at least one of the release targets is not released to self' do
-      let(:release_tag1) { Dor::Services::Client::ReleaseTag.new(to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') } # rubocop:disable RSpec/IndexedLet
-      let(:release_tag2) { Dor::Services::Client::ReleaseTag.new(to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket') } # rubocop:disable RSpec/IndexedLet
+      let(:release_tag1) { Dor::Services::Client::ReleaseTag.new(to: 'Searchworks', release: true, what: 'collection', date: '2016-10-07 19:34:43 UTC', who: 'lmcrae') }
+      let(:release_tag2) { Dor::Services::Client::ReleaseTag.new(to: 'Earthworks', release: true, what: 'self', date: '2016-10-07 19:34:43 UTC', who: 'petucket') }
       let(:release_tags) { [release_tag1, release_tag2] }
       let(:members) do
         [
           Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb001zc5754', version: 1),
-          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb023nj3137', version: 1),
+          Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb023nj3137', version: 2),
           Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb027yn4436', version: 1),
           Dor::Services::Client::Members::Member.new(externalIdentifier: 'druid:bb048rn5648', version: 1)
         ]
       end
+      let(:object_client1) { instance_double(Dor::Services::Client::Object, milestones: published_milestones_client, workflow: workflow_client) }
+      let(:object_client2) { instance_double(Dor::Services::Client::Object, milestones: published_milestones_client, workflow: workflow_client) }
+      let(:object_client3) { instance_double(Dor::Services::Client::Object, milestones: published_milestones_client, workflow: workflow_client) }
+      let(:object_client4) { instance_double(Dor::Services::Client::Object, milestones: unpublished_milestones_client) }
+
+      let(:published_milestones_client) { instance_double(Dor::Services::Client::Milestones, date: 1.day.ago) }
+      let(:unpublished_milestones_client) { instance_double(Dor::Services::Client::Milestones, date: nil) }
+      let(:workflow_client) { instance_double(Dor::Services::Client::ObjectWorkflow, create: true) }
+
+      before do
+        allow(Dor::Services::Client).to receive(:object).with('druid:bb001zc5754').and_return(object_client1)
+        allow(Dor::Services::Client).to receive(:object).with('druid:bb023nj3137').and_return(object_client2)
+        allow(Dor::Services::Client).to receive(:object).with('druid:bb027yn4436').and_return(object_client3)
+        allow(Dor::Services::Client).to receive(:object).with('druid:bb048rn5648').and_return(object_client4)
+      end
 
       it 'runs for a collection and execute the item_members method' do
-        expect(object_workflow).to receive(:create).exactly(3).times # 3 workflows added, one for each published item
         perform
+
+        expect(published_milestones_client).to have_received(:date).with(milestone_name: 'published', version: 1).exactly(2).times
+        expect(published_milestones_client).to have_received(:date).with(milestone_name: 'published', version: 2).exactly(1).time
+        expect(unpublished_milestones_client).to have_received(:date).with(milestone_name: 'published', version: 1).exactly(1).time
+        expect(workflow_client).to have_received(:create).with(version: 1, lane_id: 'default').exactly(2).times
+        expect(workflow_client).to have_received(:create).with(version: 2, lane_id: 'default').exactly(1).time
+        expect(object_client1).to have_received(:workflow).with('releaseWF')
+        expect(object_client2).to have_received(:workflow).with('releaseWF')
+        expect(object_client3).to have_received(:workflow).with('releaseWF')
       end
     end
   end
 end
+# rubocop:enable RSpec/IndexedLet

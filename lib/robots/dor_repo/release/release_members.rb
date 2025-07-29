@@ -29,7 +29,8 @@ module Robots
         end
 
         def published?(member)
-          object_client.milestones.date(milestone_name: 'published', version: member.version).present?
+          # This is for the member, not the parent collection.
+          Dor::Services::Client.object(member.externalIdentifier).milestones.date(milestone_name: 'published', version: member.version).present?
         end
 
         # Here's an example of the kinds of tags we're dealing with:
@@ -43,7 +44,8 @@ module Robots
         end
 
         def create_release_workflow(member)
-          object_workflow.create(version: member.version, lane_id:)
+          # This is for the member, not the parent collection.
+          Dor::Services::Client.object(member.externalIdentifier).workflow('releaseWF').create(version: member.version, lane_id:)
         end
       end
     end
