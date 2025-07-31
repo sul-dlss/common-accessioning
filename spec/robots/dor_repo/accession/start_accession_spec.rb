@@ -56,7 +56,7 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
 
     context 'when DRO with files' do
       let(:cocina_object) do
-        build(:dro, id: druid).new(access:, structural:)
+        build(:dro, id: druid).new(version: 2, access:, structural:)
       end
 
       let(:structural) do
@@ -199,7 +199,7 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
 
     context 'when DRO with missing file and staging directory not present' do
       let(:cocina_object) do
-        build(:dro, id: druid).new(access:, structural:)
+        build(:dro, id: druid).new(access:, structural:, version: 2)
       end
 
       let(:structural) do
@@ -234,6 +234,50 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
 
       it 'raises an error' do
         expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, workspace, shelves, and preservation: folder1PuSu/story1x.txt')
+        expect(preservation_objects_client).to have_received(:checksum)
+        expect(purl_fetcher_reader).to have_received(:files_by_digest)
+      end
+    end
+
+    context 'when version 1 DRO with missing file and staging directory not present' do
+      let(:cocina_object) do
+        build(:dro, id: druid).new(access:, structural:, version: 1)
+      end
+
+      let(:structural) do
+        {
+          contains: [
+            {
+              externalIdentifier: '222',
+              type: Cocina::Models::FileSetType.file,
+              label: 'my missing repository object',
+              version: 1,
+              structural: {
+                contains: [
+                  {
+                    externalIdentifier: '222-1',
+                    label: 'folder1PuSu/story1x.txt',
+                    filename: 'folder1PuSu/story1x.txt',
+                    type: Cocina::Models::ObjectType.file,
+                    version: 1,
+                    access: {},
+                    size: 7888,
+                    administrative: { publish: true, sdrPreserve: true, shelve: true },
+                    hasMessageDigests: [{ type: 'md5', digest: '123' }]
+                  }
+                ]
+              }
+            }
+          ],
+          hasMemberOrders: [],
+          isMemberOf: []
+        }
+      end
+
+      it 'raises an error' do
+        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, workspace, shelves, and preservation: folder1PuSu/story1x.txt')
+        expect(preservation_objects_client).not_to have_received(:checksum)
+        expect(purl_fetcher_reader).not_to have_received(:files_by_digest)
       end
     end
 
