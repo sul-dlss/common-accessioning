@@ -37,20 +37,28 @@ module Robots
         end
 
         # @return [Array<String>] list of files that are missing from staging, workspace, and preservation
-        def audit_files # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        def audit_files
           cocina_files.filter_map do |file|
-            # Files that are dark (not published or shelved) are not accessioned.
-            next unless file.administrative.publish || file.administrative.shelve
-            # Every file should be in staging, workspace, shelf, or preservation.
-            next if check_file(dir_pathname: staging_pathname, file: file)
-            next if check_file(dir_pathname: workspace_pathname, file: file)
-
-            md5 = file.hasMessageDigests.find { |message_digest| message_digest.type == 'md5' }.digest
-            next if check_preservation_file(file: file, md5: md5)
-            next if check_shelved_file(file: file, md5: md5)
+            next if found_or_skip?(file)
 
             file.filename
           end
+        end
+
+        def found_or_skip?(file) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+          # Files that are dark (not published or shelved) are not accessioned.
+          return true if !file.administrative.publish && !file.administrative.shelve
+          # Every file should be in staging, workspace, shelf, or preservation.
+          return true if check_file(dir_pathname: staging_pathname, file: file)
+          return true if check_file(dir_pathname: workspace_pathname, file: file)
+
+          # First version of a DRO isn't shelved or preserved yet.
+          if cocina_object.version > 1
+            md5 = file.hasMessageDigests.find { |message_digest| message_digest.type == 'md5' }.digest
+            return true if check_preservation_file(file: file, md5: md5)
+            return true if check_shelved_file(file: file, md5: md5)
+          end
+          false
         end
 
         def cocina_files
