@@ -39,6 +39,22 @@ module Dor
         end
         # rubocop:enable Metrics/AbcSize
 
+        # Notify SDR that the OCR workflow step completed successfully
+        def process_success(results)
+          logger.info "Found successful OCR results for druid:#{results.druid} at #{results.result_path}"
+          workflow_updater.mark_ocr_create_completed("druid:#{results.druid}")
+          create_event(type: 'ocr_success', results:)
+        end
+
+        # Notify SDR that the OCR workflow step failed
+        def process_failure(results)
+          logger.info "Found failed OCR results for druid:#{results.druid} at #{results.result_path}: #{results.failure_messages.join('; ')}"
+          context = { druid: "druid:#{results.druid}", result_path: results.result_path, failure_messages: results.failure_messages }
+          Honeybadger.notify('Found failed OCR results', context:)
+          workflow_updater.mark_ocr_create_errored("druid:#{results.druid}", error_msg: results.failure_messages.join("\n"))
+          create_event(type: 'ocr_errored', results:)
+        end
+
         private
 
         # See: https://github.com/guard/listen?tab=readme-ov-file#options
@@ -57,22 +73,6 @@ module Dor
             successes.each(&method(:process_success))
             failures.each(&method(:process_failure))
           end
-        end
-
-        # Notify SDR that the OCR workflow step completed successfully
-        def process_success(results)
-          logger.info "Found successful OCR results for druid:#{results.druid} at #{results.result_path}"
-          workflow_updater.mark_ocr_create_completed("druid:#{results.druid}")
-          create_event(type: 'ocr_success', results:)
-        end
-
-        # Notify SDR that the OCR workflow step failed
-        def process_failure(results)
-          logger.info "Found failed OCR results for druid:#{results.druid} at #{results.result_path}: #{results.failure_messages.join('; ')}"
-          context = { druid: "druid:#{results.druid}", result_path: results.result_path, failure_messages: results.failure_messages }
-          Honeybadger.notify('Found failed OCR results', context:)
-          workflow_updater.mark_ocr_create_errored("druid:#{results.druid}", error_msg: results.failure_messages.join("\n"))
-          create_event(type: 'ocr_errored', results:)
         end
 
         # Publish to the SDR event service with processing information
