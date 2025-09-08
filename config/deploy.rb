@@ -36,6 +36,7 @@ set :linked_dirs, %w[log run config/settings config/certs]
 
 # Prefer capistrano stage over Rails.env (which is typically `production`)
 set :honeybadger_env, fetch(:stage)
+set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
 
 set :sidekiq_systemd_role, :worker
 set :sidekiq_systemd_use_hooks, true

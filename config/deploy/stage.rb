@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-server 'common-accessioning-stage-a.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
+server 'common-accessioning-stage-a.stanford.edu', user: 'lyberadmin', roles: %w[worker app ocr_cleanup]
 server 'common-accessioning-stage-b.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
 
 set :deploy_environment, 'production'

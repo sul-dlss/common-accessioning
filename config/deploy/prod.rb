@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-server 'common-accessioning-prod-a.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
+server 'common-accessioning-prod-a.stanford.edu', user: 'lyberadmin', roles: %w[worker app ocr_cleanup]
 server 'common-accessioning-prod-b.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
 server 'common-accessioning-prod-c.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
 server 'common-accessioning-prod-d.stanford.edu', user: 'lyberadmin', roles: %w[worker app]
