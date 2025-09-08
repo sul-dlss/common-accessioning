@@ -15,7 +15,7 @@ module Robots
           alto_path = File.join(base_output_path, "#{bare_druid}.xml")
           return LyberCore::ReturnState.new(status: :skipped, note: 'No full object XML file') unless File.exist?(alto_path)
 
-          Dor::TextExtraction::Abbyy::SplitAlto.new(alto_path:).write_files
+          Dor::TextExtraction::Abbyy::SplitAlto.new(alto_path:, logger:).write_files
         end
       end
     end

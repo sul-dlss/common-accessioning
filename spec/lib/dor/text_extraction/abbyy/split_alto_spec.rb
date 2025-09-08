@@ -3,10 +3,13 @@
 require 'spec_helper'
 
 describe Dor::TextExtraction::Abbyy::SplitAlto do
-  subject(:results) { described_class.new(alto_path:) }
+  subject(:results) { described_class.new(alto_path:, logger:) }
 
   let(:druid) { 'bb222cc3333' }
   let(:alto_path) { File.join(File.absolute_path('spec/fixtures/ocr'), "#{druid}_abbyy_alto.xml") }
+  let(:logger) { instance_double(Logger) }
+
+  before { allow(logger).to receive(:warn) }
 
   describe '.write_files' do
     let(:expected_files) { %w[bb222cc3333_00_0001.xml bb222cc3333_00_0002.xml bb222cc3333_00_0003.xml] }
@@ -62,6 +65,7 @@ describe Dor::TextExtraction::Abbyy::SplitAlto do
       actual_content = File.read(File.join(File.dirname(alto_path), expected_file))
       expected_content = File.read(File.join(File.dirname(alto_path), "expected_#{expected_file}"))
       expect(actual_content).to eq(expected_content)
+      expect(logger).to have_received(:warn).with(/Page nodes exceed page filenames/)
     end
   end
 end
