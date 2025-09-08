@@ -15,6 +15,7 @@ gem 'dry-struct', '~> 1.0'
 gem 'dry-types', '~> 1.1'
 gem 'druid-tools'
 gem 'honeybadger'
+gem 'listen', "~> 3.9" # used for watching ABBYY OCR output directories
 gem 'lyber-core', '~> 8.0'
 gem 'nokogiri'
 gem 'purl_fetcher-client'
@@ -23,8 +24,8 @@ gem 'pry'
 gem 'rake'
 gem 'sidekiq', '~> 7.0'
 gem 'slop'
+gem 'whenever', require: false
 gem 'zeitwerk', '~> 2.1'
-gem "listen", "~> 3.9" # used for watching ABBYY OCR output directories
 
 source 'https://gems.contribsys.com/' do
   gem 'sidekiq-pro'
