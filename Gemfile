@@ -22,7 +22,7 @@ gem 'purl_fetcher-client'
 gem 'preservation-client'
 gem 'pry'
 gem 'rake'
-gem 'sidekiq', '~> 7.0'
+gem 'sidekiq', '~> 8.0'
 gem 'slop'
 gem 'whenever', require: false
 gem 'zeitwerk', '~> 2.1'
