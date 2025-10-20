@@ -35,8 +35,8 @@ GEM
     ast (2.4.3)
     attr_extras (7.1.0)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1172.0)
-    aws-sdk-batch (1.125.0)
+    aws-partitions (1.1174.0)
+    aws-sdk-batch (1.126.0)
       aws-sdk-core (~> 3, >= 3.231.0)
       aws-sigv4 (~> 1.5)
     aws-sdk-core (3.233.0)
@@ -47,10 +47,10 @@ GEM
       bigdecimal
       jmespath (~> 1, >= 1.6.1)
       logger
-    aws-sdk-kms (1.113.0)
+    aws-sdk-kms (1.114.0)
       aws-sdk-core (~> 3, >= 3.231.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.199.1)
+    aws-sdk-s3 (1.200.0)
       aws-sdk-core (~> 3, >= 3.231.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -121,7 +121,7 @@ GEM
       capistrano-shared_configs
       ed25519
     docile (1.4.1)
-    dor-services-client (15.23.0)
+    dor-services-client (15.24.0)
       activesupport (>= 7.0.0)
       cocina-models (~> 0.107.0)
       deprecation
@@ -170,7 +170,7 @@ GEM
     ffi (1.17.2)
     ffi (1.17.2-x86_64-linux-gnu)
     hashdiff (1.2.1)
-    honeybadger (6.1.1)
+    honeybadger (6.1.2)
       logger
       ostruct
     i18n (1.14.7)
@@ -246,7 +246,7 @@ GEM
       moab-versioning (>= 5.0.0, < 7)
       zeitwerk (~> 2.1)
     prettyprint (0.2.0)
-    prism (1.5.2)
+    prism (1.6.0)
     pry (0.15.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -279,12 +279,12 @@ GEM
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
       rspec-mocks (~> 3.13.0)
-    rspec-core (3.13.5)
+    rspec-core (3.13.6)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-mocks (3.13.5)
+    rspec-mocks (3.13.6)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.6)
