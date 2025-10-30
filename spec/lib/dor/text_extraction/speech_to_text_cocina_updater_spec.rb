@@ -48,7 +48,7 @@ describe Dor::TextExtraction::SpeechToTextCocinaUpdater do
                 version: 1,
                 filename: 'file_1.mp4',
                 hasMimeType: 'video/mp4',
-                access: { download: 'world', view: 'world' }
+                access: { download:, view: }
               }
             ]
           }
@@ -67,7 +67,7 @@ describe Dor::TextExtraction::SpeechToTextCocinaUpdater do
                 version: 1,
                 filename: 'file_1.m4a',
                 hasMimeType: 'audio/m4a',
-                access: { download: 'world', view: 'world' }
+                access: { download:, view: }
               }
             ]
           }
@@ -233,20 +233,62 @@ describe Dor::TextExtraction::SpeechToTextCocinaUpdater do
       let(:view) { 'stanford' }
 
       it 'sets the file level access rights to restricted' do
-        expect(resource1_files[0].access.view).to eq('world') # original file can have different rights
+        expect(resource1_files[0].access.view).to eq('stanford') # original file
         expect(resource1_files[1].access.view).to eq('stanford') # new files below
         expect(resource1_files[2].access.view).to eq('stanford')
         expect(resource1_files[3].access.view).to eq('stanford')
         expect(resource1_files[1].access.download).to eq('stanford')
         expect(resource1_files[2].access.download).to eq('stanford')
         expect(resource1_files[3].access.download).to eq('stanford')
-        expect(resource2_files[0].access.view).to eq('world') # original file can have different rights
+        expect(resource2_files[0].access.view).to eq('stanford') # original file
         expect(resource2_files[1].access.view).to eq('stanford') # new files below
         expect(resource2_files[2].access.view).to eq('stanford')
         expect(resource2_files[3].access.view).to eq('stanford')
         expect(resource2_files[1].access.download).to eq('stanford')
         expect(resource2_files[2].access.download).to eq('stanford')
         expect(resource2_files[3].access.download).to eq('stanford')
+      end
+    end
+
+    context 'when object access rights are dark' do
+      let(:download) { 'none' }
+      let(:view) { 'dark' }
+
+      it 'sets the file level access rights to dark' do
+        expect(resource1_files[0].access.view).to eq('dark') # original file
+        expect(resource1_files[1].access.view).to eq('dark') # new files below
+        expect(resource1_files[2].access.view).to eq('dark')
+        expect(resource1_files[3].access.view).to eq('dark')
+
+        expect(resource1_files[0].access.download).to eq('none')
+        expect(resource1_files[1].access.download).to eq('none')
+        expect(resource1_files[2].access.download).to eq('none')
+        expect(resource1_files[3].access.download).to eq('none')
+
+        expect(resource1_files[0].administrative.shelve).to be false
+        expect(resource1_files[1].administrative.shelve).to be false
+        expect(resource1_files[2].administrative.shelve).to be false
+        expect(resource1_files[3].administrative.shelve).to be false
+
+        expect(resource1_files[0].administrative.sdrPreserve).to be true
+        expect(resource1_files[1].administrative.sdrPreserve).to be true
+        expect(resource1_files[2].administrative.sdrPreserve).to be true
+        expect(resource1_files[3].administrative.sdrPreserve).to be true
+
+        expect(resource1_files[0].administrative.publish).to be false
+        expect(resource1_files[1].administrative.publish).to be false
+        expect(resource1_files[2].administrative.publish).to be false
+        expect(resource1_files[3].administrative.publish).to be false
+
+        expect(resource2_files[0].access.view).to eq('dark') # original file
+        expect(resource2_files[1].access.view).to eq('dark') # new files below
+        expect(resource2_files[2].access.view).to eq('dark')
+        expect(resource2_files[3].access.view).to eq('dark')
+
+        expect(resource2_files[0].access.download).to eq('none')
+        expect(resource2_files[1].access.download).to eq('none')
+        expect(resource2_files[2].access.download).to eq('none')
+        expect(resource2_files[3].access.download).to eq('none')
       end
     end
     # rubocop:enable RSpec/ExampleLength
