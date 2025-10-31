@@ -25,14 +25,21 @@ module Dor
         json['language']
       end
 
-      # set the administrative attributes based on the mimetype
-      # all speech to text files are preserved, shelved and published EXCEPT json files, which are only preserved
+      # set the administrative attributes based on the access rights and the mimetype
+      # if an item is dark then it should not be published or shelved
+      # the whisper json output file is not viewable (it's only preserved)
       def administrative(object_file)
-        preserve = true
-        publish = shelve = object_file.mimetype != 'application/json'
+        # rubocop:disable Style/ConditionalAssignment
+        if dro.access.view == 'dark' || object_file.mimetype == 'application/json'
+          publish = shelve = false
+        else
+          publish = shelve = true
+        end
+        # rubocop:enable Style/ConditionalAssignment
+
         {
           publish:,
-          sdrPreserve: preserve,
+          sdrPreserve: true,
           shelve:
         }
       end

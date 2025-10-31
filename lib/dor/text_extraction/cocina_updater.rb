@@ -216,10 +216,13 @@ module Dor
 
       # you can override this in a subclass to set the administrative attributes conditionally if needed
       def administrative(_object_file)
+        # dark items always have publish and shelve set to false
+        publish = shelve = dro.access.view != 'dark'
+
         {
-          publish: true,
+          publish:,
           sdrPreserve: true,
-          shelve: true
+          shelve:
         }
       end
 

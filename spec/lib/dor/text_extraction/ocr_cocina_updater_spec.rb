@@ -331,6 +331,78 @@ describe Dor::TextExtraction::OcrCocinaUpdater do
     end
   end
 
+  context 'when object access rights are dark' do
+    let(:download) { 'none' }
+    let(:view) { 'dark' }
+    let(:item_type) { Cocina::Models::ObjectType.book }
+    let(:resource_type) { Cocina::Models::FileSetType.page }
+
+    let(:original_resources) do
+      [
+        {
+          externalIdentifier: "#{bare_druid}_1",
+          label: 'Page 1',
+          type: resource_type,
+          version: 1,
+          structural: {
+            contains: [
+              {
+                externalIdentifier: "https://cocina.sul.stanford.edu/file/#{bare_druid}_001",
+                label: 'page_001.tif',
+                type: Cocina::Models::ObjectType.file,
+                version: 1,
+                filename: 'page_001.tif',
+                hasMimeType: 'image/tiff',
+                access: { download: 'none', view: 'dark' }
+              }
+            ]
+          }
+        }
+      ]
+    end
+
+    before do
+      create_ocr_file('page_001.txt')
+      create_ocr_file('page_001.xml')
+      create_ocr_file("#{bare_druid}.pdf")
+      create_ocr_file("#{bare_druid}.txt")
+
+      described_class.update(dro:)
+    end
+
+    it 'sets the file level access rights to dark' do
+      expect(dro.structural.contains[0].structural.contains[0].access.view).to eq('dark')
+      expect(dro.structural.contains[0].structural.contains[1].access.view).to eq('dark')
+      expect(dro.structural.contains[0].structural.contains[2].access.view).to eq('dark')
+      expect(dro.structural.contains[1].structural.contains[0].access.view).to eq('dark')
+      expect(dro.structural.contains[2].structural.contains[0].access.view).to eq('dark')
+    end
+
+    it 'sets the file level publish to false' do
+      expect(dro.structural.contains[0].structural.contains[0].administrative.publish).to be false
+      expect(dro.structural.contains[0].structural.contains[1].administrative.publish).to be false
+      expect(dro.structural.contains[0].structural.contains[2].administrative.publish).to be false
+      expect(dro.structural.contains[1].structural.contains[0].administrative.publish).to be false
+      expect(dro.structural.contains[2].structural.contains[0].administrative.publish).to be false
+    end
+
+    it 'sets the file level shelve to false' do
+      expect(dro.structural.contains[0].structural.contains[0].administrative.shelve).to be false
+      expect(dro.structural.contains[0].structural.contains[1].administrative.shelve).to be false
+      expect(dro.structural.contains[0].structural.contains[2].administrative.shelve).to be false
+      expect(dro.structural.contains[1].structural.contains[0].administrative.shelve).to be false
+      expect(dro.structural.contains[2].structural.contains[0].administrative.shelve).to be false
+    end
+
+    it 'sets file level sdrPreserve to true' do
+      expect(dro.structural.contains[0].structural.contains[0].administrative.sdrPreserve).to be true
+      expect(dro.structural.contains[0].structural.contains[1].administrative.sdrPreserve).to be true
+      expect(dro.structural.contains[0].structural.contains[2].administrative.sdrPreserve).to be true
+      expect(dro.structural.contains[1].structural.contains[0].administrative.sdrPreserve).to be true
+      expect(dro.structural.contains[2].structural.contains[0].administrative.sdrPreserve).to be true
+    end
+  end
+
   context 'when it is a document' do
     let(:item_type) { Cocina::Models::ObjectType.document }
     let(:resource_type) { Cocina::Models::FileSetType.document }
