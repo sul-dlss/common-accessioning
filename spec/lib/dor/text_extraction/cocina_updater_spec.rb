@@ -17,9 +17,10 @@ RSpec.describe Dor::TextExtraction::CocinaUpdater do
   let(:tiff_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [tiff_file]) }
   let(:other_tiff_fileset_structural) { instance_double(Cocina::Models::FileSetStructural, contains: [other_tiff_file]) }
   let(:structural) { instance_double(Cocina::Models::DROStructural, contains: [tiff_fileset, other_tiff_fileset]) }
-  let(:access) { instance_double(Cocina::Models::DROAccess, view:, download:) }
+  let(:access) { instance_double(Cocina::Models::DROAccess, view:, download:, location:) }
   let(:download) { 'world' }
   let(:view) { 'world' }
+  let(:location) { nil }
 
   describe '#access' do
     context 'when object has world/world rights' do
@@ -33,6 +34,15 @@ RSpec.describe Dor::TextExtraction::CocinaUpdater do
 
       it 'sets stanford/world for all new files' do
         expect(updater.send(:access)).to eq({ download: 'stanford', view: 'world' })
+      end
+    end
+
+    context 'when object has a location' do
+      let(:download) { 'location-based' }
+      let(:location) { 'spec' }
+
+      it 'sets location for all new files' do
+        expect(updater.send(:access)).to eq({ download: 'location-based', location: 'spec', view: 'world' })
       end
     end
   end

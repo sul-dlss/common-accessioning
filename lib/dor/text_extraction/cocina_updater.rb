@@ -206,7 +206,9 @@ module Dor
         {
           view: dro.access.view,
           download: dro.access.download
-        }
+        }.tap do |hash|
+          hash[:location] = dro.access.location if dro.access.location # only add location if it is present
+        end
       end
 
       # set the use/role attribute
