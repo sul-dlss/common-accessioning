@@ -55,7 +55,7 @@ From the root of the robot project:
 
 Interactive console:
 ```console
-$ ROBOT_ENVIRONMENT=production ./bin/console
+$ ./bin/console -e production
 ```
 
 Running a single robot step manually (without checking current workflow status).  Note the workflow/step name should be the Module::Class name and not the workflow/step name
@@ -92,7 +92,7 @@ This allows you to explore the data models and actions available.
 
 ```
 cap stage ssh
-ROBOT_ENVIRONMENT=production bin/console
+bin/console -e production
 
 druid='druid:qv402bt5465'
 workflow_name='accessionWF'
