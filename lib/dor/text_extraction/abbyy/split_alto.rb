@@ -5,10 +5,11 @@ module Dor
     module Abbyy
       # Split ALTO file into page files
       class SplitAlto
-        attr_reader :alto_path, :ocr_processing_nodes, :style_nodes, :page_filename_nodes
+        attr_reader :alto_path, :ocr_processing_nodes, :style_nodes, :page_filename_nodes, :logger
 
-        def initialize(alto_path:)
+        def initialize(alto_path:, logger: nil)
           @alto_path = alto_path
+          @logger = logger || Logger.new($stdout)
         end
 
         def write_files
@@ -39,16 +40,26 @@ module Dor
         end
 
         # second pass through the XML to get the page nodes and write them to separate files
+        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable Metrics/AbcSize
         def write_page_files
           i = 0
           Nokogiri::XML::Reader(File.open(alto_path)).each do |node|
             next unless node?(node, 'Page')
+
+            # stop if we've run out of page filenames
+            if i >= page_filenames.length
+              logger.warn "Page nodes exceed page filenames in <sourceImageInformation> node; stopping after #{i} pages (found #{page_filenames.length} filenames)"
+              break
+            end
 
             filename = "#{File.basename(page_filenames[i], File.extname(page_filenames[i]))}.xml"
             File.write(output_path(filename), xml_structure(node.outer_xml))
             i += 1
           end
         end
+        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize
 
         def node?(node, name)
           node.name == name && node.node_type == Nokogiri::XML::Reader::TYPE_ELEMENT
