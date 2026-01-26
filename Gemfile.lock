@@ -35,7 +35,7 @@ GEM
     ast (2.4.3)
     attr_extras (7.1.0)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1206.0)
+    aws-partitions (1.1209.0)
     aws-sdk-batch (1.132.0)
       aws-sdk-core (~> 3, >= 3.241.4)
       aws-sigv4 (~> 1.5)
@@ -54,7 +54,7 @@ GEM
       aws-sdk-core (~> 3, >= 3.241.4)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
-    aws-sdk-sqs (1.110.0)
+    aws-sdk-sqs (1.111.0)
       aws-sdk-core (~> 3, >= 3.241.4)
       aws-sigv4 (~> 1.5)
     aws-sigv4 (1.12.1)
@@ -161,7 +161,7 @@ GEM
     ffi (1.17.3)
     ffi (1.17.3-x86_64-linux-gnu)
     hashdiff (1.2.1)
-    honeybadger (6.2.0)
+    honeybadger (6.2.1)
       logger
       ostruct
     i18n (1.14.8)
@@ -263,7 +263,7 @@ GEM
       erb
       psych (>= 4.0.0)
       tsort
-    redis-client (0.26.3)
+    redis-client (0.26.4)
       connection_pool
     regexp_parser (2.11.3)
     reline (0.6.3)
