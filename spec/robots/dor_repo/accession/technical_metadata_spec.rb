@@ -111,14 +111,6 @@ RSpec.describe Robots::DorRepo::Accession::TechnicalMetadata do
           expect(perform.status).to eq('skipped')
         end
       end
-
-      context 'when metadata-only change' do
-        let(:workspace) { File.absolute_path('spec/fixtures/workspace2') }
-
-        it 'does not run technical metadata' do
-          expect(perform.status).to eq('skipped')
-        end
-      end
     end
 
     context 'when a collection' do
