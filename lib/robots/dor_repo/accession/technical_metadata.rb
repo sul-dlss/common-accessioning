@@ -11,12 +11,11 @@ module Robots
 
         def perform_work
           return LyberCore::ReturnState.new(status: :skipped, note: 'object is not an item') unless cocina_object.dro?
-          return LyberCore::ReturnState.new(status: :skipped, note: 'object has no files') if cocina_object.structural.nil? || cocina_object.structural.contains.blank?
 
           # This is the list of files that are marked for preservation, but still in the dor workspace
           file_uris = PreservedFileUris.new(druid, cocina_object)
 
-          return LyberCore::ReturnState.new(status: :skipped, note: 'change is metadata-only') if metadata_only?(file_uris.filepaths)
+          return LyberCore::ReturnState.new(status: :skipped, note: 'object has no preserved files') if file_uris.filepaths.empty?
 
           invoke_techmd_service(file_uris)
 
@@ -33,11 +32,6 @@ module Robots
                               'Content-Type' => 'application/json',
                               'Authorization' => "Bearer #{Settings.tech_md_service.token}")
           raise "Technical-metadata-service returned #{resp.status} when requesting techmd for #{druid}: #{resp.body}" unless resp.status == 200
-        end
-
-        def metadata_only?(filepaths)
-          # Assume metadata only if no files exist
-          filepaths.all? { |filepath| !File.exist?(filepath) }
         end
       end
     end
