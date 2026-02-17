@@ -372,8 +372,8 @@ RSpec.describe Dor::Assembly::ContentMetadataFromStub::StructuralBuilder do
                                                     access: { view: 'dark', download: 'none', controlledDigitalLending: false },
                                                     administrative: { publish: false, sdrPreserve: true, shelve: false } }] } }],
             hasMemberOrders: [
-              members: [],
-              viewingDirection: 'left-to-right'
+              { members: [],
+                viewingDirection: 'left-to-right' }
             ],
             isMemberOf: [] }
         end
