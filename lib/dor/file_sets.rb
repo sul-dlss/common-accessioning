@@ -60,9 +60,9 @@ module Dor
       ATTRIBUTES_FOR_TYPE
         .fetch(mimetype) { ATTRIBUTES_FOR_TYPE.fetch('default') }
         .tap do |attrs|
-          next unless object_access&.view == 'dark'
+        next unless object_access&.view == 'dark'
 
-          attrs[:publish] = attrs[:shelve] = 'no'
+        attrs[:publish] = attrs[:shelve] = 'no'
       end
     end
 
