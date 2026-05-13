@@ -246,7 +246,7 @@ GEM
       optimist (~> 3.0)
     pp (0.6.3)
       prettyprint
-    preservation-client (7.2.0)
+    preservation-client (7.4.0)
       activesupport (>= 4.2)
       faraday (~> 2.0)
       moab-versioning (>= 5.0.0, < 7)

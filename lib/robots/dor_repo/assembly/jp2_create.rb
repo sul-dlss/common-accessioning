@@ -57,7 +57,7 @@ module Robots
               next if !File.exist?(filepath) && cocina_jp2_file.present?
 
               # If the file does not exist and there is no jp2 cocina file, get it from preservation
-              retrieve_from_preservation(assembly_item.druid.id, filename, filepath) unless File.exist?(filepath)
+              retrieve_from_preservation(druid: assembly_item.druid.id, filepath: filename, destination_filepath: filepath, expected_md5: md5_from(cocina_file)) unless File.exist?(filepath)
 
               # If the file exists and there is no jp2 file, delete existing jp2 cocina file, delete existing jp2 file, generate jp2, and add new jp2 cocina file
               if File.exist?(filepath) && !File.exist?(jp2_filepath)
@@ -138,16 +138,16 @@ module Robots
           }
         end
 
-        def retrieve_from_preservation(druid, filename, filepath)
-          File.open(filepath, 'wb') do |file_writer|
-            preservation_client.objects.content(druid:,
-                                                filepath: filename,
-                                                on_data: proc { |data, _count| file_writer.write data })
-          end
+        def retrieve_from_preservation(druid:, filepath:, destination_filepath:, expected_md5:)
+          preservation_client.objects.content_to_file(druid:, filepath:, destination_filepath:, expected_md5:)
         end
 
         def preservation_client
           @preservation_client ||= Preservation::Client.configure(url: Settings.preservation_catalog.url, token: Settings.preservation_catalog.token)
+        end
+
+        def md5_from(cocina_file)
+          cocina_file[:hasMessageDigests].find { |digest| digest[:type] == 'md5' }[:digest]
         end
       end
     end
