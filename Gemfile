@@ -9,6 +9,7 @@ gem 'assembly-objectfile', '~> 2.1'
 gem 'aws-sdk-batch' # used for submitting jobs for speech-to-text workflow
 gem 'aws-sdk-s3' # used for sending files to S3 for the speech-to-text workflow
 gem 'aws-sdk-sqs' # used for receiving sqs messages from the speech-to-text workflow
+gem 'cocina-models'
 gem 'config'
 gem 'dor-services-client', '~> 15.1'
 gem 'dry-struct', '~> 1.0'

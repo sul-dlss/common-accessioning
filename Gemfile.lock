@@ -387,6 +387,7 @@ DEPENDENCIES
   aws-sdk-sqs
   capistrano (~> 3.6)
   capistrano-bundler
+  cocina-models
   config
   debug
   dlss-capistrano
