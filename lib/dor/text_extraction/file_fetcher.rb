@@ -68,17 +68,14 @@ module Dor
         true
       end
 
-      # fetch a file from perservation and write to disk
+      # fetch a file from preservation and write to disk
       def fetch_and_write_file_to_disk(filename:, path:)
-        path.open('wb') do |file_writer|
-          logger.info("fetching #{filename} for #{druid} and saving to #{path}")
-          preservation_client.objects.content(
-            druid:,
-            filepath: filename,
-            on_data: proc { |data, _count| file_writer.write(data) }
-          )
-        end
-
+        logger.info("fetching #{filename} for #{druid} and saving to #{path}")
+        preservation_client.objects.content_to_file(
+          druid:,
+          filepath: filename,
+          destination_filepath: path.to_s
+        )
         true
       end
 

@@ -481,8 +481,8 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
       before do
         allow(Preservation::Client).to receive(:configure).and_return(client)
-        allow(objects_client).to receive(:content) do |*args|
-          args.first.fetch(:on_data).call('a tiff')
+        allow(objects_client).to receive(:content_to_file) do |*args|
+          File.write(args.first.fetch(:destination_filepath), 'a tiff')
         end
       end
 
@@ -513,9 +513,10 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                         administrative: { publish: true, sdrPreserve: false, shelve: true } }] } }]
         )
         expect(assembly_image).to have_received(:create_jp2)
-        expect(objects_client).to have_received(:content).with(druid: bare_druid,
-                                                               filepath: 'image114.tif',
-                                                               on_data: Proc)
+        expect(objects_client).to have_received(:content_to_file).with(druid: bare_druid,
+                                                                       filepath: 'image114.tif',
+                                                                       destination_filepath: "#{TMP_ROOT_DIR}/ff/222/cc/3333/image114.tif",
+                                                                       expected_md5: '42616f9e6c1b7e7b7a71b4fa0c5ef794')
         expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/image114.tif")).to be true
         expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/image114.jp2")).to be false
       end
