@@ -8,10 +8,10 @@ describe Dor::TextExtraction::DorEventLogger do
   let(:data) { { a_result_message: 'for example, or some other helpful context' } }
   let(:druid) { 'bc123df4567' }
   let(:events_client) { instance_double(Dor::Services::Client::Events, create: nil) }
-  let(:dor_object) { instance_double(Dor::Services::Client::Object, events: events_client) }
+  let(:dor_object_client) { instance_double(Dor::Services::Client::Object, events: events_client) }
 
   before do
-    allow(Dor::Services::Client).to receive(:object).with(druid).and_return(dor_object)
+    allow(Dor::Services::Client).to receive(:object).with(druid).and_return(dor_object_client)
     allow(Dor::Services::Client).to receive(:configure)
   end
 
