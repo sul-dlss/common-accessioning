@@ -328,8 +328,6 @@ Style/SingleLineDoEndBlock: # new in 1.57
   Enabled: true
 Style/SuperWithArgsParentheses: # new in 1.58
   Enabled: true
-Capybara/ClickLinkOrButtonStyle: # new in 2.19
-  Enabled: true
 Capybara/RedundantWithinFind: # new in 2.20
   Enabled: true
 Capybara/RSpec/HaveSelector: # new in 2.19
@@ -454,4 +452,36 @@ RSpec/LeakyLocalVariable: # new in 3.8
 RSpec/Output: # new in 3.9
   Enabled: true
 RSpecRails/HttpStatusNameConsistency: # new in 2.32
+  Enabled: true
+Lint/DataDefineOverride: # new in 1.85
+  Enabled: true
+Lint/UnreachablePatternBranch: # new in 1.85
+  Enabled: true
+Style/FileOpen: # new in 1.85
+  Enabled: true
+Style/MapJoin: # new in 1.85
+  Enabled: true
+Style/OneClassPerFile: # new in 1.85
+  Enabled: true
+Style/PartitionInsteadOfDoubleSelect: # new in 1.85
+  Enabled: true
+Style/PredicateWithKind: # new in 1.85
+  Enabled: true
+Style/ReduceToHash: # new in 1.85
+  Enabled: true
+Style/RedundantMinMaxBy: # new in 1.85
+  Enabled: true
+Style/SelectByKind: # new in 1.85
+  Enabled: true
+Style/SelectByRange: # new in 1.85
+  Enabled: true
+Style/TallyMethod: # new in 1.85
+  Enabled: true
+Capybara/AssertStyle: # new in 2.23
+  Enabled: true
+Capybara/RSpec/CurrentPathExpectation: # new in 1.18
+  Enabled: true
+Capybara/RSpec/HaveContent: # new in 2.23
+  Enabled: true
+Capybara/RSpec/VisibilityMatcher: # new in 1.39
   Enabled: true
