@@ -35,7 +35,7 @@ GEM
     ast (2.4.3)
     attr_extras (7.1.0)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1261.0)
+    aws-partitions (1.1262.0)
     aws-sdk-batch (1.146.0)
       aws-sdk-core (~> 3, >= 3.248.0)
       aws-sigv4 (~> 1.5)
@@ -88,7 +88,7 @@ GEM
       super_diff
       thor
       zeitwerk (~> 2.1)
-    cocina_display (2.7.0)
+    cocina_display (2.8.0)
       activesupport (>= 7)
       edtf (~> 3.2)
       geo_coord (~> 0.2)
@@ -105,7 +105,6 @@ GEM
     crack (1.0.1)
       bigdecimal
       rexml
-    date (3.5.1)
     debug (1.11.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
@@ -154,7 +153,7 @@ GEM
       dry-logic (~> 1.4)
       zeitwerk (~> 2.6)
     ed25519 (1.4.0)
-    edtf (3.2.0)
+    edtf (3.3.0)
       activesupport (>= 3.0, < 9.0)
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
@@ -189,13 +188,13 @@ GEM
     iso8601 (0.13.0)
     janeway-jsonpath (1.0.0)
     jmespath (1.6.2)
-    json (2.19.9)
-    jsonschema_rs (0.46.5)
+    json (2.20.0)
+    jsonschema_rs (0.46.6)
       bigdecimal (>= 3.1, < 5)
       rb_sys (~> 0.9.124)
-    jsonschema_rs (0.46.5-arm64-darwin)
+    jsonschema_rs (0.46.6-arm64-darwin)
       bigdecimal (>= 3.1, < 5)
-    jsonschema_rs (0.46.5-x86_64-linux)
+    jsonschema_rs (0.46.6-x86_64-linux)
       bigdecimal (>= 3.1, < 5)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
@@ -235,7 +234,7 @@ GEM
       net-ssh (>= 2.6.5, < 8.0.0)
     net-sftp (4.0.0)
       net-ssh (>= 5.0.0, < 8.0.0)
-    net-ssh (7.3.2)
+    net-ssh (7.3.3)
     nokogiri (1.19.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
@@ -267,11 +266,8 @@ GEM
       method_source (~> 1.0)
       reline (>= 0.6.0)
     pstore (0.2.1)
-    psych (5.4.0)
-      date
-      stringio
     public_suffix (7.0.5)
-    purl_fetcher-client (3.1.0)
+    purl_fetcher-client (3.2.0)
       activesupport
       faraday (~> 2.1)
     racc (1.8.1)
@@ -284,9 +280,14 @@ GEM
       ffi (~> 1.0)
     rb_sys (0.9.128)
       rake-compiler-dock (= 1.12.0)
-    rdoc (7.2.0)
+    rbs (4.0.3)
+      logger
+      prism (>= 1.6.0)
+      tsort
+    rdoc (8.0.0)
       erb
-      psych (>= 4.0.0)
+      prism (>= 1.6.0)
+      rbs (>= 4.0.0)
       tsort
     redis-client (0.30.0)
       connection_pool
@@ -323,7 +324,7 @@ GEM
     rubocop-ast (1.49.1)
       parser (>= 3.3.7.2)
       prism (~> 1.7)
-    rubocop-capybara (2.23.0)
+    rubocop-capybara (3.0.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.81)
     rubocop-factory_bot (2.28.0)
@@ -364,7 +365,6 @@ GEM
       net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
       ostruct
-    stringio (3.2.0)
     super_diff (0.19.0)
       attr_extras (>= 6.2.4, < 8)
       diff-lcs (~> 1.5)
@@ -433,4 +433,4 @@ DEPENDENCIES
   zeitwerk (~> 2.1)
 
 BUNDLED WITH
-  4.0.14
+  4.0.15
