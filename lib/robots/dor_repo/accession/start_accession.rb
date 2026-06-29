@@ -91,8 +91,8 @@ module Robots
         end
 
         def preservation_files_md5_map
-          @preservation_files_md5_map ||= preservation_client.objects.checksum(druid: druid).each_with_object({}) do |hash, map|
-            map[hash[:filename]] = hash[:md5]
+          @preservation_files_md5_map ||= preservation_client.objects.checksum(druid: druid).to_h do |hash|
+            [hash[:filename], hash[:md5]]
           end
         end
 
@@ -103,8 +103,8 @@ module Robots
 
         def shelve_files_md5_map
           @shelve_files_md5_map ||= begin
-            PurlFetcher::Client::Reader.new(host: Settings.purl_fetcher.url).files_by_digest(druid).each_with_object({}) do |hash, map|
-              map[hash.values.first] = hash.keys.first
+            PurlFetcher::Client::Reader.new(host: Settings.purl_fetcher.url).files_by_digest(druid).to_h do |hash|
+              [hash.values.first, hash.keys.first]
             end
           rescue PurlFetcher::Client::NotFoundResponseError
             {}
