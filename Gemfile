@@ -17,7 +17,7 @@ gem 'dry-types', '~> 1.1'
 gem 'druid-tools'
 gem 'honeybadger'
 gem 'listen', "~> 3.9" # used for watching ABBYY OCR output directories
-gem 'lyber-core', '~> 8.0'
+gem 'lyber-core'
 gem 'nokogiri'
 gem 'purl_fetcher-client'
 gem 'preservation-client'
