@@ -187,7 +187,7 @@ GEM
     iso8601 (0.13.0)
     janeway-jsonpath (1.1.0)
     jmespath (1.6.2)
-    json (3.0.0)
+    json (2.21.2)
     jsonschema_rs (0.55.0)
       bigdecimal (>= 3.1, < 5)
       rb_sys (~> 0.9.130)
@@ -405,6 +405,7 @@ DEPENDENCIES
   dry-types (~> 1.1)
   equivalent-xml
   honeybadger
+  json (~> 2.21)
   listen (~> 3.9)
   lyber-core
   nokogiri
