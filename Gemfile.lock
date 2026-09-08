@@ -1,7 +1,7 @@
 GEM
   remote: https://gems.contribsys.com/
   specs:
-    sidekiq-pro (8.1.5)
+    sidekiq-pro (8.1.6)
       sidekiq (>= 8.1.0, < 9)
 
 GEM
@@ -35,7 +35,7 @@ GEM
     ast (2.4.3)
     attr_extras (7.1.0)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1282.0)
+    aws-partitions (1.1283.0)
     aws-sdk-batch (1.151.0)
       aws-sdk-core (~> 3, >= 3.254.0)
       aws-sigv4 (~> 1.5)
@@ -187,13 +187,13 @@ GEM
     iso8601 (0.13.0)
     janeway-jsonpath (1.1.0)
     jmespath (1.6.2)
-    json (2.21.2)
-    jsonschema_rs (0.52.1)
+    json (3.0.0)
+    jsonschema_rs (0.55.0)
       bigdecimal (>= 3.1, < 5)
       rb_sys (~> 0.9.130)
-    jsonschema_rs (0.52.1-arm64-darwin)
+    jsonschema_rs (0.55.0-arm64-darwin)
       bigdecimal (>= 3.1, < 5)
-    jsonschema_rs (0.52.1-x86_64-linux)
+    jsonschema_rs (0.55.0-x86_64-linux)
       bigdecimal (>= 3.1, < 5)
     language_server-protocol (3.17.0.6)
     lint_roller (1.1.0)
@@ -245,7 +245,7 @@ GEM
       nokogiri (~> 1.5)
     optimist (3.2.1)
     ostruct (0.6.3)
-    parallel (2.1.0)
+    parallel (2.2.0)
     parser (3.3.12.0)
       ast (~> 2.4.1)
       racc
@@ -352,7 +352,7 @@ GEM
       logger (>= 1.7.0)
       rack (>= 3.2.0)
       redis-client (>= 0.29.0)
-    simplecov (1.1.1)
+    simplecov (1.2.0)
     slop (4.10.1)
     sshkit (1.25.1)
       base64
@@ -429,4 +429,4 @@ DEPENDENCIES
   zeitwerk (~> 2.1)
 
 BUNDLED WITH
-  4.0.19
+  4.0.20
