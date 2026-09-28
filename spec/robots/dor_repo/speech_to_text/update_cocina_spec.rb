@@ -126,7 +126,7 @@ describe Robots::DorRepo::SpeechToText::UpdateCocina do
       create_speech_to_text_file('file1_mp4.json')
     end
 
-    # rubocop:disable RSpec/ExampleLength
+    # rubocop:disable-next RSpec/ExampleLength
     it 'runs the update cocina robot and correctly adds the renamed output files to the correct resource' do
       new_cocina = test_perform(robot, druid)
       new_audio_json_file = new_cocina.structural.contains[0].structural.contains[1]
@@ -145,7 +145,6 @@ describe Robots::DorRepo::SpeechToText::UpdateCocina do
       expect(new_video_vtt_file.filename).to eq 'file1_mp4.vtt'
       expect(new_video_vtt_file.use).to eq 'caption'
     end
-    # rubocop:enable RSpec/ExampleLength
   end
 
   context 'with a txt file' do

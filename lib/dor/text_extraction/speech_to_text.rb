@@ -85,7 +85,7 @@ module Dor
       end
 
       # return the technical metadata for the object from the technical-metadata-service and parse it as json
-      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable-next Metrics/AbcSize
       def tech_metadata
         @tech_metadata ||= begin
           resp = Faraday.get("#{Settings.tech_md_service.url}/v1/technical-metadata/druid/#{cocina_object.externalIdentifier}") do |req|
@@ -97,7 +97,6 @@ module Dor
           JSON.parse(resp.body)
         end
       end
-      # rubocop:enable Metrics/AbcSize
 
       # return the s3 location for a given filename
       # NOTE: Due to https://github.com/sul-dlss/common-accessioning/issues/1443, we will rename this file when sending it to whisper

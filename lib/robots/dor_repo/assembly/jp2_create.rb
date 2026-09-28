@@ -24,7 +24,7 @@ module Robots
 
         # For each supported image type that is part of specific resource types, generate a jp2 derivative
         # and modify structural metadata to reflect the new file.
-        # rubocop:disable Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/PerceivedComplexity
         def create_jp2s(assembly_item, cocina_model)
           logger.info("Creating JP2s for #{assembly_item.druid.id}")
           file_sets = cocina_model.structural.to_h.fetch(:contains) # make this a mutable hash
@@ -81,7 +81,6 @@ module Robots
 
           file_sets
         end
-        # rubocop:enable Metrics/PerceivedComplexity
 
         def find_cocina_jp2_file(cocina_files)
           cocina_files.find { |cocina_file| cocina_file[:filename].ends_with?('.jp2') }

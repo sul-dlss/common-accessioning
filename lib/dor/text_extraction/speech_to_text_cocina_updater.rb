@@ -29,13 +29,12 @@ module Dor
       # if an item is dark then it should not be published or shelved
       # the whisper json output file is not viewable (it's only preserved)
       def administrative(object_file)
-        # rubocop:disable Style/ConditionalAssignment
+        # rubocop:disable-next Style/ConditionalAssignment
         if dro.access.view == 'dark' || object_file.mimetype == 'application/json'
           publish = shelve = false
         else
           publish = shelve = true
         end
-        # rubocop:enable Style/ConditionalAssignment
 
         {
           publish:,

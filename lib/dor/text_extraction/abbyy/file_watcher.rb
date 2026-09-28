@@ -19,7 +19,7 @@ module Dor
         # exit after starting in order for the listener's thread to keep running
         delegate :start, :pause, :stop, to: :listener
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def initialize(
           logger: Logger.new($stdout),
           workflow_updater_class: Dor::TextExtraction::WorkflowUpdater,
@@ -37,7 +37,6 @@ module Dor
           @listener_options = default_listener_options.merge(listener_options)
           Dor::Services::Client.configure(logger:, url: Settings.dor_services.url, token: Settings.dor_services.token)
         end
-        # rubocop:enable Metrics/AbcSize
 
         # Notify SDR that the OCR workflow step completed successfully
         def process_success(results)
