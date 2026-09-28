@@ -5,7 +5,7 @@ require 'simplecov'
 SimpleCov.start do
   cover 'bin/**/*'
   cover 'lib/dor/*.rb'
-  cover 'robots/**/*.rb'
+  cover 'lib/robots/**/*.rb'
   skip '/spec/'
 
   if ENV['CI']
