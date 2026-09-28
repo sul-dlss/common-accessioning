@@ -16,8 +16,6 @@ gem 'dry-struct', '~> 1.0'
 gem 'dry-types', '~> 1.1'
 gem 'druid-tools'
 gem 'honeybadger'
-# Pin until Faraday is updated to support v3, used via purl-fetcher-client, see: https://github.com/lostisland/faraday/pull/1687
-gem 'json', '~> 2.21'
 gem 'listen', "~> 3.9" # used for watching ABBYY OCR output directories
 gem 'lyber-core'
 gem 'nokogiri'
