@@ -47,7 +47,7 @@ describe Robots::DorRepo::SpeechToText::StageFiles do
 
     after { FileUtils.rm_rf(fake_workspace_path) } # cleanup the fake workspace for the next test run
 
-    # rubocop:disable RSpec/ExampleLength
+    # rubocop:disable-next RSpec/ExampleLength
     it 'copies only the vtt, json and txt files from s3 to local workspace' do
       # files are not in the local workspace
       %w[file.txt file.vtt file1.json file1.srt].each do |file|
@@ -65,6 +65,5 @@ describe Robots::DorRepo::SpeechToText::StageFiles do
       expect(File.exist?("#{fake_workspace_path}/content/file1.json")).to be true
       expect(File.read("#{fake_workspace_path}/content/file1.json")).to eq(File.read('spec/fixtures/speech_to_text/file1.json'))
     end
-    # rubocop:enable RSpec/ExampleLength
   end
 end

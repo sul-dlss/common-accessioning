@@ -281,7 +281,7 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
       end
     end
 
-    # rubocop:disable RSpec/SubjectStub
+    # rubocop:disable-next RSpec/SubjectStub
     context 'when DRO with missing file' do
       let(:cocina_object) do
         build(:dro, id: druid).new(access:, structural:)
@@ -327,7 +327,6 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
         expect(robot).to have_received(:sleep).exactly(3).times
       end
     end
-    # rubocop:enable RSpec/SubjectStub
 
     context 'when DRO with shelved file but object is not on shelves' do
       let(:cocina_object) do

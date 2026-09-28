@@ -3,10 +3,10 @@
 require 'simplecov'
 
 SimpleCov.start do
-  track_files 'bin/**/*'
-  track_files 'lib/dor/*.rb'
-  track_files 'robots/**/*.rb'
-  add_filter '/spec/'
+  cover 'bin/**/*'
+  cover 'lib/dor/*.rb'
+  cover 'robots/**/*.rb'
+  skip '/spec/'
 
   if ENV['CI']
     require 'simplecov_json_formatter'
@@ -46,7 +46,7 @@ def clone_test_input(destination)
   system "rsync -rqOlt --delete #{source}/ #{destination}/"
 end
 
-# rubocop:disable Metrics/ParameterLists
+# rubocop:disable-next Metrics/ParameterLists
 def build_file(filename, preserve: true, shelve: true, corrected: false, sdr_generated: false, language_tag: nil, height: nil, width: nil)
   extension = File.extname(filename)
   mimetype = { '.pdf' => 'application/pdf', '.tif' => 'image/tiff', '.jpg' => 'image/jpeg', '.txt' => 'text/plain',
@@ -59,4 +59,3 @@ def build_file(filename, preserve: true, shelve: true, corrected: false, sdr_gen
                                         filename:, correctedForAccessibility: corrected, sdrGeneratedText: sdr_generated,
                                         presentation:)
 end
-# rubocop:enable Metrics/ParameterLists

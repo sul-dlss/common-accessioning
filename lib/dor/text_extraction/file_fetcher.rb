@@ -19,7 +19,7 @@ module Dor
       # @param [Object] location to write the file (could be a Pathname object, a string representing a local path, or an S3Object for AWS)
       # @param [Integer] max_tries the number of times to retry fetching the file
       # @return [Boolean] true if the file was fetched and written, false otherwise
-      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable-next Metrics/MethodLength
       def write_file_with_retries(filename:, location:, max_tries: 3)
         tries = 0
         written = false
@@ -50,7 +50,6 @@ module Dor
 
         written
       end
-      # rubocop:enable Metrics/MethodLength
 
       private
 

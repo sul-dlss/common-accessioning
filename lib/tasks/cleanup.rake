@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/BlockLength
+# rubocop:disable-next Metrics/BlockLength
 namespace :abbyy do
   # ROBOT_ENVIRONMENT=production bundle exec rake abbyy:cleanup
   desc 'Cleanup empty ABBYY input and output directories and older ABBYY tickets (for clearing detritus from e.g. ABBYY runs that errored)'
@@ -72,4 +72,3 @@ namespace :abbyy do
     puts "**dry run** did not delete any files.  To actually delete, pass true for should_perform_deletions param, e.g. rake 'abbyy:cleanup[true]')" unless should_perform_deletions
   end
 end
-# rubocop:enable Metrics/BlockLength

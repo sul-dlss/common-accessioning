@@ -11,7 +11,7 @@ module Robots
         end
 
         # Generate the structural metadata for this object from stub content metadata (if present).
-        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable-next Metrics/MethodLength
         def perform_work
           return LyberCore::ReturnState.new(status: :skipped, note: 'object is not an item') unless assembly_item.item? # not an item, skip
 
@@ -39,7 +39,6 @@ module Robots
 
           LyberCore::ReturnState.new(status: 'completed')
         end
-        # rubocop:enable Metrics/MethodLength
       end
     end
   end

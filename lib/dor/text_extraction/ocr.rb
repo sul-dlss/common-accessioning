@@ -3,7 +3,7 @@
 module Dor
   module TextExtraction
     # Determine if OCR is required and possible for a given object
-    # rubocop:disable Metrics/ClassLength
+    # rubocop:disable-next Metrics/ClassLength
     class Ocr
       attr_reader :cocina_object, :workflow_context, :bare_druid, :logger
 
@@ -90,7 +90,7 @@ module Dor
       end
 
       # e.g. /abbyy/OUTPUT/ab123cd4567
-      # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+      # rubocop:disable-next Metrics/MethodLength,Metrics/AbcSize
       def cleanup_output_folder
         return unless Dir.exist?(abbyy_output_path)
 
@@ -112,7 +112,6 @@ module Dor
 
         delete_folder(abbyy_output_path)
       end
-      # rubocop:enable Metrics/MethodLength,Metrics/AbcSize
 
       # e.g. /abbyy/INPUT/ab123cd4567.xml
       def cleanup_xml_ticket
@@ -226,6 +225,5 @@ module Dor
         `rm -rf #{folder}`
       end
     end
-    # rubocop:enable Metrics/ClassLength
   end
 end
