@@ -25,7 +25,7 @@ module Robots
         end
 
         def close_version
-          object_client.version.close
+          object_client.version.close(lane_id:)
         end
       end
     end
