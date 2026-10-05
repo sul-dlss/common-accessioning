@@ -33,6 +33,20 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
     end
   end
 
+  context 'when the type is item and the content is in staging' do
+    let(:object) { build(:dro, id: druid) }
+
+    before do
+      allow(Settings.sdr).to receive(:staging_root).and_return('spec/test_input2')
+    end
+
+    it 'initiates accessioning, but does not initialize the workspace' do
+      test_perform(robot, druid)
+      expect(workspace_client).not_to have_received(:create)
+      expect(version_client).to have_received(:close).with(lane_id: 'high')
+    end
+  end
+
   context 'when the type is collection' do
     let(:object) { build(:collection, id: druid) }
 
