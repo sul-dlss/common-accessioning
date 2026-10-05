@@ -90,6 +90,48 @@ RSpec.describe Robots::DorRepo::Accession::Stage do
       end
     end
 
+    context 'when the workspace is a symlink to staging' do
+      let(:staging_object_root) { File.expand_path('spec/fixtures/workspace/dd/116/zh/0343/dd116zh0343') }
+
+      before do
+        FileUtils.mkdir_p(File.dirname(object_workspace_root))
+        FileUtils.ln_s(staging_object_root, object_workspace_root)
+      end
+
+      it 'skips the robot and leaves the symlink' do
+        expect(perform.status).to eq('skipped')
+        expect(perform.note).to eq('workspace is already linked to staging')
+
+        expect(File.symlink?(object_workspace_root)).to be true
+        expect(File.exist?("#{object_workspace_root}/content/folder1PuSu/story1u.txt")).to be true
+      end
+    end
+
+    context 'when a symlink to staging appears after the workspace is removed' do
+      let(:staging_object_root) { File.expand_path('spec/fixtures/workspace/dd/116/zh/0343/dd116zh0343') }
+
+      before do
+        # Simulates a symlink created on another host that was not visible when the workspace was removed.
+        linked = false
+        allow(FileUtils).to receive(:mkpath).and_wrap_original do |original, path, **kwargs|
+          if !linked && path.to_s == object_workspace_root
+            linked = true
+            original.call(File.dirname(object_workspace_root))
+            FileUtils.ln_s(staging_object_root, object_workspace_root)
+          end
+          original.call(path, **kwargs)
+        end
+      end
+
+      it 'skips the robot and leaves the symlink' do
+        expect(perform.status).to eq('skipped')
+        expect(perform.note).to eq('workspace is already linked to staging')
+
+        expect(File.symlink?(object_workspace_root)).to be true
+        expect(File.exist?("#{object_workspace_root}/content/folder1PuSu/story1u.txt")).to be true
+      end
+    end
+
     context 'when file already accessioned (and therefore missing)' do
       let(:object) do
         build(:dro, id: druid).new(
