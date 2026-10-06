@@ -13,11 +13,17 @@ module Robots
           return LyberCore::ReturnState.new(status: :skipped, note: 'object is not an item') unless cocina_object.dro?
           return LyberCore::ReturnState.new(status: :skipped, note: "no files in staging on #{Socket.gethostname}") unless staging_pathname.exist?
 
+          return skip_linked_workspace if linked_to_staging?
+
           # Delete the workspace directory if it exists
           workspace_pathname.rmtree if workspace_pathname.exist?
 
-          # Copy from staging to workspace
           workspace_pathname.mkpath
+          # A workspace symlink to staging recently created on another host may not have been visible
+          # (e.g., due to NFS caching) until creating the workspace.
+          return skip_linked_workspace if linked_to_staging?
+
+          # Copy from staging to workspace
           FileUtils.cp_r(staging_pathname, workspace_pathname.parent)
 
           # Audit the workspace directory
@@ -25,6 +31,16 @@ module Robots
         end
 
         private
+
+        # The workspace may already be a symlink to staging (e.g., created by assemblyWF), so no copy is needed.
+        def linked_to_staging?
+          File.identical?(staging_pathname, workspace_pathname)
+        end
+
+        def skip_linked_workspace
+          check_expected_file_sizes!
+          LyberCore::ReturnState.new(status: :skipped, note: 'workspace is already linked to staging')
+        end
 
         def staging_pathname
           @staging_pathname ||= DruidTools::Druid.new(druid, Settings.sdr.staging_root).pathname
