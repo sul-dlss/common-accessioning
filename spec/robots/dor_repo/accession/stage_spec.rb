@@ -111,15 +111,17 @@ RSpec.describe Robots::DorRepo::Accession::Stage do
       let(:staging_object_root) { File.expand_path('spec/fixtures/workspace/dd/116/zh/0343/dd116zh0343') }
 
       before do
+        # Stub druid ahead of test_perform (which does the same) so workspace_pathname can be
+        # resolved below.
+        # rubocop:disable-next RSpec/SubjectStub
+        allow(robot).to receive(:druid).and_return(druid)
+
         # Simulates a symlink created on another host that was not visible when the workspace was removed.
-        linked = false
-        allow(FileUtils).to receive(:mkpath).and_wrap_original do |original, path, **kwargs|
-          if !linked && path.to_s == object_workspace_root
-            linked = true
-            original.call(File.dirname(object_workspace_root))
-            FileUtils.ln_s(staging_object_root, object_workspace_root)
-          end
-          original.call(path, **kwargs)
+        # Stubbed on the robot's own workspace_pathname (rather than FileUtils.mkpath) because
+        # Pathname#mkpath no longer delegates to FileUtils.mkpath as of Ruby 4.
+        allow(robot.send(:workspace_pathname)).to receive(:mkpath) do
+          FileUtils.mkdir_p(File.dirname(object_workspace_root))
+          FileUtils.ln_s(staging_object_root, object_workspace_root)
         end
       end
 

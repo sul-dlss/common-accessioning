@@ -31,6 +31,8 @@ The following workflows are supported by this repository:
 
 ## Developers
 
+Use Ruby 4.0.7 for development and testing.
+
 ### Configuration
 
 Install `libvips` and `exiftool`, typically via `brew`.  These are pre-requisites for running the assemblyWF step that creates derivative JP2s.
