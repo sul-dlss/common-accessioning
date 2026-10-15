@@ -18,17 +18,18 @@ module Robots
         private
 
         def check_files! # rubocop:disable Metrics/MethodLength
-          # There may be a latency before staging files are visible in this mount, so we will retry a few times.
+          # There may be a latency before staged files are visible in this mount, so we will retry a few times.
           retries = 0
-          staging_present = nil
           begin
-            staging_present = staging_pathname.exist?
             missing_files = audit_files
 
-            raise "Files missing from staging, workspace, shelves, and preservation: #{missing_files.join(', ')}" if missing_files.present?
+            raise "Files missing from staging, assembly, workspace, shelves, and preservation: #{missing_files.join(', ')}" if missing_files.present?
+          rescue Dor::StagedContent::MultipleRootsError
+            raise
           rescue StandardError
-            if !staging_present && retries < 3
+            if staged_content.nil? && retries < 3
               retries += 1
+              remove_instance_variable(:@staged_content) # look for the staged content again
               sleep((Settings.sleep_coefficient * 5) * retries) # wait before retrying
               retry
             end
@@ -49,7 +50,7 @@ module Robots
           # Files that are dark (not published or shelved) are not accessioned.
           return true if !file.administrative.publish && !file.administrative.shelve
           # Every file should be in staging, workspace, shelf, or preservation.
-          return true if check_file(dir_pathname: staging_pathname, file: file)
+          return true if staged_content && check_file(dir_pathname: staged_content.pathname, file: file)
           return true if check_file(dir_pathname: workspace_pathname, file: file)
 
           # First version of a DRO isn't shelved or preserved yet.
@@ -67,8 +68,11 @@ module Robots
           end
         end
 
-        def staging_pathname
-          @staging_pathname ||= DruidTools::Druid.new(druid, Settings.sdr.staging_root).pathname
+        # @return [Dor::StagedContent, nil] nil when there is no staged content
+        def staged_content
+          return @staged_content if defined?(@staged_content)
+
+          @staged_content = Dor::StagedContent.find(druid)
         end
 
         def workspace_pathname
