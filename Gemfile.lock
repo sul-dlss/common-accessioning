@@ -35,7 +35,7 @@ GEM
     ast (2.4.3)
     attr_extras (7.1.0)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1293.0)
+    aws-partitions (1.1296.0)
     aws-sdk-batch (1.154.0)
       aws-sdk-core (~> 3, >= 3.256.0)
       aws-sigv4 (~> 1.5)
@@ -120,7 +120,7 @@ GEM
       capistrano-one_time_key (>= 0.2.0)
       capistrano-shared_configs
       ed25519
-    dor-services-client (15.67.0)
+    dor-services-client (15.69.0)
       activesupport (>= 7.0.0)
       cocina-models (~> 0.133.0)
       deprecation
@@ -189,7 +189,7 @@ GEM
     iso8601 (0.13.0)
     janeway-jsonpath (1.1.0)
     jmespath (1.6.2)
-    json (3.0.2)
+    json (3.1.0)
     jsonschema_rs (0.58.6)
       bigdecimal (>= 3.1, < 5)
       rb_sys (~> 0.9.130)
@@ -380,7 +380,7 @@ GEM
       unicode-emoji (~> 4.3)
     unicode-emoji (4.3.0)
     uri (1.1.2)
-    webmock (3.29.0)
+    webmock (3.34.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -395,31 +395,31 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
-  assembly-image (~> 2.0)
-  assembly-objectfile (~> 2.1)
+  assembly-image
+  assembly-objectfile
   aws-sdk-batch
   aws-sdk-s3
   aws-sdk-sqs
-  capistrano (~> 3.6)
+  capistrano
   capistrano-bundler
   cocina-models
   config
   debug
   dlss-capistrano
-  dor-services-client (~> 15.1)
+  dor-services-client
   druid-tools
-  dry-struct (~> 1.0)
-  dry-types (~> 1.1)
+  dry-struct
+  dry-types
   equivalent-xml
   honeybadger
-  listen (~> 3.9)
+  listen
   lyber-core
   nokogiri
   preservation-client
   pry
   purl_fetcher-client
   rake
-  rspec (~> 3.0)
+  rspec
   rspec_junit_formatter
   rubocop
   rubocop-capybara
@@ -427,13 +427,13 @@ DEPENDENCIES
   rubocop-rspec
   rubocop-rspec_rails
   ruby-debug-completion
-  sidekiq (~> 8.0)
+  sidekiq
   sidekiq-pro!
   simplecov
   slop
   webmock
   whenever
-  zeitwerk (~> 2.1)
+  zeitwerk
 
 BUNDLED WITH
   4.0.22
