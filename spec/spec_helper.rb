@@ -7,6 +7,7 @@ SimpleCov.start do
   cover 'lib/dor/*.rb'
   cover 'lib/robots/**/*.rb'
   skip '/spec/'
+  skip '/bin/'
 
   if ENV['CI']
     require 'simplecov_json_formatter'
