@@ -3,47 +3,63 @@
 module Robots
   module DorRepo
     module Accession
-      # Copies files from staging (if present) to workspace
+      # Moves staged content from the assembly root, or copies it from the staging root, to the workspace
       class Stage < LyberCore::Robot
         def initialize
           super('accessionWF', 'stage')
         end
 
-        def perform_work # rubocop:disable Metrics/AbcSize
-          return LyberCore::ReturnState.new(status: :skipped, note: 'object is not an item') unless cocina_object.dro?
-          return LyberCore::ReturnState.new(status: :skipped, note: "no files in staging on #{Socket.gethostname}") unless staging_pathname.exist?
+        def perform_work
+          return skipped('object is not an item') unless cocina_object.dro?
+          return stage_legacy_symlink if workspace_pathname.symlink?
 
-          return skip_linked_workspace if linked_to_staging?
+          staged_content = Dor::StagedContent.find(druid)
+          return stage_nothing unless staged_content
 
-          # Delete the workspace directory if it exists
-          workspace_pathname.rmtree if workspace_pathname.exist?
-
-          workspace_pathname.mkpath
-          # A workspace symlink to staging recently created on another host may not have been visible
-          # (e.g., due to NFS caching) until creating the workspace.
-          return skip_linked_workspace if linked_to_staging?
-
-          # Copy from staging to workspace
-          FileUtils.cp_r(staging_pathname, workspace_pathname.parent)
-
-          # Audit the workspace directory
-          check_expected_file_sizes!
+          staged_content.assembly? ? move(staged_content.pathname) : copy(staged_content.pathname)
         end
 
         private
 
-        # The workspace may already be a symlink to staging (e.g., created by assemblyWF), so no copy is needed.
-        def linked_to_staging?
-          File.identical?(staging_pathname, workspace_pathname)
-        end
+        # Workspaces symlinked by accessioning-initiate before it stopped doing so are left in place.
+        def stage_legacy_symlink
+          raise "Workspace is a dangling symlink: #{workspace_pathname}" unless workspace_pathname.exist?
 
-        def skip_linked_workspace
           check_expected_file_sizes!
-          LyberCore::ReturnState.new(status: :skipped, note: 'workspace is already linked to staging')
+          skipped('workspace is a legacy symlink')
         end
 
-        def staging_pathname
-          @staging_pathname ||= DruidTools::Druid.new(druid, Settings.sdr.staging_root).pathname
+        # Also covers a retry after a move, so the size check still runs.
+        def stage_nothing
+          check_expected_file_sizes! if workspace_pathname.exist?
+          skipped('no staged content')
+        end
+
+        def move(source_pathname)
+          raise "Staged content in both #{source_pathname} and #{workspace_pathname}" if workspace_pathname.exist?
+
+          workspace_pathname.parent.mkpath
+          # Same file system, so atomic; EXDEV is raised rather than falling back to a copy.
+          File.rename(source_pathname, workspace_pathname)
+          check_expected_file_sizes!
+          completed("moved from #{Settings.sdr.assembly_root}")
+        end
+
+        # Staging is kept because it is the backed-up copy until preservation.
+        def copy(source_pathname)
+          workspace_pathname.rmtree if workspace_pathname.exist?
+          workspace_pathname.mkpath
+          FileUtils.cp_r(source_pathname, workspace_pathname.parent)
+          check_expected_file_sizes!
+          completed("copied from #{Settings.sdr.staging_root}")
+        end
+
+        def skipped(note)
+          LyberCore::ReturnState.new(status: :skipped, note:)
+        end
+
+        def completed(note)
+          LyberCore::ReturnState.new(status: :completed, note:)
         end
 
         def workspace_pathname

@@ -11,20 +11,59 @@ RSpec.describe Robots::DorRepo::Accession::Stage do
     let(:druid) { 'druid:dd116zh0343' }
     let(:object_client) { instance_double(Dor::Services::Client::Object, find: object) }
     let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow) }
-    let(:workspace_root) { File.join(Dir.tmpdir, 'workspace') }
-    let(:object_workspace_root) { "#{workspace_root}/dd/116/zh/0343/dd116zh0343" }
+    let(:assembly_root) { Dir.mktmpdir }
+    let(:staging_root) { Dir.mktmpdir }
+    let(:workspace_root) { Dir.mktmpdir }
+    let(:assembly_pathname) { DruidTools::Druid.new(druid, assembly_root).pathname }
+    let(:staging_pathname) { DruidTools::Druid.new(druid, staging_root).pathname }
+    let(:workspace_pathname) { DruidTools::Druid.new(druid, workspace_root).pathname }
+    let(:fixture_pathname) { DruidTools::Druid.new(druid, 'spec/fixtures/workspace').pathname }
+    let(:staged_filepath) { 'content/folder1PuSu/story1u.txt' }
+    let(:filename) { 'folder1PuSu/story1u.txt' }
+    let(:file_size) { 7888 }
 
-    let(:object) { build(:dro, id: druid) }
+    let(:object) do
+      build(:dro, id: druid).new(
+        structural: {
+          contains: [{
+            externalIdentifier: '222',
+            type: Cocina::Models::FileSetType.file,
+            label: 'my repository object',
+            version: 1,
+            structural: {
+              contains: [
+                {
+                  externalIdentifier: '222-1',
+                  label: filename,
+                  filename:,
+                  type: Cocina::Models::ObjectType.file,
+                  version: 1,
+                  access: {},
+                  size: file_size,
+                  administrative: { publish: true, sdrPreserve: true, shelve: false },
+                  hasMessageDigests: [{ type: 'md5', digest: '123' }]
+                }
+              ]
+            }
+          }]
+        }
+      )
+    end
+
+    def stage_fixture(pathname)
+      pathname.parent.mkpath
+      FileUtils.cp_r(fixture_pathname, pathname.parent)
+    end
 
     before do
       allow(Dor::Services::Client).to receive(:object).and_return(object_client)
       allow(object_client).to receive(:workflow).and_return(object_workflow)
-
-      # Workspace fixtures being used for staging.
-      allow(Settings.sdr).to receive_messages(staging_root: 'spec/fixtures/workspace', local_workspace_root: workspace_root)
+      allow(Settings.sdr).to receive_messages(assembly_root:, staging_root:, local_workspace_root: workspace_root)
     end
 
     after do
+      FileUtils.rm_rf(assembly_root)
+      FileUtils.rm_rf(staging_root)
       FileUtils.rm_rf(workspace_root)
     end
 
@@ -37,168 +76,187 @@ RSpec.describe Robots::DorRepo::Accession::Stage do
       end
     end
 
-    context 'when a DRO with no staging directory' do
-      let(:druid) { 'druid:bb116zh0354' }
-
+    context 'when no staged content and no workspace' do
       it 'skips the robot' do
         expect(perform.status).to eq('skipped')
-        expect(perform.note).to include('no files in staging')
+        expect(perform.note).to eq('no staged content')
       end
     end
 
-    context 'when a DRO with files to be staged' do
-      let(:delete_me_filepath) { "#{object_workspace_root}/delete_me.txt" }
+    context 'when in the assembly root' do
+      before { stage_fixture(assembly_pathname) }
 
-      let(:object) do
-        build(:dro, id: druid).new(
-          structural: {
-            contains: [{
-              externalIdentifier: '222',
-              type: Cocina::Models::FileSetType.file,
-              label: 'my repository object',
-              version: 1,
-              structural: {
-                contains: [
-                  {
-                    externalIdentifier: '222-1',
-                    label: 'folder1PuSu/story1u.txt',
-                    filename: 'folder1PuSu/story1u.txt',
-                    type: Cocina::Models::ObjectType.file,
-                    version: 1,
-                    access: {},
-                    size: 7888,
-                    administrative: { publish: true, sdrPreserve: true, shelve: false },
-                    hasMessageDigests: [{ type: 'md5', digest: '123' }]
-                  }
-                ]
-              }
-            }]
-          }
-        )
+      it 'moves the content to the workspace' do
+        expect(perform.status).to eq('completed')
+        expect(perform.note).to eq("moved from #{assembly_root}")
+
+        expect(workspace_pathname.join(staged_filepath)).to exist
+        expect(workspace_pathname).not_to be_symlink
+        expect(assembly_pathname).not_to exist
       end
+    end
 
+    context 'when in the assembly root and the move crosses file systems' do
       before do
-        FileUtils.mkdir_p(object_workspace_root)
-        File.write(delete_me_filepath, 'This file should be deleted ')
-      end
-
-      it 'completes the step' do
-        expect { perform }.not_to raise_error
-
-        expect(File.exist?("#{object_workspace_root}/content/folder1PuSu/story1u.txt")).to be true
-        expect(File.exist?(delete_me_filepath)).to be false
-      end
-    end
-
-    context 'when the workspace is a symlink to staging' do
-      let(:staging_object_root) { File.expand_path('spec/fixtures/workspace/dd/116/zh/0343/dd116zh0343') }
-
-      before do
-        FileUtils.mkdir_p(File.dirname(object_workspace_root))
-        FileUtils.ln_s(staging_object_root, object_workspace_root)
-      end
-
-      it 'skips the robot and leaves the symlink' do
-        expect(perform.status).to eq('skipped')
-        expect(perform.note).to eq('workspace is already linked to staging')
-
-        expect(File.symlink?(object_workspace_root)).to be true
-        expect(File.exist?("#{object_workspace_root}/content/folder1PuSu/story1u.txt")).to be true
-      end
-    end
-
-    context 'when a symlink to staging appears after the workspace is removed' do
-      let(:staging_object_root) { File.expand_path('spec/fixtures/workspace/dd/116/zh/0343/dd116zh0343') }
-
-      before do
-        # Stub druid ahead of test_perform (which does the same) so workspace_pathname can be
-        # resolved below.
-        # rubocop:disable-next RSpec/SubjectStub
-        allow(robot).to receive(:druid).and_return(druid)
-
-        # Simulates a symlink created on another host that was not visible when the workspace was removed.
-        # Stubbed on the robot's own workspace_pathname (rather than FileUtils.mkpath) because
-        # Pathname#mkpath no longer delegates to FileUtils.mkpath as of Ruby 4.
-        allow(robot.send(:workspace_pathname)).to receive(:mkpath) do
-          FileUtils.mkdir_p(File.dirname(object_workspace_root))
-          FileUtils.ln_s(staging_object_root, object_workspace_root)
-        end
-      end
-
-      it 'skips the robot and leaves the symlink' do
-        expect(perform.status).to eq('skipped')
-        expect(perform.note).to eq('workspace is already linked to staging')
-
-        expect(File.symlink?(object_workspace_root)).to be true
-        expect(File.exist?("#{object_workspace_root}/content/folder1PuSu/story1u.txt")).to be true
-      end
-    end
-
-    context 'when file already accessioned (and therefore missing)' do
-      let(:object) do
-        build(:dro, id: druid).new(
-          structural: {
-            contains: [{
-              externalIdentifier: '222',
-              type: Cocina::Models::FileSetType.file,
-              label: 'my repository object',
-              version: 1,
-              structural: {
-                contains: [
-                  {
-                    externalIdentifier: '222-1',
-                    label: 'folder1PuSu/already_accessioned.txt',
-                    filename: 'folder1PuSu/already_accessioned.txt',
-                    type: Cocina::Models::ObjectType.file,
-                    version: 1,
-                    access: {},
-                    size: 7888,
-                    administrative: { publish: true, sdrPreserve: true, shelve: false },
-                    hasMessageDigests: [{ type: 'md5', digest: '123' }]
-                  }
-                ]
-              }
-            }]
-          }
-        )
+        stage_fixture(assembly_pathname)
+        allow(File).to receive(:rename).and_raise(Errno::EXDEV)
       end
 
       it 'raises' do
-        expect { perform }.not_to raise_error
+        expect { perform }.to raise_error(Errno::EXDEV)
       end
     end
 
-    context 'when file size mismatch' do
-      let(:object) do
-        build(:dro, id: druid).new(
-          structural: {
-            contains: [{
-              externalIdentifier: '222',
-              type: Cocina::Models::FileSetType.file,
-              label: 'my repository object',
-              version: 1,
-              structural: {
-                contains: [
-                  {
-                    externalIdentifier: '222-1',
-                    label: 'folder1PuSu/story1u.txt',
-                    filename: 'folder1PuSu/story1u.txt',
-                    type: Cocina::Models::ObjectType.file,
-                    version: 1,
-                    access: {},
-                    size: 1,
-                    administrative: { publish: true, sdrPreserve: true, shelve: false },
-                    hasMessageDigests: [{ type: 'md5', digest: '123' }]
-                  }
-                ]
-              }
-            }]
-          }
-        )
+    context 'when retrying after a move' do
+      before { stage_fixture(workspace_pathname) }
+
+      it 'skips the robot and leaves the workspace' do
+        expect(perform.status).to eq('skipped')
+        expect(perform.note).to eq('no staged content')
+
+        expect(workspace_pathname.join(staged_filepath)).to exist
+      end
+    end
+
+    context 'when retrying after a move with a file size mismatch' do
+      let(:file_size) { 1 }
+
+      before { stage_fixture(workspace_pathname) }
+
+      it 'raises' do
+        expect { perform }.to raise_error(StandardError, /File incorrect size/)
+      end
+    end
+
+    context 'when in the assembly root and the workspace exists' do
+      before do
+        stage_fixture(assembly_pathname)
+        workspace_pathname.mkpath
+      end
+
+      it 'raises and leaves both' do
+        expect { perform }.to raise_error(StandardError, /Staged content in both/)
+
+        expect(assembly_pathname.join(staged_filepath)).to exist
+        expect(workspace_pathname).to exist
+      end
+    end
+
+    context 'when in the assembly root with a file size mismatch' do
+      let(:file_size) { 1 }
+
+      before { stage_fixture(assembly_pathname) }
+
+      it 'raises' do
+        expect { perform }.to raise_error(StandardError, /File incorrect size/)
+      end
+    end
+
+    context 'when in the staging root' do
+      let(:delete_me_pathname) { workspace_pathname.join('delete_me.txt') }
+
+      before do
+        stage_fixture(staging_pathname)
+        workspace_pathname.mkpath
+        File.write(delete_me_pathname, 'This file should be deleted')
+      end
+
+      it 'replaces the workspace with a copy and keeps staging' do
+        expect(perform.status).to eq('completed')
+        expect(perform.note).to eq("copied from #{staging_root}")
+
+        expect(workspace_pathname.join(staged_filepath)).to exist
+        expect(workspace_pathname).not_to be_symlink
+        expect(delete_me_pathname).not_to exist
+        expect(staging_pathname.join(staged_filepath)).to exist
+      end
+    end
+
+    context 'when in the staging root with a file size mismatch' do
+      let(:file_size) { 1 }
+
+      before { stage_fixture(staging_pathname) }
+
+      it 'raises' do
+        expect { perform }.to raise_error(StandardError, /File incorrect size/)
+      end
+    end
+
+    context 'when in the staging root and a file was already accessioned (and therefore missing)' do
+      let(:filename) { 'folder1PuSu/already_accessioned.txt' }
+
+      before { stage_fixture(staging_pathname) }
+
+      it 'completes the step' do
+        expect(perform.status).to eq('completed')
+      end
+    end
+
+    context 'when in both roots' do
+      before do
+        stage_fixture(assembly_pathname)
+        stage_fixture(staging_pathname)
+      end
+
+      it 'raises' do
+        expect { perform }.to raise_error(Dor::StagedContent::MultipleRootsError)
+      end
+    end
+
+    context 'when the workspace is a legacy symlink to the assembly root' do
+      before do
+        stage_fixture(assembly_pathname)
+        workspace_pathname.parent.mkpath
+        workspace_pathname.make_symlink(assembly_pathname)
+      end
+
+      it 'skips the robot and leaves the symlink' do
+        expect(perform.status).to eq('skipped')
+        expect(perform.note).to eq('workspace is a legacy symlink')
+
+        expect(workspace_pathname).to be_symlink
+        expect(assembly_pathname.join(staged_filepath)).to exist
+      end
+    end
+
+    context 'when the workspace is a legacy symlink to the staging root' do
+      before do
+        stage_fixture(staging_pathname)
+        workspace_pathname.parent.mkpath
+        workspace_pathname.make_symlink(staging_pathname)
+      end
+
+      it 'skips the robot and leaves the symlink' do
+        expect(perform.status).to eq('skipped')
+        expect(perform.note).to eq('workspace is a legacy symlink')
+
+        expect(workspace_pathname).to be_symlink
+        expect(staging_pathname.join(staged_filepath)).to exist
+      end
+    end
+
+    context 'when the workspace is a legacy symlink with a file size mismatch' do
+      let(:file_size) { 1 }
+
+      before do
+        stage_fixture(staging_pathname)
+        workspace_pathname.parent.mkpath
+        workspace_pathname.make_symlink(staging_pathname)
       end
 
       it 'raises' do
         expect { perform }.to raise_error(StandardError, /File incorrect size/)
+      end
+    end
+
+    context 'when the workspace is a dangling symlink' do
+      before do
+        workspace_pathname.parent.mkpath
+        workspace_pathname.make_symlink(assembly_pathname)
+      end
+
+      it 'raises' do
+        expect { perform }.to raise_error(StandardError, /dangling symlink/)
       end
     end
   end
