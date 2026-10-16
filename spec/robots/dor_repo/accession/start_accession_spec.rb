@@ -21,7 +21,9 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
 
   before do
     allow(Dor::Services::Client).to receive(:object).with(druid).and_return(object_client)
-    allow(Settings.sdr).to receive_messages(local_workspace_root: 'spec/fixtures/workspace', staging_root: 'spec/fixtures/staging')
+    allow(Settings.sdr).to receive_messages(local_workspace_root: 'spec/fixtures/workspace',
+                                            assembly_root: 'spec/fixtures/nonexistant-assembly',
+                                            staging_root: 'spec/fixtures/staging')
     allow(Preservation::Client).to receive(:configure).and_return(preservation_client)
     allow(PurlFetcher::Client::Reader).to receive(:new).and_return(purl_fetcher_reader)
   end
@@ -195,6 +197,28 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
       it 'does not raise' do
         expect { perform }.not_to raise_error
       end
+
+      context 'when staged in the assembly root' do
+        before do
+          allow(Settings.sdr).to receive_messages(assembly_root: 'spec/fixtures/staging', staging_root: 'spec/fixtures/nonexistant-staging')
+        end
+
+        it 'does not raise' do
+          expect { perform }.not_to raise_error
+        end
+      end
+
+      context 'when staged in both roots' do
+        before do
+          allow(Settings.sdr).to receive(:assembly_root).and_return('spec/fixtures/staging')
+          allow(Dor::StagedContent).to receive(:find).and_call_original
+        end
+
+        it 'raises without retrying' do
+          expect { perform }.to raise_error(Dor::StagedContent::MultipleRootsError)
+          expect(Dor::StagedContent).to have_received(:find).once
+        end
+      end
     end
 
     context 'when DRO with missing file and staging directory not present' do
@@ -233,7 +257,7 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
       end
 
       it 'raises an error' do
-        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, workspace, shelves, and preservation: folder1PuSu/story1x.txt')
+        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, assembly, workspace, shelves, and preservation: folder1PuSu/story1x.txt')
         expect(preservation_objects_client).to have_received(:checksum)
         expect(purl_fetcher_reader).to have_received(:files_by_digest)
       end
@@ -275,7 +299,7 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
       end
 
       it 'raises an error' do
-        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, workspace, shelves, and preservation: folder1PuSu/story1x.txt')
+        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, assembly, workspace, shelves, and preservation: folder1PuSu/story1x.txt')
         expect(preservation_objects_client).not_to have_received(:checksum)
         expect(purl_fetcher_reader).not_to have_received(:files_by_digest)
       end
@@ -318,12 +342,12 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
       end
 
       before do
-        allow(Settings.sdr).to receive(:staging_root).and_return('spec/fixtures/xstaging')
+        allow(Settings.sdr).to receive(:staging_root).and_return('spec/fixtures/nonexistant-staging')
         allow(robot).to receive(:sleep)
       end
 
       it 'retries before raising an error' do
-        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, workspace, shelves, and preservation: folder1PuSu/story1x.txt')
+        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, assembly, workspace, shelves, and preservation: folder1PuSu/story1x.txt')
         expect(robot).to have_received(:sleep).exactly(3).times
       end
     end
@@ -369,7 +393,7 @@ RSpec.describe Robots::DorRepo::Accession::StartAccession do
       end
 
       it 'raises an error' do
-        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, workspace, shelves, and preservation: folder1PuSu/story6u.txt')
+        expect { perform }.to raise_error(RuntimeError, 'Files missing from staging, assembly, workspace, shelves, and preservation: folder1PuSu/story6u.txt')
       end
     end
   end

@@ -16,6 +16,7 @@ assembly:
 
 sdr:
   local_workspace_root: /dor/workspace
+  assembly_root: /dor/assembly
   staging_root: /sdr-deposit-staging
   abbyy:
     max_image_dimension: 30000 # any image larger than this along either dimension will be ignored for OCR purposes
