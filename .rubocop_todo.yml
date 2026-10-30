@@ -53,7 +53,6 @@ Metrics/MethodLength:
   Exclude:
     - 'lib/dor/assembly/content_metadata_from_stub/file_set.rb'
     - 'lib/dor/assembly/content_metadata_from_stub/structural_builder.rb'
-    - 'lib/dor/assembly/path_finder.rb'
     - 'lib/dor/file_sets.rb'
     - 'lib/robots/dor_repo/assembly/checksum_compute.rb'
     - 'lib/robots/dor_repo/assembly/jp2_create.rb'

@@ -123,8 +123,8 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
     let(:bare_druid) { 'ff222cc3333' }
 
-    let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image111.tif" }
-    let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image111.jp2" }
+    let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image111.tif" }
+    let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image111.jp2" }
 
     context 'with a fileset that is not page or image' do
       let(:structural) do
@@ -149,7 +149,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
       it 'does not change the fileset or create jp2' do
         expect(file_sets).to eq(structural[:contains])
-        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/image111.jp2")).to be false
+        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image111.jp2")).to be false
       end
     end
 
@@ -204,7 +204,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
 
       it 'does not change the fileset or create jp2' do
         expect(file_sets).to eq(structural[:contains])
-        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/doc111.pdf")).to be true
+        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/doc111.pdf")).to be true
         expect(assembly_image).not_to have_received(:create_jp2)
       end
     end
@@ -246,8 +246,8 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     end
 
     context 'when the image file exists and there is a jp2 cocina file and a jp2 file' do
-      let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.tif" }
-      let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.jp2" }
+      let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image112.tif" }
+      let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image112.jp2" }
 
       let(:structural) do
         { contains: [{ type: Cocina::Models::FileSetType.image,
@@ -345,8 +345,8 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
     end
 
     context 'when the image file exists and there is a jp2 file but no jp2 cocina file' do
-      let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.tif" }
-      let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.jp2" }
+      let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image112.tif" }
+      let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image112.jp2" }
 
       let(:structural) do
         { contains: [{ type: Cocina::Models::FileSetType.image,
@@ -368,7 +368,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       end
 
       it 'creates a jp2 cocina file' do
-        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.jp2")).to be true
+        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image112.jp2")).to be true
         expect(file_sets).to eq(
           [{ type: Cocina::Models::FileSetType.image,
              externalIdentifier: 'bb111bb2222_1',
@@ -395,13 +395,13 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                         administrative: { publish: true, sdrPreserve: false, shelve: true } }] } }]
         )
         expect(assembly_image).not_to have_received(:create_jp2)
-        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/image112.jp2")).to be true
+        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image112.jp2")).to be true
       end
     end
 
     context 'when the hierarchical image file exists and there is a jp2 file but no jp2 cocina file' do
-      let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/sub/image113.tif" }
-      let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/sub/image113.jp2" }
+      let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/sub/image113.tif" }
+      let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/sub/image113.jp2" }
 
       let(:structural) do
         { contains: [{ type: Cocina::Models::FileSetType.image,
@@ -423,7 +423,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
       end
 
       it 'adds the jp2 cocina file' do
-        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/sub/image113.jp2")).to be true
+        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/sub/image113.jp2")).to be true
         expect(file_sets).to eq(
           [{ type: Cocina::Models::FileSetType.image,
              externalIdentifier: 'bb111bb2222_1',
@@ -450,12 +450,12 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
                                         administrative: { publish: true, sdrPreserve: false, shelve: true } }] } }]
         )
         expect(assembly_image).not_to have_received(:create_jp2)
-        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/sub/image113.jp2")).to be true
+        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/sub/image113.jp2")).to be true
       end
     end
 
     context 'when the image file does not exist and there is no jp2 file' do
-      let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image114.tif" }
+      let(:image_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image114.tif" }
       let(:structural) do
         { contains: [{ type: Cocina::Models::FileSetType.image,
                        externalIdentifier: 'bb111bb2222_1',
@@ -474,7 +474,7 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
           hasMemberOrders: [],
           isMemberOf: [] }
       end
-      let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/image114.jp2" }
+      let(:jp2_filepath) { "#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image114.jp2" }
 
       let(:client) { instance_double(Preservation::Client, objects: objects_client) }
       let(:objects_client) { instance_double(Preservation::Client::Objects) }
@@ -515,10 +515,10 @@ RSpec.describe Robots::DorRepo::Assembly::Jp2Create do
         expect(assembly_image).to have_received(:create_jp2)
         expect(objects_client).to have_received(:content_to_file).with(druid: bare_druid,
                                                                        filepath: 'image114.tif',
-                                                                       destination_filepath: "#{TMP_ROOT_DIR}/ff/222/cc/3333/image114.tif",
+                                                                       destination_filepath: "#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image114.tif",
                                                                        expected_md5: '42616f9e6c1b7e7b7a71b4fa0c5ef794')
-        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/image114.tif")).to be true
-        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/image114.jp2")).to be false
+        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image114.tif")).to be true
+        expect(File.exist?("#{TMP_ROOT_DIR}/ff/222/cc/3333/ff222cc3333/content/image114.jp2")).to be false
       end
     end
   end
