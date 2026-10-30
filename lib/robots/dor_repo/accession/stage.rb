@@ -11,7 +11,6 @@ module Robots
 
         def perform_work
           return skipped('object is not an item') unless cocina_object.dro?
-          return stage_legacy_symlink if workspace_pathname.symlink?
 
           staged_content = Dor::StagedContent.find(druid)
           return stage_nothing unless staged_content
@@ -20,14 +19,6 @@ module Robots
         end
 
         private
-
-        # Workspaces symlinked by accessioning-initiate before it stopped doing so are left in place.
-        def stage_legacy_symlink
-          raise "Workspace is a dangling symlink: #{workspace_pathname}" unless workspace_pathname.exist?
-
-          check_expected_file_sizes!
-          skipped('workspace is a legacy symlink')
-        end
 
         # Also covers a retry after a move, so the size check still runs.
         def stage_nothing

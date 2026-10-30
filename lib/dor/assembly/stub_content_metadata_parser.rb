@@ -29,14 +29,14 @@ module Dor
         File.exist?(stub_cm_file_name)
       end
 
-      # return the location to read the stubContentMetadata.xml file from (could be in either the new or old location)
+      # return the location to read the stubContentMetadata.xml file from
       def stub_cm_file_name
         @stub_cm_file_name ||= path_finder.path_to_metadata_file(Settings.assembly.stub_cm_file_name)
       end
 
       def load_stub_content_metadata
         # Loads stub content metadata XML into a Nokogiri document.
-        raise "Stub content metadata file #{Settings.assembly.stub_cm_file_name} not found for #{druid.id} in any of the root directories: #{@root_dir.join(',')}" unless stub_content_metadata_exists?
+        raise "Stub content metadata file not found for #{druid.id}: #{stub_cm_file_name}" unless stub_content_metadata_exists?
 
         @stub_cm = begin
           Nokogiri.XML(File.open(stub_cm_file_name)) do |conf|
