@@ -28,11 +28,19 @@ module Robots
             files = file_set.dig(:structural, :contains)
 
             files.each do |file|
-              collect_exif_info(file, assembly_item.path_finder.path_to_content_file(file.fetch(:filename)))
+              collect_file_metadata(file, assembly_item)
             end
           end
 
           file_sets
+        end
+
+        def collect_file_metadata(file, assembly_item)
+          collect_exif_info(file, assembly_item.path_finder.path_to_content_file(file.fetch(:filename)))
+          # Validate while the filename is available, before rebuilding the whole structure.
+          Cocina::Models::File.new(file)
+        rescue StandardError => e
+          raise "Exif metadata collection failed for #{file[:filename]}: #{e.message}"
         end
 
         def collect_exif_info(file, filepath)

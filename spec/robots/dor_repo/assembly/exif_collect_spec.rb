@@ -128,6 +128,55 @@ RSpec.describe Robots::DorRepo::Assembly::ExifCollect do
         expect(files[1][:presentation]).to be_present
         expect(files[2][:presentation]).to be_present
       end
+
+      context 'when extracting metadata fails for a single file' do
+        let(:error) { IOError.new('Cannot read metadata') }
+        let(:message) { 'Exif metadata collection failed for sub/image113.tif: Cannot read metadata' }
+
+        before do
+          allow(Assembly::ObjectFile).to receive(:new).with(end_with('sub/image113.tif')).and_raise(error)
+        end
+
+        it 'identifies the file and raises an error message with the filename and error' do
+          expect { result }.to raise_error(RuntimeError, message) { |raised| expect(raised.cause).to eq(error) }
+        end
+      end
+
+      context 'when resolving the file path fails' do
+        before do
+          allow(item.path_finder).to receive(:path_to_content_file).and_call_original
+          allow(item.path_finder).to receive(:path_to_content_file).with('sub/image113.tif').and_raise('Content directory unavailable')
+        end
+
+        it 'identifies the file and raises an error message with the filename and error' do
+          expect { result }.to raise_error(RuntimeError, 'Exif metadata collection failed for sub/image113.tif: Content directory unavailable')
+        end
+      end
+
+      context 'when extracted dimensions are missing' do
+        let(:exif) { double('result', imagewidth: nil, imageheight: nil) }
+
+        it 'validates the file before rebuilding the structural metadata' do
+          expect { result }.to raise_error(RuntimeError, /Exif metadata collection failed for image111.tif:.*:height/m) do |error|
+            expect(error.cause).to be_a(Dry::Struct::Error)
+            expect(error.message).not_to include('image112.tif', 'image113.tif')
+          end
+        end
+      end
+
+      context 'when the extracted size is invalid' do
+        before do
+          allow(Assembly::ObjectFile).to receive(:new).and_return(
+            instance_double(Assembly::ObjectFile, mimetype: 'image/tiff', filesize: 'unknown', valid_image?: true, exif:)
+          )
+        end
+
+        it 'identifies the file and raises an error message with the filename and error' do
+          expect { result }.to raise_error(RuntimeError, /Exif metadata collection failed for image111.tif:.*:size/m) do |error|
+            expect(error.cause).to be_a(Dry::Struct::Error)
+          end
+        end
+      end
     end
 
     context 'when there are existing mimetypes and filesizes in file nodes' do
