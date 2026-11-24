@@ -75,6 +75,18 @@ RSpec.describe Robots::DorRepo::Accession::EndAccession do
           end
         end
 
+        context 'when is required and possible and the workflow context has a user version mode' do
+          let(:possible) { true }
+          let(:required) { true }
+          let(:context) { { 'runOCR' => true, 'ocrLanguages' => ['Russian'], 'userVersions' => 'new' } }
+          let(:incoming_context) { { 'ocrLanguages' => ['Russian'] } }
+
+          it 'starts ocrWF but removes runOCR and the user version mode from context' do
+            perform
+            expect(object_workflow).to have_received(:create).with(version: 2, lane_id: 'default', context: incoming_context)
+          end
+        end
+
         context 'when required but not possible' do
           let(:possible) { false }
           let(:required) { true }

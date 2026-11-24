@@ -204,7 +204,7 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.7.0)
-    lyber-core (9.1.0)
+    lyber-core (9.1.1)
       activesupport
       benchmark
       config
