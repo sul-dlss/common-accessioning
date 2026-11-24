@@ -420,7 +420,7 @@ DEPENDENCIES
   equivalent-xml
   honeybadger
   listen
-  lyber-core (>= 9.1.1)
+  lyber-core
   nokogiri
   preservation-client
   pry
