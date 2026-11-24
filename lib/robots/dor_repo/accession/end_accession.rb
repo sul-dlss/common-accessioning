@@ -25,9 +25,11 @@ module Robots
         # we will pass on any workflow context to the next version when starting OCR or speechToText
         # so that user selections like language will be available to the OCR/speechToText workflows,
         # but we will remove the context values that actually starts OCR/speechToText when doing this,
-        # or else we will end up in an infinite loop, where the workflow gets triggered over and over again
+        # or else we will end up in an infinite loop, where the workflow gets triggered over and over again.
+        # We also remove the user version mode, which applied to closing this version: closing the next version
+        # (see close_version) uses DSA's default, so the user version created for this version moves to it.
         def workflow_context_for_next_version
-          workflow.context.except('runOCR', 'runSpeechToText')
+          workflow.context.except('runOCR', 'runSpeechToText', USER_VERSIONS_CONTEXT_KEY)
         end
 
         # check to see if we need to run OCR or speech-to-text or start workflow if needed

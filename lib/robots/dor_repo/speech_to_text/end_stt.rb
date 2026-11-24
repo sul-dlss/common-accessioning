@@ -10,7 +10,7 @@ module Robots
         end
 
         def perform_work
-          object_client.version.close
+          close_version
         end
       end
     end

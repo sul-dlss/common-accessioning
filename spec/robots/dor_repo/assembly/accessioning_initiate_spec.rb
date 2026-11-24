@@ -7,7 +7,8 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
 
   let(:bare_druid) { 'bb222cc3333' }
   let(:druid) { "druid:#{bare_druid}" }
-  let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id: 'high') }
+  let(:process_response) { instance_double(Dor::Services::Response::Process, lane_id: 'high', context:) }
+  let(:context) { {} }
   let(:workflow_response) { instance_double(Dor::Services::Response::Workflow, process_for_recent_version: process_response) }
   let(:object_workflow) { instance_double(Dor::Services::Client::ObjectWorkflow, find: workflow_response) }
   let(:version_client) { instance_double(Dor::Services::Client::ObjectVersion, close: true) }
@@ -23,7 +24,7 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
 
     it 'closes the version' do
       test_perform(robot, druid)
-      expect(version_client).to have_received(:close).with(lane_id: 'high')
+      expect(version_client).to have_received(:close).with(lane_id: 'high', user_versions: nil)
     end
   end
 
@@ -32,7 +33,17 @@ RSpec.describe Robots::DorRepo::Assembly::AccessioningInitiate do
 
     it 'closes the version' do
       test_perform(robot, druid)
-      expect(version_client).to have_received(:close).with(lane_id: 'high')
+      expect(version_client).to have_received(:close).with(lane_id: 'high', user_versions: nil)
+    end
+  end
+
+  context 'when the workflow context has a user version mode' do
+    let(:object) { build(:dro, id: druid) }
+    let(:context) { { 'userVersions' => 'new', 'runOCR' => true } }
+
+    it 'closes the version with the user version mode' do
+      test_perform(robot, druid)
+      expect(version_client).to have_received(:close).with(lane_id: 'high', user_versions: 'new')
     end
   end
 end
